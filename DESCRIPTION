@@ -1,6 +1,6 @@
 Package: GXwasR
 Title: Genome-wide and x-chromosome wide association analyses applying best practices of quality control over genetic data 
-Version: 0.2.0
+Version: 0.4.0
 Authors@R: 
     person(given = "Banabithi",
            family = "Bose",
