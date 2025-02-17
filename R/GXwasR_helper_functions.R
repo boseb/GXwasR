@@ -1,8 +1,8 @@
 ## Function update in 3.0 again
 # GXwasR helper functions
-# @author Banabithi Bose
+#' @author Banabithi Bose
 #' @importFrom stats na.omit median qchisq binomial dnorm glm na.exclude p.adjust pchisq pnorm lm pt qnorm setNames
-#' @importFrom utils download.file read.table unzip write.table untar
+#' @importFrom utils download.file read.table unzip write.table untar txtProgressBar
 #' @importFrom qqman manhattan qq
 #' @importFrom grDevices dev.off jpeg
 #' @importFrom poolr stouffer bonferroni
@@ -24,6 +24,7 @@
 #' @importFrom grid unit
 #' @importFrom ggrepel geom_text_repel
 #' @importFrom BiocStyle html_document
+#' @importFrom dplyr filter mutate distinct arrange select case_when summarise
 
 ## Function 1
 # Installing Plink
@@ -168,27 +169,53 @@ executePlink <- function(args) {
 ## Function 5
 ########## Added in 3.0
 analyzePhenotypeData <- function(fam, fam4) {
+
+  No.of.missing.pheno <- nrow(fam[fam$V6 == -9 | fam$V6 == 0, ])
+  print(paste0("Number of missing phenotypes:", No.of.missing.pheno))
+  No.of.males <- nrow(fam[fam$V5 == 1, ])
+  No.of.females <- nrow(fam[fam$V5 == 2, ])
+  print(paste0("Number of males:", No.of.males))
+  print(paste0("Number of females:", No.of.females))
+
+
   unique_pheno <- unique(fam4$V6)
+
   if (length(unique_pheno) == 2) {
     No.of.cases <- nrow(fam4[fam4$V6 == 2, ])
     No.of.controls <- nrow(fam4[fam4$V6 == 1, ])
     message <- "This is a case-control data."
+    print(message)
+    ## Updated in 4.0
+    print(paste0("Number of cases:", No.of.cases))
+    print(paste0("Number of controls:", No.of.controls))
+
+    ## Updated in 5.0
+    if (No.of.males != 0){
+      M <- fam[fam$V5 == 1, ]
+      No.of.cases.in.males <- nrow(M[M$V6 == 2,])
+      No.of.controls.in.males <- nrow(M[M$V6 == 1,])
+      print(paste0("Number of cases in males:", No.of.cases.in.males))
+      print(paste0("Number of controls in males:", No.of.controls.in.males))
+    }
+    if (No.of.females != 0){
+      PF <- fam[fam$V5 == 2, ]
+      No.of.cases.in.females <- nrow(PF[PF$V6 == 2,])
+      No.of.controls.in.females <- nrow(PF[PF$V6 == 1,])
+      print(paste0("Number of cases in females:", No.of.cases.in.females))
+      print(paste0("Number of controls in females:", No.of.controls.in.females))
+    }
+
   } else if (length(unique_pheno) == 1 && unique_pheno != -9) {
     message <- paste0("This dataset contains a single trait value: ", unique_pheno)
+    print(message)
   } else if (unique(fam$V6) == -9) {
     message <- "This dataset contains missing trait values for all samples."
+    print(message)
   } else {
     message <- "This dataset contains quantitative trait value."
+    print(message)
   }
 
-  No.of.missing.pheno <- nrow(fam[fam$V6 == -9 | fam$V6 == 0, ])
-  No.of.males <- nrow(fam[fam$V5 == 1, ])
-  No.of.females <- nrow(fam[fam$V5 == 2, ])
-
-  print(message)
-  print(paste0("Number of males:", No.of.males))
-  print(paste0("Number of females:", No.of.females))
-  print(paste0("Number of missing phenotypes:", No.of.missing.pheno))
 }
 
 ## Function 6
@@ -281,7 +308,7 @@ removeTempFiles <- function(directory, pattern) {
 
   tempFiles <- list.files(directory, pattern = pattern, full.names = TRUE)
   if (length(tempFiles) > 0) {
-    file.remove(tempFiles)
+    suppressWarnings(file.remove(tempFiles))
   } else {
     print(paste("No files found with pattern:", pattern, "in directory:", directory))
   }
@@ -376,42 +403,55 @@ processAmbiguousSamples <- function(DataDir, ResultDir, finput, fam1) {
 
 ## Function 16
 ######### Added in 3.0
-filterSamples <- function(DataDir, ResultDir, finput, failed_het_imiss) {
+filterSamples <- function(DataDir, ResultDir, finput, failed_het_imiss, filterSample) {
 
-  excludeSamplesArgs <- c(
-    "--bfile", paste0(DataDir, "/", finput),
-    "--remove", paste0(ResultDir, "/", "failed_het_imiss"),
-    "--allow-no-sex",                                      ## Adding in 4.0
-    "--make-bed",
-    "--out", paste0(ResultDir, "/", "foutput"),
-    "--silent"
-  )
-  executePlink(excludeSamplesArgs)
+  if (filterSample == TRUE) {
+    excludeSamplesArgs <- c(
+      "--bfile", paste0(DataDir, "/", finput),
+      "--remove", paste0(ResultDir, "/", "failed_het_imiss"),
+      "--allow-no-sex",                                      ## Adding in 4.0
+      "--make-bed",
+      "--out", paste0(ResultDir, "/", "foutput"),
+      "--silent"
+    )
+    executePlink(excludeSamplesArgs)
+  }else if (filterSample == FALSE){
+    excludeSamplesArgs <- c(
+      "--bfile", paste0(DataDir, "/", finput),
+      "--make-bed",
+      "--out", paste0(ResultDir, "/", "foutput"),
+      "--silent"
+    )
+    executePlink(excludeSamplesArgs)
+    print("Samples are flagged for missingness and heterogygosity threshold.")
+  }
 }
 
 ## Function 17
 ######### Added in 3.0
 printSampleFilterResults <- function(imissfail, hetfail, failed_het_imiss) {
+
   if (nrow(imissfail) == 0) {
-    print("No samples filtered for missingness.")
+    print("No. of samples filtered/flagged for missingness: 0")
   } else {
-    print(paste0(length(unique(imissfail$IID)), " samples filtered for missingness."))
+    print(paste0("No. of samples filtered/flagged for missingness: ", length(unique(imissfail$IID))))
   }
+
   if (nrow(hetfail) == 0) {
-    print("No samples filtered for heterozygosity.")
+    print("No. of samples filtered/flagged for heterozygosity: 0")
   } else {
-    print(paste0(length(unique(hetfail$IID)), " samples filtered for heterozygosity."))
+    print(paste0("No. of samples filtered/flagged for heterozygosity threshold: ",length(unique(hetfail$IID))))
   }
   if (nrow(failed_het_imiss) == 0) {
-    print("No samples filtered for missingness and heterozygosity.")
+    print("No. of samples filtered for missingness and heterozygosity: 0")
   } else {
-    print(paste0(length(unique(failed_het_imiss$IID)), " samples filtered for missingness and heterozygosity."))
+    print(paste0("No. of samples filtered/flagged for missingness and heterozygosity: ",length(unique(failed_het_imiss$IID))))
   }
 }
 
 ## Function 18
 ######### Added in 3.0
-processIBDData <- function(IBD, IBDmatrix, ResultDir,foutput) {
+processIBDData <- function(IBD, IBDmatrix, ResultDir,foutput, filterSample) {
 
   if (!is.null(IBD)) {
     # Compute and save filtered IBD data
@@ -428,11 +468,17 @@ processIBDData <- function(IBD, IBDmatrix, ResultDir,foutput) {
     failed_ibd <- identifyFailedSamplesFromIBD(ibd, ResultDir)
 
     # Update PLINK files based on IBD results
-    updatePlinkFilesWithIBDFilter(ResultDir = ResultDir, foutput = foutput, failed_ibd = failed_ibd)
+    if (filterSample == TRUE){
+      updatePlinkFilesWithIBDFilter(ResultDir = ResultDir, foutput = foutput, failed_ibd = failed_ibd)
+    }else{
+      executeMakeBed(ResultDir = ResultDir, foutput = foutput)
+      NULL
+    }
   } else {
     # Generate BED files without IBD filtering
     executeMakeBed(ResultDir = ResultDir, foutput = foutput)
-    NULL
+    failed_ibd <- NULL
+    ibd <- NULL
   }
   return(list(failed_ibd = failed_ibd,ibd = ibd))
 }
@@ -440,8 +486,31 @@ processIBDData <- function(IBD, IBDmatrix, ResultDir,foutput) {
 ## Function 19
 ######### Added in 3.0
 executePlinkForIBD <- function(ResultDir, IBD, outFileName) {
+
+  ####### Added in final version #######
+  executePlinkAd(ResultDir, c(
+    "--bfile", paste0(ResultDir, "/foutput"),
+    "--indep-pairwise", 50, 5, 0.02,            #We made these as hard thresholds.
+    "--allow-no-sex",                                                     ## Adding in 4.0
+    "--out", paste0(ResultDir, "/foutput"),
+    "--silent"
+  ))
+
+  # Extract pruned SNPs based on the .prune.in file
+  executePlinkAd(ResultDir, c(
+    "--bfile", paste0(ResultDir, "/foutput"),       # Original data
+    "--extract", paste0(ResultDir, "/foutput.prune.in"),  # Use pruned SNP list
+    "--allow-no-sex",
+    "--make-bed",
+    "--out", paste0(ResultDir, "/foutput1"),
+    "--silent" # Final file with pruned SNPs
+  ))
+
+  ######################################
+
+
   ibdArgs <- c(
-    "--bfile", paste0(ResultDir, "/", "foutput"),
+    "--bfile", paste0(ResultDir, "/", "foutput1"),
     "--genome",
     "--out", paste0(ResultDir, "/", outFileName),
     "--silent"
@@ -498,7 +567,8 @@ executeMakeBed <- function(ResultDir, foutput) {
 executePlinkAd <- function(ResultDir, args) {
   tryCatch({
     stderr_dest <- ifelse(.Platform$OS.type == "windows", "NUL", "/dev/null")
-    invisible(sys::exec_wait(file.path(ResultDir, "./plink"), args = args, std_err = stderr_dest))
+    #invisible(sys::exec_wait(file.path(ResultDir, "./plink"), args = args, std_err = stderr_dest))
+    sys::exec_wait(file.path(ResultDir, "./plink"), args = args, std_err = stderr_dest)
   }, error = function(e) {
     stop("An error occurred while executing Plink: ", e$message)
   })
@@ -700,6 +770,9 @@ handleLDPruning <- function(ld_prunning, highLD_regions, ResultDir, window_size,
   if (ld_prunning) {
     excluderange <- "--exclude"
 
+    #Test for LD prunning
+    range <- "range"
+    ##
     if (!is.null(highLD_regions)) {
       # Write high LD regions to a temporary file
       tempFile <- paste0(ResultDir, "/highLD_regions_temp")
@@ -712,6 +785,9 @@ handleLDPruning <- function(ld_prunning, highLD_regions, ResultDir, window_size,
     indep <- "--indep-pairwise"
   } else {
     excluderange <- NULL
+    ##TEST
+    range <- NULL
+    ####
     highLD_regions <- NULL
     indep <- NULL
     window_size <- NULL
@@ -723,19 +799,67 @@ handleLDPruning <- function(ld_prunning, highLD_regions, ResultDir, window_size,
 }
 
 ## Function 32
-######### Added in 3.0
-# Helper Function to Execute PLINK with Various Parameters
 executePlinkWithParams <- function(ResultDir, filtered_temp, exclude, excludemono, excluderange, highLD_regions, indep, window_size, step_size, r2_threshold) {
+
+  #TEST
+  # executePlinkAd(ResultDir, args = c(
+  #   "--bfile", paste0(ResultDir, "/", filtered_temp),
+  #   exclude, excludemono, excluderange, highLD_regions,
+  #   indep, window_size, step_size, r2_threshold,
+  #   "--make-bed",
+  #   "--allow-no-sex",
+  #   "--out", paste0(ResultDir, "/", filtered_temp, "_processed"),
+  #   "--silent"
+  # ))
+  ###
+  if (is.null(excluderange)){
+    range <- NULL
+  }else{range <- "range"}
+
   executePlinkAd(ResultDir, args = c(
     "--bfile", paste0(ResultDir, "/", filtered_temp),
-    exclude, excludemono, excluderange, highLD_regions,
-    indep, window_size, step_size, r2_threshold,
+    exclude, excludemono,excluderange, range, highLD_regions,
     "--make-bed",
     "--allow-no-sex",
-    "--out", paste0(ResultDir, "/", filtered_temp, "_processed"),
+    "--out", paste0(ResultDir, "/", filtered_temp, "dummy_processed"),
     "--silent"
   ))
+
+  if (is.null(indep)){
+    # executePlinkAd(ResultDir, args = c(
+    #   "--bfile", paste0(ResultDir, "/", filtered_temp, "dummy_processed"),
+    #   indep, window_size, step_size, r2_threshold,
+    #   "--allow-no-sex",
+    #   "--out", paste0(ResultDir, "/", filtered_temp, "pruned_processed")
+    #   #"--silent"
+    # ))
+    #Extract prunned snps
+    executePlinkAd(ResultDir, args = c(
+      "--bfile", paste0(ResultDir, "/", filtered_temp, "dummy_processed"),
+      #"--extract",paste0(ResultDir, "/", filtered_temp, "pruned_processed.prune.in"),
+      "--make-bed",
+      "--out", paste0(ResultDir, "/", filtered_temp, "_processed"),
+      "--silent"
+    ))
+  }else{
+    executePlinkAd(ResultDir, args = c(
+      "--bfile", paste0(ResultDir, "/", filtered_temp, "dummy_processed"),
+      indep, window_size, step_size, r2_threshold,
+      "--allow-no-sex",
+      "--out", paste0(ResultDir, "/", filtered_temp, "pruned_processed"),
+      "--silent"
+    ))
+    #Extract prunned snps
+    executePlinkAd(ResultDir, args = c(
+      "--bfile", paste0(ResultDir, "/", filtered_temp, "dummy_processed"),
+      "--extract",paste0(ResultDir, "/", filtered_temp, "pruned_processed.prune.in"),
+      "--make-bed",
+      "--out", paste0(ResultDir, "/", filtered_temp, "_processed"),
+      "--silent"
+    ))
+  }
 }
+
 
 ## Function 33
 ######### Added in 3.0
@@ -761,12 +885,12 @@ handleCaseControlFiltering <- function(ResultDir, casecontrol, dmissX, dmissAuto
 
     if (caldiffmiss) {
       executePlinkAd(ResultDir, args = c(
-        "--bfile", paste0(ResultDir, "/filtered_temp4"),
+        "--bfile", paste0(ResultDir, "/filtered_temp4_processed"),## TEST
         chrfilter, chrv,
         "--test-missing", "--adjust",
         "--make-bed", "--allow-no-sex",
-        "--out", paste0(ResultDir, "/filtered_temp_casecontrol"),
-        "--silent"
+        "--out", paste0(ResultDir, "/filtered_temp_casecontrol")
+        #"--silent"
       ))
 
       # Process the differential missingness results
@@ -779,7 +903,7 @@ handleCaseControlFiltering <- function(ResultDir, casecontrol, dmissX, dmissAuto
     print("No filter based on differential missingness will be applied.")
 
     executePlinkAd(ResultDir, args = c(
-      "--bfile", paste0(ResultDir, "/filtered_temp4"),
+      "--bfile", paste0(ResultDir, "/filtered_temp4_processed"),#TEST
       "--make-bed", "--allow-no-sex",
       "--out", paste0(ResultDir, "/", foutput),
       "--silent"
@@ -816,7 +940,8 @@ applySNPmissCCFilter <- function(ResultDir, SNPmissCC, diffmissFilter, foutput) 
       quote = FALSE, row.names = FALSE, col.names = FALSE, eol = "\r\n", sep = " "
     )
     executePlinkAd(ResultDir, args = c(
-      "--bfile", paste0(ResultDir, "/filtered_temp4"),
+      #"--bfile", paste0(ResultDir, "/filtered_temp4"),
+      "--bfile", paste0(ResultDir, "/filtered_temp4_processed"),##TEST
       "--exclude", paste0(ResultDir, "/SNPdifCallrate"),
       "--allow-no-sex",
       "--make-bed",
@@ -826,7 +951,8 @@ applySNPmissCCFilter <- function(ResultDir, SNPmissCC, diffmissFilter, foutput) 
   } else {
     print("No SNP with differential missingness between cases and controls.")
     executePlinkAd(ResultDir, args = c(
-      "--bfile", paste0(ResultDir, "/filtered_temp4"),
+      # "--bfile", paste0(ResultDir, "/filtered_temp4"),
+      "--bfile", paste0(ResultDir, "/filtered_temp4_processed"), ##TEST
       "--allow-no-sex",
       "--make-bed",
       "--out", paste0(ResultDir, "/", foutput),
@@ -836,215 +962,7 @@ applySNPmissCCFilter <- function(ResultDir, SNPmissCC, diffmissFilter, foutput) 
 }
 
 ## Function 36
-######### Added in 3.0
-#### gmirror function from hudson R package
-# gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"),log10=TRUE,
-#                     yaxis, opacity=1, annotate_snp, annotate_p, toptitle=NULL,
-#                     bottomtitle=NULL, highlight_snp, highlight_p, highlighter="red",
-#                     chrcolor1="#AAAAAA", chrcolor2="#4D4D4D", freey=FALSE,
-#                     background="variegated", chrblocks=FALSE, file="gmirror",
-#                     type="png", hgt=7, hgtratio=0.5, wi=12, res=300 ){
-#
-#   #Sort data
-#   topn <- names(top)
-#   bottomn <- names(bottom)
-#   top$Location <- "Top"
-#   bottom$Location <- "Bottom"
-#
-#   # Check file formats
-#   if(!identical(topn, bottomn)){stop("Please ensure both inputs have the same metadata columns.")}
-#
-#   d <- as.data.frame(rbind(top, bottom))
-#
-#   d$POS <- as.numeric(as.character(d$POS))
-#   d$CHR <- droplevels(factor(d$CHR, levels = as.character(chroms)))
-#   d <- d[d$CHR %in% chroms, ]
-#   d_order <- d[order(d$CHR, d$POS), ]
-#   d_order$pos_index <- seq.int(nrow(d_order))
-#   d_order_sub <- d_order[, c("SNP", "CHR", "POS", "pvalue", "pos_index")]
-#
-#   #Set up dataframe with color and position info
-#   maxRows <- by(d_order_sub, d_order_sub$CHR, function(x) x[which.max(x$pos_index),])
-#   minRows <- by(d_order_sub, d_order_sub$CHR, function(x) x[which.min(x$pos_index),])
-#   milimits <- do.call(rbind, minRows)
-#   malimits <- do.call(rbind, maxRows)
-#   lims <- merge(milimits, malimits, by="CHR")
-#   names(lims) <- c("Color", "snpx", "px", "posx", "posmin", "snpy", "py", "posy", "posmax")
-#   lims$av <- (lims$posmin + lims$posmax)/2
-#   lims <- lims[order(lims$Color),]
-#   lims$shademap <- rep(c("shade_ffffff", "shade_ebebeb"), length.out=nrow(lims), each=1)
-#
-#   #Set up colors
-#   nchrcolors <- nlevels(factor(lims$Color))
-#
-#   #Color by CHR
-#   colnames(d_order)[2] <- "Color"
-#   newcols <-c(rep(x=c(chrcolor1, chrcolor2), length.out=nchrcolors, each=1), "#FFFFFF", "#EBEBEB")
-#   names(newcols) <-c(levels(factor(lims$Color)), "shade_ffffff", "shade_ebebeb")
-#
-#   #Info for y-axis
-#   if(log10==TRUE){
-#     d_order$pval <- -log10(d_order$pvalue)
-#     yaxislab1 <- expression(paste("-log"[10], "(p-value)", sep=""))
-#     yaxislab2 <- expression(paste("-log"[10], "(p-value)", sep=""))
-#     if(!missing(tline)) {tredline <- -log10(tline)}
-#     if(!missing(bline)) {bredline <- -log10(bline)}
-#   } else {
-#     d_order$pval <- d_order$pvalue
-#     yaxislab1 <- yaxis[1]
-#     yaxislab2 <- yaxis[2]
-#     if(!missing(tline)) {tredline <- tline}
-#     if(!missing(bline)) {bredline <- bline}
-#   }
-#   yaxismax1 <- ifelse(freey==FALSE, max(d_order$pval[which(d_order$pval< Inf)]), max(d_order$pval[which(d_order$pval< Inf) & d_order$Location=="Top"]))
-#   yaxismax2 <- ifelse(freey==FALSE, max(d_order$pval[which(d_order$pval< Inf)]), max(d_order$pval[which(d_order$pval< Inf) & d_order$Location=="Bottom"]))
-#   yaxismin1 <- ifelse(freey==FALSE, 0, min(d_order$pval[d_order$Location=="Top"]))
-#   yaxismin2 <- ifelse(freey==FALSE, 0, min(d_order$pval[d_order$Location=="Bottom"]))
-#
-#   #Theme options
-#   backpanel1 <- ifelse(background=="white", "NULL", "ggplot2::geom_rect(data = lims, ggplot2::aes(xmin = posmin-.5, xmax = posmax+.5, ymin = yaxismin1, ymax = Inf, fill=factor(shademap)), alpha = 0.5)" )
-#   backpanel2 <- ifelse(background=="white", "NULL", "ggplot2::geom_rect(data = lims, ggplot2::aes(xmin = posmin-.5, xmax = posmax+.5, ymin = yaxismin2, ymax = Inf, fill=factor(shademap)), alpha = 0.5)" )
-#
-#   #Start plotting
-#   #TOP PLOT
-#   p1 <- ggplot2::ggplot() + eval(parse(text=backpanel1))
-#   #Add shape info if available
-#   if("Shape" %in% topn){
-#     d1 <- d_order[d_order$Location=="Top",]
-#     p1 <- p1 + ggplot2::geom_point(data=d1, ggplot2::aes(x=d1$pos_index, y=d1$pval, color=factor(d1$Color), shape=factor(d1$Shape)), alpha=opacity)
-#   } else {
-#     d1 <- d_order[d_order$Location=="Top",]
-#     p1 <- p1 + ggplot2::geom_point(data=d1, ggplot2::aes(x=d1$pos_index, y=d1$pval, color=factor(d1$Color)), alpha=opacity)
-#   }
-#   p1 <- p1 + ggplot2::scale_x_continuous(breaks=lims$av, labels=lims$Color, expand=c(0,0))
-#   if(chrblocks==TRUE){
-#     p1 <- p1 + ggplot2::geom_rect(data = lims, ggplot2::aes(xmin = lims$posmin-.5, xmax = lims$posmax+.5, ymin = -Inf, ymax = min(d_order$pval), fill=as.factor(Color)), alpha = 1)
-#   }
-#   p1 <- p1 + ggplot2::scale_colour_manual(name = "Color", values = newcols) + ggplot2::scale_fill_manual(name = "Color", values = newcols)
-#   p1 <- p1 + ggplot2::theme(panel.grid.minor.x = ggplot2::element_blank(), panel.grid.major.x = ggplot2::element_blank(), axis.title.x=ggplot2::element_blank(), legend.position="top", legend.title = ggplot2::element_blank())
-#
-#   #BOTTOM PLOT
-#   p2 <- ggplot2::ggplot() + eval(parse(text=backpanel2))
-#   #Add shape info if available
-#   if("Shape" %in% bottomn){
-#     d1 <- d_order[d_order$Location=="Bottom",]
-#     p2 <- p2 + ggplot2::geom_point(data=d1, ggplot2::aes(x=d1$pos_index, y=d1$pval, color=factor(d1$Color), shape=factor(d1$Shape)), alpha=opacity)
-#   } else {
-#     d1 <- d_order[d_order$Location=="Bottom",]
-#     p2 <- p2 + ggplot2::geom_point(data=d1, ggplot2::aes(x=d1, color=factor(d1$Color)), alpha=opacity)
-#   }
-#   p2 <- p2 + ggplot2::scale_x_continuous(breaks=lims$av, labels=lims$Color, expand=c(0,0))
-#   if(chrblocks==TRUE){
-#     p2 <- p2 + ggplot2::geom_rect(data = lims, ggplot2::aes(xmin = lims$posmin-.5, xmax = lims$posmax+.5, ymin = -Inf, ymax = min(d_order$pval), fill=as.factor(lims$Color)), alpha = 1)
-#   }
-#   p2 <- p2 + ggplot2::scale_colour_manual(name = "Color", values = newcols) + ggplot2::scale_fill_manual(name = "Color", values = newcols)
-#   p2 <- p2 + ggplot2::theme(axis.text.x = ggplot2::element_text(angle=90), panel.grid.minor.x = ggplot2::element_blank(), panel.grid.major.x = ggplot2::element_blank(), axis.title.x = ggplot2::element_blank(), legend.position="bottom", legend.title = ggplot2::element_blank())
-#
-#   #Highlight if given
-#   if(!missing(highlight_snp)){
-#     if("Shape" %in% topn){
-#       d1 <- d_order[d_order$SNP %in% highlight_snp & d_order$Location=="Top"]
-#       p1 <- p1 + ggplot2::geom_point(data= d1, ggplot2::aes(x=d1$pos_index, y=d1$pval, shape=d1$Shape), colour=highlighter)
-#       p1 <- p1 + ggplot2::guides(shape = ggplot2::guide_legend(override.aes = list(colour = "black")))
-#     } else {
-#       d1 <- d_order[d_order$SNP %in% highlight_snp & d_order$Location=="Top", ]
-#       p1 <- p1 + ggplot2::geom_point(data= d1, ggplot2::aes(x=d1$pos_index, y=d1$pval), colour=highlighter)
-#     }
-#     if("Shape" %in% bottomn){
-#       d1 <- d_order[d_order$SNP %in% highlight_snp & d_order$Location=="Bottom", ]
-#       p2 <- p2 + ggplot2::geom_point(data=d1, ggplot2::aes(x=d1$pos_index, y=d1$pval, shape=d1$Shape), colour=highlighter)
-#       p2 <- p2 + ggplot2::guides(shape = ggplot2::guide_legend(override.aes = list(colour = "black")))
-#     } else {
-#       d1 <- d_order[d_order$SNP %in% highlight_snp & d_order$Location=="Bottom", ]
-#       p2 <- p2 + ggplot2::geom_point(data=d1, ggplot2::aes(x=d1$pos_index, y=d1$pval), colour=highlighter)
-#     }
-#   }
-#   if(!missing(highlight_p)){
-#     if("Shape" %in% topn){
-#       d1 <- d_order[d_order$pvalue < highlight_p[1] & d_order$Location=="Top", ]
-#       p1 <- p1 + ggplot2::geom_point(data=d1, ggplot2::aes(x=d1$pos_index, y=d1$pval, shape=d1$Shape), colour=highlighter)
-#       p1 <- p1 + ggplot2::guides(shape = ggplot2::guide_legend(override.aes = list(colour = "black")))
-#     } else {
-#       d1 <- d_order[d_order$pvalue < highlight_p[1] & d_order$Location=="Top", ]
-#       p1 <- p1 + ggplot2::geom_point(data=d1, ggplot2::aes(x=d1$pos_index, y=d1$pval), colour=highlighter)
-#     }
-#     if("Shape" %in% bottomn){
-#       d1 <- d_order[d_order$pvalue < highlight_p[2] & d_order$Location=="Bottom", ]
-#       p2 <- p2 + ggplot2::geom_point(data=d1, ggplot2::aes(x=d1$pos_index, y=d1$pval, shape=d1$Shape), colour=highlighter)
-#       p2 <- p2 + ggplot2::guides(shape = ggplot2::guide_legend(override.aes = list(colour = "black")))
-#     } else {
-#       d1 <- d_order[d_order$pvalue < highlight_p[2] & d_order$Location=="Bottom", ]
-#       p2 <- p2 + ggplot2::geom_point(data=d1, ggplot2::aes(x=d1$pos_index, y=d1$pval), colour=highlighter)
-#     }
-#   }
-#   #Add pvalue threshold line
-#   if(!missing(tline)){
-#     for(i in 1:length(tline)){
-#       p1 <- p1 + ggplot2::geom_hline(yintercept = tredline[i], colour="red")
-#     }
-#   }
-#   if(!missing(bline)){
-#     for(i in 1:length(bline)){
-#       p2 <- p2 + ggplot2::geom_hline(yintercept = bredline[i], colour="red")
-#     }
-#   }
-#   #Annotate
-#   if(!missing(annotate_p)){
-#     if (!requireNamespace(c("ggrepel"), quietly = TRUE)==TRUE) {
-#       print("Consider installing 'ggrepel' for improved text annotation")
-#       d1 <- d_order[d_order$pvalue < annotate_p[1] & d_order$Location=="Top",]
-#       p1 <- p1 + ggplot2::geom_text(data=d1, ggplot2::aes(d1$pos_index,d1$pval,label=d1$SNP))
-#       p2 <- p2 + ggplot2::geom_text(data=d_order[d_order$pvalue < annotate_p[2] & d_order$Location=="Bottom",], ggplot2::aes(pos_index,pval,label=SNP))
-#     } else {
-#       d1 <- d_order[d_order$pvalue < annotate_p[1] & d_order$Location=="Top",]
-#       p1 <- p1 + ggrepel::geom_text_repel(data=d1, ggplot2::aes(d1$pos_index,d1$pval,label=d1$SNP))
-#       d2 <- d_order[d_order$pvalue < annotate_p[2] & d_order$Location=="Bottom",]
-#       p2 <- p2 + ggrepel::geom_text_repel(data=d2, ggplot2::aes(d2$pos_index,d2$pval,label=d2$SNP))
-#     }
-#   }
-#   if(!missing(annotate_snp)){
-#     if (!requireNamespace(c("ggrepel"), quietly = TRUE)==TRUE){
-#       print("Consider installing 'ggrepel' for improved text annotation")
-#       d1 <- d_order[d_order$SNP %in% annotate_snp & d_order$Location=="Top",]
-#       p1 <- p1 + ggplot2::geom_text(data=d1, ggplot2::aes(d1$pos_index,d1$pval,label=d1$SNP))
-#       d2 <- d_order[d_order$SNP %in% annotate_snp & d_order$Location=="Bottom",]
-#       p2 <- p2 + ggplot2::geom_text(data=d2, ggplot2::aes(d2$pos_index,d2$pval,label=d2$SNP))
-#     } else {
-#       d1 <- d_order[d_order$SNP %in% annotate_snp & d_order$Location=="Top",]
-#       p1 <- p1 + ggrepel::geom_text_repel(data=d1, ggplot2::aes(d1$pos_index,d1$pval,label=d1$SNP))
-#       d2 <- d_order[d_order$SNP %in% annotate_snp & d_order$Location=="Bottom",]
-#       p2 <- p2 + ggrepel::geom_text_repel(data=d2, ggplot2::aes(d2$pos_index,d2$pval,label=d2$SNP))
-#     }
-#   }
-#   #Add title and y axis title
-#   p1 <- p1 + ggplot2::ylab(yaxislab1)
-#   p2 <- p2 + ggplot2::ylab(yaxislab2)
-#
-#   #Format
-#   if(chrblocks==TRUE){
-#     if(freey==TRUE){
-#       print("Sorry, drawing chrblocks with freey=TRUE is currently unsupported and will be ignored.")
-#     } else {
-#       p1 <- p1+ggplot2::theme(axis.text.x = ggplot2::element_text(vjust=1),axis.ticks.x = ggplot2::element_blank()) + ggplot2::ylim(c(yaxismin1,yaxismax1))
-#       p2 <- p2+ggplot2::scale_y_reverse(limits=c(yaxismax2, yaxismin2)) + ggplot2::theme(axis.text.x = ggplot2::element_blank(),axis.ticks.x = ggplot2::element_blank())
-#     }
-#   } else {
-#     p1 <- p1+ggplot2::theme(axis.text.x = ggplot2::element_text(vjust=1),axis.ticks.x = ggplot2::element_blank())+ ggplot2::scale_y_continuous(limits=c(yaxismin1, yaxismax1),expand=expansion(mult=c(0,0.1)))
-#     p2 <- p2+ggplot2::scale_y_reverse(limits=c(yaxismax2,yaxismin2), expand=expansion(mult=c(0.1,0))) + ggplot2::theme(axis.text.x = ggplot2::element_blank(),axis.ticks.x = ggplot2::element_blank())
-#   }
-#
-#   if(background=="white"){
-#     p1 <- p1 + ggplot2::theme(panel.background = element_rect(fill="white"))
-#     p2 <- p2 + ggplot2::theme(panel.background = element_rect(fill="white"))
-#   }
-#   p1 <- p1 + ggplot2::guides(fill="none", color="none")
-#   p2 <- p2 + ggplot2::guides(fill="none", color="none")
-#   #Save
-#   print(paste0("Saving plot to ", file, ".", type))
-#   p <- gridExtra::grid.arrange(gridExtra::arrangeGrob(p1, top=toptitle), gridExtra::arrangeGrob(p2, bottom=bottomtitle), padding=0, heights=c(hgtratio,1-hgtratio))
-#   ggplot2::ggsave(p, filename=paste0(file, ".", type), dpi=res, units="in", height=hgt, width=wi)
-#   return(p)
-# }
+
 gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"),log10=TRUE,
                     yaxis, opacity=1, annotate_snp, annotate_p, toptitle=NULL,
                     bottomtitle=NULL, highlight_snp, highlight_p, highlighter="red",
@@ -1578,8 +1496,8 @@ paraGwas <- function(chunks,chunk,ResultDir,DataDir,finput,trait, modelv,regress
       "--freq",
       "--ci", 0.95,
       regress, sexv, noxsexv, "intercept", ## 3.0 adding sex
-      standard_b,
       interactionv,
+      standard_b,
       parameterv,
       Inphenocovv,
       covar,
@@ -1612,9 +1530,9 @@ FMmain <- function(DataDir, ResultDir, finput, trait, standard_beta, xmodel,
                    sex, xsex, covarfile, interaction, covartest, Inphenocov, plot.jpeg, plotname, snp_pval, annotateTopSnp, suggestiveline, genomewideline, ncores){
 
 
-  if (xmodel[1] == "FMcomb01"|xmodel[1] == "FMstatrified"){
+  if (xmodel[1] == "FMcombx01"|xmodel[1] == "FMstatrified"){
     modelv <- 1
-  }else if (xmodel[1] == "FMcomb02"){
+  }else if (xmodel[1] == "FMcombx02"){
     modelv <- 2
   }
 
@@ -1669,7 +1587,7 @@ FMmain <- function(DataDir, ResultDir, finput, trait, standard_beta, xmodel,
     parameterv <- NULL
 
   }else{
-    interactionv <- interaction
+    interactionv <- "interaction"
     if (Inphenocov[1] == "ALL"){
       Inphenocovv <- NULL
       parameterv <- NULL
@@ -1697,8 +1615,8 @@ FMmain <- function(DataDir, ResultDir, finput, trait, standard_beta, xmodel,
         sexv,
         noxsexv,
         "intercept", ## 3.0 adding sex
-        standard_b,
         interactionv,
+        standard_b,
         parameterv,
         Inphenocovv,
         covar,
@@ -2488,7 +2406,7 @@ FMcomb <-
 
 ## Function 58
 ## Added in 3.0
-paraGwasAuto <- function(chunks,chunk,ResultDir,finput,regress,sexv, standard_b,interactionv,parameterv,Inphenocovv,covar,covarv,
+paraGwasAuto <- function(chunks,chunk,ResultDir,finput,regress,sexv,interactionv, standard_b,parameterv,Inphenocovv,covar,covarv,
                          snpfile){
 
   ## Chunkfile create
@@ -2514,8 +2432,8 @@ paraGwasAuto <- function(chunks,chunk,ResultDir,finput,regress,sexv, standard_b,
       sexv,
       noxsexv,
       "intercept",
-      standard_b,
       interactionv,
+      standard_b,
       parameterv,
       Inphenocovv,
       covar,
@@ -2573,7 +2491,7 @@ autoFun <- function(DataDir, ResultDir, finput, sex, standard_beta, covarfile, i
     parameterv <- NULL
 
   }else{
-    interactionv <- interaction
+    interactionv <- "interaction"
     if (Inphenocov[1] == "ALL"){
       Inphenocovv <- NULL
       parameterv <- NULL
@@ -2596,8 +2514,8 @@ autoFun <- function(DataDir, ResultDir, finput, sex, standard_beta, covarfile, i
         sexv,
         noxsexv,
         "intercept",
-        standard_b,
         interactionv,
+        standard_b,
         parameterv,
         Inphenocovv,
         covar,
@@ -3192,7 +3110,37 @@ ComputeLD <- function(DataDir,ResultDir,finput, ByCHR = FALSE, CHRnum = NULL, r2
 }
 
 ## Function 70
-ComputeLDSC <- function(snpld, test.df_beta, ncores, LDSC_blocks){
+# ComputeLDSC <- function(snpld, test.df_beta, ncores, LDSC_blocks){
+#
+#   snps1 <- data.table::data.table(intersect(unique(snpld[["SNP_A"]]), unique(test.df_beta[["rsid"]])))
+#   colnames(snps1) <- "SNP"
+#   snps2 <- data.table::data.table(intersect(unique(snpld[["SNP_B"]]), unique(test.df_beta[["rsid"]])))
+#   colnames(snps2) <- "SNP"
+#   snps <- data.table::data.table(intersect(unique(snps1[["SNP"]]),unique(snps2[["SNP"]])))
+#   colnames(snps) <- "SNP"
+#   snpld1 <- as.data.frame(snpld)
+#   snpld1 <- merge(snpld,snps, by.x = "SNP_A",by.y="SNP")
+#   snpld1 <- merge(snpld1,snps, by.x = "SNP_B",by.y="SNP")
+#
+#   snpld1 <- snpld1[,c(2,1,7)]
+#   finalsnp <- data.table::as.data.table(snpld1[["SNP_A"]])
+#   colnames(finalsnp) <- "SNP"
+#   test.df_beta <- data.table::as.data.table(test.df_beta)
+#   test.df_beta <- unique(merge(test.df_beta,finalsnp,by.x = "rsid",by.y = "SNP"))
+#
+#   snpld1 = transform(snpld1, SNP_A= factor(SNP_A),SNP_B = factor(SNP_B))
+#   test.corr0 = Matrix::sparseMatrix(as.integer(snpld1$SNP_A), as.integer(snpld1$SNP_B), x = snpld1$R2)
+#   colnames(test.corr0) = levels(snpld1$SNP_B)
+#   rownames(test.corr0) = levels(snpld1$SNP_A)
+#
+#   test.df_beta1 <- test.df_beta[,c("beta","beta_se","n_eff")]
+#   result <- bigsnpr::snp_ldsc2(test.corr0, test.df_beta1, blocks = LDSC_blocks, intercept = NULL, ncores = ncores)
+#   ## If there is negative h2, then make it 0. Discuss.
+#   return(result)
+#
+# }
+## Function 70
+ComputeLDSC2 <- function(snpld, test.df_beta, ncores, LDSC_blocks){
 
   snps1 <- data.table::data.table(intersect(unique(snpld[["SNP_A"]]), unique(test.df_beta[["rsid"]])))
   colnames(snps1) <- "SNP"
@@ -3222,13 +3170,73 @@ ComputeLDSC <- function(snpld, test.df_beta, ncores, LDSC_blocks){
 
 }
 
+## New Function
+ComputeLDSC <- function(summarystat, precomputedLD, LDSC_blocks, chi2_thr1, chi2_thr2, intercept, ncores, byCHR){
+
+  # Merging summarystat with precomputedLD for common SNPs
+  summarystat$chi2 <- (summarystat$beta/summarystat$beta_se)^2
+
+  # Checking if summary stat and precomputed LD have same SNP positions
+  S1 <- summarystat[,c(1,2,5,8)]
+  colnames(S1) <- c("CHR","SNP","sample_size","chi2")
+
+  S2 <- precomputedLD[,c(1,2,6)]
+  colnames(S2) <- c("CHR","SNP","ld_score")
+  S2$ld_size <- length(unique(S2$SNP))
+
+  S1S2 <- merge(S1,S2,by = c("CHR","SNP"))
+
+  if (byCHR == FALSE) {
+
+    print(paste0("Percentage of overlapping SNPs from original summary statistics with precomputed LD matrix based on chromosome, position and SNP id: ", round(length(unique(S1S2$SNP))/length(unique(S1$SNP)),2)*100, "%"))
+    print("Please check whether this percentage makes sense considering the genome build of summary statistics and precomputed LD matrix.")
+
+  }else{
+
+    S1chr <- unique(S1$CHR)
+    print(paste0("For chromosome ",S1chr," percentage of overlapping SNPs from original summary statistics with precomputed LD matrix based on chromosome, position and SNP id: ", round(length(unique(S1S2$SNP))/length(unique(S1$SNP)),2)*100, "%"))
+    print("Please check whether this percentage makes sense considering the genome build of summary statistics and precomputed LD matrix.")
+
+  }
+
+  if (round(length(unique(S1S2$SNP))/length(unique(S1$SNP)),2)*100 != 0){
+    result <- bigsnpr::snp_ldsc(S1S2$ld_score, length(unique(S1S2$SNP)), S1S2$chi2, S1S2$sample_size,
+                                blocks = LDSC_blocks,
+                                intercept = intercept,
+                                chi2_thr1 = chi2_thr1,
+                                chi2_thr2 = chi2_thr2,
+                                ncores = ncores)
+  }else{
+    result <- data.frame(NA,NA,NA,NA)
+    colnames(result) <- c("int", "int_se", "h2", "h2_se")
+  }
+  return(result)
+}
+
 ## Function 71
+# setupGCTA <- function(wdir) {
+#   # Helper function to download and unzip files
+#   downloadAndUnzip <- function(file_url, dest_file, wdir) {
+#     utils::download.file(destfile = dest_file, file_url, quiet = TRUE)
+#     utils::unzip(dest_file, exdir = wdir, junkpaths = TRUE)
+#   }
 setupGCTA <- function(wdir) {
   # Helper function to download and unzip files
   downloadAndUnzip <- function(file_url, dest_file, wdir) {
-    utils::download.file(destfile = dest_file, file_url, quiet = TRUE)
+    # Set timeout for download.file (in seconds)
+    options(timeout = 300)  # Adjusting the timeout to 5 minutes
+
+    utils::download.file(url = file_url, destfile = dest_file, quiet = TRUE, mode = "wb")
+
+    # Unzip the downloaded file
     utils::unzip(dest_file, exdir = wdir, junkpaths = TRUE)
+
+    # Reset timeout to default (change according to your default or leave it unset)
+    options(timeout = 60)  # Resetting to the default 60 seconds or another preferred default
+
+
   }
+
 
   # Helper function to remove files
   removeFiles <- function(files, wdir) {
@@ -3243,7 +3251,7 @@ setupGCTA <- function(wdir) {
       file_url = "https://github.com/boseb/bose_binaries/raw/main/gcta-1.94.1-linux-kernel-3-x86_64.zip",
       file_name = "gcta-1.94.1-linux-kernel-3-x86_64.zip",
       exec = "gcta-1.94.1",
-      remove = c("MIT_License.txt", "README.txt")
+      remove = c("MIT_License.txt", "README.txt", "test.bed","test.bim","test.fam","test.phen")
     ),
     Windows = list(
       file_url = "https://figshare.com/ndownloader/files/42229122",
@@ -3256,7 +3264,7 @@ setupGCTA <- function(wdir) {
       file_url = "https://github.com/boseb/bose_binaries/blob/main/gcta-1.94.1-macOS-x86_64.zip",
       file_name = "gcta-1.94.1-macOS-x86_64.zip",
       exec = "gcta-1.94.1",
-      remove = c("MIT_License.txt", "README.txt")
+      remove = c("MIT_License.txt", "README.txt", "test.bed","test.bim","test.fam","test.phen")
     )
   )
 
@@ -3301,8 +3309,10 @@ executeGCTA <- function(ResultDir, args) {
     invisible(sys::exec_wait(
       file.path(ResultDir, "gcta-1.94.1"),  # Path to the GCTA executable
       args = args,                          # Arguments for the GCTA command
-      std_out = stdout_dest,                # Standard output redirection
-      std_err = stderr_dest                 # Standard error redirection
+      # std_out = stdout_dest,                # Standard output redirection
+      # std_err = stderr_dest                 # Standard error redirection
+      std_out = TRUE,                # Standard output redirection
+      std_err = TRUE
     ))
   }, error = function(e) {
     stop("An error occurred while executing GCTA: ", e$message)
@@ -3315,7 +3325,7 @@ executeGCTA <- function(ResultDir, args) {
 }
 
 ## Function 73
-ComputeGRMauto <- function(DataDir, ResultDir, finput,partGRM, nGRM, cripticut,  minMAF = NULL, maxMAF = NULL, ByCHR = FALSE, CHRnum = NULL){
+ComputeGRMauto <- function(DataDir, ResultDir, finput,partGRM, nGRM, cripticut,  minMAF = NULL, maxMAF = NULL, ByCHR = FALSE, CHRnum = NULL, ncores = ncores){
 
   if (ByCHR == FALSE){
     chr = NULL
@@ -3362,10 +3372,37 @@ ComputeGRMauto <- function(DataDir, ResultDir, finput,partGRM, nGRM, cripticut, 
       minmaf, minmafval,
       maxmaf, maxmafval,
       grmcutoff, crip,
+      "--thread-num", ncores,
       "--make-grm",
-      "--out", paste0(ResultDir, "/test")
+      "--out", paste0(ResultDir, "/GXwasR")
     )
     executeGCTA(ResultDir, args)
+
+    if (file.exists(paste0(ResultDir,"/GXwasR.grm.id"))){
+
+      if (ByCHR == FALSE){
+
+        print(grep("GRM has been saved", readLines(paste0(ResultDir,"/GXwasR.log")), value = TRUE))
+        print(grep("Number of SNPs in each pair", readLines(paste0(ResultDir,"/GXwasR.log")), value = TRUE))
+
+      }else{
+
+        # List of file extensions to copy and rename
+        file_extensions <- c("grm.id", "grm.bin", "grm.N.bin")
+
+        # Loop through the file extensions and copy/rename each file
+        for (ext in file_extensions) {
+          original_file <- file.path(ResultDir, paste0("GXwasR.", ext))
+          new_file <- file.path(ResultDir, paste0("Chr", CHRnum, "_GXwasR.", ext))
+          file.copy(from = original_file, to = new_file)
+        }
+
+      }
+
+    }else{
+      print("No GRM is created.")
+    }
+
 
   }else {
 
@@ -3382,8 +3419,8 @@ ComputeGRMauto <- function(DataDir, ResultDir, finput,partGRM, nGRM, cripticut, 
         "--make-grm-part",
         nGRM,
         i, # Part number
-        "--thread-num", 5,
-        "--out", paste0(ResultDir, "/test")
+        "--thread-num", ncores,
+        "--out", paste0(ResultDir, "/GXwasR")
       )
 
       # Execute GCTA with the specified arguments
@@ -3397,10 +3434,38 @@ ComputeGRMauto <- function(DataDir, ResultDir, finput,partGRM, nGRM, cripticut, 
 
     if (OS == "Linux" | OS == "Mac") {
 
-      system(paste0("cat ",ResultDir,"/","test.part_",nGRM,"_*.grm.id > ",ResultDir,"/test.grm.id"))
-      system(paste0("cat ",ResultDir,"/","test.part_",nGRM,"_*.grm.bin > ",ResultDir,"/test.grm.bin"))
-      system(paste0("cat ",ResultDir,"/","test.part_",nGRM,"_*.grm.N.bin > ",ResultDir,"/test.grm.N.bin"))
+      system(paste0("cat ",ResultDir,"/","GXwasR.part_",nGRM,"_*.grm.id > ",ResultDir,"/GXwasR.grm.id"))
+      system(paste0("cat ",ResultDir,"/","GXwasR.part_",nGRM,"_*.grm.bin > ",ResultDir,"/GXwasR.bin"))
+      system(paste0("cat ",ResultDir,"/","GXwasR.part_",nGRM,"_*.grm.N.bin > ",ResultDir,"/GXwasR.N.bin"))
 
+
+      #####
+      if (file.exists(paste0(ResultDir,"/GXwasR.grm.id"))){
+
+        if (ByCHR == FALSE){
+
+          print(grep("Partitioned GRM has been saved", readLines(paste0(ResultDir,"/GXwasR.log")), value = TRUE))
+          print(grep("Number of SNPs in each pair", readLines(paste0(ResultDir,"/GXwasR.log")), value = TRUE))
+
+        }else{
+
+          # List of file extensions to copy and rename
+          file_extensions <- c("grm.id", "grm.bin", "grm.N.bin")
+
+          # Loop through the file extensions and copy/rename each file
+          for (ext in file_extensions) {
+            original_file <- file.path(ResultDir, paste0("GXwasR.", ext))
+            new_file <- file.path(ResultDir, paste0("Chr", CHRnum, "_GXwasR.", ext))
+            file.copy(from = original_file, to = new_file)
+          }
+
+        }
+
+      }else{
+        print("No GRM is created.")
+      }
+
+      #####
 
     }else if (OS == "Windows"){
 
@@ -3417,7 +3482,7 @@ ComputeGRMauto <- function(DataDir, ResultDir, finput,partGRM, nGRM, cripticut, 
 }
 
 ## Function 74
-ComputeGRMX <- function(DataDir, ResultDir, finput, partGRM, nGRM, minMAF = NULL, maxMAF = NULL){
+ComputeGRMX <- function(DataDir, ResultDir, finput, partGRM, nGRM, minMAF = NULL, maxMAF = NULL, ncores = ncores){
 
   ## Removing PAR regions and adding it to autosomes, PAR = chr 24 in .bim file.
 
@@ -3445,13 +3510,19 @@ ComputeGRMX <- function(DataDir, ResultDir, finput, partGRM, nGRM, minMAF = NULL
       "--bfile", paste0(DataDir, "/", finput),
       minmaf, minmafval,
       maxmaf, maxmafval,
+      "--thread-num", ncores,
       "--make-grm-xchr",
-      "--out", paste0(ResultDir, "/xtest")
+      "--out", paste0(ResultDir, "/xGXwasR")
     )
 
     # Execute GCTA with the specified arguments for X chromosome GRM
     executeGCTA(ResultDir, args)
+    if(file.exists(paste0(ResultDir,"/xGXwasR.grm.id"))){
 
+      print(grep("GRM has been saved", readLines(paste0(ResultDir,"/xGXwasR.log")), value = TRUE))
+      print(grep("Number of SNPs in each pair", readLines(paste0(ResultDir,"/xGXwasR.log")), value = TRUE))
+
+    }else{print("GRM is not created.")}
 
   }else {
 
@@ -3464,23 +3535,24 @@ ComputeGRMX <- function(DataDir, ResultDir, finput, partGRM, nGRM, minMAF = NULL
         "--make-grm-xchr-part",
         nGRM,
         i,  # Part number for X chromosome GRM
-        "--thread-num", 5,
-        "--out", paste0(ResultDir, "/xtest")
+        "--thread-num", ncores,
+        "--out", paste0(ResultDir, "/xGXwasR")
       )
 
       # Execute GCTA with the specified arguments for X chromosome part
       executeGCTA(ResultDir, args)
-
     }
+
     i = 1:nGRM
     lapply(i,partGRM)
 
     OS <- Sys.info()['sysname']
+
     if (OS == "Linux" | OS == "Mac") {
 
-      system(paste0("cat ",ResultDir,"/","xtest.part_",nGRM,"_*.grm.id > ",ResultDir,"/xtest.grm.id"))
-      system(paste0("cat ",ResultDir,"/","xtest.part_",nGRM,"_*.grm.bin > ",ResultDir,"/xtest.grm.bin"))
-      system(paste0("cat ",ResultDir,"/","xtest.part_",nGRM,"_*.grm.N.bin > ",ResultDir,"/xtest.grm.N.bin"))
+      system(paste0("cat ",ResultDir,"/","xGXwasR.part_",nGRM,"_*.grm.id > ",ResultDir,"/xGXwasR.grm.id"))
+      system(paste0("cat ",ResultDir,"/","xGXwasR.part_",nGRM,"_*.grm.bin > ",ResultDir,"/xGXwasR.grm.bin"))
+      system(paste0("cat ",ResultDir,"/","xGXwasR.part_",nGRM,"_*.grm.N.bin > ",ResultDir,"/xGXwasR.grm.N.bin"))
 
 
     }else if (OS == "Windows"){
@@ -3499,7 +3571,7 @@ ComputeGRMX <- function(DataDir, ResultDir, finput, partGRM, nGRM, minMAF = NULL
 
 ## Function 75
 ComputeREMLone <- function(DataDir, ResultDir, REMLalgo = c(0,1,2), nitr = 100, phenofile = NULL, cat_covarfile = NULL, quant_covarfile = NULL,
-                           prevalance = 0.01, chr ,grmfile, ncores){
+                           prevalence = 0.01, chr ,grmfile, ncores){
 
   if (is.null(phenofile)){
     pheno = NULL
@@ -3508,12 +3580,13 @@ ComputeREMLone <- function(DataDir, ResultDir, REMLalgo = c(0,1,2), nitr = 100, 
     pheno = "--pheno"
     phenofile = phenofile
   }
-  if (prevalance == 0){
+
+  if (prevalence == 0 | is.null(prevalence)){
     preval = NULL
     prevalval = NULL
   }else{
     preval = "--prevalence"
-    prevalval = prevalance
+    prevalval = prevalence
   }
 
   if (is.null(cat_covarfile)){
@@ -3543,7 +3616,7 @@ ComputeREMLone <- function(DataDir, ResultDir, REMLalgo = c(0,1,2), nitr = 100, 
     catcovar, catcovarval,
     quantcovar, quantcovarval,
     "--reml-no-lrt",
-    "--reml-no-constrain",
+    #"--reml-no-constrain",
     "--thread-num", ncores,
     "--out", paste0(ResultDir, "/", chr, "test_reml")
   )
@@ -3557,42 +3630,58 @@ ComputeREMLone <- function(DataDir, ResultDir, REMLalgo = c(0,1,2), nitr = 100, 
     resultREML <- na.omit(data.table::fread(paste0(ResultDir,"/",chr,"test_reml.hsq"),fill = TRUE))
     return(resultREML)
   }else{
-    print(grep("Error", readLines(paste0(ResultDir,"/", chr,"test_reml.log")), value = TRUE))
-    print("Convergence issue occurs, please check the models, use byCHR = TRUE, check different options, SNP partitioning, or quality of the  data")
-    x <- data.frame(NA,NA,NA)
-    colnames(x) <- c("Source", "Variance","SE")
-    return()
+    print("Convergence issue occurs, please check the models, use byCHR = TRUE, check different options, SNP partitioning or quality of the data")
+
+    log_file <- paste0(ResultDir,"/",chr,"test_reml.log")
+
+    if (file.exists(log_file)) {
+      lines <- readLines(log_file)
+      start_line <- grep("Reading IDs", lines)
+
+      if (length(start_line) > 0) {
+        cat(lines[start_line:length(lines)], sep = "\n")
+      } else {
+        cat("The specified starting line was not found in the log file.\n")
+      }
+    }
+
+    resultREML <- data.frame(Source = NA, Variance = NA, SE = NA)
+    return(resultREML)
+
+    ########
   }
 
   #gcta64  --reml  --grm test  --pheno test_cc.phen  --prevalence 0.01  --qcovar test_10PCs.txt  --out test_cc
-
 
 
 }
 
 ## Function 76
 ComputeREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0,1,2), nitr = 100, phenofile = NULL, GE = FALSE, cat_covarfile = NULL, quant_covarfile = NULL,
-                             prevalance = 0.01, grmfile = "multi_GRMs.txt", ncores){
+                             prevalence = 0.01, grmfile = "multi_GRMs.txt", computeGRM = FALSE, grmfile_name = NULL, ncores = 2){
+
+  print(paste("computeGRM is set to:", computeGRM))
 
   if (is.null(phenofile)){
     pheno = NULL
     phenofile = NULL
-  }else{
+  } else {
     pheno = "--pheno"
     phenofile = phenofile
   }
-  if (prevalance == 0){
+
+  if (prevalence == 0 | is.null(prevalence)){
     preval = NULL
     prevalval = NULL
-  }else{
+  } else {
     preval = "--prevalence"
-    prevalval = prevalance
+    prevalval = prevalence
   }
 
   if (is.null(cat_covarfile)){
     catcovar = NULL
     catcovarval = NULL
-  }else{
+  } else {
     catcovar = "--ccovar"
     catcovarval = paste0(DataDir,"/",cat_covarfile)
   }
@@ -3600,33 +3689,48 @@ ComputeREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0,1,2), nitr = 100
   if (is.null(quant_covarfile)){
     quantcovar = NULL
     quantcovarval = NULL
-  }else{
+  } else {
     quantcovar = "--qcovar"
     quantcovarval = paste0(DataDir,"/",quant_covarfile)
   }
 
   ## Create multi_GRMs.txt in ResultDir
-  fileConn<-file(paste0(ResultDir,"/multi_GRMs.txt"))
-  writeLines(c(paste0(ResultDir,"/test"),paste0(ResultDir,"/xtest")), fileConn)
-  close(fileConn)
+  if (isTRUE(computeGRM)){
+
+    print("Creating multi_GRMs.txt because computeGRM is TRUE")
+
+    fileConn <- file(paste0(ResultDir,"/multi_GRMs.txt"))
+    writeLines(c(paste0(ResultDir,"/GXwasR"), paste0(ResultDir,"/xGXwasR")), fileConn)
+    close(fileConn)
+
+  } else {
+
+    print("computeGRM is FALSE, checking grmfile_name")
+
+    if (is.null(grmfile_name)) {
+      stop("grmfile_name must be provided if computeGRM is FALSE")
+    }
+
+    fileConn <- file(paste0(ResultDir,"/multi_GRMs.txt"))
+    writeLines(c(paste0(ResultDir,"/",grmfile_name), paste0(ResultDir,"/x", grmfile_name)), fileConn)
+    close(fileConn)
+  }
 
   invisible(sys::exec_wait(
     paste0(ResultDir,"/","./gcta-1.94.1"),
     args = c(
       "--reml",
-      "--reml-alg",REMLalgo,
-      "--reml-maxit",nitr,
-      "--mgrm",
-      paste0(ResultDir,"/","multi_GRMs.txt"),
+      "--reml-alg", REMLalgo,
+      "--reml-maxit", nitr,
+      "--mgrm", paste0(ResultDir,"/","multi_GRMs.txt"),
       pheno, paste0(ResultDir,"/",phenofile),
       preval, prevalval,
       catcovar, catcovarval,
       quantcovar, quantcovarval,
       "--reml-no-lrt",
-      "--reml-no-constrain",
-      "--thread-num",ncores,
-      "--out",
-      paste0(ResultDir,"/","test_reml")
+      #"--reml-no-constrain",
+      "--thread-num", ncores,
+      "--out", paste0(ResultDir,"/","test_reml")
     ),
     std_out = FALSE,
     std_err = FALSE
@@ -3634,20 +3738,30 @@ ComputeREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0,1,2), nitr = 100
 
   if (file.exists(paste0(ResultDir,"/test_reml.hsq"))){
 
-    resultREML <- na.omit(data.table::fread(paste0(ResultDir,"/test_reml.hsq"),fill = TRUE))
+    resultREML <- na.omit(data.table::fread(paste0(ResultDir,"/test_reml.hsq"), fill = TRUE))
     return(resultREML)
-  }else{
-    print(grep("Error", readLines(paste0(ResultDir,"/test_reml.log")), value = TRUE))
+
+  } else {
+
     print("Convergence issue occurs, please check the models, use byCHR = TRUE, check different options, SNP partitioning or quality of the data")
-    x <- data.frame(NA,NA,NA)
-    colnames(x) <- c("Source", "Variance","SE")
-    return()
+
+    log_file <- paste0(ResultDir,"/test_reml.log")
+
+    suppressWarnings(if (file.exists(log_file)) {
+      lines <- readLines(log_file)
+      start_line <- grep("Reading IDs", lines)
+
+      if (length(start_line) > 0) {
+        cat(lines[start_line:length(lines)], sep = "\n")
+      } else {
+        cat("The specified starting line was not found in the log file.\n")
+      }
+    })
+
+    resultREML <- data.frame(Source = NA, Variance = NA, SE = NA)
+    return(resultREML)
   }
-
-  #gcta64  --reml  --grm test  --pheno test_cc.phen  --prevalence 0.01  --qcovar test_10PCs.txt  --out test_cc
-
 }
-
 
 ## Function 77
 ## Getting chromosome length
@@ -3746,7 +3860,7 @@ ChrwiseLDprun <- function(DataDir,ResultDir,finput,chromosome, highLD_regions, I
   ))
 
   ftemp <- list.files(paste0(ResultDir,"/"),pattern = "_temp")
-  invisible(file.remove(paste0(ResultDir,"/",ftemp)))
+  suppressWarnings(invisible(file.remove(paste0(ResultDir,"/",ftemp))))
 }
 ## Function 80
 GeneProtein <- function(ResultDir,hg,chromosome){ ## Automatically using HG data from extdata
@@ -3782,11 +3896,11 @@ GeneProtein <- function(ResultDir,hg,chromosome){ ## Automatically using HG data
     return(GP)
   }
   ftemp <- list.files(paste0(ResultDir,"/"),pattern = "info.txt")
-  invisible(file.remove(paste0(ResultDir,"/",ftemp)))
+  suppressWarnings(invisible(file.remove(paste0(ResultDir,"/",ftemp))))
 }
 
 ## Function 81
-PlotHeritability <- function(Hdata,miMAF,maMAF){
+PlotHeritability <- function(Hdata,miMAF,maMAF,plotjpeg,plotname){
   #create plot with regression line, regression equation, Pearson correlation and p-value.
   Hdata <- na.omit(Hdata)
   p1<- ggplot2::ggplot(data=Hdata, ggplot2::aes(x=Hdata$size_mb, y=Hdata$Variance)) +
@@ -3834,8 +3948,23 @@ PlotHeritability <- function(Hdata,miMAF,maMAF){
                              labels = c("A", "B","C","D"),
                              ncol = 2, nrow = 2)
 
-  print(ggpubr::annotate_figure(plot1, top = ggpubr::text_grob(paste0(miMAF,",",maMAF),
-                                                               color = "red", face = "bold", size = 10)))
+  ## Modified in V7.0
+  if (plotjpeg == FALSE){
+
+    print(ggpubr::annotate_figure(plot1, top = ggpubr::text_grob(paste0(miMAF,",",maMAF),
+                                                                 color = "red", face = "bold", size = 10)))
+
+  }else{
+
+    jpeg(paste0(ResultDir,"/", plotname ,".jpeg"), width = 1000, height = 1000, res = 100)
+
+    print(ggpubr::annotate_figure(plot1, top = ggpubr::text_grob(paste0(miMAF,",",maMAF),
+                                                                 color = "red", face = "bold", size = 10)))
+    dev.off()
+
+    print(paste0("Plots are saved in ",ResultDir," with name ", plotname,".jpeg"))
+
+  }
 }
 
 ## Function 82
@@ -3889,76 +4018,126 @@ processGWASData <- function(DataDir, finput, summarystat) {
 }
 
 ## Function 84
-## Added in 3.0
-processLDSCModel <- function(DataDir, ResultDir, finput, summarystat, byCHR, r2_LD, LDSC_blocks, ncores, prevalance, PlotIndepSNP, highLD_regions, IndepSNP_window_size, IndepSNP_step_size, IndepSNP_r2_threshold, hg, miMAF, maMAF) {
-  processed_data <- processGWASData(DataDir, finput, summarystat)
-  test.df_beta <- processed_data$test.df_beta
+processLDSCModel <- function(DataDir, ResultDir, finput, precomputedLD, IndepSNPs, summarystat, byCHR, r2_LD, LDSC_blocks, chi2_thr1, chi2_thr2, intercept, ncores, prevalence, PlotIndepSNP, highLD_regions, IndepSNP_window_size, IndepSNP_step_size, IndepSNP_r2_threshold, hg, miMAF, maMAF, plotjpeg = plotjpeg, plotname = plotname) {
+
 
   if (byCHR == FALSE) {
-    snpld <- ComputeLD(DataDir = DataDir, ResultDir = ResultDir, finput = finput, ByCHR = FALSE, CHRnum = NULL, r2_LD = r2_LD)
-    result <- ComputeLDSC(snpld = snpld, test.df_beta = test.df_beta, ncores = ncores, LDSC_blocks = LDSC_blocks)
-    herit_result <- data.table::as.data.table(t(as.data.frame(result)))
-    herit_result$Source <- "V(G)/Vp"
-    h2_liab <- herit_result$h2 * bigsnpr::coef_to_liab(prevalance)
-    herit_result2 <- herit_result
-    herit_result2$h2 <- h2_liab
-    herit_result2$Source <- "V(G)/Vp_L"
-    herit_result3 <- rbind(herit_result, herit_result2)
-    herit_result3 <- herit_result3[, c(5, 3, 4, 1, 2)]
-    colnames(herit_result3) <- c("Source", "Variance", "SE", "Intercept", "Int_SE")
-    return(herit_result3)
-  } else {
-    bimfile <- read.table(paste0(DataDir, "/", finput, ".bim"))
-    chrnum <- 1:length(unique(bimfile$V1))
 
-    chrwiseLD <- function(chrnum){
+    if(!is.null(precomputedLD)){
 
-      chromosome <- unique(bimfile$V1)[chrnum]
+      result <- ComputeLDSC(summarystat = summarystat, precomputedLD = precomputedLD, LDSC_blocks = LDSC_blocks,
+                            chi2_thr1 = chi2_thr1, chi2_thr2 = chi2_thr2, intercept = intercept, ncores = ncores, byCHR = byCHR)
 
 
-      if (PlotIndepSNP == TRUE) {
-        ## Do chromosome-wise LD prunning
-        ChrwiseLDprun(DataDir=DataDir,ResultDir=ResultDir,finput = finput, chromosome=chromosome,
-                      highLD_regions=highLD_regions, IndepSNP_window_size=IndepSNP_window_size,
-                      IndepSNP_step_size=IndepSNP_step_size,IndepSNP_r2_threshold=IndepSNP_r2_threshold)
+    }else{
 
-        ##
-        bimfile1 <- read.table(paste0(ResultDir, "/LDfiltered.bim"))
-
-
-      }else{
-
-        bimfile1 <- bimfile[bimfile$V1==chromosome,]
+           print("For LDSC model, please supply pre-computed LD scores as a dataframe in the 'precomputedLD' argument.")
 
       }
 
-      snp_proportion <- nrow(bimfile1)/nrow(bimfile)
+    herit_result <- data.table::as.data.table(t(as.data.frame(result)))
+
+    if (!is.null(prevalence)){
+      #Scaling coefficient to convert e.g. heritability to the liability scale.
+      h2_liab <- herit_result$h2 * bigsnpr::coef_to_liab(prevalence)# keeping the default value of K_gwas = 0.5, since n_eff is taken care of.
+      herit_result3 <- herit_result
+      herit_result3$h2 <- h2_liab
+      herit_result3$Source <- "V(G)/Vp_L"
+    }else{
+      herit_result3 <- herit_result
+      herit_result3$Source <- "V(G)/Vp"
+    }
+    return(herit_result3)
+
+  } else {
+
+
+    chrnum <- unique(summarystat$chr)
+
+
+    chrwiseLD <- function(chrnum){
+
+      chromosome <- chrnum
+
+
+      if (PlotIndepSNP == TRUE) {
+
+        if (is.null(precomputedLD)){
+          print("For LDSC model precomputedLD cannot be NULL.")
+
+        }else{
+
+          chrsummarystat <- summarystat[summarystat$chr==chromosome,]
+
+          if(!is.null(IndepSNPs)){
+
+            bimfile1 <- merge(IndepSNPs,chrsummarystat, by = "rsid")
+
+          }else{
+
+            print("IndepSNPs needed to be supplied else all SNPs are being used.")
+
+            bimfile1 <- summarystat[summarystat$chr == chromosome,]
+          }
+        }
+
+      }else{
+
+        if (is.null(precomputedLD)){
+
+          print("For LDSC model precomputedLD cannot be NULL.")
+
+        }else{
+
+          bimfile1 <- summarystat[summarystat$chr == chromosome,]
+        }
+      }
+
+      if (is.null(precomputedLD)){
+
+        print("For LDSC model precomputedLD cannot be NULL.")
+
+      }else{
+
+        snp_proportion <- round(length(unique(bimfile1$rsid))/length(unique(summarystat$rsid)),2)
+      }
 
       ## Getting number of genes and proteins
       GP <- GeneProtein(ResultDir = ResultDir, hg = hg,chromosome = chromosome)
 
       print(paste0("Processing chromosome ",chromosome))
 
-      if (chrnum %in% unique(test.df_beta$chr)){
-        snpld <- ComputeLD(DataDir = DataDir,ResultDir = ResultDir,finput = finput, ByCHR = TRUE, CHRnum = chromosome, r2_LD = r2_LD )
+      if(is.null(precomputedLD)){
 
-        result1 <- ComputeLDSC(snpld = snpld, test.df_beta = test.df_beta, ncores = ncores, LDSC_blocks = LDSC_blocks)
+        print("For LDSC model, please supply pre-computed LD scores as a dataframe in the 'precomputedLD' argument.")
+
+
       }else{
-        print("Summary statistics doesn't contain all the chromosomes.")
-        result1 <- t(data.frame(NA,NA,NA,NA))
-        colnames(result1) <- "result1"
+
+
+        result1 <- ComputeLDSC(summarystat = bimfile1, precomputedLD = precomputedLD, LDSC_blocks = LDSC_blocks,
+                               chi2_thr1 = chi2_thr1, chi2_thr2 = chi2_thr2, intercept = intercept, ncores = ncores, byCHR = byCHR)
+
       }
+
+
       result1 <- as.data.frame(result1)
-      #print(result1)
+
       herit_result1 <- data.table::as.data.table(t(result1))
       herit_result <- data.table::as.data.table(cbind(chromosome,snp_proportion,GP,herit_result1))
-      herit_result$Source <- "V(G)/Vp"
-      #Scaling coefficient to convert e.g. heritability to the liability scale.
-      h2_liab <- herit_result$h2 * bigsnpr::coef_to_liab(prevalance)# keeping the default value of K_gwas = 0.5, since n_eff is taken care of.
-      herit_result2 <- herit_result
-      herit_result2$h2 <- h2_liab
-      herit_result2$Source <- "V(G)/Vp_L"
-      #herit_result3 <- rbind(herit_result,herit_result2)
+
+      if (!is.null(prevalence)){
+
+        #Scaling coefficient to convert e.g. heritability to the liability scale.
+        h2_liab <- herit_result$h2 * bigsnpr::coef_to_liab(prevalence)# keeping the default value of K_gwas = 0.5, since n_eff is taken care of.
+        herit_result2 <- herit_result
+        herit_result2$h2 <- h2_liab
+        herit_result2$Source <- "V(G)/Vp_L"
+      }else{
+        herit_result2 <- herit_result
+        herit_result2$Source <- "V(G)/Vp"
+      }
+
       return(herit_result2)
 
     }
@@ -3974,12 +4153,13 @@ processLDSCModel <- function(DataDir, ResultDir, finput, summarystat, byCHR, r2_
       return(result2)
 
     }else{
-      result1 <- result[result$Source == "V(G)/Vp",]##Check if needed
+
+      result1 <- x
       chr_mb <- ChrLength(hg=hg)
       result2 <- merge(result1,chr_mb, by.y = "chrom", by.x = "chromosome")
       colnames(result2) <- c("chromosome","snp_proportion","no.of.genes","no.of.proteins","Intercept","Int_SE","Variance","SE","Source","size_mb")
       #create plot with regression line, regression equation, Pearson correlation and p-value.
-      suppressWarnings(PlotHeritability(Hdata = result2,miMAF = miMAF, maMAF = maMAF))
+      suppressWarnings(PlotHeritability(Hdata = result2,miMAF = miMAF, maMAF = maMAF, plotjpeg = plotjpeg, plotname = plotname))
 
       result3 <- result2
       colnames(result3) <- c("Chromosome","SNP_proportion","No.of.genes","No.of.proteins","Intercept","Int_SE","Variance","SE","Source","Size_mb")
@@ -3991,8 +4171,7 @@ processLDSCModel <- function(DataDir, ResultDir, finput, summarystat, byCHR, r2_
 }
 
 ## Function 85
-## Added in 3.0
-processGREMLModel <- function(DataDir, ResultDir, finput, byCHR, autosome, Xsome, partGRM, nGRM, cripticut, minMAF, maxMAF, REMLalgo, nitr, cat_covarfile, quant_covarfile, prevalance, PlotIndepSNP, highLD_regions, IndepSNP_window_size, IndepSNP_step_size, IndepSNP_r2_threshold, hg, miMAF, maMAF, ncores) {
+processGREMLModel <- function(DataDir, ResultDir, finput, byCHR, autosome, Xsome, partGRM, nGRM, computeGRM, grmfile_name, cripticut, minMAF, maxMAF, REMLalgo, nitr, cat_covarfile, quant_covarfile, prevalence, PlotIndepSNP, highLD_regions, IndepSNP_window_size, IndepSNP_step_size, IndepSNP_r2_threshold, hg, miMAF, maMAF, ncores, plotjpeg, plotname) {
 
   if (!checkFiles(DataDir, finput)) {
     stop("Missing required Plink files in the specified DataDir.")
@@ -4003,127 +4182,162 @@ processGREMLModel <- function(DataDir, ResultDir, finput, byCHR, autosome, Xsome
   famfile <- read.table(paste0(DataDir, "/", finput, ".fam"))[, c(1, 2, 6)]
   write.table(famfile, file = paste0(ResultDir, "/phenofile.phen"), sep = " ", col.names = FALSE, row.names = FALSE, quote = FALSE)
 
-  if (byCHR == FALSE){
+  if (byCHR == FALSE) {
 
-    if (autosome == TRUE && Xsome == FALSE){
+    if (autosome == TRUE && Xsome == FALSE) {
 
       ## Compute GRM
-      ComputeGRMauto(DataDir = DataDir, ResultDir = ResultDir, finput = finput,
-                     partGRM = partGRM, nGRM = nGRM, cripticut = cripticut,  minMAF = minMAF, maxMAF = maxMAF)
+      if (computeGRM == TRUE) {
 
-      ## Updated this part in V3.0
+        ComputeGRMauto(DataDir = DataDir, ResultDir = ResultDir, finput = finput,
+                       partGRM = partGRM, nGRM = nGRM, cripticut = cripticut, minMAF = minMAF, maxMAF = maxMAF, ncores = ncores)
+        grmfile_name = "GXwasR"
+
+      } else {
+        grmfile_name = grmfile_name
+      }
 
       herit_result <- ComputeREMLone(DataDir = DataDir, ResultDir = ResultDir, REMLalgo = REMLalgo, nitr = nitr, phenofile = "phenofile.phen", cat_covarfile = cat_covarfile,
-                                     quant_covarfile = quant_covarfile, prevalance = prevalance, chr = "chromosome", grmfile = "test", ncores = ncores)
+                                     quant_covarfile = quant_covarfile, prevalence = prevalence, chr = "chromosome", grmfile = grmfile_name, ncores = ncores)
 
       return(herit_result)
 
-    }else if (autosome == TRUE && Xsome == TRUE){
-      ## Compute GRM Autosome
-      ComputeGRMauto(DataDir = DataDir, ResultDir = ResultDir, finput = finput,
-                     partGRM = partGRM, nGRM = nGRM, cripticut = cripticut,  minMAF = minMAF, maxMAF = maxMAF)
-      ## Compute GRM X
-      ComputeGRMX(DataDir = DataDir, ResultDir = ResultDir, finput = finput,
-                  partGRM = partGRM, nGRM = nGRM, minMAF = minMAF, maxMAF = maxMAF)
+    } else if (autosome == TRUE && Xsome == TRUE) {
 
+      if (computeGRM == TRUE) {
+
+        ## Compute GRM Autosome
+        ComputeGRMauto(DataDir = DataDir, ResultDir = ResultDir, finput = finput,
+                       partGRM = partGRM, nGRM = nGRM, cripticut = cripticut, minMAF = minMAF, maxMAF = maxMAF, ncores = ncores)
+        ## Compute GRM X
+        ComputeGRMX(DataDir = DataDir, ResultDir = ResultDir, finput = finput,
+                    partGRM = partGRM, nGRM = nGRM, minMAF = minMAF, maxMAF = maxMAF, ncores = ncores)
+
+      } else {
+        print("Skipping GRM computation.")
+      }
       ## Compute REML
       herit_result <- ComputeREMLmulti(DataDir = DataDir, ResultDir = ResultDir, REMLalgo = REMLalgo, nitr = nitr, phenofile = "phenofile.phen", cat_covarfile = cat_covarfile,
-                                       quant_covarfile = quant_covarfile, prevalance = prevalance, grmfile = "multi_GRMs.txt",ncores = ncores)
+                                       quant_covarfile = quant_covarfile, prevalence = prevalence, grmfile = "multi_GRMs.txt", computeGRM = computeGRM, grmfile_name = grmfile_name, ncores = ncores)
 
       return(herit_result)
 
-    }else if (autosome == FALSE && Xsome == TRUE){
-      ## Compute GRM X
-      ComputeGRMX(DataDir = DataDir, ResultDir = ResultDir, finput = finput,
-                  partGRM = partGRM, nGRM = nGRM, minMAF = minMAF, maxMAF = maxMAF)
+    } else if (autosome == FALSE && Xsome == TRUE) {
+
+      if (computeGRM == TRUE) {
+        ## Compute GRM X
+        ComputeGRMX(DataDir = DataDir, ResultDir = ResultDir, finput = finput,
+                    partGRM = partGRM, nGRM = nGRM, minMAF = minMAF, maxMAF = maxMAF, ncores = ncores)
+
+        grmfile_name <- "xGXwasR"
+
+      } else {
+        grmfile_name <- paste0("x", grmfile_name)
+      }
       ## Compute REML X
       herit_result <- ComputeREMLone(DataDir = DataDir, ResultDir = ResultDir, REMLalgo = REMLalgo, nitr = nitr, phenofile = "phenofile.phen", cat_covarfile = cat_covarfile,
-                                     quant_covarfile = quant_covarfile, prevalance = prevalance, chr = "chromosome", grmfile = "xtest", ncores = ncores)
+                                     quant_covarfile = quant_covarfile, prevalence = prevalence, chr = "chromosome", grmfile = grmfile_name, ncores = ncores)
 
       return(herit_result)
 
-    }else{
+    } else {
       print("Autosome and Xsome cannot be set as FALSE together.")
     }
 
-  }else{
+  } else {
 
     bimfile <- read.table(paste0(DataDir, "/", finput, ".bim"))
 
     chrnum <- 1:length(unique(bimfile$V1))
-    #chrnum <- 1:3
 
-    chrwiseRELM <- function(chrnum){
+    chrwiseRELM <- function(chrnum) {
 
       chromosome <- unique(bimfile$V1)[chrnum]
 
       if (PlotIndepSNP == TRUE) {
         ## Do chromosome-wise LD prunning
-        ChrwiseLDprun(DataDir=DataDir,ResultDir=ResultDir,finput = finput, chromosome=chromosome,
-                      highLD_regions=highLD_regions, IndepSNP_window_size=IndepSNP_window_size,
-                      IndepSNP_step_size=IndepSNP_step_size,IndepSNP_r2_threshold=IndepSNP_r2_threshold)
+        ChrwiseLDprun(DataDir = DataDir, ResultDir = ResultDir, finput = finput, chromosome = chromosome,
+                      highLD_regions = highLD_regions, IndepSNP_window_size = IndepSNP_window_size,
+                      IndepSNP_step_size = IndepSNP_step_size, IndepSNP_r2_threshold = IndepSNP_r2_threshold)
 
-        ##
+
         bimfile1 <- read.table(paste0(ResultDir, "/LDfiltered.bim"))
 
-
-      }else{
-        bimfile1 <- bimfile[bimfile$V1==chromosome,]
+      } else {
+        bimfile1 <- bimfile[bimfile$V1 == chromosome, ]
       }
 
-      snp_proportion <- nrow(bimfile1)/nrow(bimfile)
+      snp_proportion <- nrow(bimfile1) / nrow(bimfile)
 
       ## Getting number of genes and proteins
-      GP <- GeneProtein(ResultDir = ResultDir, hg = hg,chromosome = chromosome)
+      GP <- GeneProtein(ResultDir = ResultDir, hg = hg, chromosome = chromosome)
 
-      print(paste0("Processing chromosome ",chromosome))
+      print(paste0("Processing chromosome ", chromosome))
 
-      if (chromosome == 23){
-        ## Compute GRM X
+      if (chromosome == 23) {
 
-        ComputeGRMX(DataDir = DataDir, ResultDir = ResultDir, finput = finput,
-                    partGRM = partGRM, nGRM = nGRM, minMAF = minMAF, maxMAF = maxMAF)
+        if (computeGRM == TRUE) {
+
+          ## Compute GRM X
+
+          ComputeGRMX(DataDir = DataDir, ResultDir = ResultDir, finput = finput,
+                      partGRM = partGRM, nGRM = nGRM, minMAF = minMAF, maxMAF = maxMAF, ncores = ncores)
+
+          grmfile_name = "xGXwasR"
+
+        } else {
+          grmfile_name <- paste0("x", grmfile_name)
+        }
         ## Compute REML X
         herit_result <- ComputeREMLone(DataDir = DataDir, ResultDir = ResultDir, REMLalgo = REMLalgo, nitr = nitr, phenofile = "phenofile.phen", cat_covarfile = cat_covarfile,
-                                       quant_covarfile = quant_covarfile, prevalance = prevalance, chr = chromosome, grmfile = "xtest", ncores = ncores)
-        herit_result <- data.table::as.data.table(cbind(chromosome,snp_proportion,GP,herit_result))
+                                       quant_covarfile = quant_covarfile, prevalence = prevalence, chr = 23, grmfile = grmfile_name, ncores = ncores)
+        herit_result <- data.table::as.data.table(cbind(chromosome, snp_proportion, GP, herit_result))
         return(herit_result)
 
-      }else{
-        ## Compute GRM
-        ComputeGRMauto(DataDir = DataDir, ResultDir = ResultDir, finput = finput,
-                       partGRM = partGRM, nGRM = nGRM, cripticut = cripticut,
-                       minMAF = minMAF, maxMAF = maxMAF, ByCHR = byCHR, CHRnum = chromosome)
+      } else {
+
+        if (computeGRM == TRUE) {
+
+          ## Compute GRM
+          ComputeGRMauto(DataDir = DataDir, ResultDir = ResultDir, finput = finput,
+                         partGRM = partGRM, nGRM = nGRM, cripticut = cripticut,
+                         minMAF = minMAF, maxMAF = maxMAF, ByCHR = byCHR, CHRnum = chromosome, ncores = ncores)
+
+          grmfile_name = "GXwasR"
+
+        } else {
+          grmfile_name = paste0("Chr", chromosome, "_", grmfile_name)
+
+        }
 
         herit_result <- ComputeREMLone(DataDir = DataDir, ResultDir = ResultDir, REMLalgo = REMLalgo, nitr = nitr, phenofile = "phenofile.phen", cat_covarfile = cat_covarfile,
-                                       quant_covarfile = quant_covarfile, prevalance = prevalance, chr = chromosome, grmfile = "test", ncores = ncores)
+                                       quant_covarfile = quant_covarfile, prevalence = prevalence, chr = chromosome, grmfile = grmfile_name, ncores = ncores)
 
-
-        herit_result <- data.table::as.data.table(cbind(chromosome,snp_proportion,GP,herit_result))
+        herit_result <- data.table::as.data.table(cbind(chromosome, snp_proportion, GP, herit_result))
 
         return(herit_result)
       }
 
     }
 
-    result <- data.table::rbindlist(lapply(chrnum,chrwiseRELM),fill = TRUE)
+    result <- data.table::rbindlist(lapply(chrnum, chrwiseRELM), fill = TRUE)
 
     x <- na.omit(result)
-    if (nrow(x)<3){
+    if (nrow(x) < 3) {
       print("Not enough data points for plots.")
       return(result)
-    }else{
-      result1 <- result[result$Source == "V(G)/Vp",]
+    } else {
+      result1 <- result[result$Source == "V(G)/Vp", ]
 
-      chr_mb <- ChrLength(hg=hg)
-      result2 <- merge(result1,chr_mb, by.y = "chrom", by.x = "chromosome")
+      chr_mb <- ChrLength(hg = hg)
+      result2 <- merge(result1, chr_mb, by.y = "chrom", by.x = "chromosome")
 
       #create plot with regression line, regression equation, Pearson correlation and p-value.
-      suppressWarnings(PlotHeritability(Hdata = result2, miMAF = miMAF, maMAF = maMAF))
+      suppressWarnings(PlotHeritability(Hdata = result2, miMAF = miMAF, maMAF = maMAF, plotjpeg = plotjpeg, plotname = plotname))
 
-      result3 <- merge(result,chr_mb, by.y = "chrom", by.x = "chromosome")
-      result3 <- result3[,c(1:4,8,5:7)]
-      colnames(result3) <- c("Chromosome","SNP_proportion","No.of.genes","No.of.proteins","Size_mb","Source","Variance","SE")
+      result3 <- merge(result, chr_mb, by.y = "chrom", by.x = "chromosome")
+      result3 <- result3[, c(1:4, 8, 5:7)]
+      colnames(result3) <- c("Chromosome", "SNP_proportion", "No.of.genes", "No.of.proteins", "Size_mb", "Source", "Variance", "SE")
 
       return(result3)
     }
@@ -4178,7 +4392,7 @@ topForestplot <- function(i,MR2,Sbeta){
   Study_EFFect <- Sbeta[Sbeta$SNP == SNPs,,drop = FALSE]
   Study_EFFect <- Study_EFFect[,-1]
   D1 <- rbind(Study_EFFect,Fixed_Effect,Random_Effect,Weighted_Effect,use.names = FALSE)
-  #D1 <- rbind(Study_EFFect,Fixed_Effect,Random_Effect,use.names = FALSE)
+
   D1$V2 <- row.names(D1)
   D1$index <- as.integer(D1$V2)
   D1$study <- paste0("S",D1$index)
@@ -4391,7 +4605,7 @@ generatePlots <- function(MRfiltered, Sbeta, ResultDir, plotname, useSNPposition
 
 ## Function 95
 ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0,1,2), nitr = 100, phenofile, cat_covarfile = NULL,
-                                quant_covarfile = NULL, grmfile = "test", excludeResidual = c("FALSE","TRUE"), chr, ncores = bigparallelr::nb_cores()){
+                                quant_covarfile = NULL, grmfile = "GXwasR", excludeResidual = c("FALSE","TRUE"), chr, ncores = 2){
 
   if (excludeResidual=="FALSE"){
     ExResi = NULL
@@ -4428,7 +4642,7 @@ ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0,1,2), nitr = 
       catcovar, catcovarval,
       quantcovar, quantcovarval,
       ExResi,
-      "--reml-no-constrain",
+      #"--reml-no-constrain",
       "--thread-num",ncores,
       "--out",
       paste0(ResultDir,"/",chr,"test_bireml")
@@ -4442,11 +4656,45 @@ ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0,1,2), nitr = 
     resultREML <- na.omit(data.table::fread(paste0(ResultDir,"/",chr,"test_bireml.hsq"),fill = TRUE))
     return(resultREML)
   }else{
+    # print(grep("Error", readLines(paste0(ResultDir,"/",chr,"test_bireml.log")), value = TRUE))
+    # print("An error occurs, please try byCHR = TRUE, check different options, SNP partitioning or data")
+    # x <- data.frame(NA,NA,NA)
+    # colnames(x) <- c("Source", "Variance","SE")
+    # return(x)
+    log_file <- paste0(ResultDir, "/", chr,"test_bireml.log")
+    lines <- readLines(log_file)
+    pattern <- paste0(nitr - 1, "\t")
+    matched_lines <- grep(pattern, lines, value = TRUE)
+
+    if (length(matched_lines) > 0) {
+      x1 <- read.table(text = matched_lines)
+      colnames(x1)<- NULL
+      rownames(x1)<- NULL
+      x <- as.data.frame(t(x1))
+      x <- x[-1,]
+      colnames(x) <- c("Source", "Variance")
+
+    } else {
+      x <- data.frame(Source = NA, Variance = NA)
+    }
+    # x1 <- read.table(text = grep(paste0(nitr-1,"\t"), readLines(paste0(ResultDir,"/",chr,"test_bireml.log")), value = TRUE))
+    # colnames(x1)<- NULL
+    # rownames(x1)<- NULL
+    #print(x1)
     print(grep("Error", readLines(paste0(ResultDir,"/",chr,"test_bireml.log")), value = TRUE))
-    print("An error occurs, please try byCHR = TRUE, check different options, SNP partitioning or data")
-    x <- data.frame(NA,NA,NA)
-    colnames(x) <- c("Source", "Variance","SE")
+    print(grep("Note: to constrain", readLines(paste0(ResultDir,"/",chr,"test_bireml.log")), value = TRUE))
+    print("Convergence problem occurs, please try byCHR = TRUE, check different options, SNP partitioning or ensure the quality of the input data.")
+    print("The result will be provided for the last iteration.")
+    # if(grep("Error", readLines(paste0(ResultDir,"/",chr,"test_bireml.log")), value = TRUE) == 0){
+    #   x <- data.frame(Source = NA, Variance = NA, SE = NA)
+    #   print("Segmentation fault from GCTA 1.94.1.")
+    # }else{
+    # x <- as.data.frame(t(x1))
+    # x <- x[-1,]
+    # colnames(x) <- c("Source", "Variance","SE")}
+
     return(x)
+
   }
 
 
@@ -4455,7 +4703,9 @@ ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0,1,2), nitr = 
 
 ## Function 96
 ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0,1,2), nitr = 100, phenofile, cat_covarfile = NULL,
-                                  quant_covarfile = NULL, grmfile = "multi_GRMs.txt",excludeResidual = c("FALSE","TRUE"), ncores = bigparallelr::nb_cores()){
+                                  quant_covarfile = NULL, grmfile = "multi_GRMs.txt",excludeResidual = c("FALSE","TRUE"),computeGRM = FALSE, grmfile_name = NULL, ncores = 2){
+
+  print(paste("computeGRM is set to:", computeGRM))
 
   if (excludeResidual=="FALSE"){
     ExResi = NULL
@@ -4478,10 +4728,31 @@ ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0,1,2), nitr 
     quantcovarval = paste0(DataDir,"/",quant_covarfile)
   }
 
+  # ## Create multi_GRMs.txt in ResultDir
+  # fileConn<-file(paste0(ResultDir,"/multi_GRMs.txt"))
+  # writeLines(c(paste0(ResultDir,"/GXwasR"),paste0(ResultDir,"/xGXwasR")), fileConn)
+  # close(fileConn)
   ## Create multi_GRMs.txt in ResultDir
-  fileConn<-file(paste0(ResultDir,"/multi_GRMs.txt"))
-  writeLines(c(paste0(ResultDir,"/test"),paste0(ResultDir,"/xtest")), fileConn)
-  close(fileConn)
+  if (isTRUE(computeGRM)){
+
+    print("Creating multi_GRMs.txt because computeGRM is TRUE")
+
+    fileConn <- file(paste0(ResultDir,"/multi_GRMs.txt"))
+    writeLines(c(paste0(ResultDir,"/GXwasR"), paste0(ResultDir,"/xGXwasR")), fileConn)
+    close(fileConn)
+
+  } else {
+
+    print("computeGRM is FALSE, checking grmfile_name")
+
+    if (is.null(grmfile_name)) {
+      stop("grmfile_name must be provided if computeGRM is FALSE")
+    }
+
+    fileConn <- file(paste0(ResultDir,"/multi_GRMs.txt"))
+    writeLines(c(paste0(ResultDir,"/",grmfile_name), paste0(ResultDir,"/x", grmfile_name)), fileConn)
+    close(fileConn)
+  }
 
   args <- c(
     "--reml-alg", REMLalgo,
@@ -4492,7 +4763,7 @@ ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0,1,2), nitr 
     catcovar, catcovarval,
     quantcovar, quantcovarval,
     ExResi,
-    "--reml-no-constrain",
+    #"--reml-no-constrain",
     "--thread-num", ncores,
     "--out", paste0(ResultDir, "/test_bireml")
   )
@@ -4508,17 +4779,34 @@ ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0,1,2), nitr 
 
   }else{
 
-    x1 <- read.table(text = grep(paste0(nitr-1,"\t"), readLines(paste0(ResultDir,"/test_bireml.log")), value = TRUE))
-    colnames(x1)<- NULL
-    rownames(x1)<- NULL
+    log_file <- paste0(ResultDir, "/test_bireml.log")
+    lines <- readLines(log_file)
+    pattern <- paste0(nitr - 1, "\t")
+    matched_lines <- grep(pattern, lines, value = TRUE)
+
+    if (length(matched_lines) > 0) {
+      x1 <- read.table(text = matched_lines)
+      colnames(x1)<- NULL
+      rownames(x1)<- NULL
+      x <- as.data.frame(t(x1))
+      x <- x[-1,]
+      colnames(x) <- c("Source", "Variance")
+
+    } else {
+      x <- data.frame(Source = NA, Variance = NA)
+    }
+
+    #x1 <- read.table(text = grep(paste0(nitr-1,"\t"), readLines(paste0(ResultDir,"/test_bireml.log")), value = TRUE))
+    # colnames(x1)<- NULL
+    # rownames(x1)<- NULL
     #print(x1)
     print(grep("Error", readLines(paste0(ResultDir,"/test_bireml.log")), value = TRUE))
     print(grep("Note: to constrain", readLines(paste0(ResultDir,"/test_bireml.log")), value = TRUE))
     print("Convergence problem occurs, please try byCHR = TRUE, check different options, SNP partitioning or ensure the quality of the input data.")
     print("The result will be provided for the last iteration.")
-    x <- as.data.frame(t(x1))
-    x <- x[-1,]
-    colnames(x) <- c("Source", "Variance")
+    # x <- as.data.frame(t(x1))
+    # x <- x[-1,]
+    # colnames(x) <- c("Source", "Variance","SE")
     return(x)
   }
 
@@ -4837,7 +5125,7 @@ validateGXwasInputs <- function(DataDir, ResultDir, finput, trait, standard_beta
   if (!is.logical(annotateTopSnp)) return("annotateTopSnp must be TRUE or FALSE.")
 
   # Validate xmodel
-  if (!xmodel %in% c("FMcomb01", "FMcomb02", "FMstatrified", "GWAScxci")) return("Invalid xmodel value.")
+  if (!xmodel %in% c("FMcombx01", "FMcombx02", "FMstatrified", "GWAScxci")) return("Invalid xmodel value.")
 
   # Validate covarfile
   if (!is.null(covarfile) && !file.exists(file.path(DataDir, covarfile))) return("Specified covarfile does not exist.")
@@ -4952,16 +5240,49 @@ validateAncestryCheckInputs <- function(DataDir, ResultDir, finput, reference, f
 ## Function 101
 ## Added in 3.0
 processLDstudyData <- function(ResultDir, highLD_regions, studyLD, studyLD_window_size, studyLD_step_size, studyLD_r2_threshold) {
+
   if (studyLD) {
-    # Using the provided helper function to execute PLINK with specific arguments
-    executePlinkAd(ResultDir, c(
-      "--bfile", paste0(ResultDir, "/filtered_study_temp1"),
-      "--exclude", "range", highLD_regions,
-      "--indep-pairwise", studyLD_window_size, studyLD_step_size, studyLD_r2_threshold,
-      "--allow-no-sex",                                                     ## Adding in 4.0
-      "--make-bed", "--out", paste0(ResultDir, "/filtered_study_temp2"),
-      "--silent"
-    ))
+
+    if (!is.null(highLD_regions)){
+      # Using the provided helper function to execute PLINK with specific arguments
+      executePlinkAd(ResultDir, c(
+        "--bfile", paste0(ResultDir, "/filtered_study_temp1"),
+        "--exclude", "range", highLD_regions,
+        "--indep-pairwise", studyLD_window_size, studyLD_step_size, studyLD_r2_threshold,
+        "--allow-no-sex",                                                     ## Adding in 4.0
+        "--out", paste0(ResultDir, "/filtered_study_temp2"),
+        "--silent"
+      ))
+
+      # Extract pruned SNPs based on the .prune.in file
+      executePlinkAd(ResultDir, c(
+        "--bfile", paste0(ResultDir, "/filtered_study_temp1"),       # Original data
+        "--extract", paste0(ResultDir, "/filtered_study_temp2.prune.in"),  # Use pruned SNP list
+        "--allow-no-sex",
+        "--make-bed",
+        "--out", paste0(ResultDir, "/filtered_study_temp2"),
+        "--silent"# Final file with pruned SNPs
+      ))
+
+    }else{
+      executePlinkAd(ResultDir, c(
+        "--bfile", paste0(ResultDir, "/filtered_study_temp1"),
+        "--indep-pairwise", studyLD_window_size, studyLD_step_size, studyLD_r2_threshold,
+        "--allow-no-sex",                                                     ## Adding in 5.0
+        "--out", paste0(ResultDir, "/filtered_study_temp2"),
+        "--silent"
+      ))
+
+      # Extract pruned SNPs based on the .prune.in file
+      executePlinkAd(ResultDir, c(
+        "--bfile", paste0(ResultDir, "/filtered_study_temp1"),       # Original data
+        "--extract", paste0(ResultDir, "/filtered_study_temp2.prune.in"),  # Use pruned SNP list
+        "--allow-no-sex",
+        "--make-bed",
+        "--out", paste0(ResultDir, "/filtered_study_temp2"),
+        "--silent" # Final file with pruned SNPs
+      ))
+    }
   } else {
     executePlinkAd(ResultDir, c(
       "--bfile", paste0(ResultDir, "/filtered_study_temp1"),
@@ -4982,14 +5303,46 @@ processLDstudyData <- function(ResultDir, highLD_regions, studyLD, studyLD_windo
 ## Added in 3.0
 processLDreferenceData <- function(ResultDir, highLD_regions, referLD, referLD_window_size, referLD_step_size, referLD_r2_threshold) {
   if (referLD) {
-    executePlinkAd(ResultDir, c(
-      "--bfile", paste0(ResultDir, "/filtered_ref_temp1"),
-      "--exclude", "range", highLD_regions,
-      "--indep-pairwise", referLD_window_size, referLD_step_size, referLD_r2_threshold,
-      "--allow-no-sex",                                                     ## Adding in 4.0
-      "--make-bed", "--out", paste0(ResultDir, "/filtered_ref_temp2"),
-      "--silent"
-    ))
+    if (!is.null(highLD_regions)){
+      executePlinkAd(ResultDir, c(
+        "--bfile", paste0(ResultDir, "/filtered_ref_temp1"),
+        "--exclude", "range", highLD_regions,
+        "--indep-pairwise", referLD_window_size, referLD_step_size, referLD_r2_threshold,
+        "--allow-no-sex",                                                     ## Adding in 4.0
+        "--out", paste0(ResultDir, "/filtered_ref_temp2"),
+        "--silent"
+      ))
+
+      # Extract pruned SNPs based on the .prune.in file
+      executePlinkAd(ResultDir, c(
+        "--bfile", paste0(ResultDir, "/filtered_ref_temp1"),       # Original data
+        "--extract", paste0(ResultDir, "/filtered_ref_temp2.prune.in"),  # Use pruned SNP list
+        "--allow-no-sex",
+        "--make-bed",
+        "--out", paste0(ResultDir, "/filtered_ref_temp2"),
+        "--silent" # Final file with pruned SNPs
+      ))
+
+    }else{
+      executePlinkAd(ResultDir, c(
+        "--bfile", paste0(ResultDir, "/filtered_ref_temp1"),
+        "--indep-pairwise", referLD_window_size, referLD_step_size, referLD_r2_threshold,
+        "--allow-no-sex",                                                     ## Adding in 5.0
+        "--out", paste0(ResultDir, "/filtered_ref_temp2"),
+        "--silent"
+      ))
+
+      # Extract pruned SNPs based on the .prune.in file
+      executePlinkAd(ResultDir, c(
+        "--bfile", paste0(ResultDir, "/filtered_ref_temp1"),       # Original data
+        "--extract", paste0(ResultDir, "/filtered_ref_temp2.prune.in"),  # Use pruned SNP list
+        "--allow-no-sex",
+        "--make-bed",
+        "--out", paste0(ResultDir, "/filtered_ref_temp2"),
+        "--silent" # Final file with pruned SNPs
+      ))
+
+    }
   } else {
     executePlinkAd(ResultDir, c(
       "--bfile", paste0(ResultDir, "/filtered_ref_temp1"),
@@ -5056,13 +5409,29 @@ executePlinkForUnfilteredData <- function(DataDir, ResultDir, finput, reference)
 findCommonSNPs <- function(ResultDir) {
   pruned_study <- read.table(file = paste0(ResultDir, "/","filtered_study_temp2", ".bim"), stringsAsFactors = FALSE)
   pruned_ref <- read.table(file = paste0(ResultDir, "/","filtered_ref_temp2", ".bim"), stringsAsFactors = FALSE)
+
+  #Final update
   common_snps <- intersect(pruned_study$V2, pruned_ref$V2)
+  # common_snps <- merge(pruned_study, pruned_ref, by = c("V1","V4"))
+  # common_snps <- common_snps[,1:2]
+  # colnames(common_snps) <- c("V1","V4")
 
   if (length(common_snps) == 0){
+    #if (nrow(common_snps) == 0){
     stop("No common SNPs found between study and reference data. This analysis cannot be done.")
+  }else{
+    print(paste0("No. of. overlapping SNPs between study and reference data using chromosme ID and position:", length(common_snps)))
   }
 
+  #Updated in final
+  # common_snps_study1 <- unique(merge(pruned_study,common_snps,by = c("V1","V4")))
+  # common_snps_study <- common_snps_study1$V2
+  # common_snps_ref1 <- unique(merge(pruned_ref,common_snps,by = c("V1","V4")))
+  # common_snps_ref <- common_snps_ref1$V2
+
   write.table(common_snps, file = paste0(ResultDir, "/","common_snps"), quote = FALSE, row.names = FALSE, col.names = FALSE, eol = "\r\n", sep = " ")
+  #write.table(common_snps_study, file = paste0(ResultDir, "/","common_snps_study"), quote = FALSE, row.names = FALSE, col.names = FALSE, eol = "\r\n", sep = " ")
+  #write.table(common_snps_ref, file = paste0(ResultDir, "/","common_snps_ref"), quote = FALSE, row.names = FALSE, col.names = FALSE, eol = "\r\n", sep = " ")
 
   return(list(common_snps = common_snps, pruned_study = pruned_study, pruned_ref = pruned_ref))
 }
@@ -5071,19 +5440,23 @@ findCommonSNPs <- function(ResultDir) {
 ## Added in 3.0
 processCommonSNPs <- function(ResultDir, common_snps) {
   # Write common SNPs to a file
-  write.table(
-    common_snps,
-    file = paste0(ResultDir, "/","common_snps"),
-    quote = FALSE,
-    row.names = FALSE,
-    col.names = FALSE,
-    eol = "\r\n",
-    sep = " "
-  )
+  # Updated in final
+  # write.table(
+  #   common_snps,
+  #   file = paste0(ResultDir, "/","common_snps"),
+  #   quote = FALSE,
+  #   row.names = FALSE,
+  #   col.names = FALSE,
+  #   eol = "\r\n",
+  #   sep = " "
+  # )
 
   # Extract common SNPs from study and reference datasets
   executePlinkAd(ResultDir, c("--bfile", paste0(ResultDir, "/","filtered_study_temp2"), "--extract", paste0(ResultDir, "/","common_snps"), "--allow-no-sex", "--make-bed", "--out", paste0(ResultDir, "/","filtered_study_temp3"),"--silent")) ## Added "--allow-no-sex" in 4.0
   executePlinkAd(ResultDir, c("--bfile", paste0(ResultDir, "/","filtered_ref_temp2"), "--extract", paste0(ResultDir, "/","common_snps"), "--allow-no-sex", "--make-bed", "--out", paste0(ResultDir, "/","filtered_ref_temp3"),"--silent"))
+  #Updated in final
+  #executePlinkAd(ResultDir, c("--bfile", paste0(ResultDir, "/","filtered_study_temp2"), "--extract", paste0(ResultDir, "/","common_snps_study"), "--allow-no-sex", "--make-bed", "--out", paste0(ResultDir, "/","filtered_study_temp3"),"--silent")) ## Added "--allow-no-sex" in 4.0
+  #executePlinkAd(ResultDir, c("--bfile", paste0(ResultDir, "/","filtered_ref_temp2"), "--extract", paste0(ResultDir, "/","common_snps_ref"), "--allow-no-sex", "--make-bed", "--out", paste0(ResultDir, "/","filtered_ref_temp3"),"--silent"))
 
   # Remove temporary files
   removeTempFiles(ResultDir, "filtered_study_temp2")
@@ -5132,8 +5505,24 @@ handleSnpAlleleFlips <- function(ResultDir, snp_allele_flips) {
 ## Added in 3.0
 # Helper function for correcting chromosome mismatches
 correctChromosomeMismatches <- function(ResultDir, common_snps, pruned_study, pruned_ref) {
+
+  #Updated in final
   S1 <- pruned_study[match(common_snps, pruned_study[, 2]), , drop = FALSE]
   S2 <- pruned_ref[match(common_snps, pruned_ref[, "V2"]), , drop = FALSE]
+  #common_names_of_snps <- intersect(pruned_study$V2,pruned_ref$V2)
+
+
+  # S1 <- merge(pruned_study,unique(common_snps),by = c("V1","V4"))
+  # # Apply distinct to S1 to ensure uniqueness based on V1 and V4
+  # S1 <- S1 %>%
+  #   dplyr::distinct(V1, V4, .keep_all = TRUE)
+  # S1 <- S1[,c("V1","V2","V3","V4","V5","V6")]
+  #
+  # S2 <- merge(pruned_ref,unique(common_snps),by = c("V1","V4"))
+  # # Apply distinct to S1 to ensure uniqueness based on V1 and V4
+  # S2 <- S2 %>%
+  #   dplyr::distinct(V1, V4, .keep_all = TRUE)
+  # S2 <- S2[,c("V1","V2","V3","V4","V5","V6")]
 
   whChrNotSame <- which(S1[, 1] != S2[, "V1"])
   whPosNotSame <- which(S1[, 4] != S2[, "V4"])
@@ -5184,8 +5573,8 @@ handleAlleleFlipsWrong <- function(ResultDir, allele_flips_wrong) {
     # Execute PLINK without allele flips wrong
     executePlinkAd(
       ResultDir,
-      c("--bfile", paste0(ResultDir, "/filtered_ref_temp4"),
-        "--make-bed", "--out", paste0(ResultDir, "/filtered_ref_temp5"),
+      c("--bfile", paste0(ResultDir, "/filtered_ref_temp5"),#####Updated in final
+        "--make-bed", "--out", paste0(ResultDir, "/filtered_ref_temp6"),
         "--silent")
     )
 
@@ -5249,7 +5638,12 @@ mergeDatasetsAndPerformPCA <- function(ResultDir) {
   removeTempFiles(ResultDir, "filtered_ref_temp6")
   removeTempFiles(ResultDir, "filtered_ref_temp7")
 
-  print("PCA done.")
+  if (file.exists(paste0(ResultDir, "/study_ref_merge.eigenvec"))){
+    print("PCA done.")
+  }else{
+    print("PCA cannot be computed. Please check whether you have sufficient number of overlapping SNPs between study and reference data, too many missing genotypes in study data or closely related individuals, hence GRM cannot be extracted.")
+    stop("Ancestry check cannot be performed since PCA cannot be computed")
+  }
 }
 
 ## Function 111
@@ -5257,47 +5651,74 @@ mergeDatasetsAndPerformPCA <- function(ResultDir) {
 loadAndProcessReferenceAncestry <- function(reference) {
   if (reference == "HapMapIII_NCBI36") {
 
-    ref_ancestry <-
+    ref_ancestry1 <-
       read.table(file = paste0(system.file("extdata", package = "GXwasR"), "/","hapmap_relationships_w_pops_121708.txt"),
                  stringsAsFactors = FALSE,
                  header = TRUE)[, c("IID", "population")]
-    colnames(ref_ancestry) <- c("ID", "Ancestry")
+    colnames(ref_ancestry1) <- c("ID", "Ancestry")
+    ## Updated in 5.0
+    ref1 <- read.table(paste0(ResultDir,"/",reference,".fam"),header = FALSE)[,2,drop = FALSE]
+    colnames(ref1) <- "ID"
+    ref_ancestry <- merge(ref_ancestry1, ref1, by = "ID" )
+
     ref_ancestry[which(ref_ancestry$Ancestry == "CHD"), "Ancestry"] <-
-      "ASIAN"
+      "EAS"
     ref_ancestry[which(ref_ancestry$Ancestry == "CHB"), "Ancestry"] <-
-      "ASIAN"
+      "EAS"
     ref_ancestry[which(ref_ancestry$Ancestry == "JPT"), "Ancestry"] <-
-      "ASIAN"
+      "EAS"
     ref_ancestry[which(ref_ancestry$Ancestry == "GIH"), "Ancestry"] <-
-      "ASIAN"
-    ref_ancestry_CEU_YRI_ASIAN <-
-      ref_ancestry[ref_ancestry$Ancestry == "CEU" |
-                     ref_ancestry$Ancestry == "YRI" | ref_ancestry$Ancestry == "ASIAN", ]
-    ref_ancestry_CEU_YRI_ASIAN[ref_ancestry_CEU_YRI_ASIAN$Ancestry == "CEU",2]<- "Ref_CEU"
-    ref_ancestry_CEU_YRI_ASIAN[ref_ancestry_CEU_YRI_ASIAN$Ancestry == "YRI",2]<- "Ref_YRI"
-    ref_ancestry_CEU_YRI_ASIAN[ref_ancestry_CEU_YRI_ASIAN$Ancestry == "ASIAN",2]<- "Ref_ASIAN"
+      "SAS"
+    ref_ancestry[which(ref_ancestry$Ancestry == "MEX"), "Ancestry"] <-
+      "AMR"
+    ref_ancestry[which(ref_ancestry$Ancestry == "CEU"), "Ancestry"] <-
+      "EUR"
+    ref_ancestry[which(ref_ancestry$Ancestry == "TSI"), "Ancestry"] <-
+      "EUR"
+    ref_ancestry[which(ref_ancestry$Ancestry == "YRI"), "Ancestry"] <-
+      "AFR"
+    ref_ancestry[which(ref_ancestry$Ancestry == "MKK"), "Ancestry"] <-
+      "AFR"
+    ref_ancestry[which(ref_ancestry$Ancestry == "LWK"), "Ancestry"] <-
+      "AFR"
+    ref_ancestry[which(ref_ancestry$Ancestry == "ASW"), "Ancestry"] <-
+      "AFR"
+    ref_ancestry_EUR_AFR_ASIAN <-
+      ref_ancestry[ref_ancestry$Ancestry == "EUR" |
+                     ref_ancestry$Ancestry == "AFR" | ref_ancestry$Ancestry == "SAS" | ref_ancestry$Ancestry == "EAS", ]
+    ref_ancestry_EUR_AFR_ASIAN[ref_ancestry_EUR_AFR_ASIAN$Ancestry == "EUR",2]<- "Ref_EUR"
+    ref_ancestry_EUR_AFR_ASIAN[ref_ancestry_EUR_AFR_ASIAN$Ancestry == "AFR",2]<- "Ref_AFR"
+    ref_ancestry_EUR_AFR_ASIAN[ref_ancestry_EUR_AFR_ASIAN$Ancestry == "EAS",2]<- "Ref_EAS"
+    ref_ancestry_EUR_AFR_ASIAN[ref_ancestry_EUR_AFR_ASIAN$Ancestry == "SAS",2]<- "Ref_SAS"
 
   } else if (reference == "ThousandGenome") {
     ref_ancestry <-
       read.table(file = paste0(system.file("extdata", package = "GXwasR"), "/","1000genomesampleinfo.txt"),
                  stringsAsFactors = FALSE,
                  header = TRUE)[, c("Sample", "superpop")]
-    ref_ancestry_CEU_YRI_ASIAN <- ref_ancestry
-    ref_ancestry_CEU_YRI_ASIAN$Ancestry <- paste0("Ref_",ref_ancestry_CEU_YRI_ASIAN$superpop)
-    colnames(ref_ancestry_CEU_YRI_ASIAN)<- c("ID", "Ancestry")
+    ref_ancestry_EUR_AFR_ASIAN <- ref_ancestry[ref_ancestry$superpop == "EUR" |
+                                                 ref_ancestry$superpop == "AFR" | ref_ancestry$superpop == "EAS" | ref_ancestry$superpop == "SAS", ]
+    #ref_ancestry_EUR_AFR_ASIAN[ref_ancestry_EUR_AFR_ASIAN$Ancestry == "EUR",2]<- "Ref_EUR"
+    #ref_ancestry_EUR_AFR_ASIAN[ref_ancestry_EUR_AFR_ASIAN$Ancestry == "AFR",2]<- "Ref_AFR"
+    #ref_ancestry_EUR_AFR_ASIAN[ref_ancestry_EUR_AFR_ASIAN$Ancestry == "EAS",2]<- "Ref_EAS"
+    #ref_ancestry_EUR_AFR_ASIAN[ref_ancestry_EUR_AFR_ASIAN$Ancestry == "SAS",2]<- "Ref_SAS"
+    #ref_ancestry_EUR_AFR_ASIAN <- ref_ancestry
+    colnames(ref_ancestry_EUR_AFR_ASIAN)<- c("ID", "Ancestry")
+    ref_ancestry_EUR_AFR_ASIAN$Ancestry <- paste0("Ref_",ref_ancestry_EUR_AFR_ASIAN$Ancestry)
+
   }
 
-  return(ref_ancestry_CEU_YRI_ASIAN)
+  return(ref_ancestry_EUR_AFR_ASIAN)
 }
 
 ## Function 112
 ## Added in 3.0
-prepareAncestryData <- function(study_pop, ref_ancestry_CEU_YRI_ASIAN) {
+prepareAncestryData <- function(study_pop, ref_ancestry_EUR_AFR_ASIAN) {
   study_ancestry <- study_pop
   colnames(study_ancestry) <- c("ID", "Ancestry")
   study_ancestry$Ancestry <- paste0("Study_", study_ancestry$Ancestry)
 
-  combined_pop <- rbind(ref_ancestry_CEU_YRI_ASIAN, study_ancestry)
+  combined_pop <- rbind(ref_ancestry_EUR_AFR_ASIAN, study_ancestry)
   return(combined_pop)
 }
 
@@ -5332,22 +5753,34 @@ createPopulationTypeData <- function(tab) {
   # And then merging them
   pop_type <- rbind(pop_type_ref, pop_type_study)
 
+
   return(pop_type)
 }
 
 ## Function 115
 ## Added in 3.0
 plotPCA <- function(tab, pop_type) {
-  p <- ggplot2::ggplot(data = tab, ggplot2::aes(
-    x = tab$PC1, y = tab$PC2, color = tab$pop, shape = tab$pop
+
+  ## Added in 5.0
+  # Sorting based on whether 'pop' starts with "Study_" or "Ref_"
+  tab1 <- tab %>%
+    dplyr::mutate(Sort_Order = ifelse(grepl("^Ref_", pop), 0, 1)) %>%
+    dplyr::arrange(Sort_Order) %>%
+    dplyr::select(-Sort_Order) # Removing the temporary Sort_Order column
+
+  p <- ggplot2::ggplot(data = tab1, ggplot2::aes(
+    x = tab1$PC1, y = tab1$PC2, color = tab1$pop, shape = tab1$pop
   )) +
     ggplot2::geom_hline(yintercept = 0, lty = 2) +
     ggplot2::geom_vline(xintercept = 0, lty = 2) +
-    ggplot2::guides(color = ggplot2::guide_legend(title = "Ancestry"), shape = ggplot2::guide_legend(title = "Ancestry")) +
+    ggplot2::guides(color = ggplot2::guide_legend(title = "Ancestry Code"), shape = ggplot2::guide_legend(title = "Ancestry Code")) +
     ggplot2::scale_shape_manual(values = pop_type$value) +
-    ggplot2::geom_point(alpha = 1, size = 4)
+    ggplot2::geom_point(alpha = 1, size = 3) +
+    ggplot2::xlab("PC 1") +  # Set x-axis label
+    ggplot2::ylab("PC 2")  # Set y-axis label
 
   print(p)
+
 }
 
 ## Function 116
@@ -5372,62 +5805,180 @@ detectOutliers <- function(tab, ResultDir, outlier, outlierOf, outlier_threshold
   }
 
   # Perform outlier detection
-  ref_pop <- tab[tab$pop == paste0("Ref_", outlierOf), ]
-  ref_pc1_median <- median(ref_pop$PC1)
-  ref_pc2_median <- median(ref_pop$PC2)
+  ref_pop_AFR <- tab[tab$pop == "Ref_AFR",]
+  ref_pop_EAS <- tab[tab$pop == "Ref_EAS",]
+  ref_pop_EUR <- tab[tab$pop == "Ref_EUR",]
+  ref_pop_SAS <- tab[tab$pop == "Ref_SAS",]
 
-  ref_pop$dis <- sqrt((ref_pop$PC1 - ref_pc1_median) ^ 2 + (ref_pop$PC2 - ref_pc2_median) ^ 2)
-  ref_max_dis <- max(ref_pop$dis)
+  # ref_pc1_median_AFR <- median(ref_pop_AFR$PC1)
+  # ref_pc2_median_AFR <- median(ref_pop_AFR$PC2)
+  # ref_pc1_median_EAS <- median(ref_pop_EAS$PC1)
+  # ref_pc2_median_EAS <- median(ref_pop_EAS$PC2)
+  # ref_pc1_median_EUR <- median(ref_pop_EUR$PC1)
+  # ref_pc2_median_EUR <- median(ref_pop_EUR$PC2)
+  # ref_pc1_median_SAS <- median(ref_pop_SAS$PC1)
+  # ref_pc2_median_SAS <- median(ref_pop_SAS$PC2)
+  #
+  #   ref_pop_AFR$dis <- sqrt((ref_pop_AFR$PC1 - ref_pc1_median_AFR) ^ 2 + (ref_pop_AFR$PC2 - ref_pc2_median_AFR) ^ 2)
+  #   ref_max_dis_AFR <- max(ref_pop_AFR$dis)
+  #   ref_mean_dis_AFR <- mean(ref_pop_AFR$dis)
+  #   ref_median_dis_AFR <- median(ref_pop_AFR$dis)
+  #   ref_Q3_dis_AFR <- summary(ref_pop_AFR$dis)[[5]]
+  #
+  #
+  #   ref_pop_EAS$dis <- sqrt((ref_pop_EAS$PC1 - ref_pc1_median_EAS) ^ 2 + (ref_pop_EAS$PC2 - ref_pc2_median_EAS) ^ 2)
+  #   ref_max_dis_EAS <- max(ref_pop_EAS$dis)
+  #   ref_mean_dis_EAS <- mean(ref_pop_EAS$dis)
+  #   ref_median_dis_EAS <- median(ref_pop_EAS$dis)
+  #   ref_Q3_dis_EAS <- summary(ref_pop_EAS$dis)[[5]]
+  #
+  #
+  #   ref_pop_EUR$dis <- sqrt((ref_pop_EUR$PC1 - ref_pc1_median_EUR) ^ 2 + (ref_pop_EUR$PC2 - ref_pc2_median_EUR) ^ 2)
+  #   ref_max_dis_EUR <- max(ref_pop_EUR$dis)
+  #   ref_mean_dis_EUR <- mean(ref_pop_EUR$dis)
+  #   ref_median_dis_EUR <- median(ref_pop_EUR$dis)
+  #   ref_Q3_dis_EUR <- summary(ref_pop_EUR$dis)[[5]]
+  #
+  #
+  #   ref_pop_SAS$dis <- sqrt((ref_pop_SAS$PC1 - ref_pc1_median_SAS) ^ 2 + (ref_pop_SAS$PC2 - ref_pc2_median_SAS) ^ 2)
+  #   ref_max_dis_SAS <- max(ref_pop_SAS$dis)
+  #   ref_mean_dis_SAS <- mean(ref_pop_SAS$dis)
+  #   ref_median_dis_SAS <- median(ref_pop_SAS$dis)
+  #   ref_Q3_dis_SAS <- summary(ref_pop_SAS$dis)[[5]]
 
   study_pop <- tab[grepl("Study_.*", tab$pop), ]
 
-  study_pop$dis <- sqrt((study_pop$PC1 - ref_pc1_median) ^ 2 + (study_pop$PC2 - ref_pc2_median) ^ 2)
+  # study_pop$dis_AFR <- sqrt((study_pop$PC1 - ref_pc1_median_AFR) ^ 2 + (study_pop$PC2 - ref_pc2_median_AFR) ^ 2)
+  # study_pop$dis_EAS <- sqrt((study_pop$PC1 - ref_pc1_median_EAS) ^ 2 + (study_pop$PC2 - ref_pc2_median_EAS) ^ 2)
+  # study_pop$dis_EUR <- sqrt((study_pop$PC1 - ref_pc1_median_EUR) ^ 2 + (study_pop$PC2 - ref_pc2_median_EUR) ^ 2)
+  # study_pop$dis_SAS <- sqrt((study_pop$PC1 - ref_pc1_median_SAS) ^ 2 + (study_pop$PC2 - ref_pc2_median_SAS) ^ 2)
+  #
+  # study_pop$Assigned_Pop_Mean <- rep("Outlier",NROW(study_pop))
+  # study_pop$Assigned_Pop_Median <- rep("Outlier",NROW(study_pop))
+  # study_pop$Assigned_Pop_Max <- rep("Outlier",NROW(study_pop))
+  # study_pop$Assigned_Pop_Q3 <- rep("Outlier",NROW(study_pop))
+  #
+  #
+  # study_pop[study_pop$dis_AFR <= ref_mean_dis_AFR * outlier_threshold, ]$Assigned_Pop_Mean <- "AFR"
+  # study_pop[study_pop$dis_EAS <= ref_mean_dis_EAS * outlier_threshold, ]$Assigned_Pop_Mean <- "EAS"
+  # study_pop[study_pop$dis_EUR <= ref_mean_dis_EUR * outlier_threshold, ]$Assigned_Pop_Mean <- "EUR"
+  # study_pop[study_pop$dis_SAS <= ref_mean_dis_SAS * outlier_threshold, ]$Assigned_Pop_Mean <- "SAS"
+  #
+  # study_pop[study_pop$dis_AFR <= ref_median_dis_AFR * outlier_threshold, ]$Assigned_Pop_Median <- "AFR"
+  # study_pop[study_pop$dis_EAS <= ref_median_dis_EAS * outlier_threshold, ]$Assigned_Pop_Median <- "EAS"
+  # study_pop[study_pop$dis_EUR <= ref_median_dis_EUR * outlier_threshold, ]$Assigned_Pop_Median <- "EUR"
+  # study_pop[study_pop$dis_SAS <= ref_median_dis_SAS * outlier_threshold, ]$Assigned_Pop_Median <- "SAS"
+  #
+  # study_pop[study_pop$dis_AFR <= ref_max_dis_AFR * outlier_threshold, ]$Assigned_Pop_Max <- "AFR"
+  # study_pop[study_pop$dis_EAS <= ref_max_dis_EAS * outlier_threshold, ]$Assigned_Pop_Max <- "EAS"
+  # study_pop[study_pop$dis_SAS <= ref_max_dis_SAS * outlier_threshold, ]$Assigned_Pop_Max <- "SAS"
+  # study_pop[study_pop$dis_EUR <= ref_max_dis_EUR * outlier_threshold, ]$Assigned_Pop_Max <- "EUR"
+  #
+  # study_pop$Assigned_Pop_Max_AFR <- rep("Outlier",NROW(study_pop))
+  # study_pop$Assigned_Pop_Max_EAS <- rep("Outlier",NROW(study_pop))
+  # study_pop$Assigned_Pop_Max_EUR <- rep("Outlier",NROW(study_pop))
+  # study_pop$Assigned_Pop_Max_SAS <- rep("Outlier",NROW(study_pop))
+  #
+  # study_pop[study_pop$dis_AFR <= ref_max_dis_AFR * outlier_threshold, ]$Assigned_Pop_Max_AFR <- "AFR"
+  # study_pop[study_pop$dis_EAS <= ref_max_dis_EAS * outlier_threshold, ]$Assigned_Pop_Max_EAS <- "EAS"
+  # study_pop[study_pop$dis_SAS <= ref_max_dis_SAS * outlier_threshold, ]$Assigned_Pop_Max_SAS <- "SAS"
+  # study_pop[study_pop$dis_EUR <= ref_max_dis_EUR * outlier_threshold, ]$Assigned_Pop_Max_EUR <- "EUR"
+  # study_pop$Combined_Assigned_Pop_Max <- paste(study_pop$Assigned_Pop_Max_AFR,study_pop$Assigned_Pop_Max_EAS,study_pop$Assigned_Pop_Max_EUR,study_pop$Assigned_Pop_Max_SAS,sep='_')
+  #
+  # study_pop[study_pop$dis_AFR <= ref_Q3_dis_AFR * outlier_threshold, ]$Assigned_Pop_Q3 <- "AFR"
+  # study_pop[study_pop$dis_EAS <= ref_Q3_dis_EAS * outlier_threshold, ]$Assigned_Pop_Q3 <- "EAS"
+  # study_pop[study_pop$dis_SAS <= ref_Q3_dis_SAS * outlier_threshold, ]$Assigned_Pop_Q3 <- "SAS"
+  # study_pop[study_pop$dis_EUR <= ref_Q3_dis_EUR * outlier_threshold, ]$Assigned_Pop_Q3 <- "EUR"
 
-  Non_Eu <- study_pop[study_pop$dis > ref_max_dis * outlier_threshold, ]
-  Outlier_samples <- unique(Non_Eu$sample)
+
+  ## Added by CS
+  #Z-scores
+  study_pop$z_score_PC1_AFR <- (study_pop$PC1 - mean(ref_pop_AFR$PC1))/sd(ref_pop_AFR$PC1)
+  study_pop$z_score_PC2_AFR <- (study_pop$PC2 - mean(ref_pop_AFR$PC2))/sd(ref_pop_AFR$PC2)
+  study_pop$z_score_PC1_EAS <- (study_pop$PC1 - mean(ref_pop_EAS$PC1))/sd(ref_pop_EAS$PC1)
+  study_pop$z_score_PC2_EAS <- (study_pop$PC2 - mean(ref_pop_EAS$PC2))/sd(ref_pop_EAS$PC2)
+  study_pop$z_score_PC1_EUR <- (study_pop$PC1 - mean(ref_pop_EUR$PC1))/sd(ref_pop_EUR$PC1)
+  study_pop$z_score_PC2_EUR <- (study_pop$PC2 - mean(ref_pop_EUR$PC2))/sd(ref_pop_EUR$PC2)
+  study_pop$z_score_PC1_SAS <- (study_pop$PC1 - mean(ref_pop_SAS$PC1))/sd(ref_pop_SAS$PC1)
+  study_pop$z_score_PC2_SAS <- (study_pop$PC2 - mean(ref_pop_SAS$PC2))/sd(ref_pop_SAS$PC2)
+
+  study_pop$Assigned_Pop_ZScore <- rep("Outlier",NROW(study_pop))
+
+  ## Added by CS
+  # study_pop[abs(study_pop$z_score_PC1_AFR) < outlier_threshold & abs(study_pop$z_score_PC2_AFR) < outlier_threshold,]$Assigned_Pop_ZScore <- 'AFR'
+  # study_pop[abs(study_pop$z_score_PC1_EAS) < outlier_threshold & abs(study_pop$z_score_PC2_EAS) < outlier_threshold,]$Assigned_Pop_ZScore <- 'EAS'
+  # study_pop[abs(study_pop$z_score_PC1_EUR) < outlier_threshold & abs(study_pop$z_score_PC2_EUR) < outlier_threshold,]$Assigned_Pop_ZScore <- 'EUR'
+  # study_pop[abs(study_pop$z_score_PC1_SAS) < outlier_threshold & abs(study_pop$z_score_PC2_SAS) < outlier_threshold,]$Assigned_Pop_ZScore <- 'SAS'
+
+  ## Updated by BB
+  # First, initiate Assigned_Pop_ZScore with NA or another default value
+  study_pop <- study_pop %>%
+    dplyr::mutate(Assigned_Pop_ZScore = NA_character_)  # Use NA_character_ for character columns
+
+  # Then, conditionally update Assigned_Pop_ZScore based on your criteria for each population
+  study_pop <- study_pop %>%
+    dplyr::mutate(Assigned_Pop_ZScore = dplyr::case_when(
+      abs(z_score_PC1_AFR) < outlier_threshold & abs(z_score_PC2_AFR) < outlier_threshold ~ "AFR",
+      abs(z_score_PC1_EAS) < outlier_threshold & abs(z_score_PC2_EAS) < outlier_threshold ~ "EAS",
+      abs(z_score_PC1_EUR) < outlier_threshold & abs(z_score_PC2_EUR) < outlier_threshold ~ "EUR",
+      abs(z_score_PC1_SAS) < outlier_threshold & abs(z_score_PC2_SAS) < outlier_threshold ~ "SAS",
+      TRUE ~ Assigned_Pop_ZScore  # This keeps the current value for rows not meeting any conditions above
+    ))
+
+  #Non_Ref_Pop <- study_pop[study_pop$dis > ref_mean_dis * outlier_threshold, ]
+  #Ref_Pop <- study_pop[study_pop$dis <= (ref_mean_dis * outlier_threshold), ]
+  #Outlier_samples <- unique(Non_Ref_Pop$sample)
+
+  ## Added in 5.0 by BB
+  Outlier_samples <- study_pop %>%
+    dplyr::filter(is.na(Assigned_Pop_ZScore) | Assigned_Pop_ZScore != outlierOf) %>%
+    dplyr::select(sample)
+
+  Samples_with_predicted_ancestry <- study_pop[,c(1,13)]
+  colnames(Samples_with_predicted_ancestry) <- c("Sample ID","Predicted_Ancestry")
+  Samples_with_predicted_ancestry$Predicted_Ancestry[is.na(Samples_with_predicted_ancestry$Predicted_Ancestry)] <- "Undecided"
+
+  studyfam <- read.table(paste0(DataDir,"/",finput,".fam"))
+  Outlier_samples_fam <- merge(Outlier_samples, studyfam[,1:2], by.x = "sample", by.y = "V2")[,c(2,1)]
+  colnames(Outlier_samples_fam) <- c("FID" , "IID")
+
+  Samples_with_predicted_ancestry <- merge(Samples_with_predicted_ancestry, studyfam[,1:2], by.x = "Sample ID", by.y = "V2")[,c(3,1,2)]
+  colnames(Samples_with_predicted_ancestry) <- c("FID", "IID", "Predicted Ancestry")
 
   # Report results
-  if (length(Outlier_samples) != 0) {
+  if (nrow(Outlier_samples_fam) != 0) {
     write.table(
-      Outlier_samples,
+      Outlier_samples_fam,
       file = paste0(ResultDir, "/Outlier_ancestry"),
       quote = FALSE, row.names = FALSE, col.names = FALSE, eol = "\r\n", sep = " "
     )
-    print(paste0(length(Outlier_samples), " Non-European samples as outlier."))
+    print(paste0(nrow(unique(Outlier_samples_fam)), " samples are outliers of selected reference population."))
   } else {
-    print("There is no non-European sample as outlier.")
+    print("There is no outlier sample.")
+  }
+
+  ## Added in 5.0
+  # Report non-outlier results for selected reference population
+  Sample_Ref_Pop <- na.omit(study_pop[study_pop$Assigned_Pop_ZScore == outlierOf, ])
+  if (nrow(Sample_Ref_Pop) != 0) {
+    print(paste0(length(unique(Sample_Ref_Pop[,1])), " samples are NOT outliers of selected reference population."))
+  } else {
+    print("There are no non-outlier samples.")
   }
 
   # Prepare Outlier_samples1
-  Outlier_samples1 <- Non_Eu[, 1:2]
-  Outlier_samples1$pop <- as.character(Outlier_samples1$pop)
-  Outlier_samples1 <- Outlier_samples1[grepl("Study_.*", Outlier_samples1$pop), ]
-  return(Outlier_samples1)
+  # Outlier_samples1 <- Non_Ref_Pop[, 1:2]
+  # Outlier_samples1$pop <- as.character(Outlier_samples1$pop)
+  # Outlier_samples1 <- Outlier_samples1[grepl("Study_.*", Outlier_samples1$pop), ]
+  # return(Outlier_samples1)
+
+  return(list(Outlier_samples = Outlier_samples_fam,Samples_with_predicted_ancestry = Samples_with_predicted_ancestry, NonOutlier_samples = na.omit(Sample_Ref_Pop[,c(1,13)])))
 }
 
-## Function 118
-## Added in 3.0
-runSKAT <- function(score.file, gene.file, genes, cor.path, gene_approximation, anno.type, beta.par, weights.function, gen.var.weights, kernel_p_method, acc_devies, lim_devies, rho, skato_p_threshold) {
-  sumFREGAT::SKAT(
-    score.file = score.file,
-    gene.file = gene.file,
-    genes = genes,
-    cor.path = cor.path,
-    approximation = gene_approximation,
-    anno.type = anno.type,
-    beta.par = beta.par,
-    weights.function = weights.function,
-    user.weights = FALSE,
-    gen.var.weights = gen.var.weights,
-    method = kernel_p_method,
-    acc = acc_devies,
-    lim = lim_devies,
-    rho = rho,
-    p.threshold = skato_p_threshold,
-    write.file = FALSE,
-    quiet = TRUE
-  )
-}
+
+
+
+
 
 ## Function 119
 ## Added in 3.0
@@ -5666,20 +6217,27 @@ validateInputForQCsnp <- function(DataDir, ResultDir = tempdir(), finput, foutpu
 
 ## Function 129
 ## Added in 3.0
-validateInputForEstimateHerit <- function(DataDir, ResultDir = tempdir(), finput, summarystat = NULL, ncores = parallel::detectCores(), model = c("LDSC", "GREML"), byCHR = FALSE, r2_LD = 0, LDSC_blocks = 20, REMLalgo = c(0, 1, 2), nitr = 100, cat_covarfile = NULL, quant_covarfile = NULL, prevalance = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3, cripticut = 0.025, minMAF = NULL, maxMAF = NULL, hg = c("hg19", "hg38"), PlotIndepSNP = c(TRUE, FALSE), IndepSNP_window_size = 50, IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02, highLD_regions = NULL) {
+validateInputForEstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL,
+                                          summarystat = NULL, ncores = parallel::detectCores(),
+                                          model = c("LDSC","GREML"), byCHR = FALSE, r2_LD = 0,
+                                          LDSC_blocks = 20, REMLalgo = c(0, 1, 2), nitr = 100,
+                                          cat_covarfile = NULL, quant_covarfile = NULL,
+                                          prevalence = 0.01, partGRM = FALSE, autosome = TRUE,
+                                          Xsome = TRUE, nGRM = 3, cripticut = 0.025,
+                                          minMAF = NULL, maxMAF = NULL, hg = c("hg19", "hg38"),
+                                          PlotIndepSNP = c(TRUE, FALSE), IndepSNP_window_size = 50,
+                                          IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02,
+                                          highLD_regions = NULL) {
 
   # Validate directories
-  if (!dir.exists(DataDir)) {
+  if (!is.null(DataDir) && !dir.exists(DataDir)) {
     stop("Error in DataDir: Directory does not exist.")
   }
-  if (!dir.exists(ResultDir)) {
+  if (!is.null(ResultDir) && !dir.exists(ResultDir)) {
     stop("Error in ResultDir: Directory does not exist.")
   }
 
-  # Validate file prefix
-  if (!is.character(finput)) {
-    stop("Error in finput: Must be a character string.")
-  }
+
 
   # Validate summarystat if not NULL
   if (!is.null(summarystat) && !is.data.frame(summarystat)) {
@@ -5696,8 +6254,15 @@ validateInputForEstimateHerit <- function(DataDir, ResultDir = tempdir(), finput
     stop("Error in model: Must be either 'LDSC' or 'GREML', or both.")
   }
 
+  # Validate file prefix
+  if (model == "GREML"){
+    if (is.null(finput) || !is.character(finput)) {
+      stop("Error in finput: Must be a non-null character string.")
+    }}
+
   # Validate boolean parameters
-  if (!is.logical(byCHR) || !is.logical(partGRM) || !is.logical(autosome) || !is.logical(Xsome) || !is.logical(PlotIndepSNP)) {
+  if (!is.logical(byCHR) || !is.logical(partGRM) || !is.logical(autosome) ||
+      !is.logical(Xsome) || !is.logical(PlotIndepSNP)) {
     stop("Error in Boolean parameters: Must be TRUE or FALSE.")
   }
 
@@ -5705,15 +6270,16 @@ validateInputForEstimateHerit <- function(DataDir, ResultDir = tempdir(), finput
   if (!is.numeric(r2_LD) || r2_LD < 0) {
     stop("Error in r2_LD: Must be a non-negative number.")
   }
-  if (!is.numeric(prevalance) || prevalance < 0) {
-    stop("Error in prevalance: Must be a non-negative number.")
-  }
+  if (!is.null(prevalence) && (!is.numeric(prevalence) || prevalence < 0)) {
+    stop("Error in prevalence: Must be a non-negative number or NULL.")
+}
   if (!is.numeric(cripticut) || cripticut < 0) {
     stop("Error in cripticut: Must be a non-negative number.")
   }
 
   # Validate integer-like parameters
-  if (!is.null(LDSC_blocks) && (!is.numeric(LDSC_blocks) || LDSC_blocks <= 0 || LDSC_blocks != as.integer(LDSC_blocks))) {
+  if (!is.null(LDSC_blocks) && (!is.numeric(LDSC_blocks) || LDSC_blocks <= 0 ||
+                                LDSC_blocks != as.integer(LDSC_blocks))) {
     stop("Error in LDSC_blocks: Must be a positive whole number.")
   }
   if (!is.null(nitr) && (!is.numeric(nitr) || nitr <= 0 || nitr != as.integer(nitr))) {
@@ -5722,13 +6288,14 @@ validateInputForEstimateHerit <- function(DataDir, ResultDir = tempdir(), finput
   if (!is.null(nGRM) && (!is.numeric(nGRM) || nGRM <= 0 || nGRM != as.integer(nGRM))) {
     stop("Error in nGRM: Must be a positive whole number.")
   }
-  if (!is.numeric(IndepSNP_window_size) || IndepSNP_window_size <= 0 || IndepSNP_window_size != as.integer(IndepSNP_window_size)) {
+  if (!is.numeric(IndepSNP_window_size) || IndepSNP_window_size <= 0 ||
+      IndepSNP_window_size != as.integer(IndepSNP_window_size)) {
     stop("Error in IndepSNP_window_size: Must be a positive whole number.")
   }
-  if (!is.numeric(IndepSNP_step_size) || IndepSNP_step_size <= 0 || IndepSNP_step_size != as.integer(IndepSNP_step_size)) {
+  if (!is.numeric(IndepSNP_step_size) || IndepSNP_step_size <= 0 ||
+      IndepSNP_step_size != as.integer(IndepSNP_step_size)) {
     stop("Error in IndepSNP_step_size: Must be a positive whole number.")
   }
-
 
   # Validate REMLalgo
   if (!is.numeric(REMLalgo) || !all(REMLalgo %in% c(0, 1, 2))) {
@@ -5736,7 +6303,8 @@ validateInputForEstimateHerit <- function(DataDir, ResultDir = tempdir(), finput
   }
 
   # Validate MAF parameters
-  if ((!is.null(minMAF) && (!is.numeric(minMAF) || minMAF < 0 || minMAF > 1)) || (!is.null(maxMAF) && (!is.numeric(maxMAF) || maxMAF < 0 || maxMAF > 1))) {
+  if ((!is.null(minMAF) && (!is.numeric(minMAF) || minMAF < 0 || minMAF > 1)) ||
+      (!is.null(maxMAF) && (!is.numeric(maxMAF) || maxMAF < 0 || maxMAF > 1))) {
     stop("Error in MAF parameters: Must be within the range [0, 1].")
   }
 
@@ -5752,7 +6320,6 @@ validateInputForEstimateHerit <- function(DataDir, ResultDir = tempdir(), finput
 
   return(TRUE)
 }
-
 ## Function 130
 ## Added in 3.0
 validateInputForComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 10, plotPC = TRUE, highLD_regions = NULL, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02) {
@@ -6185,16 +6752,20 @@ validateInputForQCsample <- function(DataDir, ResultDir, finput, foutput, imiss,
   # Validation for numeric parameters
   numeric_params <- list(imiss = imiss, het = het)
 
-  # Validate 'imiss' to be between 0 and 1
+  # Validate 'imiss' to be between 0 and 1 if not NULL
   param_value_imiss <- numeric_params[['imiss']]
-  if (!is.numeric(param_value_imiss) || param_value_imiss < 0 || param_value_imiss > 1) {
-    stop("imiss must be a numeric value between 0 and 1.")
+  if (!is.null(param_value_imiss)) {
+    if (!is.numeric(param_value_imiss) || param_value_imiss < 0 || param_value_imiss > 1) {
+      stop("imiss must be NULL or a numeric value between 0 and 1.")
+    }
   }
 
   # Validate 'het' to be numeric
   param_value_het <- numeric_params[['het']]
-  if (!is.null(param_value_het) && !is.numeric(param_value_het)) {
-    stop("het must be a numeric value or NULL.")
+  if (!is.null(param_value_het)) {
+    if (!is.null(param_value_het) && !is.numeric(param_value_het)) {
+      stop("het must be a numeric value or NULL.")
+    }
   }
 
   # Validation for size parameters (should be positive integers)
@@ -6380,7 +6951,7 @@ validateInputForDiffZeroOne <- function(inputdata, diffzero, diffone) {
 
 ## Function 143
 ## Added in 3.0
-validateInputForSexDiffZcrore <- function(inputdata) {
+validateInputForSexDiffZscore <- function(inputdata) {
 
   # Validate inputdata - must be a dataframe
   if (!is.data.frame(inputdata)) {
@@ -6531,8 +7102,8 @@ validateFilterRegionParams <- function(DataDir, ResultDir, finput, foutput, CHRX
   # Validate filterCHR
   if (!is.null(filterCHR)) {
     if (is.numeric(filterCHR)) {
-      if (any(filterCHR < 1) || any(filterCHR > 30) || any(filterCHR != as.integer(filterCHR))) {
-        stop("filterCHR must contain positive integers between 1 and 24.")
+      if (any(filterCHR < 0) || any(filterCHR > 30) || any(filterCHR != as.integer(filterCHR))) {
+        stop("filterCHR must contain positive integers between 0 and 24.")
       }
     } else {
       stop("filterCHR must be a numeric vector (single positive integer or array of positive integers between 1 and 24).")
@@ -6844,6 +7415,7 @@ filterGenomicFeatures <- function(x, filterPAR, filterXTR, filterAmpliconic) {
     y <- x
   } else if (filterPAR == TRUE && filterXTR == TRUE && filterAmpliconic == FALSE) {
     y <- x[x$V4 == "PAR1" | x$V4 == "PAR2" | x$V4 == "XTR", ]
+
   } else if (filterPAR == TRUE && filterXTR == FALSE && filterAmpliconic == TRUE) {
     x1 <- x[grep("^Ampliconic", x$V4),]
     x2 <- x[x$V4 == "PAR1" | x$V4 == "PAR2", ]
@@ -6858,6 +7430,8 @@ filterGenomicFeatures <- function(x, filterPAR, filterXTR, filterAmpliconic) {
     y <- x[x$V4 == "XTR", ]
   } else if (filterPAR == FALSE && filterXTR == FALSE && filterAmpliconic == TRUE) {
     y <- x[grep("^Ampliconic", x$V4),]
+  }else{
+    y <- NULL
   }
   return(y)
 }
@@ -6961,6 +7535,1649 @@ removeFiles <- function(fileNames, directory) {
   }
 }
 
+removeFiles1 <- function(fileNames) {
+  for (fileName in fileNames) {
+    file.remove(fileName)
+  }
+}
+
+## Added in V7
+validateInputForLDPrune <- function(DataDir, finput, ResultDir, window_size, step_size, r2_threshold) {
+  # Check if directories exist
+  if (!dir.exists(DataDir)) {
+    stop("Data directory does not exist: ", DataDir)
+  }
+  if (!dir.exists(ResultDir)) {
+    stop("Result directory does not exist: ", ResultDir)
+  }
+
+  # Check numeric parameters for validity
+  if (!is.numeric(window_size) || window_size <= 0) {
+    stop("Window size must be a positive integer.")
+  }
+  if (!is.numeric(step_size) || step_size <= 0) {
+    stop("Step size must be a positive integer.")
+  }
+  if (!is.numeric(r2_threshold) || r2_threshold <= 0 || r2_threshold > 1) {
+    stop("R^2 threshold must be a number between 0 and 1.")
+  }
+}
 
 
+## New function V7.0
+read_plink_clumped_clean <- function(resultDir, filename) {
+  # Define the file path
+  file_path <- file.path(resultDir, filename)
+
+  # Read the file
+  lines <- readLines(file_path)
+
+  # Initialize lists to store data
+  index_snps <- list()
+  all_snps <- list()
+
+  # Variables to keep track of current index SNP
+  current_index <- NULL
+  current_data <- NULL
+
+  # Function to safely convert to numeric and handle NAs
+  safe_as_numeric <- function(x) {
+    as.numeric(ifelse(x == "" | is.na(x), NA, x))
+  }
+
+  # Parse each line
+  for (line in lines) {
+    # Check for the "(INDEX)" line
+    if (grepl("\\(INDEX\\)", line)) {
+      # Save the current index SNP data if not null
+      if (!is.null(current_index)) {
+        index_snps[[current_index]] <- current_data
+      }
+      # Parse the index SNP line
+      fields <- unlist(strsplit(trimws(line), "\\s+"))
+      current_index <- fields[2]
+      current_data <- data.frame(
+        INDEX_SNP = fields[2],
+        SNP = fields[2],
+        DISTANCE = 0,
+        RSQ = 1.000,
+        ALLELES = fields[7],
+        F = safe_as_numeric(fields[8]),
+        P = safe_as_numeric(fields[9]),
+        stringsAsFactors = FALSE
+      )
+    } else if (!is.null(current_index) && nchar(trimws(line)) > 0 && startsWith(trimws(line), "rs")) {
+      # Parse associated SNPs
+      fields <- unlist(strsplit(trimws(line), "\\s+"))
+      new_row <- data.frame(
+        INDEX_SNP = current_index,
+        SNP = fields[1],
+        DISTANCE = safe_as_numeric(fields[2]),
+        RSQ = safe_as_numeric(fields[3]),
+        ALLELES = fields[4],
+        F = safe_as_numeric(fields[5]),
+        P = safe_as_numeric(fields[6]),
+        stringsAsFactors = FALSE
+      )
+      current_data <- rbind(current_data, new_row)
+    }
+  }
+
+  # Save the last index SNP data
+  if (!is.null(current_index)) {
+    index_snps[[current_index]] <- current_data
+  }
+
+  # Convert list to data frame
+  index_snps_df <- do.call(rbind, index_snps)
+
+  # Clean up row names
+  rownames(index_snps_df) <- NULL
+
+  # Return the data frame
+  return(index_snps_df)
+}
+
+
+## Helper function from HDL R package ##
+HDL.rg <-
+  function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min(gwas1.df$N, gwas2.df$N), output.file = "", eigen.cut = "automatic",
+           jackknife.df = FALSE, intercept.output = FALSE, fill.missing.N = NULL, lim = exp(-18)){
+
+    if(output.file != ""){
+      if(file.exists(output.file) == T){
+        system(paste0("rm ",output.file))
+      }
+    }
+    time.start <- date()
+    cat("Analysis starts on", time.start, "\n")
+    if(output.file != ""){
+      cat("Analysis starts on", time.start, "\n", file = output.file, append = T)
+    }
+
+    if(eigen.cut != "automatic" && is.na(as.numeric(eigen.cut))){
+      error.message <- "The input of eigen.cut has to be 'automatic' or a number between 0 and 1. \n"
+      if(output.file != ""){
+        cat(error.message, file = output.file, append = T)
+      }
+      stop(error.message)
+    }
+
+    LD.files <- list.files(LD.path)
+
+    if(any(grepl(x = LD.files, pattern = ".*_snp_counter.*"))){
+      snp_counter_file <- LD.files[grep(x = LD.files, pattern = ".*_snp_counter.*")]
+      snp_list_file <- LD.files[grep(x = LD.files, pattern = ".*_snp_list.*")]
+      load(file = paste(LD.path, snp_counter_file, sep = "/"))
+      load(file = paste(LD.path, snp_list_file, sep = "/"))
+      if("nsnps.list.imputed" %in% ls()){
+        snps.name.list <- snps.list.imputed.vector
+        nsnps.list <- nsnps.list.imputed
+      }
+      if(is.null(names(nsnps.list))) names(nsnps.list) <- as.character(1:length(nsnps.list))
+    } else{
+      error.message <- "It seems this directory does not contain all files needed for HDL. Please check your LD.path again. The current version of HDL only supports pre-computed LD reference panels."
+      if(output.file != ""){
+        cat(error.message, file = output.file, append = T)
+      }
+      stop(error.message)
+    }
+
+    gwas1.df <- dplyr::filter(gwas1.df, SNP %in% snps.name.list)
+    gwas2.df <- dplyr::filter(gwas2.df, SNP %in% snps.name.list)
+
+    gwas1.df$A1 <- toupper(as.character(gwas1.df$A1))
+    gwas1.df$A2 <- toupper(as.character(gwas1.df$A2))
+    gwas2.df$A1 <- toupper(as.character(gwas2.df$A1))
+    gwas2.df$A2 <- toupper(as.character(gwas2.df$A2))
+
+    if(!("Z" %in% colnames(gwas1.df))){
+      if(("b" %in% colnames(gwas1.df)) && ("se" %in% colnames(gwas1.df))){
+        if(abs(median(gwas1.df$b) - 1) < 0.1){
+          cat("Taking log(b) in GWAS 1 because b is likely to be OR instead of log(OR). \n")
+          if(output.file != ""){
+            cat("Taking log(b) in GWAS 1 because b is likely to be OR instead of log(OR). \n", file = output.file, append = T)
+          }
+          gwas1.df$Z <- log(gwas1.df$b) / gwas1.df$se
+        } else{
+          gwas1.df$Z <- gwas1.df$b / gwas1.df$se
+        }
+      } else{
+        error.message <- "Z is not available in GWAS 1, meanwhile either b or se is missing. Please check."
+        if(output.file != ""){
+          cat(error.message, file = output.file, append = T)
+        }
+        stop(error.message)
+      }
+    }
+
+    if(!("Z" %in% colnames(gwas2.df))){
+      if(("b" %in% colnames(gwas2.df)) && ("se" %in% colnames(gwas2.df))){
+        if(abs(median(gwas2.df$b) - 1) < 0.1){
+          cat("Taking log(b) in GWAS 2 because b is likely to be OR instead of log(OR). \n")
+          if(output.file != ""){
+            cat("Taking log(b) in GWAS 2 because b is likely to be OR instead of log(OR). \n", file = output.file, append = T)
+          }
+          gwas2.df$Z <- log(gwas2.df$b) / gwas2.df$se
+        } else{
+          gwas2.df$Z <- gwas2.df$b / gwas2.df$se
+        }
+      } else{
+        error.message <- "Z is not available in GWAS 2, meanwhile either b or se is missing. Please check."
+        if(output.file != ""){
+          cat(error.message, file = output.file, append = T)
+        }
+        stop(error.message)
+      }
+    }
+
+    k1.0 <- length(unique(gwas1.df$SNP))
+    k2.0 <- length(unique(gwas2.df$SNP))
+
+    if(is.null(fill.missing.N)){
+      gwas1.df <- dplyr::filter(gwas1.df, !is.na(Z), !is.na(N))
+      gwas2.df <- dplyr::filter(gwas2.df, !is.na(Z), !is.na(N))
+    } else if(fill.missing.N == "min"){
+      gwas1.df <- dplyr::filter(gwas1.df, !is.na(Z))
+      gwas1.df$N[is.na(gwas1.df$N)] <- min(gwas1.df$N, na.rm = T)
+
+      gwas2.df <- dplyr::filter(gwas2.df, !is.na(Z))
+      gwas2.df$N[is.na(gwas2.df$N)] <- min(gwas2.df$N, na.rm = T)
+    } else if(fill.missing.N == "max"){
+      gwas1.df <- dplyr::filter(gwas1.df, !is.na(Z))
+      gwas1.df$N[is.na(gwas1.df$N)] <- max(gwas1.df$N, na.rm = T)
+
+      gwas2.df <- dplyr::filter(gwas2.df, !is.na(Z))
+      gwas2.df$N[is.na(gwas2.df$N)] <- max(gwas2.df$N, na.rm = T)
+    } else if(fill.missing.N == "median"){
+      gwas1.df <- dplyr::filter(gwas1.df, !is.na(Z))
+      gwas1.df$N[is.na(gwas1.df$N)] <- median(gwas1.df$N, na.rm = T)
+
+      gwas2.df <- dplyr::filter(gwas2.df, !is.na(Z))
+      gwas2.df$N[is.na(gwas2.df$N)] <- median(gwas2.df$N, na.rm = T)
+    } else{
+      error.message <- "If given, the argument fill.missing.N can only be one of below: 'min', 'max', 'median'."
+      if(output.file != ""){
+        cat(error.message, file = output.file, append = T)
+      }
+      stop(error.message)
+    }
+
+    k1 <- length(unique(gwas1.df$SNP))
+    k2 <- length(unique(gwas2.df$SNP))
+    k1.percent <- paste("(", round(100*k1 / length(snps.name.list), 2), "%)", sep="")
+    k2.percent <- paste("(", round(100*k2 / length(snps.name.list), 2), "%)", sep="")
+
+    cat(k1.0 - k1, "SNPs were removed in GWAS 1 due to missing N or missing test statistic. \n")
+    cat(k2.0 - k2, "SNPs were removed in GWAS 2 due to missing N or missing test statistic. \n")
+    if(output.file != ""){
+      cat(k1.0 - k1, " SNPs were removed in GWAS 1 due to missing N or missing test statistic. \n", file = output.file, append = T)
+      cat(k2.0 - k2, " SNPs were removed in GWAS 2 due to missing N or missing test statistic. \n", file = output.file, append = T)
+    }
+
+    cat(k1, "out of", length(snps.name.list), k1.percent, "SNPs in reference panel are available in GWAS 1. \n")
+    cat(k2, "out of", length(snps.name.list), k2.percent, "SNPs in reference panel are available in GWAS 2. \n")
+    if(output.file != ""){
+      cat(k1, "out of", length(snps.name.list), k1.percent, "SNPs in reference panel are available in GWAS 1. \n", file = output.file, append = T)
+      cat(k2, "out of", length(snps.name.list), k2.percent, "SNPs in reference panel are available in GWAS 2. \n", file = output.file, append = T)
+    }
+    if(k1 < length(snps.name.list) * 0.99){
+      error.message <- "Warning: More than 1% SNPs in reference panel are missed in GWAS 1. This may generate bias in estimation. Please make sure that you are using the correct reference panel. \n"
+      if(output.file != ""){
+        cat(error.message, file = output.file, append = T)
+      }
+      cat(error.message)
+    }
+    if(k2 < length(snps.name.list) * 0.99){
+      error.message <- "Warning: More than 1% SNPs in reference panel are missed in GWAS 2. This may generate bias in estimation. Please make sure that you are using the correct reference panel. \n"
+      if(output.file != ""){
+        cat(error.message, file = output.file, append = T)
+      }
+      cat(error.message)
+    }
+
+    ## stats
+    N1 <- median(gwas1.df$N)
+    N2 <- median(gwas2.df$N)
+    N <- sqrt(N1) * sqrt(N2)
+
+    ## samples for phenotypes
+    p1 <- N0 / N1
+    p2 <- N0 / N2
+
+    rho12 <- suppressWarnings(dplyr::inner_join(gwas1.df %>% dplyr::select(SNP, Z), gwas2.df %>% dplyr::select(SNP, Z), by = "SNP") %>%
+                                dplyr::summarise(x = cor(Z.x, Z.y, use = "complete.obs")) %>% unlist)
+
+    bstar1.v <- bstar2.v <- lam.v <- list()
+    HDL11.df <- HDL12.df <- HDL22.df <- names.row <- NULL
+    counter <- 0
+    message <- ""
+    num.pieces <- length(unlist(nsnps.list))
+    for(chr in names(nsnps.list)){
+      k <- length(nsnps.list[[chr]])
+      for(piece in 1:k){
+
+        ## reference sample ##
+
+        LD_rda_file <- LD.files[grep(x = LD.files, pattern = paste0("chr", chr, ".", piece, "[\\._].*rda"))]
+        LD_bim_file <- LD.files[grep(x = LD.files, pattern = paste0("chr", chr, ".", piece, "[\\._].*bim"))]
+        load(file = paste(LD.path, LD_rda_file, sep = "/"))
+        snps.ref.df <- read.table(paste(LD.path, LD_bim_file, sep = "/"))
+
+        colnames(snps.ref.df) <- c("chr", "id", "non", "pos", "A1", "A2")
+        snps.ref <- snps.ref.df$id
+        A2.ref <- snps.ref.df$A2
+        names(A2.ref) <- snps.ref
+
+        gwas1.df.subset <- dplyr::filter(gwas1.df, SNP %in% snps.ref) %>% dplyr::distinct(SNP, A1, A2, .keep_all = TRUE)
+
+        ## Check if there are multiallelic or duplicated SNPs
+        if(any(duplicated(gwas1.df.subset$SNP)) == TRUE){
+          gwas1.df.subset.duplicated <- gwas1.df.subset %>%
+            dplyr::mutate(row.num = 1:n()) %>%
+            dplyr::filter(SNP == SNP[duplicated(SNP)]) %>%
+            dplyr::mutate(SNP_A1_A2 = paste(SNP, A1, A2, sep = "_"))
+          snps.ref.df.duplicated <- dplyr::filter(snps.ref.df, id %in% gwas1.df.subset.duplicated$SNP)
+          SNP_A1_A2.valid <- c(paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A1, snps.ref.df.duplicated$A2, sep = "_"),
+                               paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A2, snps.ref.df.duplicated$A1, sep = "_"))
+          row.remove <- dplyr::filter(gwas1.df.subset.duplicated, !(SNP_A1_A2 %in% SNP_A1_A2.valid)) %>% dplyr::select(row.num) %>% unlist()
+          gwas1.df.subset <- gwas1.df.subset[-row.remove,]
+        }
+
+        bhat1.raw <- gwas1.df.subset[, "Z"] / sqrt(gwas1.df.subset[, "N"])
+        A2.gwas1 <- gwas1.df.subset[, "A2"]
+        names(bhat1.raw) <- names(A2.gwas1) <- gwas1.df.subset$SNP
+        idx.sign1 <- A2.gwas1 == A2.ref[names(A2.gwas1)]
+        bhat1.raw <- bhat1.raw * (2 * as.numeric(idx.sign1) - 1)
+
+        gwas2.df.subset <- dplyr::filter(gwas2.df, SNP %in% snps.ref) %>% dplyr::distinct(SNP, A1, A2, .keep_all = TRUE)
+
+        ## Check if there are multiallelic or duplicated SNPs
+        if(any(duplicated(gwas2.df.subset$SNP)) == TRUE){
+          gwas2.df.subset.duplicated <- gwas2.df.subset %>%
+            dplyr::mutate(row.num = 1:n()) %>%
+            dplyr::filter(SNP == SNP[duplicated(SNP)]) %>%
+            dplyr::mutate(SNP_A1_A2 = paste(SNP, A1, A2, sep = "_"))
+          snps.ref.df.duplicated <- dplyr::filter(snps.ref.df, id %in% gwas2.df.subset.duplicated$SNP)
+          SNP_A1_A2.valid <- c(paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A1, snps.ref.df.duplicated$A2, sep = "_"),
+                               paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A2, snps.ref.df.duplicated$A1, sep = "_"))
+          row.remove <- dplyr::filter(gwas2.df.subset.duplicated, !(SNP_A1_A2 %in% SNP_A1_A2.valid)) %>% dplyr::select(row.num) %>% unlist()
+          gwas2.df.subset <- gwas2.df.subset[-row.remove,]
+        }
+        bhat2.raw <- gwas2.df.subset[, "Z"] / sqrt(gwas2.df.subset[, "N"])
+        A2.gwas2 <- gwas2.df.subset[, "A2"]
+        names(bhat2.raw) <- names(A2.gwas2) <- gwas2.df.subset$SNP
+        idx.sign2 <- A2.gwas2 == A2.ref[names(A2.gwas2)]
+        bhat2.raw <- bhat2.raw * (2 * as.numeric(idx.sign2) - 1)
+
+        M <- length(LDsc)
+        bhat1 <- bhat2 <- numeric(M)
+        names(bhat1) <- names(bhat2) <- snps.ref
+        bhat1[names(bhat1.raw)] <- bhat1.raw
+        bhat2[names(bhat2.raw)] <- bhat2.raw
+
+        a11 <- bhat1**2
+        a22 <- bhat2**2
+        a12 <- bhat1 * bhat2
+
+        reg <- lm(a11 ~ LDsc)
+        h11.ols <- c(summary(reg)$coef[1:2,1:2] * c(N1, M))
+
+        reg <- lm(a22 ~ LDsc)
+        h22.ols <- c(summary(reg)$coef[1:2,1:2] * c(N2, M))
+
+        reg <- lm(a12 ~ LDsc)
+        if(N0 > 0) h12.ols <- c(summary(reg)$coef[1:2,1:2] * c((N0 / p1 / p2), M))
+        if(N0 == 0) h12.ols <- c(summary(reg)$coef[1:2,1:2] * c(N, M))
+
+        ##  ................................ weighted LS: use estimated h2
+        ## vars from Bulik-Sullivan
+
+        h11v <- (h11.ols[2] * LDsc / M + 1 / N1)^2
+        h22v <- (h22.ols[2] * LDsc / M + 1 / N2)^2
+
+        reg <- lm(a11 ~ LDsc, weights = 1 / h11v)
+        h11.wls <- c(summary(reg)$coef[1:2,1:2] * c(N1, M))
+
+        reg <- lm(a22 ~ LDsc, weights = 1 / h22v)
+        h22.wls <- c(summary(reg)$coef[1:2,1:2] * c(N2, M))
+
+        if(N0 > 0) h12v <- sqrt(h11v * h22v) + (h12.ols[2] * LDsc / M + p1 * p2 * rho12 / N0)^2
+        if(N0 == 0) h12v <- sqrt(h11v * h22v) + (h12.ols[2] * LDsc / M)^2
+
+        reg <- lm(a12 ~ LDsc, weights = 1 / h12v)
+        if(N0 > 0) h12.wls <- c(summary(reg)$coef[1:2,1:2] * c((N0 / p1 / p2), M))
+        if(N0 == 0) h12.wls <- c(summary(reg)$coef[1:2,1:2] * c(N, M))
+
+        ## .................................  likelihood based
+        ## ....  estimate h2s
+        bstar1 <- crossprod(V, bhat1)  ##
+        bstar2 <- crossprod(V, bhat2)  ##
+
+        opt <- stats::optim(c(h11.wls[2], 1), llfun, N = N1, Nref = Nref, lam = lam, bstar = bstar1, M = M,
+                            lim = lim, method ='L-BFGS-B', lower = c(0, 0), upper = c(1, 10))
+
+        h11.hdl <- opt$par
+
+        opt <- stats::optim(c(h22.wls[2], 1), llfun, N = N2, Nref = Nref, lam = lam, bstar = bstar2, M = M,
+                            lim = lim, method ='L-BFGS-B', lower = c(0, 0), upper = c(1, 10))
+        h22.hdl <- opt$par
+
+        opt <- stats::optim(c(h12.wls[2], rho12), llfun.gcov.part.2, h11 = h11.hdl, h22 = h22.hdl,
+                            rho12 = rho12, M = M, N1 = N1, N2 = N2, N0 = N0, Nref = Nref,
+                            lam0 = lam, lam1 = lam, lam2 = lam,
+                            bstar1 = bstar1, bstar2 = bstar2,
+                            lim = lim, method = 'L-BFGS-B', lower = c(-1, -10), upper = c(1, 10))
+        h12.hdl <- opt$par
+
+        HDL11.df <- rbind(HDL11.df, h11.hdl)
+        HDL22.df <- rbind(HDL22.df, h22.hdl)
+        HDL12.df <- rbind(HDL12.df, h12.hdl)
+
+        bstar1.v <- c(bstar1.v, list(bstar1))
+        bstar2.v <- c(bstar2.v, list(bstar2))
+        lam.v <- c(lam.v, list(lam))
+
+        ## Report progress ##
+        counter <- counter + 1
+        value <- round(counter / num.pieces * 100)
+        backspaces <- paste(rep("\b", nchar(message)), collapse = "")
+        message <- paste("Estimation is ongoing ... ", value, "%", sep = "", collapse = "")
+        cat(backspaces, message, sep = "")
+      }
+    }
+    cat("\n")
+    rownames(HDL11.df) <- rownames(HDL22.df) <- rownames(HDL12.df) <- names.row
+
+    h1_2 <- sum(HDL11.df[, 1])
+    h2_2 <- sum(HDL22.df[, 1])
+    gen.cov <- sum(HDL12.df[, 1])
+
+    ##### Estimated likelihood for h12 + h11, h22 independent #####
+    cat("\n")
+    cat("Integrating piecewise results \n")
+    if(output.file != ""){
+      cat("\n", file = output.file, append = T)
+      cat("Integrating piecewise results \n", file = output.file, append = T)
+    }
+    M.ref <- sum(unlist(nsnps.list))
+    eigen_select.fun <- function(x, k){
+      return(x[1:k])
+    }
+
+    eigen_select_num.fun <- function(eigen.percent, cut.percent){
+      if(!(eigen.percent[length(eigen.percent)] > cut.percent)){
+        return(length(eigen.percent))
+      } else{
+        return(which(eigen.percent > cut.percent)[1])
+      }
+    }
+
+    if(eigen.cut == "automatic"){
+      eigen.num.v.90 <- eigen.num.v.95 <- eigen.num.v.99 <- c()
+      nsnps.v <- unlist(nsnps.list)
+      for(i in 1:length(nsnps.v)){
+        lam.i <- lam.v[[i]]
+        eigen.percent <- numeric(length(lam.i))
+        temp <- 0
+        for(j in 1:length(lam.i)){
+          temp <- temp + lam.i[j]
+          eigen.percent[j] <- temp / nsnps.v[i]
+        }
+        eigen.num.90 <- eigen_select_num.fun(eigen.percent, 0.9)
+        eigen.num.95 <- eigen_select_num.fun(eigen.percent, 0.95)
+        eigen.num.99 <- eigen_select_num.fun(eigen.percent, 0.99)
+
+        eigen.num.v.90 <- c(eigen.num.v.90, eigen.num.90)
+        eigen.num.v.95 <- c(eigen.num.v.95, eigen.num.95)
+        eigen.num.v.99 <- c(eigen.num.v.99, eigen.num.99)
+      }
+
+      lam.v.90 <- mapply(eigen_select.fun, lam.v, eigen.num.v.90)
+      bstar1.v.90 <- mapply(eigen_select.fun, bstar1.v, eigen.num.v.90)
+      bstar2.v.90 <- mapply(eigen_select.fun, bstar2.v, eigen.num.v.90)
+
+      opt <- stats::optim(c(h1_2, 1), llfun, N = N1, Nref = Nref, lam = unlist(lam.v.90), bstar = unlist(bstar1.v.90), M = M.ref,
+                          lim = lim, method = 'L-BFGS-B', lower = c(0, 0), upper = c(1, 10))
+      h11.hdl.90 <- opt$par
+      opt <- stats::optim(c(h2_2, 1), llfun, N = N2, Nref = Nref, lam = unlist(lam.v.90), bstar = unlist(bstar2.v.90), M = M.ref,
+                          lim = lim, method = 'L-BFGS-B', lower = c(0, 0), upper = c(1, 10))
+      h22.hdl.90 <- opt$par
+
+      if(sum(unlist(eigen.num.v.90)) == sum(unlist(eigen.num.v.95))){
+        lam.v.use <- lam.v.90
+        bstar1.v.use <- bstar1.v.90
+        bstar2.v.use <- bstar2.v.90
+        h11.hdl.use <- h11.hdl.90
+        h22.hdl.use <- h22.hdl.90
+        eigen.use <- 0.9
+      } else{
+        lam.v.95 <- mapply(eigen_select.fun, lam.v, eigen.num.v.95)
+        bstar1.v.95 <- mapply(eigen_select.fun, bstar1.v, eigen.num.v.95)
+        bstar2.v.95 <- mapply(eigen_select.fun, bstar2.v, eigen.num.v.95)
+
+        opt <- stats::optim(c(h1_2, 1), llfun, N = N1, Nref = Nref, lam = unlist(lam.v.95), bstar = unlist(bstar1.v.95), M = M.ref,
+                            lim = lim, method = 'L-BFGS-B', lower = c(0, 0), upper = c(1, 10))
+        h11.hdl.95 <- opt$par
+        opt <- stats::optim(c(h2_2, 1), llfun, N = N2, Nref = Nref, lam = unlist(lam.v.95), bstar = unlist(bstar2.v.95), M = M.ref,
+                            lim = lim, method = 'L-BFGS-B', lower = c(0, 0), upper = c(1, 10))
+        h22.hdl.95 <- opt$par
+
+        if(sum(unlist(eigen.num.v.95)) == sum(unlist(eigen.num.v.99))){
+          if(h11.hdl.95[1] != 0 &&
+             h22.hdl.95[1] != 0 &&
+             (h11.hdl.90[1] - h11.hdl.95[1]) / abs(h11.hdl.95[1]) < 0.2 &&
+             (h22.hdl.90[1] - h22.hdl.95[1]) / abs(h22.hdl.95[1]) < 0.2){
+            lam.v.use <- lam.v.95
+            bstar1.v.use <- bstar1.v.95
+            bstar2.v.use <- bstar2.v.95
+            h11.hdl.use <- h11.hdl.95
+            h22.hdl.use <- h22.hdl.95
+            eigen.use <- 0.95
+          } else{
+            lam.v.use <- lam.v.90
+            bstar1.v.use <- bstar1.v.90
+            bstar2.v.use <- bstar2.v.90
+            h11.hdl.use <- h11.hdl.90
+            h22.hdl.use <- h22.hdl.90
+            eigen.use <- 0.9
+          }
+        } else{
+          lam.v.99 <- mapply(eigen_select.fun, lam.v, eigen.num.v.99)
+          bstar1.v.99 <- mapply(eigen_select.fun, bstar1.v, eigen.num.v.99)
+          bstar2.v.99 <- mapply(eigen_select.fun, bstar2.v, eigen.num.v.99)
+
+          opt <- stats::optim(c(h1_2, 1), llfun, N = N1, Nref = Nref, lam = unlist(lam.v.99), bstar = unlist(bstar1.v.99), M = M.ref,
+                              lim = lim, method = 'L-BFGS-B', lower = c(0, 0), upper = c(1, 10))
+          h11.hdl.99 <- opt$par
+          opt <- stats::optim(c(h2_2, 1), llfun, N = N2, Nref = Nref, lam = unlist(lam.v.99), bstar = unlist(bstar2.v.99), M = M.ref,
+                              lim = lim, method = 'L-BFGS-B', lower = c(0, 0), upper = c(1, 10))
+          h22.hdl.99 <- opt$par
+
+          if(h11.hdl.99[1] != 0 &&
+             h22.hdl.99[1] != 0 &&
+             (h11.hdl.90[1] - h11.hdl.99[1]) / abs(h11.hdl.99[1]) < 0.2 &&
+             (h22.hdl.90[1] - h22.hdl.99[1]) / abs(h22.hdl.99[1]) < 0.2){
+            lam.v.use <- lam.v.99
+            bstar1.v.use <- bstar1.v.99
+            bstar2.v.use <- bstar2.v.99
+            h11.hdl.use <- h11.hdl.99
+            h22.hdl.use <- h22.hdl.99
+            eigen.use <- 0.99
+          } else{
+            if(h11.hdl.95[1] != 0 &&
+               h22.hdl.95[1] != 0 &&
+               (h11.hdl.90[1] - h11.hdl.95[1]) / abs(h11.hdl.95[1]) < 0.2 &&
+               (h22.hdl.90[1] - h22.hdl.95[1]) / abs(h22.hdl.95[1]) < 0.2){
+              lam.v.use <- lam.v.95
+              bstar1.v.use <- bstar1.v.95
+              bstar2.v.use <- bstar2.v.95
+              h11.hdl.use <- h11.hdl.95
+              h22.hdl.use <- h22.hdl.95
+              eigen.use <- 0.95
+            } else{
+              lam.v.use <- lam.v.90
+              bstar1.v.use <- bstar1.v.90
+              bstar2.v.use <- bstar2.v.90
+              h11.hdl.use <- h11.hdl.90
+              h22.hdl.use <- h22.hdl.90
+              eigen.use <- 0.9
+            }
+          }
+        }
+      }
+    } else if(!is.na(as.numeric(eigen.cut))){
+      eigen.cut <- as.numeric(eigen.cut)
+      eigen.use <- eigen.cut
+      eigen.num.v.cut <- c()
+      nsnps.v <- unlist(nsnps.list)
+      for(i in 1:length(nsnps.v)){
+        lam.i <- lam.v[[i]]
+        eigen.percent <- numeric(length(lam.i))
+        temp <- 0
+        for(j in 1:length(lam.i)){
+          temp <- temp + lam.i[j]
+          eigen.percent[j] <- temp / nsnps.v[i]
+        }
+        eigen.num.cut <- eigen_select_num.fun(eigen.percent, eigen.cut)
+        eigen.num.v.cut <- c(eigen.num.v.cut, eigen.num.cut)
+      }
+
+      lam.v.cut <- mapply(eigen_select.fun, lam.v, eigen.num.v.cut)
+      bstar1.v.cut <- mapply(eigen_select.fun, bstar1.v, eigen.num.v.cut)
+      bstar2.v.cut <- mapply(eigen_select.fun, bstar2.v, eigen.num.v.cut)
+
+      opt <- stats::optim(c(h1_2, 1), llfun, N = N1, Nref = Nref, lam = unlist(lam.v.cut), bstar = unlist(bstar1.v.cut), M = M.ref,
+                          lim = lim, method = 'L-BFGS-B', lower = c(0, 0), upper = c(1, 10))
+      h11.hdl.cut <- opt$par
+      opt <- stats::optim(c(h2_2, 1), llfun, N = N2, Nref = Nref, lam = unlist(lam.v.cut), bstar = unlist(bstar2.v.cut), M = M.ref,
+                          lim = lim, method = 'L-BFGS-B', lower = c(0, 0), upper = c(1, 10))
+      h22.hdl.cut <- opt$par
+
+      lam.v.use <- lam.v.cut
+      bstar1.v.use <- bstar1.v.cut
+      bstar2.v.use <- bstar2.v.cut
+
+      h11.hdl.use <- h11.hdl.cut
+      h22.hdl.use <- h22.hdl.cut
+    }
+
+    h11 <- h11.hdl.use[1]
+    h22 <- h22.hdl.use[1]
+    opt <- stats::optim(c(gen.cov, rho12), llfun.gcov.part.2, h11 = h11.hdl.use, h22 = h22.hdl.use,
+                        rho12 = rho12, M = M.ref, N1 = N1, N2 = N2, N0 = N0, Nref = Nref,
+                        lam0 = unlist(lam.v.use), lam1 = unlist(lam.v.use), lam2 = unlist(lam.v.use),
+                        bstar1 = unlist(bstar1.v.use), bstar2 = unlist(bstar2.v.use),
+                        lim = lim, method = 'L-BFGS-B', lower = c(-1, -10), upper = c(1, 10))
+    if(opt$convergence != 0){
+      starting.value.v <- c(0, -sqrt(h11 * h22) * 0.5, sqrt(h11 * h22) * 0.5)
+      k <- 1
+      while(opt$convergence != 0){
+        starting.value <- starting.value.v[k]
+        opt <- stats::optim(c(starting.value, rho12), llfun.gcov.part.2, h11 = h11.hdl.use, h22 = h22.hdl.use,
+                            rho12 = rho12, M = M.ref, N1 = N1, N2 = N2, N0 = N0, Nref = Nref,
+                            lam0 = unlist(lam.v.use), lam1 = unlist(lam.v.use), lam2 = unlist(lam.v.use),
+                            bstar1 = unlist(bstar1.v.use), bstar2 = unlist(bstar2.v.use),
+                            lim = lim, method = 'L-BFGS-B', lower = c(-1, -10), upper = c(1, 10))
+        k <- k + 1
+        if(k > length(starting.value.v)){
+          error.message <- "Algorithm failed to converge after trying different initial values. \n"
+          if(output.file != ""){
+            cat(error.message, file = output.file, append = T)
+          }
+          stop(error.message)
+        }
+      }
+    }
+    h12.hdl.use <- opt$par
+    h12 <- h12.hdl.use[1]
+    rg <- h12.hdl.use[1] / sqrt(h11.hdl.use[1] * h22.hdl.use[1])
+
+    if(intercept.output == T){
+      h11.intercept <- h11.hdl.use[2]
+      h22.intercept <- h22.hdl.use[2]
+      h12.intercept <- h12.hdl.use[2]
+    }
+
+    output <- function(value){
+      if(is.na(value)){
+        value.out <- NA
+      } else if(abs(value) < 1e-4){
+        value.out <- formatC(value, format = "e", digits = 2)
+      } else {
+        value.out <- round(value, digits = 4)
+      }
+    }
+
+    cat("\n")
+    cat("Point estimates: \n")
+    cat("Heritability of phenotype 1: ",
+        output(h11),
+        "\n")
+    cat("Heritability of phenotype 2: ",
+        output(h22),
+        "\n")
+    cat("Genetic Covariance: ",
+        output(h12),
+        "\n")
+    cat("Genetic Correlation: ",
+        output(rg),
+        "\n")
+    if(h11 == 0 | h22 == 0){
+      cat("Warning: Heritability of one trait was estimated to be 0, which may be due to:
+          1) The true heritability is very small;
+          2) The sample size is too small;
+          3) Many SNPs in the chosen reference panel are missing in the GWAS;
+          4) There is a severe mismatch between the GWAS population and the population for computing the reference panel")
+    }
+    cat("\n")
+
+    cat("Continuing computing standard error with jackknife \n")
+    if(output.file != ""){
+      cat("Continuing computing standard error with jackknife \n", file = output.file, append = T)
+    }
+    counter <- 0
+    message <- ""
+    rg.jackknife <- h11.jackknife <- h12.jackknife <- h22.jackknife <- numeric(length(lam.v))
+    if(intercept.output == T){
+      h11.intercept.jackknife <- h12.intercept.jackknife <- h22.intercept.jackknife <- numeric(length(lam.v))
+    }
+    for(i in 1:length(lam.v)){
+      opt <- stats::optim(h11.hdl.use, llfun, N = N1, Nref = Nref, lam = unlist(lam.v.use[-i]), bstar = unlist(bstar1.v.use[-i]), M = M.ref,
+                          lim = lim, method = 'L-BFGS-B', lower = c(0, 0), upper = c(1, 10))
+      h11.hdl.jackknife <- opt$par
+
+      opt <- stats::optim(h22.hdl.use, llfun, N = N2, Nref = Nref, lam = unlist(lam.v.use[-i]), bstar = unlist(bstar2.v.use[-i]), M = M.ref,
+                          lim = lim, method = 'L-BFGS-B', lower = c(0, 0), upper = c(1, 10))
+      h22.hdl.jackknife <- opt$par
+
+      opt <- stats::optim(h12.hdl.use, llfun.gcov.part.2, h11 = h11.hdl.use, h22 = h22.hdl.use,
+                          rho12 = rho12, M = M.ref, N1 = N1, N2 = N2, N0 = N0, Nref = Nref,
+                          lam0 = unlist(lam.v.use[-i]), lam1 = unlist(lam.v.use[-i]), lam2 = unlist(lam.v.use[-i]),
+                          bstar1 = unlist(bstar1.v.use[-i]), bstar2 = unlist(bstar2.v.use[-i]),
+                          lim = lim, method = 'L-BFGS-B', lower = c(-1, -10), upper = c(1, 10))
+      h12.hdl.jackknife <- opt$par
+      h11.jackknife[i] <- h11.hdl.jackknife[1]
+      h12.jackknife[i] <- h12.hdl.jackknife[1]
+      h22.jackknife[i] <- h22.hdl.jackknife[1]
+      rg.jackknife[i] <- h12.hdl.jackknife[1] / sqrt(h11.hdl.jackknife[1] * h22.hdl.jackknife[1])
+
+      if(intercept.output == T){
+        h11.intercept.jackknife[i] <- h11.hdl.jackknife[2]
+        h12.intercept.jackknife[i] <- h12.hdl.jackknife[2]
+        h22.intercept.jackknife[i] <- h22.hdl.jackknife[2]
+      }
+
+      ## Report progress ##
+      counter <- counter + 1
+      value <- round(counter / length(lam.v) * 100)
+      backspaces <- paste(rep("\b", nchar(message)), collapse = "")
+      message <- paste("Progress... ", value, "%", sep = "", collapse = "")
+      cat(backspaces, message, sep = "")
+    }
+    rg.jackknife <- rg.jackknife[!is.infinite(rg.jackknife)]
+    h11.se <- sqrt(mean((h11.jackknife - mean(h11.jackknife))^2) * (length(h11.jackknife) - 1))
+    h12.se <- sqrt(mean((h12.jackknife - mean(h12.jackknife))^2) * (length(h12.jackknife) - 1))
+    h22.se <- sqrt(mean((h22.jackknife - mean(h22.jackknife))^2) * (length(h22.jackknife) - 1))
+    rg.se <- sqrt(mean((rg.jackknife - mean(rg.jackknife))^2) * (length(rg.jackknife) - 1))
+    P <- pchisq((rg / rg.se)^2, df = 1, lower.tail = FALSE)
+
+    if(intercept.output == FALSE){
+      estimates.df <- matrix(c(h11, h22, h12, rg,
+                               h11.se, h22.se, h12.se, rg.se),
+                             nrow = 4, ncol = 2)
+      rownames(estimates.df) <- c("Heritability_1", "Heritability_2", "Genetic_Covariance", "Genetic_Correlation")
+      colnames(estimates.df) <- c("Estimate", "se")
+    } else{
+      h11.intercept.se <- sqrt(mean((h11.intercept.jackknife - mean(h11.intercept.jackknife))^2) * (length(h11.intercept.jackknife) - 1))
+      h12.intercept.se <- sqrt(mean((h12.intercept.jackknife - mean(h12.intercept.jackknife))^2) * (length(h12.intercept.jackknife) - 1))
+      h22.intercept.se <- sqrt(mean((h22.intercept.jackknife - mean(h22.intercept.jackknife))^2) * (length(h22.intercept.jackknife) - 1))
+      estimates.df <- matrix(c(h11, h22, h12, rg, h11.intercept, h22.intercept, h12.intercept,
+                               h11.se, h22.se, h12.se, rg.se, h11.intercept.se, h22.intercept.se, h12.intercept.se),
+                             nrow = 7, ncol = 2)
+      rownames(estimates.df) <- c("Heritability_1", "Heritability_2", "Genetic_Covariance", "Genetic_Correlation",
+                                  "Heritability_1_intercept", "Heritability_2_intercept", "Genetic_Covariance_intercept")
+      colnames(estimates.df) <- c("Estimate", "se")
+    }
+
+    if(is.na(P)){
+      p.out <- NA
+    } else{
+      p.out <- formatC(P, format = "e", digits = 2)
+    }
+
+    end.time <- date()
+    cat("\n")
+    cat("\n")
+    cat("Heritability of phenotype 1: ",
+        output(h11),
+        paste0("(", output(h11.se), ") \n"))
+    cat("Heritability of phenotype 2: ",
+        output(h22),
+        paste0("(", output(h22.se), ") \n"))
+    cat("Genetic Covariance: ",
+        output(h12),
+        paste0("(", output(h12.se), ") \n"))
+    cat("Genetic Correlation: ",
+        output(rg),
+        paste0("(", output(rg.se), ") \n"))
+    cat("P: ", p.out, "\n")
+    if(h11 == 0 | h22 == 0){
+      cat("Warning: Heritability of one trait was estimated to be 0, which may be due to:
+          1) The true heritability is very small;
+          2) The sample size is too small;
+          3) Many SNPs in the chosen reference panel are missing in the GWAS.")
+    }
+    cat("\n")
+    cat("Analysis finished at", end.time, "\n")
+
+    if(output.file != ""){
+      cat("\n", file = output.file, append = TRUE)
+      cat("\n", file = output.file, append = TRUE)
+      cat("Heritability of phenotype 1: ",
+          output(h11),
+          paste0("(", output(h11.se), ") \n"), file = output.file, append = TRUE)
+      cat("Heritability of phenotype 2: ",
+          output(h22),
+          paste0("(", output(h22.se), ") \n"), file = output.file, append = TRUE)
+      cat("Genetic Covariance: ",
+          output(h12),
+          paste0("(", output(h12.se), ") \n"), file = output.file, append = TRUE)
+      cat("Genetic Correlation: ",
+          output(rg),
+          paste0("(", output(rg.se), ") \n"), file = output.file, append = TRUE)
+      cat("P: ", p.out, "\n", file = output.file, append = TRUE)
+      if(h11 == 0 | h22 == 0){
+        cat("Warning: Heritability of one trait was estimated to be 0, which may be due to:
+            1) The true heritability is very low;
+            2) The sample size of the GWAS is too small;
+            3) Many SNPs in the chosen reference panel are absent in the GWAS;
+            4) There is a severe mismatch between the GWAS population and the population for computing the reference panel", file = output.file, append = TRUE)
+      }
+      cat("\n", file = output.file, append = TRUE)
+      cat("Analysis finished at", end.time, "\n", file = output.file, append = TRUE)
+      cat("The results were saved to", output.file)
+      cat("\n")
+      cat("The results were saved to", output.file, file = output.file, append = TRUE)
+      cat("\n", file = output.file, append = TRUE)
+    }
+
+    if(jackknife.df == TRUE){
+      jackknife.df <- rbind(h11.jackknife, h22.jackknife, h12.jackknife, rg.jackknife)
+      rownames(jackknife.df) <- c("Heritability_1", "Heritability_2", "Genetic_Covariance", "Genetic_Correlation")
+      return(list(rg = rg, rg.se = rg.se, P = P, estimates.df = estimates.df, eigen.use = eigen.use, jackknife.df = jackknife.df))
+    }
+
+    return(list(rg = rg, rg.se = rg.se, P = P, estimates.df = estimates.df, eigen.use = eigen.use))
+  }
+
+
+
+.Random.seed <-
+  c(403L, 624L, 481462074L, -1827783821L, -1227001320L, 540513593L,
+    877618086L, 1330133487L, 1639352164L, 191790869L, 1124390098L,
+    -1098967509L, 370143088L, 1767599281L, 1869350590L, -1130951641L,
+    -1128679876L, 1161034253L, 140436842L, 1796085731L, -1990023224L,
+    -1370651863L, 115612886L, 922219871L, -1855696876L, -713481211L,
+    1020991746L, -189128549L, -1924203744L, 639613089L, -597162514L,
+    -846735977L, 1362474220L, 1998445821L, -1004548198L, 2057179219L,
+    1203390840L, 794815769L, -1141628410L, 171936975L, -69647164L,
+    -96598795L, -1897961166L, 712034059L, 2104881872L, 1738014865L,
+    -1387212514L, -1250690297L, 749100956L, -1817084947L, -1000847926L,
+    -66771773L, 935286568L, -1295133943L, 1972532022L, 156631103L,
+    -668965516L, 478945765L, 466928994L, -590739077L, 432002688L,
+    855852161L, 1218013262L, 1433566327L, -1183402420L, 1100863197L,
+    1714112506L, 1263162675L, 1712115928L, 800470265L, -1433268122L,
+    305287087L, 1879355940L, -1561167147L, 1195257234L, 1655498731L,
+    -1272469968L, -312441743L, -2123052162L, 1683642855L, 1288812796L,
+    -481169971L, 528209450L, 1446289827L, 1442690696L, 1962414825L,
+    1451620758L, 277576479L, -804181292L, -1480585275L, 626958786L,
+    1556111963L, 1835557344L, 1265549409L, -942277970L, -557673641L,
+    -693999700L, -2030255939L, -1360203686L, 206244371L, -1314060232L,
+    422735065L, 700526278L, 1842905743L, 2005979012L, -385621835L,
+    -1422319118L, 627800267L, -453178992L, 1101854801L, 1483732446L,
+    1996630215L, -1852587428L, -695382099L, 1273075338L, -824930685L,
+    -101333528L, 1791247049L, -1185501194L, -2125437441L, 143564852L,
+    -1198723675L, -560943582L, 1087712059L, -383738560L, -195417023L,
+    1823849742L, 87038519L, -1290745588L, 129145501L, -696465222L,
+    -522703117L, 913502104L, 1607242937L, -1357284058L, -1432209L,
+    -136995612L, -336972139L, 99108434L, -857441877L, 651042032L,
+    -1485480911L, 1792692286L, -148674649L, 457472956L, -874798707L,
+    128026346L, -685970589L, -1518369464L, -2044042583L, -107178410L,
+    1818018015L, 1022412180L, -865420411L, -662508926L, -247438309L,
+    -641693536L, -1363310559L, 365997934L, -1066200809L, 85580396L,
+    1077372029L, -1594699494L, 136954835L, 1815512824L, -209933159L,
+    -63767674L, -2027997105L, 36379204L, 119372917L, -1369204046L,
+    1330637451L, 2087903312L, 1571926033L, -1119102306L, 1249252999L,
+    -1237588708L, -575347859L, -1663850678L, -62539709L, 1181938856L,
+    891449993L, -1091588938L, -1100444737L, 1418697460L, -1663993499L,
+    -1337108766L, 1916407035L, 2015372288L, -141503487L, 1841222094L,
+    1682143223L, 789945292L, 1761812061L, 1583810938L, -579352397L,
+    919588440L, 1077589113L, 514173414L, -1641039057L, -739686492L,
+    -770330027L, 130227986L, 1055247211L, -725396560L, -1621494799L,
+    542938366L, 850539879L, -623772036L, -493808307L, -510658646L,
+    -410585821L, 916984840L, 1638167145L, -51907818L, 1076610719L,
+    1656954964L, 523839301L, 252179266L, 1677338075L, -384340128L,
+    1204555745L, -350739410L, -1604759849L, 1062997292L, 1989003325L,
+    -353275430L, -671466093L, -434715208L, 771664985L, 1879672902L,
+    -1143755249L, -697817852L, 541775925L, -2128686222L, -908190645L,
+    177698576L, -1553586223L, 816086878L, -846216121L, -1386297380L,
+    1827157805L, 938375178L, 1578672643L, 1006035816L, 1906860617L,
+    -216176266L, -1772195457L, -1495050828L, -2061908699L, -1446330462L,
+    45657787L, 1031695040L, 342309825L, -797661554L, -2140367433L,
+    -263901556L, 424632861L, -1364587974L, -1964432781L, 904097048L,
+    549491769L, -1779001690L, 851644655L, -1627409820L, 20246037L,
+    -1785808942L, -1167008469L, -456701328L, -1664201807L, 1455135166L,
+    -1798913241L, -29736644L, -885896947L, -1912133526L, 1093844707L,
+    -2009636152L, 1193689641L, 757600214L, 1102613599L, -1941423340L,
+    1005277957L, 1101904898L, 648914843L, 1915557408L, -832940127L,
+    745298158L, 1815432343L, -1473708052L, -1111495683L, -1649880422L,
+    -1518569645L, 1309525112L, -126325735L, -2113612538L, 834003919L,
+    -284692540L, -1068764171L, -869610446L, 1993739787L, 371903952L,
+    -1165336687L, -952507362L, 1578054151L, 1237084828L, 132598509L,
+    1576143050L, -1911731261L, -1186885080L, 1075188233L, -2103450058L,
+    -1628301505L, -1438003084L, -316288795L, -1547114398L, 1141969019L,
+    1878749568L, -493001855L, -644400306L, 661353335L, 2036302156L,
+    -1940429347L, 939903738L, -219399117L, -1032991784L, 287192057L,
+    1909212006L, -1016846673L, -1277633244L, -452466219L, -1207234414L,
+    21343979L, 1033503024L, 663905137L, -2101911938L, 1528893671L,
+    -1203944452L, -377537331L, -1379460822L, 1574979747L, -655527544L,
+    913297897L, 387771542L, -423423457L, -1002433068L, 2118205125L,
+    -1456192318L, 1796925787L, 197229792L, -1171759263L, 2123189678L,
+    -775484841L, 574665388L, 1770901437L, -1982270630L, 1517318419L,
+    -1831107784L, 1118432217L, -286989882L, -830088817L, 113932932L,
+    853594037L, -129530638L, -134758453L, -437459824L, 182343505L,
+    1439434974L, 431251399L, 504679772L, -227402067L, 262035850L,
+    -438061693L, 1561526504L, -2144632375L, 1513562870L, 769883391L,
+    -914158796L, 280337573L, 923259170L, 1208169019L, 106379328L,
+    -1175237823L, -1914269682L, -419425993L, 220501004L, -170186339L,
+    725240762L, -549382669L, 724495000L, -518810695L, -823742426L,
+    366148719L, 758433764L, -1454463595L, 939010386L, -1792786261L,
+    -2047117328L, -2023343311L, -653270210L, -2088690009L, -73726276L,
+    1631056013L, -1584412182L, 2001703523L, 663371848L, -280944215L,
+    126257494L, 1695242207L, -714428268L, 33221253L, 1046187394L,
+    587328283L, 211067808L, 1123428129L, 1178272366L, 1053722647L,
+    1348674924L, -1917357187L, 1078055962L, -1600771373L, 1665139192L,
+    -1135400039L, 862563974L, 939757391L, -1737505468L, -2083951755L,
+    775224754L, -1358745205L, -2137146544L, -1138618607L, 1897590174L,
+    -566276729L, 2099769372L, 810070637L, 229861962L, 2136727363L,
+    -2043990104L, -777473655L, 648224694L, 1492296383L, 793708020L,
+    -343332763L, -1136166430L, -531688453L, -1219379456L, -1305939199L,
+    -1306352434L, 216690423L, -1370200372L, 1234873693L, 2030537850L,
+    -643321933L, 2129054040L, 543208313L, -1979327258L, -1345351121L,
+    -439127388L, 969482581L, -1642724846L, -1211329941L, 615231152L,
+    -1005989135L, 1317349374L, -878252953L, 2064877948L, 370959437L,
+    -1977533782L, -2025808861L, 852348680L, -245747351L, 186967574L,
+    -1303290465L, 1250429780L, -1562880443L, -1176267198L, 2272475L,
+    -1956214176L, 1619242721L, -1472891090L, -519322153L, -1789896660L,
+    -33761475L, 295924954L, -508713837L, 771440824L, -718001319L,
+    -1940702394L, -739310321L, -558379004L, 2126890805L, 1454585458L,
+    -1111989429L, -1392684528L, -1240103215L, 1843827294L, 1232075591L,
+    2041959132L, -2060777939L, -655279350L, 875940099L, 1397366376L,
+    -1806851767L, 1420024950L, -169899905L, -965885772L, 962622501L,
+    1279779490L, -1632324165L, -106232384L, -1560388927L, -888440434L,
+    -1494577993L, 531560844L, 995488029L, -768766662L, 736102771L,
+    -1940559848L, 516264761L, 1072286118L, -686168081L, 2020924772L,
+    1110924565L, 858036946L, 1795073067L, 1080730992L, -1522718031L,
+    -1747505986L, -1319994841L, -1452880836L, -1410557939L, 1211853674L,
+    1198745059L, 2037915080L, 2088436009L, -289930538L, -2074795169L,
+    1851270676L, -57048571L, -1802739966L, 1950166683L, 1593258272L,
+    -896469343L, -1992512530L, -1505836137L, 331893484L, 1310587645L,
+    247322010L, 1198972499L, 567099256L, -1123226855L, -161380346L,
+    -938984753L, -731735356L, -1349131531L, 444739378L, 97998091L,
+    -238311216L, -1602699631L, 1626273566L, -1190762233L, -427919972L,
+    1960385005L, -1307063350L, -1640926525L, -1557148376L, -405122807L,
+    284776758L, -1704317377L, 966736756L, 1979416549L, -1077343390L,
+    -722200709L, 69405824L, 607355521L, 492899918L, -2101319049L,
+    -470528948L, 1053619421L, -1486074374L, -542497997L, -499464488L,
+    -335400199L, 1297249894L, -1854800465L, 1071188004L, 777607381L,
+    -1838190L, 1887073771L, -1074242512L, -1296022927L, 700838270L,
+    1917044711L, -1185624324L, -2039968819L, 2090753066L, 833089443L,
+    977874056L, -1872523031L, 1056956310L, 1356245279L, 1268449492L,
+    1795059141L, 118876098L, -1324257189L, 503748576L, -119669151L,
+    -1911512914L, 1009221975L, -1366622804L, -774185283L, 139523674L,
+    -1145972717L, 762707512L, 1671260889L, 777295046L, -99667825L,
+    875570564L, 1643757237L, -496900110L, 689964747L, -1782005872L,
+    -485771695L, 519314398L, 1254266567L, 1447155804L, 1125313965L
+  )
+
+
+
+HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min(gwas1.df$N, gwas2.df$N), output.file = "", numCores = 2,
+                            eigen.cut = "automatic", jackknife.df = FALSE, intercept.output = FALSE, fill.missing.N = NULL, lim = exp(-18)){
+
+  #library(dplyr)
+  if(!require("doSNOW",character.only = TRUE)){
+    stop("Package doSNOW was not found. Please install it firstly.")
+  }
+
+  if(output.file != ""){
+    if(file.exists(output.file) == TRUE){
+      system(paste0("rm ",output.file))
+    }
+  }
+
+  time.start <- date()
+  cat("Analysis starts on", time.start, "\n")
+  if(output.file != ""){
+    cat("Analysis starts on", time.start, "\n", file = output.file, append = TRUE)
+  }
+
+  if(eigen.cut != "automatic" && is.na(as.numeric(eigen.cut))){
+    error.message <- "The input of eigen.cut has to be 'automatic' or a number between 0 and 1. \n"
+    if(output.file != ""){
+      cat(error.message, file = output.file, append = TRUE)
+    }
+    stop(error.message)
+  }
+
+  LD.files <- list.files(LD.path)
+
+  if(any(grepl(x = LD.files, pattern = ".*_snp_counter.*"))){
+    snp_counter_file <- LD.files[grep(x = LD.files, pattern = ".*_snp_counter.*")]
+    snp_list_file <- LD.files[grep(x = LD.files, pattern = ".*_snp_list.*")]
+    load(file=paste(LD.path, snp_counter_file, sep = "/"))
+    load(file=paste(LD.path, snp_list_file, sep = "/"))
+    if("nsnps.list.imputed" %in% ls()){
+      snps.name.list <- snps.list.imputed.vector
+      nsnps.list <- nsnps.list.imputed
+    }
+    if(is.null(names(nsnps.list))) names(nsnps.list) <- as.character(1:length(nsnps.list))
+  } else{
+    error.message <- "It seems this directory does not contain all files needed for HDL. Please check your LD.path again. The current version of HDL only supports pre-computed LD reference panels."
+    if(output.file != ""){
+      cat(error.message, file = output.file, append = TRUE)
+    }
+    stop(error.message)
+  }
+
+  gwas1.df <- gwas1.df %>% dplyr::filter(SNP %in% snps.name.list)
+  gwas2.df <- gwas2.df %>% dplyr::filter(SNP %in% snps.name.list)
+
+  gwas1.df$A1 <- toupper(as.character(gwas1.df$A1))
+  gwas1.df$A2 <- toupper(as.character(gwas1.df$A2))
+  gwas2.df$A1 <- toupper(as.character(gwas2.df$A1))
+  gwas2.df$A2 <- toupper(as.character(gwas2.df$A2))
+
+  if(!("Z" %in% colnames(gwas1.df))){
+    if(("b" %in% colnames(gwas1.df)) && ("se" %in% colnames(gwas1.df))){
+      if(abs(median(gwas1.df$b) - 1) < 0.1){
+        cat("Taking log(b) in GWAS 1 because b is likely to be OR instead of log(OR). \n")
+        if(output.file != ""){
+          cat("Taking log(b) in GWAS 1 because b is likely to be OR instead of log(OR). \n", file = output.file, append = TRUE)
+        }
+        gwas1.df$Z <- log(gwas1.df$b) / gwas1.df$se
+      } else{
+        gwas1.df$Z <- gwas1.df$b / gwas1.df$se
+      }
+    } else{
+      error.message <- "Z is not available in GWAS 1, meanwhile either b or se is missing. Please check."
+      if(output.file != ""){
+        cat(error.message, file = output.file, append = TRUE)
+      }
+      stop(error.message)
+    }
+  }
+
+  if(!("Z" %in% colnames(gwas2.df))){
+    if(("b" %in% colnames(gwas2.df)) && ("se" %in% colnames(gwas2.df))){
+      if(abs(median(gwas2.df$b) - 1) < 0.1){
+        cat("Taking log(b) in GWAS 2 because b is likely to be OR instead of log(OR). \n")
+        if(output.file != ""){
+          cat("Taking log(b) in GWAS 2 because b is likely to be OR instead of log(OR). \n", file = output.file, append = TRUE)
+        }
+        gwas2.df$Z <- log(gwas2.df$b) / gwas2.df$se
+      } else{
+        gwas2.df$Z <- gwas2.df$b / gwas2.df$se
+      }
+    } else{
+      error.message <- "Z is not available in GWAS 2, meanwhile either b or se is missing. Please check."
+      if(output.file != ""){
+        cat(error.message, file = output.file, append = TRUE)
+      }
+      stop(error.message)
+    }
+  }
+
+  k1.0 <- length(unique(gwas1.df$SNP))
+  k2.0 <- length(unique(gwas2.df$SNP))
+
+  if(is.null(fill.missing.N)){
+    gwas1.df <- gwas1.df %>% dplyr::filter(!is.na(Z), !is.na(N))
+    gwas2.df <- gwas2.df %>% dplyr::filter(!is.na(Z), !is.na(N))
+  } else if(fill.missing.N == "min"){
+    gwas1.df <- gwas1.df %>% dplyr::filter(!is.na(Z))
+    gwas1.df$N[is.na(gwas1.df$N)] <- min(gwas1.df$N, na.rm = TRUE)
+
+    gwas2.df <- gwas2.df %>% dplyr::filter(!is.na(Z))
+    gwas2.df$N[is.na(gwas2.df$N)] <- min(gwas2.df$N, na.rm = TRUE)
+  } else if(fill.missing.N == "max"){
+    gwas1.df <- gwas1.df %>% dplyr::filter(!is.na(Z))
+    gwas1.df$N[is.na(gwas1.df$N)] <- max(gwas1.df$N, na.rm = TRUE)
+
+    gwas2.df <- gwas2.df %>% dplyr::filter(!is.na(Z))
+    gwas2.df$N[is.na(gwas2.df$N)] <- max(gwas2.df$N, na.rm = TRUE)
+  } else if(fill.missing.N == "median"){
+    gwas1.df <- gwas1.df %>% dplyr::filter(!is.na(Z))
+    gwas1.df$N[is.na(gwas1.df$N)] <- median(gwas1.df$N, na.rm = TRUE)
+
+    gwas2.df <- gwas2.df %>% dplyr::filter(!is.na(Z))
+    gwas2.df$N[is.na(gwas2.df$N)] <- median(gwas2.df$N, na.rm = TRUE)
+  } else{
+    error.message <- "If given, the argument fill.missing.N can only be one of below: 'min', 'max', 'median'."
+    if(output.file != ""){
+      cat(error.message, file = output.file, append = TRUE)
+    }
+    stop(error.message)
+  }
+
+  k1 <- length(unique(gwas1.df$SNP))
+  k2 <- length(unique(gwas2.df$SNP))
+  k1.percent <- paste("(",round(100*k1 / length(snps.name.list), 2), "%)", sep="")
+  k2.percent <- paste("(",round(100*k2 / length(snps.name.list), 2), "%)", sep="")
+
+  cat(k1, "out of", length(snps.name.list), k1.percent, "SNPs in reference panel are available in GWAS 1."," \n")
+  cat(k2, "out of", length(snps.name.list), k2.percent, "SNPs in reference panel are available in GWAS 2."," \n")
+  if(output.file != ""){
+    cat(k1, "out of", length(snps.name.list), k1.percent, "SNPs in reference panel are available in GWAS 1."," \n", file = output.file, append = TRUE)
+    cat(k2, "out of", length(snps.name.list), k2.percent, "SNPs in reference panel are available in GWAS 2."," \n", file = output.file, append = TRUE)
+  }
+  if(k1 < length(snps.name.list)*0.99){
+    error.message <- "Warning: More than 1% SNPs in reference panel are missed in GWAS 1. This may generate bias in estimation. Please make sure that you are using correct reference panel.  \n"
+    if(output.file != ""){
+      cat(error.message, file = output.file, append = TRUE)
+    }
+    cat(error.message)
+  }
+  if(k2 < length(snps.name.list)*0.99){
+    error.message <- "Warning: More than 1% SNPs in reference panel are missed in GWAS 2. This may generate bias in estimation. Please make sure that you are using correct reference panel.  \n"
+    if(output.file != ""){
+      cat(error.message, file = output.file, append = TRUE)
+    }
+    cat(error.message)
+  }
+
+  ## stats
+  N1 <- median(gwas1.df[, "N"])
+  N2 <- median(gwas2.df[, "N"])
+  N <- sqrt(N1)*sqrt(N2)
+
+  ## samples for phenotypes
+  p1 <- N0/N1
+  p2 <- N0/N2
+
+  rho12 <- suppressWarnings(dplyr::inner_join(gwas1.df %>% dplyr::select(SNP, Z), gwas2.df %>% dplyr::select(SNP, Z), by = "SNP") %>%
+                              dplyr::summarise(x=cor(Z.x, Z.y, use = "complete.obs")) %>% unlist)
+  # counter <- 0
+  # message <- ""
+  num.pieces <- length(unlist(nsnps.list))
+  info.pieces.df <- data.frame(chr = rep.int(names(nsnps.list),
+                                             unlist(lapply(nsnps.list, length))),
+                               piece = unlist(lapply(X = unlist(lapply(nsnps.list, length)), seq.int, from=1)))
+
+  workers <- rep("localhost", times = numCores)
+  cl <- parallel::makeCluster(workers)
+  doSNOW::registerDoSNOW(cl)
+  pb <- utils::txtProgressBar(max = num.pieces, style = 3)
+  progress <- function(n) utils::setTxtProgressBar(pb, n)
+  opts <- list(progress = progress)
+  HDL.res.pieces.list <- foreach::foreach(i=1:nrow(info.pieces.df), .options.snow = opts) %dopar% {
+    chr <- info.pieces.df[i,"chr"]
+    piece <- info.pieces.df[i,"piece"]
+    ## reference sample ##
+
+    LD_rda_file <- LD.files[grep(x = LD.files, pattern = paste0("chr",chr,".",piece, "[\\._].*rda"))]
+    LD_bim_file <- LD.files[grep(x = LD.files, pattern = paste0("chr",chr,".",piece, "[\\._].*bim"))]
+    load(file=paste(LD.path, LD_rda_file, sep = "/"))
+    snps.ref.df <- read.table(paste(LD.path, LD_bim_file, sep = "/"))
+
+    colnames(snps.ref.df) <- c("chr","id","non","pos","A1","A2")
+    snps.ref <- snps.ref.df$id
+    A2.ref <- snps.ref.df$A2
+    names(A2.ref) <- snps.ref
+
+    gwas1.df.subset <- gwas1.df %>% dplyr::filter(SNP %in% snps.ref) %>% dplyr::distinct(SNP, A1, A2, .keep_all = TRUE)
+
+    ## Check if there are multiallelic or duplicated SNPs
+    if(any(duplicated(gwas1.df.subset$SNP)) == TRUE){
+      gwas1.df.subset.duplicated <- gwas1.df.subset %>%
+        dplyr::mutate(row.num = 1:n()) %>%
+        dplyr::filter(SNP == SNP[duplicated(SNP)]) %>%
+        dplyr::mutate(SNP_A1_A2 = paste(SNP, A1, A2, sep = "_"))
+      snps.ref.df.duplicated <- snps.ref.df %>%
+        dplyr::filter(id %in% gwas1.df.subset.duplicated$SNP)
+      SNP_A1_A2.valid <- c(paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A1, snps.ref.df.duplicated$A2, sep = "_"),
+                           paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A2, snps.ref.df.duplicated$A1, sep = "_"))
+      row.remove <- gwas1.df.subset.duplicated %>% dplyr::filter(!(SNP_A1_A2 %in% SNP_A1_A2.valid)) %>% dplyr::select(row.num) %>% unlist()
+      gwas1.df.subset <- gwas1.df.subset[-row.remove,]
+    }
+
+    bhat1.raw <- gwas1.df.subset[, "Z"] / sqrt(gwas1.df.subset[, "N"])
+    A2.gwas1 <- gwas1.df.subset[, "A2"]
+    names(bhat1.raw) <- names(A2.gwas1) <- gwas1.df.subset$SNP
+    idx.sign1 <- A2.gwas1 == A2.ref[names(A2.gwas1)]
+    bhat1.raw <- bhat1.raw*(2*as.numeric(idx.sign1)-1)
+
+    gwas2.df.subset <- gwas2.df %>% dplyr::filter(SNP %in% snps.ref) %>% dplyr::distinct(SNP, A1, A2, .keep_all = TRUE)
+
+    ## Check if there are multiallelic or duplicated SNPs
+    if(any(duplicated(gwas2.df.subset$SNP)) == TRUE){
+      gwas2.df.subset.duplicated <- gwas2.df.subset %>%
+        dplyr::mutate(row.num = 1:n()) %>%
+        dplyr::filter(SNP == SNP[duplicated(SNP)]) %>%
+        dplyr::mutate(SNP_A1_A2 = paste(SNP, A1, A2, sep = "_"))
+      snps.ref.df.duplicated <- snps.ref.df %>%
+        dplyr::filter(id %in% gwas2.df.subset.duplicated$SNP)
+      SNP_A1_A2.valid <- c(paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A1, snps.ref.df.duplicated$A2, sep = "_"),
+                           paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A2, snps.ref.df.duplicated$A1, sep = "_"))
+      row.remove <- gwas2.df.subset.duplicated %>% dplyr::filter(!(SNP_A1_A2 %in% SNP_A1_A2.valid)) %>% dplyr::select(row.num) %>% unlist()
+      gwas2.df.subset <- gwas2.df.subset[-row.remove,]
+    }
+    bhat2.raw <- gwas2.df.subset[, "Z"] / sqrt(gwas2.df.subset[, "N"])
+    A2.gwas2 <- gwas2.df.subset[, "A2"]
+    names(bhat2.raw) <- names(A2.gwas2) <- gwas2.df.subset$SNP
+    idx.sign2 <- A2.gwas2 == A2.ref[names(A2.gwas2)]
+    bhat2.raw <- bhat2.raw*(2*as.numeric(idx.sign2)-1)
+
+    M <- length(LDsc)
+    bhat1 <- bhat2 <- numeric(M)
+    names(bhat1) <- names(bhat2) <- snps.ref
+    bhat1[names(bhat1.raw)] <- bhat1.raw
+    bhat2[names(bhat2.raw)] <- bhat2.raw
+
+    a11 <- bhat1**2
+    a22 <- bhat2**2
+    a12 <- bhat1*bhat2
+
+    reg <- lm(a11 ~ LDsc)
+    h11.ols <- c(summary(reg)$coef[1:2,1:2]*c(N1,M))
+
+    reg <- lm(a22 ~ LDsc)
+    h22.ols <- c(summary(reg)$coef[1:2,1:2]*c(N2,M))
+
+    reg <- lm(a12 ~ LDsc)
+    if (N0 > 0) h12.ols <- c(summary(reg)$coef[1:2,1:2]*c((N0/p1/p2),M))
+    if (N0 == 0) h12.ols <- c(summary(reg)$coef[1:2,1:2]*c(N,M))
+
+    ## weighted LS: use estimated h2
+    ## vars from Bulik-Sullivan
+
+    h11v <- (h11.ols[2]*LDsc/M + 1/N1)^2
+    h22v <- (h22.ols[2]*LDsc/M + 1/N2)^2
+
+    reg <- lm(a11 ~ LDsc, weights=1/h11v)
+    h11.wls <- c(summary(reg)$coef[1:2,1:2]*c(N1,M))
+
+    reg <- lm(a22 ~ LDsc, weights=1/h22v)
+    h22.wls <- c(summary(reg)$coef[1:2,1:2]*c(N2,M))
+
+    if (N0 > 0) h12v <- sqrt(h11v*h22v) + (h12.ols[2]*LDsc/M + p1*p2*rho12/N0)^2
+    if (N0 == 0) h12v <- sqrt(h11v*h22v) + (h12.ols[2]*LDsc/M)^2
+
+    reg <- lm(a12 ~ LDsc, weights=1/h12v)
+    if (N0 > 0) h12.wls <- c(summary(reg)$coef[1:2,1:2]*c((N0/p1/p2),M))
+    if (N0 == 0) h12.wls <- c(summary(reg)$coef[1:2,1:2]*c(N,M))
+
+    ## likelihood based
+    ## estimate h2s
+    bstar1 <- crossprod(V,bhat1)
+    bstar2 <- crossprod(V,bhat2)
+
+    opt <- stats::optim(c(h11.wls[2],1), llfun, N=N1, Nref=Nref, lam=lam, bstar=bstar1, M=M,
+                        lim=lim, method ='L-BFGS-B', lower=c(0,0), upper=c(1,10))
+    h11.hdl <- opt$par
+
+    opt <- stats::optim(c(h22.wls[2],1), llfun, N=N2, Nref=Nref, lam=lam, bstar=bstar2, M=M,
+                        lim=lim, method ='L-BFGS-B', lower=c(0,0), upper=c(1,10))
+    h22.hdl <- opt$par
+
+    opt <- stats::optim(c(h12.wls[2],rho12), llfun.gcov.part.2, h11=h11.hdl, h22=h22.hdl,
+                        rho12=rho12, M=M, N1=N1, N2=N2, N0=N0, Nref=Nref,
+                        lam0=lam, lam1=lam, lam2=lam,
+                        bstar1=bstar1, bstar2=bstar2,
+                        lim=lim, method ='L-BFGS-B', lower=c(-1,-10), upper=c(1,10))
+    h12.hdl <- opt$par
+
+    c(list(h11.hdl[1]), list(h22.hdl[1]), list(h12.hdl[1]), list(bstar1), list(bstar2), list(lam))
+  }
+  close(pb)
+
+  cat("\n")
+
+  h1_2 <- sum(unlist(lapply(HDL.res.pieces.list, FUN = "[[", 1)))
+  h2_2 <- sum(unlist(lapply(HDL.res.pieces.list, FUN = "[[", 2)))
+  gen.cov <- sum(unlist(lapply(HDL.res.pieces.list, FUN = "[[", 3)))
+
+  bstar1.v <- lapply(HDL.res.pieces.list, FUN = "[[", 4)
+  bstar2.v <- lapply(HDL.res.pieces.list, FUN = "[[", 5)
+  lam.v <- lapply(HDL.res.pieces.list, FUN = "[[", 6)
+
+  ##### Estimated likelihood for h12 + h11,h22 independent #####
+
+  cat("\n")
+  cat("Integrating piecewise results \n")
+  if(output.file != ""){
+    cat("\n", file = output.file, append = TRUE)
+    cat("Integrating piecewise results \n", file = output.file, append = TRUE)
+  }
+  M.ref <- sum(unlist(nsnps.list))
+  eigen_select.fun <- function(x,k){
+    return(x[1:k])
+  }
+
+  eigen_select_num.fun <- function(eigen.percent, cut.percent){
+    if(!(eigen.percent[length(eigen.percent)] > cut.percent)){
+      return(length(eigen.percent))
+    } else{
+      return(which(eigen.percent > cut.percent)[1])
+    }
+  }
+
+  if(eigen.cut == "automatic"){
+    eigen.num.v.90 <- eigen.num.v.95 <- eigen.num.v.99 <- c()
+    nsnps.v <- unlist(nsnps.list)
+    for(i in 1:length(nsnps.v)){
+      lam.i <- lam.v[[i]]
+      eigen.percent <- numeric(length(lam.i))
+      temp <- 0
+      for(j in 1:length(lam.i)){
+        temp <- temp + lam.i[j]
+        eigen.percent[j] <- temp/nsnps.v[i]
+      }
+      eigen.num.90 <- eigen_select_num.fun(eigen.percent, 0.9)
+      eigen.num.95 <- eigen_select_num.fun(eigen.percent, 0.95)
+      eigen.num.99 <- eigen_select_num.fun(eigen.percent, 0.99)
+
+      eigen.num.v.90 <- c(eigen.num.v.90, eigen.num.90)
+      eigen.num.v.95 <- c(eigen.num.v.95, eigen.num.95)
+      eigen.num.v.99 <- c(eigen.num.v.99, eigen.num.99)
+    }
+
+    lam.v.90 <- mapply(eigen_select.fun, lam.v, eigen.num.v.90)
+    bstar1.v.90 <- mapply(eigen_select.fun, bstar1.v, eigen.num.v.90)
+    bstar2.v.90 <- mapply(eigen_select.fun, bstar2.v, eigen.num.v.90)
+
+    opt <- stats::optim(c(h1_2,1), llfun, N=N1, Nref=Nref, lam=unlist(lam.v.90), bstar=unlist(bstar1.v.90), M=M.ref,
+                        lim=lim, method ='L-BFGS-B', lower=c(0,0), upper=c(1,10))
+    h11.hdl.90 <- opt$par
+    opt <- stats::optim(c(h2_2,1), llfun, N=N2, Nref=Nref, lam=unlist(lam.v.90), bstar=unlist(bstar2.v.90), M=M.ref,
+                        lim=lim, method ='L-BFGS-B', lower=c(0,0), upper=c(1,10))
+    h22.hdl.90 <- opt$par
+
+    if(sum(unlist(eigen.num.v.90)) == sum(unlist(eigen.num.v.95))){
+      lam.v.use <- lam.v.90
+      bstar1.v.use <- bstar1.v.90
+      bstar2.v.use <- bstar2.v.90
+      h11.hdl.use <- h11.hdl.90
+      h22.hdl.use <- h22.hdl.90
+      eigen.use <- 0.9
+    } else{
+      lam.v.95 <- mapply(eigen_select.fun, lam.v, eigen.num.v.95)
+      bstar1.v.95 <- mapply(eigen_select.fun, bstar1.v, eigen.num.v.95)
+      bstar2.v.95 <- mapply(eigen_select.fun, bstar2.v, eigen.num.v.95)
+
+      opt <- stats::optim(c(h1_2,1), llfun, N=N1, Nref=Nref, lam=unlist(lam.v.95), bstar=unlist(bstar1.v.95), M=M.ref,
+                          lim=lim, method ='L-BFGS-B', lower=c(0,0), upper=c(1,10))
+      h11.hdl.95 <- opt$par
+      opt <- stats::optim(c(h2_2,1), llfun, N=N2, Nref=Nref, lam=unlist(lam.v.95), bstar=unlist(bstar2.v.95), M=M.ref,
+                          lim=lim, method ='L-BFGS-B', lower=c(0,0), upper=c(1,10))
+      h22.hdl.95 <- opt$par
+
+      if(sum(unlist(eigen.num.v.95)) == sum(unlist(eigen.num.v.99))){
+        if(h11.hdl.95[1] != 0 &&
+           h22.hdl.95[1] != 0 &&
+           (h11.hdl.90[1] - h11.hdl.95[1])/abs(h11.hdl.95[1]) < 0.2 &&
+           (h22.hdl.90[1] - h22.hdl.95[1])/abs(h22.hdl.95[1]) < 0.2){
+          lam.v.use <- lam.v.95
+          bstar1.v.use <- bstar1.v.95
+          bstar2.v.use <- bstar2.v.95
+          h11.hdl.use <- h11.hdl.95
+          h22.hdl.use <- h22.hdl.95
+          eigen.use <- 0.95
+        } else{
+          lam.v.use <- lam.v.90
+          bstar1.v.use <- bstar1.v.90
+          bstar2.v.use <- bstar2.v.90
+          h11.hdl.use <- h11.hdl.90
+          h22.hdl.use <- h22.hdl.90
+          eigen.use <- 0.9
+        }
+      } else{
+        lam.v.99 <- mapply(eigen_select.fun, lam.v, eigen.num.v.99)
+        bstar1.v.99 <- mapply(eigen_select.fun, bstar1.v, eigen.num.v.99)
+        bstar2.v.99 <- mapply(eigen_select.fun, bstar2.v, eigen.num.v.99)
+
+        opt <- stats::optim(c(h1_2,1), llfun, N=N1, Nref=Nref, lam=unlist(lam.v.99), bstar=unlist(bstar1.v.99), M=M.ref,
+                            lim=lim, method ='L-BFGS-B', lower=c(0,0), upper=c(1,10))
+        h11.hdl.99 <- opt$par
+        opt <- stats::optim(c(h2_2,1), llfun, N=N2, Nref=Nref, lam=unlist(lam.v.99), bstar=unlist(bstar2.v.99), M=M.ref,
+                            lim=lim, method ='L-BFGS-B', lower=c(0,0), upper=c(1,10))
+        h22.hdl.99 <- opt$par
+
+        if(h11.hdl.99[1] != 0 &&
+           h22.hdl.99[1] != 0 &&
+           (h11.hdl.90[1] - h11.hdl.99[1])/abs(h11.hdl.99[1]) < 0.2 &&
+           (h22.hdl.90[1] - h22.hdl.99[1])/abs(h22.hdl.99[1]) < 0.2){
+          lam.v.use <- lam.v.99
+          bstar1.v.use <- bstar1.v.99
+          bstar2.v.use <- bstar2.v.99
+          h11.hdl.use <- h11.hdl.99
+          h22.hdl.use <- h22.hdl.99
+          eigen.use <- 0.99
+        } else{
+          if(h11.hdl.95[1] != 0 &&
+             h22.hdl.95[1] != 0 &&
+             (h11.hdl.90[1] - h11.hdl.95[1])/abs(h11.hdl.95[1]) < 0.2 &&
+             (h22.hdl.90[1] - h22.hdl.95[1])/abs(h22.hdl.95[1]) < 0.2){
+            lam.v.use <- lam.v.95
+            bstar1.v.use <- bstar1.v.95
+            bstar2.v.use <- bstar2.v.95
+            h11.hdl.use <- h11.hdl.95
+            h22.hdl.use <- h22.hdl.95
+            eigen.use <- 0.95
+          } else{
+            lam.v.use <- lam.v.90
+            bstar1.v.use <- bstar1.v.90
+            bstar2.v.use <- bstar2.v.90
+            h11.hdl.use <- h11.hdl.90
+            h22.hdl.use <- h22.hdl.90
+            eigen.use <- 0.9
+          }
+        }
+      }
+    }
+  } else if(!is.na(as.numeric(eigen.cut))){
+    eigen.cut <- as.numeric(eigen.cut)
+    eigen.use <- eigen.cut
+    eigen.num.v.cut <- c()
+    nsnps.v <- unlist(nsnps.list)
+    for(i in 1:length(nsnps.v)){
+      lam.i <- lam.v[[i]]
+      eigen.percent <- numeric(length(lam.i))
+      temp <- 0
+      for(j in 1:length(lam.i)){
+        temp <- temp + lam.i[j]
+        eigen.percent[j] <- temp/nsnps.v[i]
+      }
+      eigen.num.cut <- eigen_select_num.fun(eigen.percent, eigen.cut)
+      eigen.num.v.cut <- c(eigen.num.v.cut, eigen.num.cut)
+    }
+
+    lam.v.cut <- mapply(eigen_select.fun, lam.v, eigen.num.v.cut)
+    bstar1.v.cut <- mapply(eigen_select.fun, bstar1.v, eigen.num.v.cut)
+    bstar2.v.cut <- mapply(eigen_select.fun, bstar2.v, eigen.num.v.cut)
+
+    opt <- stats::optim(c(h1_2,1), llfun, N=N1, Nref=Nref, lam=unlist(lam.v.cut), bstar=unlist(bstar1.v.cut), M=M.ref,
+                        lim=lim, method ='L-BFGS-B', lower=c(0,0), upper=c(1,10))
+    h11.hdl.cut <- opt$par
+    opt <- stats::optim(c(h2_2,1), llfun, N=N2, Nref=Nref, lam=unlist(lam.v.cut), bstar=unlist(bstar2.v.cut), M=M.ref,
+                        lim=lim, method ='L-BFGS-B', lower=c(0,0), upper=c(1,10))
+    h22.hdl.cut <- opt$par
+
+    lam.v.use <- lam.v.cut
+    bstar1.v.use <- bstar1.v.cut
+    bstar2.v.use <- bstar2.v.cut
+
+    h11.hdl.use <- h11.hdl.cut
+    h22.hdl.use <- h22.hdl.cut
+  }
+
+  h11 <- h11.hdl.use[1]
+  h22 <- h22.hdl.use[1]
+  opt <- stats::optim(c(gen.cov, rho12), llfun.gcov.part.2, h11=h11.hdl.use, h22=h22.hdl.use,
+                      rho12=rho12, M=M.ref, N1=N1, N2=N2, N0=N0, Nref=Nref,
+                      lam0=unlist(lam.v.use), lam1=unlist(lam.v.use), lam2=unlist(lam.v.use),
+                      bstar1=unlist(bstar1.v.use), bstar2=unlist(bstar2.v.use),
+                      lim=lim, method ='L-BFGS-B', lower=c(-1,-10), upper=c(1,10))
+  if(opt$convergence != 0){
+    starting.value.v <- c(0,-sqrt(h11*h22)*0.5, sqrt(h11*h22)*0.5)
+    k <- 1
+    while(opt$convergence != 0){
+      starting.value <- starting.value.v[k]
+      opt <- stats::optim(c(starting.value,rho12), llfun.gcov.part.2, h11=h11.hdl.use, h22=h22.hdl.use,
+                          rho12=rho12, M=M.ref, N1=N1, N2=N2, N0=N0, Nref=Nref,
+                          lam0=unlist(lam.v.use), lam1=unlist(lam.v.use), lam2=unlist(lam.v.use),
+                          bstar1=unlist(bstar1.v.use), bstar2=unlist(bstar2.v.use),
+                          lim=lim, method ='L-BFGS-B', lower=c(-1,-10), upper=c(1,10))
+      k <- k + 1
+      if(k > length(starting.value.v)){
+        error.message <- "Algorithm failed to converge after trying different initial values. \n"
+        if(output.file != ""){
+          cat(error.message, file = output.file, append = TRUE)
+        }
+        stop(error.message)
+      }
+    }
+  }
+  h12.hdl.use <- opt$par
+  h12 <- h12.hdl.use[1]
+  rg <- h12.hdl.use[1]/sqrt(h11.hdl.use[1]*h22.hdl.use[1])
+
+  if(intercept.output == TRUE){
+    h11.intercept <- h11.hdl.use[2]
+    h12.intercept <- h12.hdl.use[2]
+    h22.intercept <- h22.hdl.use[2]
+  }
+
+  output <- function(value){
+    if(is.na(value)){
+      value.out <- NA
+    } else if(abs(value) < 1e-4){
+      value.out <- formatC(value, format = "e", digits = 2)
+    } else {
+      value.out <- round(value, digits = 4)
+    }
+  }
+
+  cat("\n")
+  cat("Point estimates: \n")
+  cat("Heritability of phenotype 1: ",
+      output(h11),
+      "\n")
+  cat("Heritability of phenotype 2: ",
+      output(h22),
+      "\n")
+  cat("Genetic Covariance: ",
+      output(h12),
+      "\n")
+  cat("Genetic Correlation: ",
+      output(rg),
+      "\n")
+  if(h11 == 0 | h22 == 0 ){
+    cat("Warning: Heritability of one trait was estimated to be 0, which may be due to:
+        1) The true heritability is very small;
+        2) The sample size is too small;
+        3) Many SNPs in the chosen reference panel are missing in the GWAS;
+        4) There is a severe mismatch between the GWAS population and the population for computing reference panel.")
+  }
+  cat("\n")
+
+  cat("Continuing computing standard error with jackknife \n")
+  if(output.file != ""){
+    cat("Continuing computing standard error with jackknife \n", file = output.file, append = TRUE)
+  }
+
+  pb <- txtProgressBar(max = num.pieces, style = 3)
+  opts <- list(progress = progress)
+
+  HDL.res.jackknife.list <- foreach::foreach (i = 1:length(lam.v), .options.snow = opts) %dopar% {
+    opt <- stats::optim(h11.hdl.use, llfun, N=N1, Nref=Nref, lam=unlist(lam.v.use[-i]), bstar=unlist(bstar1.v.use[-i]), M=M.ref,
+                        lim=lim, method ='L-BFGS-B', lower=c(0,0), upper=c(1,10))
+    h11.hdl.jackknife <- opt$par
+
+    opt <- stats::optim(h22.hdl.use, llfun, N=N2, Nref=Nref, lam=unlist(lam.v.use[-i]), bstar=unlist(bstar2.v.use[-i]), M=M.ref,
+                        lim=lim, method ='L-BFGS-B', lower=c(0,0), upper=c(1,10))
+    h22.hdl.jackknife <- opt$par
+
+    opt <- stats::optim(h12.hdl.use, llfun.gcov.part.2, h11=h11.hdl.use, h22=h22.hdl.use,
+                        rho12=rho12, M=M.ref, N1=N1, N2=N2, N0=N0, Nref=Nref,
+                        lam0=unlist(lam.v.use[-i]), lam1=unlist(lam.v.use[-i]), lam2=unlist(lam.v.use[-i]),
+                        bstar1=unlist(bstar1.v.use[-i]), bstar2=unlist(bstar2.v.use[-i]),
+                        lim=lim, method ='L-BFGS-B', lower=c(-1,-10), upper=c(1,10))
+    h12.hdl.jackknife <- opt$par
+    if(intercept.output){
+      c(h11.hdl.jackknife[1], h22.hdl.jackknife[1], h12.hdl.jackknife[1],
+        h12.hdl.jackknife[1]/sqrt(h11.hdl.jackknife[1]*h22.hdl.jackknife[1]),
+        h11.intercept.jackknife[2], h12.intercept.jackknife[2], h22.intercept.jackknife[2])
+    }else{
+      c(h11.hdl.jackknife[1], h22.hdl.jackknife[1], h12.hdl.jackknife[1],
+        h12.hdl.jackknife[1]/sqrt(h11.hdl.jackknife[1]*h22.hdl.jackknife[1]))
+    }
+  }
+  close(pb)
+  parallel::stopCluster(cl)
+
+  h11.jackknife <- unlist(lapply(HDL.res.jackknife.list, FUN = "[[", 1))
+  h22.jackknife <- unlist(lapply(HDL.res.jackknife.list, FUN = "[[", 2))
+  h12.jackknife <- unlist(lapply(HDL.res.jackknife.list, FUN = "[[", 3))
+  rg.jackknife <- unlist(lapply(HDL.res.jackknife.list, FUN = "[[", 4))
+
+  rg.jackknife <- rg.jackknife[!is.infinite(rg.jackknife)]
+  h11.se <- sqrt(mean((h11.jackknife - mean(h11.jackknife))^2)*(length(h11.jackknife) - 1))
+  h12.se <- sqrt(mean((h12.jackknife - mean(h12.jackknife))^2)*(length(h12.jackknife) - 1))
+  h22.se <- sqrt(mean((h22.jackknife - mean(h22.jackknife))^2)*(length(h22.jackknife) - 1))
+  rg.se <- sqrt(mean((rg.jackknife - mean(rg.jackknife))^2)*(length(rg.jackknife) - 1))
+  P <- pchisq((rg/rg.se)^2, df = 1, lower.tail = FALSE)
+  estimates.df <- matrix(c(h11,h22,h12,rg,
+                           h11.se,h22.se,h12.se,rg.se),
+                         nrow=4,ncol=2)
+  rownames(estimates.df) <- c("Heritability_1", "Heritability_2", "Genetic_Covariance", "Genetic_Correlation")
+  colnames(estimates.df) <- c("Estimate", "se")
+
+  if(intercept.output == TRUE){
+    h11.intercept.jackknife[i] <- unlist(lapply(HDL.res.jackknife.list, FUN = "[[", 5))
+    h12.intercept.jackknife[i] <- unlist(lapply(HDL.res.jackknife.list, FUN = "[[", 6))
+    h22.intercept.jackknife[i] <- unlist(lapply(HDL.res.jackknife.list, FUN = "[[", 7))
+
+    h11.intercept.se <- sqrt(mean((h11.intercept.jackknife - mean(h11.intercept.jackknife))^2)*(length(h11.intercept.jackknife) - 1))
+    h12.intercept.se <- sqrt(mean((h12.intercept.jackknife - mean(h12.intercept.jackknife))^2)*(length(h12.intercept.jackknife) - 1))
+    h22.intercept.se <- sqrt(mean((h22.intercept.jackknife - mean(h22.intercept.jackknife))^2)*(length(h22.intercept.jackknife) - 1))
+    estimates.df <- matrix(c(h11,h22,h12,rg, h11.intercept, h22.intercept, h12.intercept,
+                             h11.se,h22.se,h12.se,rg.se, h11.intercept.se, h22.intercept.se, h12.intercept.se),
+                           nrow=7,ncol=2)
+    rownames(estimates.df) <- c("Heritability_1", "Heritability_2", "Genetic_Covariance", "Genetic_Correlation",
+                                "Heritability_1_intercept", "Heritability_2_intercept", "Genetic_Covariance_intercept")
+    colnames(estimates.df) <- c("Estimate", "se")
+  }
+
+  if(is.na(P)){
+    p.out <- NA
+  } else{
+    p.out <- formatC(P, format = "e", digits = 2)
+  }
+
+  end.time <- date()
+  cat("\n")
+  cat("\n")
+  cat("Heritability of phenotype 1: ",
+      output(h11),
+      paste0("(", output(h11.se), ") \n"))
+  cat("Heritability of phenotype 2: ",
+      output(h22),
+      paste0("(", output(h22.se), ") \n"))
+  cat("Genetic Covariance: ",
+      output(h12),
+      paste0("(", output(h12.se), ") \n"))
+  cat("Genetic Correlation: ",
+      output(rg),
+      paste0("(", output(rg.se), ") \n"))
+  cat("P: ",p.out,"\n")
+  if(h11 == 0 | h22 == 0 ){
+    cat("Warning: Heritability of one trait was estimated to be 0, which may be due to:
+        1) The true heritability is very small;
+        2) The sample size of the GWAS is too small;
+        3) Many SNPs in the chosen reference panel are missing in the GWAS.")
+  }
+  cat("\n")
+  cat("Analysis finished at", end.time, "\n")
+
+  if(output.file != ""){
+    cat("\n", file = output.file, append = TRUE)
+    cat("\n", file = output.file, append = TRUE)
+    cat("Heritability of phenotype 1: ",
+        output(h11),
+        paste0("(", output(h11.se), ") \n"), file = output.file, append = TRUE)
+    cat("Heritability of phenotype 2: ",
+        output(h22),
+        paste0("(", output(h22.se), ") \n"), file = output.file, append = TRUE)
+    cat("Genetic Covariance: ",
+        output(h12),
+        paste0("(", output(h12.se), ") \n"), file = output.file, append = TRUE)
+    cat("Genetic Correlation: ",
+        output(rg),
+        paste0("(", output(rg.se), ") \n"), file = output.file, append = TRUE)
+    cat("P: ", p.out, "\n", file = output.file, append = TRUE)
+    if(h11 == 0 | h22 == 0 ){
+      cat("Warning: Heritability of one trait was estimated to be 0, which may be due to:
+          1) The true heritability is very low;
+          2) The sample size of the GWAS is too small;
+          3) Many SNPs in the chosen reference panel are missing in the GWAS;
+          4) There is a severe mismatch between the GWAS population and the population for computing reference panel", file = output.file, append = TRUE)
+    }
+    cat("\n", file = output.file, append = TRUE)
+    cat("Analysis finished at", end.time, "\n", file = output.file, append = TRUE)
+    cat("The results were saved to", output.file)
+    cat("\n")
+    cat("The results were saved to", output.file, file = output.file, append = TRUE)
+    cat("\n", file = output.file, append = TRUE)
+  }
+
+  if(jackknife.df == TRUE){
+    jackknife.df <- rbind(h11.jackknife, h22.jackknife, h12.jackknife, rg.jackknife)
+    rownames(jackknife.df) <- c("Heritability_1", "Heritability_2", "Genetic_Covariance", "Genetic_Correlation")
+    return(list(rg = rg, rg.se = rg.se, P = P, estimates.df = estimates.df, eigen.use = eigen.use, jackknife.df = jackknife.df))
+  }
+
+  return(list(rg = rg, rg.se = rg.se, P = P, estimates.df = estimates.df, eigen.use = eigen.use))
+}
+
+llfun.gcov.part.2 <- function(param, h11, h22, rho12, M, N1, N2, N0, Nref,
+                              lam0, lam1, lam2, bstar1, bstar2, lim=exp(-10)){
+  h12 <- param[1]
+  int <- param[2]
+  ## sample fractions
+  p1 <- N0/N1
+  p2 <- N0/N2
+  ## must follow the formula for lamh2 used in llfun
+  lam11 <- h11[1]/M*lam1^2 - h11[1]*lam1/Nref + h11[2]*lam1/N1
+  lam11 <- ifelse(lam11 < lim, lim, lam11)
+  lam22 <- h22[1]/M*lam2^2 - h22[1]*lam2/Nref + h22[2]*lam2/N2
+  lam22 <- ifelse(lam22 < lim, lim, lam22)
+  if (N0 > 0) lam12 <- h12/M*lam1*lam2 + p1*p2*int*lam1/N0  ## key change here
+  if (N0 == 0) lam12 <- h12/M*lam1*lam2
+  ustar <- bstar2 - lam12/lam11*bstar1  ## see note
+  lam22.1 <- lam22 - lam12^2/lam11
+  lam22.1 <- ifelse(lam22.1 < lim, lim, lam22.1)
+  ll <- sum(log(lam22.1)) + sum(ustar^2/(lam22.1))
+  return(ll)
+}
+
+llfun <- function(param, N, M, Nref=1000, lam, bstar, lim=exp(-10)){
+  h2 <- param[1]
+  int <- param[2]
+  lamh2 <- h2/M*lam^2 - h2*lam/Nref + int*lam/N
+  lamh2 <- ifelse(lamh2 < lim, lim, lamh2)
+  ll <- sum(log(lamh2)) + sum(bstar^2/(lamh2))
+  return(ll)
+}
 
