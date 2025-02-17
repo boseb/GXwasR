@@ -11,6 +11,10 @@ QCsample(
   foutput = NULL,
   imiss,
   het,
+  small_sample_mod = FALSE,
+  IBD,
+  IBDmatrix = FALSE,
+  ambi_out = TRUE,
   legend_text_size = 8,
   legend_title_size = 7,
   axis_text_size = 5,
@@ -31,6 +35,14 @@ QCsample(
 \item{imiss}{Numeric value between 0 to 1 for removing samples that have more than the specified missingness. The default is 0.03.}
 
 \item{het}{Positive numeric value, specifying the standard deviation from the mean heterozygosity rate. The samples whose rates are more than the specified sd from the mean heterozygosity rate are removed. The default is 3. With this default value, outlying heterozygosity rates would remove individuals who are three sd away from the mean rate (1).}
+
+\item{small_sample_mod}{Boolean value indicating whether to apply modifications for small sample sizes. Default is FALSE.}
+
+\item{IBD}{Numeric value for setting the threshold for Identity by Descent (IBD) analysis. Default is NULL.}
+
+\item{IBDmatrix}{Boolean value indicating whether to generate an entire IBD matrix. Default is FALSE. In this case filtered IBD matrix will be stored.}
+
+\item{ambi_out}{Boolean value indicating whether to process ambiguous samples. Default}
 
 \item{legend_text_size}{Integer, specifying the size for legend text in the plot.}
 
@@ -60,5 +72,13 @@ finput <- "GXwasR_example"
 foutput <- "Test_output"
 imiss = 0.01
 het = 2
-x = QCsample(DataDir = DataDir,ResultDir = ResultDir, finput = finput,foutput = foutput, imiss = imiss,het = het)
+small_sample_mod = FALSE
+IBD = 0.2
+IBDmatrix = FALSE
+ambi_out = TRUE
+
+x = QCsample(DataDir = DataDir,ResultDir = ResultDir, finput = finput,foutput = foutput, imiss = imiss,het = het, IBD = IBD,ambi_out = ambi_out)
+}
+\author{
+Banabithi Bose
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/GXwasR_main_functions.R
 \name{SexDiff}
 \alias{SexDiff}
-\title{SexDiff: Sex difference in effect size for each SNP.}
+\title{SexDiff: Sex difference in effect size for each SNP using t-test.}
 \usage{
 SexDiff(Mfile, Ffile)
 }
@@ -25,8 +25,6 @@ This function uses the GWAS summary statistics from sex-stratified tests like FM
 The input dataframes should only include X-chromosome in order to obtain results for sex differences based solely on X-linked loci.
 }
 \examples{
-#load("/projects/b1137/BBose/GXwasR/data/Mfile.Rda")
-#load("/projects/b1137/BBose/GXwasR/data/Ffile.Rda")
 data("GXwasRData")
 Difftest <- SexDiff(Mfile,Ffile)
 significant_snps <- Difftest[Difftest$adjP <0.05,]# 9

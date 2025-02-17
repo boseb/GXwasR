@@ -13,7 +13,9 @@ ClumpLD(
   clump_p2,
   clump_r2,
   clump_kb,
-  byCHR = TRUE
+  byCHR = TRUE,
+  clump_best = TRUE,
+  clump_index_first = TRUE
 )
 }
 \arguments{
@@ -34,9 +36,13 @@ ClumpLD(
 \item{clump_kb}{Integer value, specifying the physical distance threshold in base-pair for clumping. The default is 250.}
 
 \item{byCHR}{Boolean value, 'TRUE' or 'FALSE', specifying whether to perform the clumping chromosome-wise.}
+
+\item{clump_best}{Boolean value, 'TRUE' or 'FALSE', specifying whether to select and output the best SNP from each clump. Default is TRUE.}
+
+\item{clump_index_first}{Boolean value, 'TRUE' or 'FALSE', specifying whether to force the index SNP to appear first in each clump. This option should typically be TRUE if clump_best is TRUE. Default is TRUE.}
 }
 \value{
-A dataframe with twelve columns:'CHR'(Chromosome code), 'F'(SNPdata fileset code as 1,2,...), 'SNP'(SNP identifier), 'BP'(Physical position of SNP inbase-pairs),'TOTAL'(Total number of other SNPs in clump i.e. passing clump_kb and clump_r2 thresholds), 'NSIG'(Number of clumped SNPs that are not significant p > 0.05), 'S05'(Number of clumped SNPs 0.01 < p < 0.05), 'S01'(Number of clumped SNPs 0.001 < p < 0.01), 'S001'(Number of clumped SNPs 0.0001 < p < 0.001), 'S0001'(Number of clumped SNPs p < 0.0001), 'SP2'(List of SNPs names and SNPdata code) clumped and significant at clump_p2 threshold.
+A list with two dataframes. BestClump: a dataframe with eight columns showing the single best proxy SNP for each index SNP with coulmns "INDEX"(Index SNP identifier), "PSNP"(Best proxy SNP), "RSQ LD"(r-squared) between index and proxy, "KB"(Physical distance between index and proxy), P(p-value for proxy SNP), "ALLELES"(The associated haplotypes for the index and proxy SNP), and "F"(Which file used for clumping from which this result came from).AllClump: a dataframe with eight columns providing a detailed summary of each clump identified by PLINK. It includes "INDEX_SNP" (the identifier for the index SNP that represents the clump), "SNP" (the SNP being reported, which for the index SNP is the same as INDEX_SNP), "DISTANCE" (the physical distance in base pairs between the index SNP and the reported SNP, with 0.0 indicating the index itself), "RSQ" (the r-squared value showing the degree of linkage disequilibrium between the index SNP and the SNP in the clump), "ALLELES" (the allele information, which in some cases may appear misaligned if the data isn’t formatted as expected), "F" (a statistic or indicator related to the association test, which may be NA when not applicable), "P" (the p-value for the association test of the SNP), and "CHR" (the chromosome on which the SNP is located).
 }
 \description{
 This function, which is based on empirical estimations of linkage disequilibrium between SNPs, groups the SNP-based results across one or more datasets or analysis. This approach can be used in two basic scenarios: (i) To summarize the top X single SNP findings from a genome-wide scan as fewer clusters of connected SNPs (i.e., to assess how many independent loci are associated). (ii) To give researchers a simple approach to merge sets of data from multiple studies when those studies may have used various marker sets for genotyping.

@@ -20,7 +20,7 @@ ComputePRS(
   clump_kb,
   byCHR = TRUE,
   pthreshold = c(0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5),
-  highLD_regions = "high-LD-regions-hg19-GRCh37.txt",
+  highLD_regions,
   ld_prunning = FALSE,
   window_size = 50,
   step_size = 5,
@@ -36,7 +36,7 @@ ComputePRS(
 
 \item{finput}{Character string, specifying the prefix of the input PLINK binary files for the genotype data i.e., the target data based on which clumping procedure will be performed. This file needs to be in DataDir. If your target data are small (e.g. N < 500) then you can use the 1000 Genomes Project samples. Make sure to use the population that most closely reflects represents the base sample.}
 
-\item{summarystat}{A dataframe object with GWAS summary statistics. The mandatory column headers in this dataframe are 'CHR'(Chromosome code), 'BP'(Basepair position), 'A1' (effect allele), ‘SNP’ (i.e., SNP idenitifier), ‘BETA’ (i.e., effect-size or logarithm of odds ratio), and ‘P’ (i.e., p-values).}
+\item{summarystat}{A dataframe object with GWAS summary statistics. The mandatory column headers in this dataframe are 'CHR'(Chromosome code), 'BP'(Basepair position), 'A1' (effect allele), ‘SNP’ (i.e., SNP idenitifier), ‘BETA’ or "OR"(i.e., effect-size or logarithm of odds ratio), and ‘P’ (i.e., p-values). Special Notes: The first three columns needed to be "SNP", "A1" and "BETA" or "OR".}
 
 \item{phenofile}{A character string, specifying the name of the mandatory phenotype file. This is a plain text file with no header line; columns family ID, individual ID and phenotype columns. For binary trait, the phenotypic value should be coded as 0 or 1, then it will be recognized as a case-control study (0 for controls and 1 for cases). Missing value should be represented by "-9" or "NA". The interested phenotype column should be labeled as "Pheno1". This file needs to be in DataDir.}
 
@@ -89,33 +89,32 @@ DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 data("GXwasRData")
-#load("/projects/b1137/BBose/GXwasR/data/Summary_Stat_Ex1.Rda")
 summarystat <- Summary_Stat_Ex1[,c(2,4,7,1,3,12)]
-#load("/projects/b1137/BBose/GXwasR/data/Example_phenofile.Rda")
-phenofile <- Example_phenofile #Cannot be NULL, the interested phenotype column should be labeled as
-#load("/projects/b1137/BBose/GXwasR/data/Example_covarfile.Rda") ## Add "Sex" as covar
+phenofile <- Example_phenofile #Cannot be NULL, the interested phenotype column should be labeled as "Pheno1".
 covarfile <- Example_covarfile
 clump_p1 = 0.0001
 clump_p2 = 0.0001
 clump_kb = 500
 clump_r2 = 0.5
 byCHR = TRUE
-#load("/projects/b1137/BBose/GXwasR/data/Example_pthresoldfile.Rda")
 pthreshold <- Example_pthresoldfile$Threshold
 ld_prunning <- TRUE
-highLD_regions <- "high-LD-regions-hg19-GRCh37.txt"
+highLD_regions <- highLD_hg19
 window_size <- 50
 step_size <- 5
 r2_threshold <- 0.02
 nPC = 6 #We can incorporate PCs into our PRS analysis to account for population stratification.
 pheno_type = "binary"
 
-PRSresult <- ComputePRS(DataDir,ResultDir,finput,summarystat,phenofile,covarfile,
-                                    effectsize="BETA",LDreference = "GXwasR_example", ldclump = FALSE,clump_p1,clump_p2,clump_r2,clump_kb, byCHR = TRUE,
-                                    pthreshold = pthreshold,highLD_regions = "high-LD-regions-hg19-GRCh37.txt", ld_prunning = TRUE,
-                                    window_size = 50, step_size = 5,r2_threshold = 0.02, nPC = 6,pheno_type = "binary")
-## PRS
+PRSresult <- ComputePRS(DataDir,ResultDir,finput,summarystat,phenofile,covarfile,effectsize="BETA",LDreference = "GXwasR_example", ldclump = FALSE,clump_p1,clump_p2,clump_r2,clump_kb, byCHR = TRUE,pthreshold = pthreshold,highLD_regions = highLD_regions, ld_prunning = TRUE,window_size = 50, step_size = 5,r2_threshold = 0.02, nPC = 6,pheno_type = "binary")
+
+## This table shows 10 samples with phenotype, covariates and a PRS column.
 PRS <- PRSresult$PRS
+PRS[1:10,]
 ## The best threshold
 BestPvalue <- PRSresult$BestP$Threshold
+BestPvalue
+}
+\author{
+Banabithi Bose
 }

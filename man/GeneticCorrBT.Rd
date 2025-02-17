@@ -14,6 +14,8 @@ GeneticCorrBT(
   phenofile,
   cat_covarfile = NULL,
   quant_covarfile = NULL,
+  computeGRM = TRUE,
+  grmfile_name = NULL,
   partGRM = FALSE,
   autosome = TRUE,
   Xsome = TRUE,
@@ -22,7 +24,7 @@ GeneticCorrBT(
   minMAF = NULL,
   maxMAF = NULL,
   excludeResidual = FALSE,
-  ncores = 1
+  ncores = 2
 )
 }
 \arguments{
@@ -38,11 +40,25 @@ GeneticCorrBT(
 
 \item{nitr}{Integer value, specifying the number of iterations for performing the REML. The default is 100.}
 
-\item{phenofile}{A character string, specifying the name of the mandatory phenotype file for Bivar RELM. is a plain text file with no header line; columns family ID, individual ID and two trait columns. For binary trait, the phenotypic value should be coded as 0 or 1, then it will be recognized as a case-control study (0 for controls and 1 for cases). Missing value should be represented by "-9" or "NA".}
+\item{phenofile}{A dataframe for Bivar RELM has four columns family ID, individual ID and two trait columns. For binary trait, the phenotypic value should be coded as 0 or 1, then it will be recognized as a case-control study (0 for controls and 1 for cases). Missing value should be represented by "-9" or "NA".}
 
 \item{cat_covarfile}{A character string, specifying the name of the categorical covariate file which is a plain text file with no header line; columns are family ID, individual ID and discrete covariates. The default is NULL. This file needs to be in DataDir.}
 
 \item{quant_covarfile}{A character string, specifying the name of the quantitative covariate file which is a plain text file with no header line; columns are family ID, individual ID and continuous covariates. The default is NULL. This file needs to be in DataDir.}
+
+\item{computeGRM}{Boolean value, 'TRUE' or 'FALSE', specifying whether to compute GRM matrices or not. The default is TRUE.}
+
+\item{grmfile_name}{A string of characters specifying the prefix of autosomal .grm.bin file.
+
+Users need to provide separate GRM files for autosomes and X chromosome in ResultDir.
+
+The X chromosomal GRM file should have "x" added in the autosomal prefix as file name.
+
+For instance, if autosomal file is "ABC.grm.bin", then X chromosomal file should be "xABC.grm.bim".
+
+If you are providing chromosome-wise GRMs, then the prefix should add "ChrNumber_" at the starting
+
+of the prefix like, "Chr1_ABC.grm.bin". The default is NULL.}
 
 \item{partGRM}{Boolean value, 'TRUE' or 'FALSE', specifying whether the GRM will be partitioned into n parts (by row) in GREML model. The default is FALSE.}
 

@@ -115,3 +115,6 @@ Though this function implicitly performs X-linked gene-based test, it is flexibl
 (2) Svishcheva GR, Belonogova NM, Zorkoltseva IV, Kirichenko AV, Axenovich TI. Gene-based association tests using GWAS summary statistics. Bioinformatics. 2019 Oct 1;35(19):3701-3708. doi: 10.1093/bioinformatics/btz172. PMID: 30860568.
 (3) Belonogova NM, Svishcheva GR, Kirichenko AV, Zorkoltseva IV, Tsepilov YA, Axenovich TI. sumSTAAR: A flexible framework for gene-based association studies using GWAS summary statistics. PLoS Comput Biol. 2022 Jun 2;18(6):e1010172. doi: 10.1371/journal.pcbi.1010172. PMID: 35653402; PMCID: PMC9197066.
 }
+\author{
+Banabithi Bose
+}

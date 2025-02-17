@@ -4,11 +4,7 @@
 \alias{DiffZeroOne}
 \title{DiffZeroOne: Assessing the Z-score for deviation from one and zero.}
 \usage{
-DiffZeroOne(
-  inputdata,
-  diffzero = c("TRUE", "FALSE"),
-  diffone = c("TRUE", "FALSE")
-)
+DiffZeroOne(inputdata, diffzero = TRUE, diffone = TRUE)
 }
 \arguments{
 \item{inputdata}{A dataframe object, contaning three columns, namely, 'Trait' (i.e., the phenotype of interest), 'Stat' (i.e., the measured statistics) and 'SE' (i.e., the standard error of the measured statistics).}
@@ -25,7 +21,6 @@ This function tests the null hypothesis that a measured statistics (example: gen
 For multiple tests, users are encouraged to apply a Bonferroni multiple-testing correction.
 }
 \examples{
-#load("/projects/b1137/BBose/GXwasR/data/Example_rgdata.Rda")
 data("GXwasRData")
 colnames(Example_rgdata) <- c("Trait","Stat","SE")
 inputdata = Example_rgdata

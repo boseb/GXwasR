@@ -20,7 +20,7 @@ QCsnp(
   diffmissFilter = FALSE,
   dmissX = FALSE,
   dmissAutoY = FALSE,
-  highLD_regions,
+  highLD_regions = NULL,
   ld_prunning = FALSE,
   window_size = 50,
   step_size = 5,
@@ -58,7 +58,7 @@ QCsnp(
 
 \item{dmissAutoY}{Boolean value, 'TRUE' or 'FALSE' for computing differential missingness between cases and controls for SNPs on autosomes and Y chromosome only. The default is "FALSE". If dmissX and dmissAutoY are both FALSE, then this will be computed genome-wide. The diffmissFilter will work for all these SNPs.}
 
-\item{highLD_regions}{NULL or Character string, specifying the .txt file name with genomic regions with high LD. Based on a genome build Hg19 and Hg38, two files such as "high-LD-regions-hg19-GRCh37.txt" and "" are provided in "extdata" folder.}
+\item{highLD_regions}{A dataframe with known high LD regions. A dataframe from Anderson et. al, 2010 (3) is provided with the package.}
 
 \item{ld_prunning}{Boolean value, 'TRUE' or 'FALSE' for applying linkage disequilibrium (LD)-based filtering.}
 
@@ -72,7 +72,7 @@ QCsnp(
 A list of two objects, namely, MonomorSNPs and DiffMissSNPs containing monomorphic SNPs and SNPs with differential missingness in cases vs controls, respectively. Output plink binary files in the working directory.
 }
 \description{
-This function performs the quality control for the variants of plink binary files.
+This function performs quality control on genetic variant data from PLINK binary files. It filters variants based on parameters like minor allele frequency, Hardy-Weinberg equilibrium, call rate, and differential missingness between cases and controls. It also handles monomorphic SNPs and applies linkage disequilibrium-based filtering if specified.
 }
 \examples{
 DataDir <- system.file("extdata", package = "GXwasR")

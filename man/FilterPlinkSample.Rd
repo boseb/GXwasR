@@ -9,7 +9,7 @@ FilterPlinkSample(
   ResultDir,
   finput,
   foutput = NULL,
-  filter_sample = c("cases", "controls", "males", "females"),
+  filter_sample = "cases",
   keep_remove_sample_file = NULL,
   keep = TRUE
 )
