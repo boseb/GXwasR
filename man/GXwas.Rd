@@ -9,20 +9,18 @@ GXwas(
   ResultDir,
   finput,
   trait = c("binary", "quantitative"),
-  standard_beta = "TRUE",
-  perm = "FALSE",
-  mperm = 0,
-  genedrop = "FALSE",
-  xmodel = c("FM01", "FM02", "FM01comb", "FM02comb", "XCGA"),
-  noxsex = "FALSE",
+  standard_beta = TRUE,
+  xmodel = c("FMcombx01", "FMcombx02", "FMstatrified", "GWAScxci"),
+  sex = FALSE,
+  xsex = FALSE,
   covarfile = NULL,
-  interaction = "FALSE",
+  interaction = FALSE,
   covartest = c("ALL"),
   Inphenocov = c("ALL"),
   combtest = c("fisher.method", "fisher.method.perm", "stouffer.method"),
   MF.zero.sub = 1e-05,
   B = 10000,
-  MF.mc.cores = NULL,
+  MF.mc.cores = 1,
   MF.na.rm = FALSE,
   MF.p.corr = "none",
   plot.jpeg = FALSE,
@@ -45,17 +43,13 @@ GXwas(
 
 \item{standard_beta}{Boolean value, 'TRUE' or 'FALSE' in case of quantitative trait for standardizing the trait or phenotype values (mean 0, unit variance), so the resulting coefficients will be standardized. The default is TRUE.}
 
-\item{perm}{Boolean value, 'TRUE' or 'FALSE' for using Permutation procedures to generate significance levels empirically.According to the PLINK functionality, the first interval value indicates that this pruning will be carried out every 5 replicates, and the second pruning parameter (0.001) indicates that the rate of pruning will slow down as the number of replicates increases (i.e., pruning will be carried out every 5 + 0.001R replicates, where R is the current number of replicates). For each empirical p-value at each stage of pruning, a 100*(1 - beta / 2T)\% confidence interval is calculated, where beta is, in this case, 0.01, and T is the total number of SNPs. We prune any SNP for which the lower confidence limit exceeds alpha or the upper confidence bound falls below alpha using the typical approximation to the binomial.}
+\item{xmodel}{Models "FMcombx01","FMcombx02",and "FMstatrified" can be chosen for both binary and quantitative traits while "GWAcxci" can only apply to the binary trait. These models take care of the X-chromosomal marker Three female genotypes are coded by 0, 1, and 2 in FM01 and FM02. The two genotypes of males that follow the X-chromosome inactivation (XCI) pattern as random (XCI-R) in the FM01 model are coded by 0 and 1, while the two genotypes that follow the XCI is escaped (XCI-E) in the FM02 model are coded by 0 and 1. To reflect the dose compensation connection between the sexes, FM02 treats men as homozygous females. In the FM01comb and FM01comb methods, associations are tested separately for males and females with the FM01 and FM02 models, respectively, and then the combined p values are computed the Fisher's method, Fisher's method with permutation, or Stouffer's method(1,3-7]. An X-chromosome inactivation (XCI) pattern, or coding technique for X-chromosomal genotypes between sexes, is not required for the XCGA. By simultaneously accounting for four distinct XCI patterns, namely XCI-R, XCI-E, XCI-SN (XCI fully toward normal allele), and XCI-SR (XCI fully toward risk allele), this model may maintain a respectably high power (2). Note that, sex shouldn't be provided as a covariate in the XCGA model.}
 
-\item{mperm}{Integer value for the threshold of max(T) permutation. The default is 0 i.e., no max(T) permutation. If 1000 permutations are specified, then all 1000 will be performed, for all SNPs. The benefit of doing this is that two sets of empirical significance values can then be calculated -- pointwise estimates of an individual SNPs significance, but also a value that controls for that fact that thousands of other SNPs were tested. This is achieved by comparing each observed test statistic against the maximum of all permuted statistics (i.e. over all SNPs) for each single replicate. In otherwords, the p-value now controls the familywise error rate, as the p-value reflects the chance of seeing a test statistic this large, given you've performed as many tests as you have. Because the permutation schemes preserve the correlational structure between SNPs, this provides a less stringent correction for multiple testing in comparison to the Bonferroni, which assumes all tests are independent. Because it is now the corrected p-value that is of interest, it is typically sufficient to perform a much smaller number of tests -- i.e. it is probably not necessary to demonstrate that something is genome-wide significant beyond 0.05 or 0.01. Note: For non zero mperm value, permutation procedure will take place irrespective of perm value.}
+\item{sex}{Boolean value, 'TRUE' or 'FALSE' for using sex as covariate in association test. It is applicable genome-wide. The default is FALSE.}
 
-\item{genedrop}{Boolean value, 'TRUE' or 'FALSE' for whether to perform gene-dropping permutation. The default is FALSE. In its most basic form, this essentially entails flipping the allele that is 50/50 likely to be passed from parent to offspring (1). In this situation, a person must have both parents genotyped for genedropping. In all possible combinations of genedropping, the genotypes of founders and people without two genotyped parents remain constant. This strategy can be applied to generic pedigrees as well, passing founder-derived genes down the generations One can then perform a basic test of association for quantitative traits or samples that contain both affected and unaffected non-founders by treating the pedigree data as if all of the individuals were unrelated. However, permuted datasets made by genedropping will both control for stratification and the non-independence of related individuals (i.e., as these will also be properties of every permuted dataset). Applying the same series of 50:50 flip/no-flip decisions to all SNPs in the same permuted replicate for a certain transmission allows for the maintenance of LD between SNPs. Additionally, linking can be controlled for by giving each sibling in the same nuclear family an identical series of flip or no-flip selections. Following PLINK, both of these functionalities are automatically applied.}
+\item{xsex}{Boolean value, 'TRUE' or 'FALSE' for using sex as covariate in association test for X-chromosomal SNPs. The default is FALSE. This will overwrite 'sex' argument for X-chromosome.}
 
-\item{xmodel}{Models "FM01", "FM02", "FM01comb" and "FM02comb" can be chosen for both binary and quantitative traits while "XCGA" can only apply to the binary trait. These models take care of the X-chromosomal marker Three female genotypes are coded by 0, 1, and 2 in FM01 and FM02. The two genotypes of males that follow the X-chromosome inactivation (XCI) pattern as random (XCI-R) in the FM01 model are coded by 0 and 1, while the two genotypes that follow the XCI is escaped (XCI-E) in the FM02 model are coded by 0 and 1. To reflect the dose compensation connection between the sexes, FM02 treats men as homozygous females. In the FM01comb and FM01comb methods, associations are tested separately for males and females with the FM01 and FM02 models, respectively, and then the combined p values are computed the Fisher's method, Fisher's method with permutation, or Stouffer's method(1,3-7]. An X-chromosome inactivation (XCI) pattern, or coding technique for X-chromosomal genotypes between sexes, is not required for the XCGA. By simultaneously accounting for four distinct XCI patterns, namely XCI-R, XCI-E, XCI-SN (XCI fully toward normal allele), and XCI-SR (XCI fully toward risk allele), this model may maintain a respectably high power (2). Note that, sex shouldn't be provided as a covariate in the XCGA model.}
-
-\item{noxsex}{Boolean value, 'TRUE' or 'FALSE' for eliminating sex or adding sex as an additional covariate in the XWAS. Sex will be added as defined in the .fam input PLINK file. This feature is not applicable to the XCGA model.}
-
-\item{covarfile}{Character string for the full name of the covariate file in .txt format. This file should be placed in DataDir. Note about the covariate file: The first column of this file should be FID, the second column should be IID and the other columns should be covariates. The primary header line should be there starting with “FID”, and “IID” followed by covariate names. If an individual is not present in the covariate file, or if the individual has a missing phenotype value (i.e. -9 by default) for the covariate, then that individual is set to missing (i.e. will be excluded from association analysis). Use the function "DummyCovar()" to generate a new covariate file with categorical variables down-coded as binary dummy variables for the covariate file with categorical variables. For instance, if a variable has K categories, K-1 new dummy variables are constructed, and the original covariate is now estimated with a coefficient for each category.}
+\item{covarfile}{Character string for the full name of the covariate file in .txt format. This file should be placed in DataDir. Note about the covariate file: The first column of this file should be FID, the second column should be IID and the other columns should be covariates. The primary header line should be there starting with “FID”, and “IID” followed by covariate names. If an individual is not present in the covariate file, or if the individual has a missing phenotype value (i.e. -9 by default) for the covariate, then that individual is set to missing (i.e. will be excluded from association analysis). It is important to note that for statrified GWAS model, if PCs are included as covar then it should be generated separately for each cohort and then included in the covarfile. Use the function "DummyCovar()" to generate a new covariate file with categorical variables down-coded as binary dummy variables for the covariate file with categorical variables. For instance, if a variable has K categories, K-1 new dummy variables are constructed, and the original covariate is now estimated with a coefficient for each category.}
 
 \item{interaction}{Boolean value, 'TRUE' or 'FALSE' for including SNP x covariate interaction term/terms from the association analysis. The default is FALSE. If a permutation procedure is chosen then the interaction will be automatically FALSE. For the interaction with the two covariates COV1 and COV2, the model will look like: Y = b0 + b1.ADD + b2.COV1 + b3.COV2 + b4.ADD x COV1 + b5.ADD x COV2 + e. When interaction factors are incorporated into the model, the main effects' significance is not always determined simply; rather, it depends on the arbitrary coding of the variables. To put it another way, you should probably just interpret the p-value for the interaction. Also, The p-values for the covariates do not represent the test for the SNP-phenotype association after controlling for the covariate. That is the first row (ADD). Rather, the covariate term is the test associated with the covariate-phenotype association. These p-values might be extremely significant (e.g. if one covaries for smoking in an analysis of heart disease, etc) but this does not mean that the SNP has a highly significant effect necessarily. Note that, this feature is not valid for XCGA model for XWAS part}
 
@@ -87,7 +81,7 @@ Note that only p-values between 0 and 1 are allowed to be passed to these method
 
 \item{annotateTopSnp}{Boolean value, 'TRUE' or 'FALSE. If TRUE, it only annotates the top hit on each chromosome that is below the snp_pval threshold. The default is FALSE.}
 
-\item{suggestiveline}{The deafault is 5 (for p-value 1e-05).}
+\item{suggestiveline}{The default is 5 (for p-value 1e-05).}
 
 \item{genomewideline}{The default is 7.3 (for p-value 5e-08).}
 
@@ -98,17 +92,30 @@ A dataframe with GWAS (with XWAS for X-chromosomal variants) along with Manhatta
 In the case of the stratified test, the return is a list containing three dataframes, namely, FWAS, MWAS, and MFWAS with association results in only female, only male, and both cohorts, respectively. This will be accompanied by Miami and Q-Q plots. The individual manhattan and Q-Q-plots for stratified tests prefixed with xmodel type will be in the DataDir.
 }
 \description{
-This function runs GWAS models in autosomes with several alternative XWAS models, such as "FM01", "FM02", "FM01comb" and "FM02comb" can be applied to both binary and quantitative traits while "XCGA" can only be applied to a binary trait. For binary and quantitative features, this function uses logistic and linear regression, allowing for multiple covariates and the interactions with those covariates in a multiple-regression approach. These models are all run using the additive effects of SNPs, and each additional minor allele's influence is represented by the direction of the regression coefficient. This function attempts to identify the multi-collinearity among predictors by displaying NA for the test statistic and a p-value for all terms in the model. The more terms you add, the more likely you are to run into issues. For details about the different XWAS model, please follow the associated publication.
+This function runs GWAS models in autosomes with several alternative XWAS models, such as "FMcombx01","FMcombx02",and "FMstatrified" can be applied to both binary and quantitative traits while "GWAcxci" can only be applied to a binary trait. For binary and quantitative features, this function uses logistic and linear regression, allowing for multiple covariates and the interactions with those covariates in a multiple-regression approach. These models are all run using the additive effects of SNPs, and each additional minor allele's influence is represented by the direction of the regression coefficient. This function attempts to identify the multi-collinearity among predictors by displaying NA for the test statistic and a p-value for all terms in the model. The more terms you add, the more likely you are to run into issues. For details about the different XWAS model, please follow the associated publication.
 }
 \examples{
+
 DataDir <- system.file("extdata", package = "GXwasR")
-ResultDir <- tempdir()
+ResultDir = tempdir()
 finput <- "GXwasR_example"
-#ResultGXwas <- GXwas(DataDir = DataDir,finput = finput, xmodel = "FM02comb", covarfile = NULL, covartest = NULL, combtest = "fisher.method", snp_pval = 0.001, plot.jpeg = FALSE, suggestiveline = 3, genomewideline = 5.69897)
-ResultGXwas <- GXwas(DataDir = DataDir,ResultDir = ResultDir, finput = finput, xmodel = "FM02comb", covarfile = NULL, covartest = NULL, combtest = "fisher.method", snp_pval = 0.001, plot.jpeg = FALSE, suggestiveline = 3, genomewideline = 5.69897, ncores = 0)
-#ResultGXwas$CombinedWAS[1:5,]
-#ResultGXwas$MaleWAS[1:5,]
-#ResultGXwas$FemaleWAS[1:5,]
+standard_beta = TRUE
+xsex = FALSE
+sex = TRUE
+Inphenocov = NULL
+covartest = NULL
+interaction = FALSE
+MF.na.rm = FALSE
+B = 10000
+MF.zero.sub = 0.00001
+trait = "binary"
+xmodel = "FMcombx02"
+combtest = "fisher.method"
+snp_pval = 1e-08
+covarfile = NULL
+ncores = 0
+MF.mc.cores = 1
+ResultGXwas <- GXwas(DataDir = DataDir,ResultDir = ResultDir, finput = finput, xmodel = xmodel, trait = trait, covarfile = covarfile, sex = sex, xsex = xsex, combtest = combtest, MF.p.corr = "none", snp_pval = snp_pval, plot.jpeg = TRUE, suggestiveline = 5, genomewideline = 7.3,MF.mc.cores = 1, ncores = ncores)
 }
 \references{
 (1) Purcell et. al.,(2007). PLINK: A Tool Set for Whole-Genome Association and Population-Based Linkage Analyses. The American Journal of Human Genetics, 81(3), 559-575. https://doi.org/10.1086/519795.

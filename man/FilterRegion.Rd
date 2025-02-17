@@ -15,7 +15,7 @@ FilterRegion(
   filterXTR = TRUE,
   filterAmpliconic = TRUE,
   regionfile = FALSE,
-  filterCHR = 0,
+  filterCHR = NULL,
   Hg = "19",
   exclude = TRUE
 )
@@ -29,9 +29,9 @@ FilterRegion(
 
 \item{foutput}{Character string, specifying the prefix of the output PLINK binary files if the filtering option for the SNPs is chosen. The default is "FALSE".}
 
-\item{CHRX}{Boolean value, 'TRUE' or 'FALSE' to filter/flag regions from chromosome X. The default is TRUE.}
+\item{CHRX}{Boolean value, 'TRUE' or 'FALSE' to filter/flag regions from chromosome X. The default is TRUE. Note: CHRX only in effect if one of PAR, XTR or Ampliconic filter is in effect.}
 
-\item{CHRY}{Boolean value, 'TRUE' or 'FALSE' to filter/flag regions from chromosome X. The default is FALSE.}
+\item{CHRY}{Boolean value, 'TRUE' or 'FALSE' to filter/flag regions from chromosome X. The default is FALSE. Note: CHRY only in effect if one of PAR, XTR or Ampliconic filter is in effect.}
 
 \item{filterPAR}{Boolean value, 'TRUE' or 'FALSE' to filter out PARs from input plink file. The default is TRUE.}
 
@@ -39,9 +39,9 @@ FilterRegion(
 
 \item{filterAmpliconic}{Boolean value, 'TRUE' or 'FALSE' to filter out Ampliconic regions from input plink file. The default is TRUE.}
 
-\item{regionfile}{Character string, specifying the name of the .txt file containing the user-defined regions to be filtered out from input plink file in bed format. The default is FALSE.}
+\item{regionfile}{Character string, specifying the name of the .txt file containing the user-defined regions to be filtered out from input plink file in bed format. The default is FALSE. If regionfile = TRUE, only this filtering will be in effect. Also, PAR, XTR and Ampliconic SNPs from X-chomosome will be flagged and returned.}
 
-\item{filterCHR}{Vector value with positive integer, specifying the chromosome code to filter/flag the SNPs. The default is 0, means no filtering based on chromosome code. For non-zero values of this argument, the function will only consider the chromosome code to filter or flag. All other filtering will not work.}
+\item{filterCHR}{Vector value with positive integer, specifying the chromosome code to filter/flag the SNPs. The default is 0, means no filtering based on chromosome code. For non-zero values of this argument, the function will only consider the chromosome code to filter or flag. All other filtering will not work. If filterCHR = TRUE, only this filtering will be in effect. Also, PAR, XTR and Ampliconic SNPs from X-chomosome will be flagged and returned.}
 
 \item{Hg}{Character value, '19', or '38', specifying which genome build to use for PAR, XTR and Ampliconic regions. The default is Hg = "19".}
 
@@ -55,7 +55,7 @@ For non-zero value of filterCHR, a dataframe containing the excluded/flagged SNP
 For exclude = TRUE, two sets of plink binary files will be produced in ResultDir. One set will have the remaining SNPs after filtering and other one will have the discarded SNPs.
 }
 \description{
-Filtering Pseudo-Autosomal Region (PAR), X-transposed region (XTR), Ampliconic, filter based on chromosome code or user-defined regions from input plink files.
+Filtering Pseudo-Autosomal Region (PAR), X-transposed region (XTR), Ampliconic, filter based on chromosome code or user-defined regions from input plink files.Only one type of filtering can be done from three types, either by region (using regionfile = TRUE), by chromosome (filterCHR) or by any combination of these three, filterPAR, XTR and Ampliconic.
 }
 \examples{
 # Not Run

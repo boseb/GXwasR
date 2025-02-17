@@ -20,7 +20,7 @@ Numeric value containing the regression estimate ("Estimate"), standard error ("
 This function could be used to check association of two variables. For instance, PRS with sex.
 }
 \examples{
-#load("/projects/b1137/BBose/GXwasR/data/Regression_Ex.Rda")
+
 data("GXwasRData")
 fdata = Regression_Ex
 fdata$SEX <- as.factor(as.character(fdata$SEX))

@@ -20,7 +20,7 @@ plinkVCF(
 
 \item{ResultDir}{A character string for the file path where all output files will be stored. The default is tempdir().}
 
-\item{finput}{Character string, specifying the prefix of the input plink binary files with both male and female samples. This file needs to be in DataDir.}
+\item{finput}{Character string, specifying the prefix of the input plink binary files or vcf files. This file needs to be in DataDir.}
 
 \item{foutput}{Character string, specifying the prefix of the output plink binary files if filtering option for the SNPs is chosen. The default is "FALSE".}
 
@@ -44,6 +44,15 @@ For VCF to plink files conversion, if you do not specify any FAM file when you a
 }
 \examples{
 # Not Run
+# finput <- "GXwasR_example" #Plink file
+# foutput <- "GXwasR_example1"
+# DataDir <- system.file("extdata", package = "GXwasR")
+# ResultDir <- tempdir()
+# PtoV = TRUE
+# VtoP = FALSE
+# Famfile = NULL
+# PVbyCHR = FALSE
+# x <- plinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)
 
 }
 \author{

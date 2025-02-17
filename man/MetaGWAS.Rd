@@ -2,7 +2,7 @@
 % Please edit documentation in R/GXwasR_main_functions.R
 \name{MetaGWAS}
 \alias{MetaGWAS}
-\title{MetaGXwas: Combining summary-level results from two or more GWA studies into a single estimate.}
+\title{MetaGWAS: Combining summary-level results from two or more GWA studies into a single estimate.}
 \usage{
 MetaGWAS(
   DataDir,
@@ -24,13 +24,13 @@ MetaGWAS(
 \arguments{
 \item{DataDir}{A character string for the file path of the input files needed for ‘SummData’ and ‘SNPfile’ arguments.}
 
-\item{SummData}{Vector value containing the name/names of the .Rda file/files with GWAS summary statistics, with ‘SNP’ (i.e., SNP idenitifier), ‘BETA’ (i.e., effect-size or logarithm of odds ratio), ‘SE’ (i.e., standard error of BETA), ‘P’ (i.e., p-values) and 'NMISS' (i.e., effective sample size) in mandatory column headers. These files needed to be in DataDir. If the numbers of cases and controls are unequal, effective sample size should be 4 / (1/<# of cases> + 1/<# of controls>). A smaller "effective" sample size may be used for samples that include related individuals, however simulations indicate that small changes in the effective sample size have relatively little effect on the final p-value (3). Columns, such as, 'CHR'(Chromosome code), 'BP'(Basepair position), 'A1' (First allele code), 'A2' (Second allele code) columns are optional. If these are present, setting ‘useSNPposition’ to FALSE, causes 'CHR', ‘BP’ and ‘A1’ to be ignored and setting ‘UseA1’ to be ‘FALSE’ causes A1 to be ignored. If, both these arguments are true, this function takes care of A1/A2 allele flips properly. Otherwise, A1 mismatches are thrown out. Values of CHR/BP are allowed to vary.}
+\item{SummData}{Vector value containing the name/names of the .Rda file/files with GWAS summary statistics, with ‘SNP’ (i.e., SNP idenitifier), ‘BETA’ (i.e., effect-size or logarithm of odds ratio), ‘SE’ (i.e., standard error of BETA), ‘P’ (i.e., p-values), 'NMISS' (i.e., effective sample size), 'L95' (i.e., lower limit of 95\% confidence interval) and 'U95' (i.e., upper limit of 95\% confidence interval) are in mandatory column headers. These files needed to be in DataDir. If the numbers of cases and controls are unequal, effective sample size should be 4 / (1/<# of cases> + 1/<# of controls>). A smaller "effective" sample size may be used for samples that include related individuals, however simulations indicate that small changes in the effective sample size have relatively little effect on the final p-value (3). Columns, such as, 'CHR'(Chromosome code), 'BP'(Basepair position), 'A1' (First allele code), 'A2' (Second allele code) columns are optional. If these are present, setting ‘useSNPposition’ to FALSE, causes 'CHR', ‘BP’ and ‘A1’ to be ignored and setting ‘UseA1’ to be ‘FALSE’ causes A1 to be ignored. If, both these arguments are true, this function takes care of A1/A2 allele flips properly. Otherwise, A1 mismatches are thrown out. Values of CHR/BP are allowed to vary.}
 
 \item{ResultDir}{A character string for the file path where all output files will be stored. The default is tempdir().}
 
 \item{SNPfile}{Character string specifying the name of the plain-text file with a column of SNP names. These could be LD clumped SNPs or any other list of chosen SNPs for Meta analysis. This file needs to be in DataDir.}
 
-\item{useSNPposition}{Boolean value, 'TRUE' or 'FALSE' for using 'CHR', 'BP', and ‘A1’ or not. The default is FALSE.}
+\item{useSNPposition}{Boolean value, 'TRUE' or 'FALSE' for using 'CHR', 'BP', and ‘A1’ or not. The default is FALSE. Note: if this is FALSE then there will be no Manhattan and QQ plot will be generated.}
 
 \item{UseA1}{Boolean value, 'TRUE' or 'FALSE' for ‘A1’ to be used or not. The default is FALSE.}
 
@@ -72,6 +72,7 @@ If useSNPposition is set TRUE, a .jpeg file with Manhattan Plot and Q-Q plot wil
 This function combine K sets of GWAS association statistics on same (or at least similar) phenotype. This function employs PLINK's (1) inverse variance-based analysis to run a number of models, including a) Fixed-effect model and b) Random-effect model, assuming there may be variation between the genuine underlying effects, i.e., effect size beta. 'This function also calculates weighted Z-score-based p-values after METAL (3). For more information about the algorithms, please see the associated paper.
 }
 \examples{
+
 # Not Run
 }
 \references{

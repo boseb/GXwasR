@@ -47,7 +47,22 @@ Top principal components are generally used as covariates in association analysi
 }
 \examples{
 #' # Not Run
+DataDir <- system.file("extdata", package = "GXwasR")
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+data("GXwasRData")
+#highLD_regions <- "high-LD-regions-hg19-GRCh37.txt"
+highLD_regions <- highLD_hg19
+ld_prunning <- "TRUE"
+window_size <- 50
+step_size <- 5
+r2_threshold <- 0.02
+countPC <- 20
+# GP <- ComputeGeneticPC(DataDir = DataDir,ResultDir=ResultDir,finput=finput,highLD_regions = highLD_hg19, countPC = 20)
 }
 \references{
 (1) Purcell et. al.,(2007). PLINK: A Tool Set for Whole-Genome Association and Population-Based Linkage Analyses. The American Journal of Human Genetics, 81(3), 559-575. https://doi.org/10.1086/519795.
+}
+\author{
+Banabithi Bose
 }

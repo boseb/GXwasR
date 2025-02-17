@@ -21,7 +21,7 @@ AncestryCheck(
   highLD_regions,
   study_pop,
   outlier = FALSE,
-  outlierOf = "CEU",
+  outlierOf = "EUR",
   outlier_threshold = 3
 )
 }
@@ -58,12 +58,12 @@ AncestryCheck(
 
 \item{outlier}{Boolean value, 'TRUE' or 'FALSE', specifying outlier detection will be performed or not.}
 
-\item{outlierOf}{Chracter string, specifying the reference ancestry name for detecting outlier samples. The default is "outlierOf = "CEU".}
+\item{outlierOf}{Chracter string, specifying the reference ancestry name for detecting outlier samples. The default is "outlierOf = "EUR".}
 
 \item{outlier_threshold}{Numeric value, specifying the threshold to be be used to detect outlier samples. This threshold will be multiplied with the Eucledean distance from the center of the PC 1 and PC2 to the maximum Euclidean distance of the reference samples. Study samples outside this distance will be considered as outlier. The default is 3.}
 }
 \value{
-A dataframe with the IDs of non-European samples as outliers.
+A dataframe with the IDs of non-European samples as outliers. #importFrom DescTools \%like\%   Removing DescTools from Description imports.
 }
 \description{
 This function displays the result of the ancestry analysis in a color-coded scatter plot of the first two principal components for samples of the reference populations and the study population. Specifically, it compares the study samples' ancestry labels to a panel representing a reference population, and it also flags the outlier samples with respect to a chosen reference population. The function first filters the reference and study data for non-A-T or G-C SNPs. It next conducts LD pruning, fixes the chromosome mismatch between the reference and study datasets, checks for allele flips, updates the locations, and flips the alleles. The two datasets are then joined, and the resulting genotype dataset is subjected to Principal Component Analysis (PCA). The detection of population structure down to the level of the reference dataset can then be accomplished using PCA on this combined genotyping panel.  For instance, the center of the European reference samples is determined using the data from principal components 1 and 2 (median(PC1 europeanRef), median(PC2 europeanRef)). It determines the European reference samples' maximum Euclidean distance (maxDist) from this center. All study samples that are non-European, or outliers, are those whose Euclidean distances from the center are more than or equal to the radius r= outlier threshold* maxDist. This function utilizes the HapMap phase 3 data in NCBI 36 and 1000GenomeIII in CGRCh37. Both study and reference datasets should be of the same genome build. If not, users need to lift over one of the datasets to the same build.
@@ -90,7 +90,7 @@ referLD_r2_threshold = 0.02
 outlier = TRUE
 outlier_threshold = 3
 x <- AncestryCheck(DataDir = DataDir, ResultDir = ResultDir, finput = finput, reference = "HapMapIII_NCBI36",highLD_regions = highLD_regions,
-study_pop = study_pop, studyLD = studyLD, referLD = referLD, outlierOf = "CEU", outlier = outlier, outlier_threshold = outlier_threshold )
+study_pop = study_pop, studyLD = studyLD, referLD = referLD, outlierOf = "EUR", outlier = outlier, outlier_threshold = outlier_threshold )
 
 #x <- AncestryCheck(DataDir = DataDir, ResultDir = ResultDir, finput = finput, reference = "ThousandGenome",highLD_regions = highLD_regions,
 #study_pop = study_pop, studyLD = studyLD, referLD = referLD, outlierOf = "EUR", outlier = outlier, outlier_threshold = outlier_threshold )
