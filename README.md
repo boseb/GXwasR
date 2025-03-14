@@ -1,20 +1,77 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
 # GXwasR
-GXwasR: A tool for conducting sex-aware quality control, association analysis, and testing various models of sex-dependent genetic effects in complex traits
 
-This package implements various statistical genetics models for Genome-Wide Association (GWA) and X-Chromosome Wide Association (XWA) analyses in a sex-combined or sex-stratified way considering X-Chromosome Inactivation (XCI) pattern. In addition to association analysis, the package also enables testing for sex differences in genetic effects, including the implementation of specific models and applying best practices for additional quality control (QC) of genetic data required for these tests. The package includes twenty-five different functions in six different categories (A-F) which enable a comprehensive pipeline for sex-aware genetic association analysis of common variants with unrelated individuals.
+A tool for conducting sex-aware quality control, association analysis,
+and testing various models of sex-dependent genetic effects in complex
+traits.
 
-**(A)Pre-imputation QC:**  QCsnp(); QCsample(); AncestryCheck(); SexCheck()
+<!-- badges: start -->
 
-**(B)Post-imputation QC:** QCsnp(); QCsample2(); Xhwe(); MAFdiffSexControl(); FilterRegion()
+[![Lifecycle:
+stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+<!-- badges: end -->
 
-**(C)Sex-combined and sex-stratified GWAS with XWAS:** GXwasR()
+This package implements various statistical genetics models for
+Genome-Wide Association (GWA) and X-Chromosome Wide Association (XWA)
+analyses in a sex-combined or sex-stratified way considering
+X-Chromosome Inactivation (XCI) pattern. In addition to association
+analysis, the package also enables testing for sex differences in
+genetic effects, including the implementation of specific models and
+applying best practices for additional quality control (QC) of genetic
+data required for these tests. The package includes twenty-five
+different functions in six different categories (A-F) which enable a
+comprehensive pipeline for sex-aware genetic association analysis of
+common variants with unrelated individuals.
 
-**(D)Sex-differential test:** SexDiff(); SexDiffZscore; DiffZeroOne()
+**(A)Pre-imputation QC:** `QCsnp()`; `QCsample()`; `AncestryCheck()`;
+`SexCheck()`
 
-**(E)High level analysis:** TestXGene(); MetaGWAS(); ComputePRS(); ComputeCorrBT(); EstimateHerit()
+**(B)Post-imputation QC:** `QCsnp()`; `QCsample2()`; `Xhwe()`;
+`MAFdiffSexControl()`; `FilterRegion()`
 
-**(F)Utility Functions:** FilterPlinkSample(); ComputeGeneticPC(); ClumpLD(); GetMFPlink(); plinkVCF(); MergeRegion(); FilterAllele(); PlinkSummary()
+**(C)Sex-combined and sex-stratified GWAS with XWAS:** `GXwasR()`
 
-# Installation from R
+**(D)Sex-differential test:** `SexDiff()`; `SexDiffZscore()`;
+`DiffZeroOne()`
 
-install_github("boseb/GXwasR")
+**(E)High level analysis:** `TestXGene()`; `MetaGWAS()`; `ComputePRS()`;
+`ComputeCorrBT()`; `EstimateHerit()`
+
+**(F)Utility Functions:** `FilterPlinkSample()`; `ComputeGeneticPC()`;
+`ClumpLD()`; `GetMFPlink()`; `plinkVCF()`; `MergeRegion()`;
+`FilterAllele()`; `PlinkSummary()`
+
+## Installation
+
+You can install the development version of GXwasR from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("pak")
+pak::pak("boseb/GXwasR")
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+``` r
+library(GXwasR)
+#> 
+#> GXwasR: Genome-wide and x-chromosome wide association analyses applying best practices of quality control over genetic data
+#> Version 0.02.02 () installed
+#> Author: Banabithi Bose [aut, cre] (<https://orcid.org/0000-0003-0842-8768>)
+#> Maintainer: Banabithi Bose <banabithi.bose@gmail.com>
+#> Tutorial: https://github.com
+#> Use citation("GXwasR") to know how to cite this work.
+## basic example code
+```
+
+## Code of Conduct
+
+Please note that the GXwasR project is released with a [Contributor Code
+of
+Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html).
+By contributing to this project, you agree to abide by its terms.
