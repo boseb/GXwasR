@@ -1038,6 +1038,7 @@ EstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL, 
 #'
 #' @importFrom ggplot2 ggplot geom_bar ylab xlab theme_classic geom_point theme_light coord_equal aes_string
 #' @importFrom ggpubr ggarrange
+#' @importFrom rlang .data
 #'
 #' @export
 #'
@@ -1162,12 +1163,12 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 
     # Plot PCA results
     if (plotPC) {
-      p1 <- ggplot2::ggplot(data = Percent.var, ggplot2::aes(x = PC, y = Percent.var)) +
+      p1 <- ggplot2::ggplot(data = Percent.var, ggplot2::aes(x = .data$PC, y = .data$Percent.var)) +
         ggplot2::geom_bar(stat = "identity") +
         ggplot2::ylab("Percent Variance Explained") +
         ggplot2::theme_classic()
 
-      p2 <- ggplot2::ggplot(data = PCs, ggplot2::aes(x = .data[[ "PC1" ]], y = .data[[ "PC2" ]])) +
+      p2 <- ggplot2::ggplot(data = PCs, ggplot2::aes(x = .data$PC1, y = .data$PC2)) +
         ggplot2::geom_point() +
         ggplot2::xlab(paste0("PC1 (", signif(Percent.var$Percent.var[1]), "%)")) +
         ggplot2::ylab(paste0("PC2 (", signif(Percent.var$Percent.var[2]), "%)")) +
