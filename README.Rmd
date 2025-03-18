@@ -46,11 +46,29 @@ pak::pak("boseb/GXwasR")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+Run a genome-wide association study (GWAS) and X-chromosome-wide association study (XWAS):
 
 ```{r example}
 library(GXwasR)
-## basic example code
+ResultGXwas <- GXwas(
+  DataDir = system.file("extdata", package = "GXwasR"),
+  ResultDir = tempdir(), 
+  finput = "GXwasR_example", 
+  trait = "binary", 
+  xmodel = "FMstatrified", 
+  covarfile = NULL, 
+  sex = TRUE, 
+  xsex = FALSE, 
+  combtest = "fisher.method", 
+  MF.p.corr = "none",
+  snp_pval = 1e-08, 
+  plot.jpeg = FALSE, 
+  suggestiveline = 5, 
+  genomewideline = 7.3,
+  MF.mc.cores = 1, 
+  ncores = 0
+  )
+ResultGXwas
 ```
 
 ## Code of Conduct
