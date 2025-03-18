@@ -66,7 +66,45 @@ library(GXwasR)
 #> Maintainer: Banabithi Bose <banabithi.bose@gmail.com>
 #> Tutorial: https://github.com
 #> Use citation("GXwasR") to know how to cite this work.
-## basic example code
+## Basic example code for running a sex-stratified GWAS
+## Running
+DataDir <- system.file("extdata", package = "GXwasR")
+ResultDir = tempdir()
+## [1] "Program is set up."
+## [1] "Running FMstatrified model"
+## [1] "Program is set up."
+## [1] "Stratified test is running"
+## [1] "Program is set up."
+finput <- "GXwasR_example"
+standard_beta = TRUE
+xsex = FALSE
+sex = TRUE
+Inphenocov = NULL
+covartest = NULL
+interaction = FALSE
+MF.na.rm = FALSE
+B = 10000
+MF.zero.sub = 0.00001
+trait = "binary"
+xmodel = "FMstatrified"
+combtest = "fisher.method"
+snp_pval = 1e-08
+covarfile = NULL
+ncores = 0
+plot.jpeg = FALSE
+MF.mc.cores = 1
+genomewideline = 7.3
+suggestiveline = 5
+plotname = "GXwas.plot"
+annotateTopSnp = FALSE
+MF.na.rm = FALSE
+B = 10000
+MF.zero.sub = 0.00001
+MF.p.corr = "none"
+ResultGXwas <- GXwas(DataDir = DataDir,ResultDir = ResultDir, finput = finput, xmodel = xmodel, trait =
+trait, covarfile = covarfile, sex = sex, xsex = xsex, combtest = combtest, MF.p.corr = "none",
+snp_pval = snp_pval, plot.jpeg = plot.jpeg, suggestiveline = 5, genomewideline =
+7.3,MF.mc.cores = 1, ncores = ncores)
 ```
 
 ## Code of Conduct
