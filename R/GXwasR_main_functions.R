@@ -1289,7 +1289,7 @@ ComputePRS <- function(DataDir,ResultDir = tempdir(),finput,summarystat,phenofil
       summarystat$OR <- log(summarystat$OR)
     }
 
-    summarystat <- as.data.frame(dplyr::distinct(summarystat,SNP,.keep_all=TRUE))
+    summarystat <- as.data.frame(dplyr::distinct(summarystat,summarystat$SNP,.keep_all=TRUE))
 
     write.table(summarystat, file=paste0(ResultDir,"/","prssummarystat"), quote=FALSE, row.names=FALSE)
     SNP.pvalue <- unique(summarystat[,c("SNP","P")])
