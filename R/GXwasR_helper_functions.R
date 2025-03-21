@@ -3158,7 +3158,7 @@ ComputeLDSC2 <- function(snpld, test.df_beta, ncores, LDSC_blocks){
   test.df_beta <- data.table::as.data.table(test.df_beta)
   test.df_beta <- unique(merge(test.df_beta,finalsnp,by.x = "rsid",by.y = "SNP"))
 
-  snpld1 = transform(snpld1, SNP_A= factor(SNP_A),SNP_B = factor(SNP_B))
+  snpld1 = transform(snpld1, SNP_A= factor(snpld1$SNP_A),SNP_B = factor(snpld1$SNP_B))
   test.corr0 = Matrix::sparseMatrix(as.integer(snpld1$SNP_A), as.integer(snpld1$SNP_B), x = snpld1$R2)
   colnames(test.corr0) = levels(snpld1$SNP_B)
   rownames(test.corr0) = levels(snpld1$SNP_A)
