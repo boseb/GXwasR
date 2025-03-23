@@ -1390,9 +1390,8 @@ FMsub <- function(ResultDir, plot.jpeg, plotname, snp_pval, annotateTopSnp, sugg
 
   if (file.exists(paste0(ResultDir,"/allsnpsresults.rda"))[1] == TRUE) {
 
-    load(paste0(ResultDir,"/allsnpsresults.rda"))
     #globalVariables("allsnpsresults")
-    XWAS <- data.table::as.data.table(allsnpsresults)
+    XWAS <- data.table::as.data.table(load(paste0(ResultDir,"/allsnpsresults.rda")))
     gc(reset=TRUE)
     XWAS <- na.omit(XWAS)
     gc(reset=TRUE)
