@@ -8475,8 +8475,8 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
   nsnps.list.imputed <- NULL
 
   #library(dplyr)
-  if(!require("doSNOW",character.only = TRUE)){
-    stop("Package doSNOW was not found. Please install it firstly.")
+  if(!requireNamespace("doSNOW",quietly = TRUE)){
+    stop("Package doSNOW was not found. Please install it first.")
   }
 
   if(output.file != ""){
