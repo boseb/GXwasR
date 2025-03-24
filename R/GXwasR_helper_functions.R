@@ -7839,7 +7839,7 @@ HDL.rg <-
         if(any(duplicated(gwas1.df.subset$SNP)) == TRUE){
           gwas1.df.subset.duplicated <- gwas1.df.subset %>%
             dplyr::mutate(row.num = 1:n()) %>%
-            dplyr::filter(.data$SNP == SNP[duplicated(SNP)]) %>%
+            dplyr::filter(.data$SNP == .data$SNP[duplicated(.data$SNP)]) %>%
             dplyr::mutate(SNP_A1_A2 = paste(.data$SNP, .data$A1, .data$A2, sep = "_"))
           snps.ref.df.duplicated <- dplyr::filter(snps.ref.df, id %in% gwas1.df.subset.duplicated$SNP)
           SNP_A1_A2.valid <- c(paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A1, snps.ref.df.duplicated$A2, sep = "_"),
@@ -7860,7 +7860,7 @@ HDL.rg <-
         if(any(duplicated(gwas2.df.subset$SNP)) == TRUE){
           gwas2.df.subset.duplicated <- gwas2.df.subset %>%
             dplyr::mutate(row.num = 1:n()) %>%
-            dplyr::filter(.data$SNP == SNP[duplicated(SNP)]) %>%
+            dplyr::filter(.data$SNP == .data$SNP[duplicated(.data$SNP)]) %>%
             dplyr::mutate(SNP_A1_A2 = paste(.data$SNP, .data$A1, .data$A2, sep = "_"))
           snps.ref.df.duplicated <- dplyr::filter(snps.ref.df, id %in% gwas2.df.subset.duplicated$SNP)
           SNP_A1_A2.valid <- c(paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A1, snps.ref.df.duplicated$A2, sep = "_"),
