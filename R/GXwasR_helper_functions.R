@@ -8469,6 +8469,10 @@ HDL.rg <-
 
 HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min(gwas1.df$N, gwas2.df$N), output.file = "", numCores = 2,
                             eigen.cut = "automatic", jackknife.df = FALSE, intercept.output = FALSE, fill.missing.N = NULL, lim = exp(-18)){
+  
+  ## Initialize vars used later
+  snps.list.imputed.vector <- NULL
+  nsnps.list.imputed <- NULL
 
   #library(dplyr)
   if(!require("doSNOW",character.only = TRUE)){
@@ -8515,8 +8519,8 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     stop(error.message)
   }
 
-  gwas1.df <- gwas1.df %>% dplyr::filter(SNP %in% snps.name.list)
-  gwas2.df <- gwas2.df %>% dplyr::filter(SNP %in% snps.name.list)
+  gwas1.df <- gwas1.df %>% dplyr::filter(.data$SNP %in% snps.name.list)
+  gwas2.df <- gwas2.df %>% dplyr::filter(.data$SNP %in% snps.name.list)
 
   gwas1.df$A1 <- toupper(as.character(gwas1.df$A1))
   gwas1.df$A2 <- toupper(as.character(gwas1.df$A2))
@@ -8567,25 +8571,25 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
   k2.0 <- length(unique(gwas2.df$SNP))
 
   if(is.null(fill.missing.N)){
-    gwas1.df <- gwas1.df %>% dplyr::filter(!is.na(Z), !is.na(N))
-    gwas2.df <- gwas2.df %>% dplyr::filter(!is.na(Z), !is.na(N))
+    gwas1.df <- gwas1.df %>% dplyr::filter(!is.na(.data$Z), !is.na(.data$N))
+    gwas2.df <- gwas2.df %>% dplyr::filter(!is.na(.data$Z), !is.na(.data$N))
   } else if(fill.missing.N == "min"){
-    gwas1.df <- gwas1.df %>% dplyr::filter(!is.na(Z))
+    gwas1.df <- gwas1.df %>% dplyr::filter(!is.na(.data$Z))
     gwas1.df$N[is.na(gwas1.df$N)] <- min(gwas1.df$N, na.rm = TRUE)
 
-    gwas2.df <- gwas2.df %>% dplyr::filter(!is.na(Z))
+    gwas2.df <- gwas2.df %>% dplyr::filter(!is.na(.data$Z))
     gwas2.df$N[is.na(gwas2.df$N)] <- min(gwas2.df$N, na.rm = TRUE)
   } else if(fill.missing.N == "max"){
-    gwas1.df <- gwas1.df %>% dplyr::filter(!is.na(Z))
+    gwas1.df <- gwas1.df %>% dplyr::filter(!is.na(.data$Z))
     gwas1.df$N[is.na(gwas1.df$N)] <- max(gwas1.df$N, na.rm = TRUE)
 
-    gwas2.df <- gwas2.df %>% dplyr::filter(!is.na(Z))
+    gwas2.df <- gwas2.df %>% dplyr::filter(!is.na(.data$Z))
     gwas2.df$N[is.na(gwas2.df$N)] <- max(gwas2.df$N, na.rm = TRUE)
   } else if(fill.missing.N == "median"){
-    gwas1.df <- gwas1.df %>% dplyr::filter(!is.na(Z))
+    gwas1.df <- gwas1.df %>% dplyr::filter(!is.na(.data$Z))
     gwas1.df$N[is.na(gwas1.df$N)] <- median(gwas1.df$N, na.rm = TRUE)
 
-    gwas2.df <- gwas2.df %>% dplyr::filter(!is.na(Z))
+    gwas2.df <- gwas2.df %>% dplyr::filter(!is.na(.data$Z))
     gwas2.df$N[is.na(gwas2.df$N)] <- median(gwas2.df$N, na.rm = TRUE)
   } else{
     error.message <- "If given, the argument fill.missing.N can only be one of below: 'min', 'max', 'median'."
@@ -8630,8 +8634,8 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
   p1 <- N0/N1
   p2 <- N0/N2
 
-  rho12 <- suppressWarnings(dplyr::inner_join(gwas1.df %>% dplyr::select(SNP, Z), gwas2.df %>% dplyr::select(SNP, Z), by = "SNP") %>%
-                              dplyr::summarise(x=cor(Z.x, Z.y, use = "complete.obs")) %>% unlist)
+  rho12 <- suppressWarnings(dplyr::inner_join(gwas1.df %>% dplyr::select(.data$SNP, .data$Z), gwas2.df %>% dplyr::select(.data$SNP, .data$Z), by = "SNP") %>%
+                              dplyr::summarise(x=cor(.data$Z.x, .data$Z.y, use = "complete.obs")) %>% unlist)
   # counter <- 0
   # message <- ""
   num.pieces <- length(unlist(nsnps.list))
@@ -8660,19 +8664,19 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     A2.ref <- snps.ref.df$A2
     names(A2.ref) <- snps.ref
 
-    gwas1.df.subset <- gwas1.df %>% dplyr::filter(SNP %in% snps.ref) %>% dplyr::distinct(SNP, A1, A2, .keep_all = TRUE)
+    gwas1.df.subset <- gwas1.df %>% dplyr::filter(.data$SNP %in% snps.ref) %>% dplyr::distinct(.data$SNP, .data$A1, .data$A2, .keep_all = TRUE)
 
     ## Check if there are multiallelic or duplicated SNPs
     if(any(duplicated(gwas1.df.subset$SNP)) == TRUE){
       gwas1.df.subset.duplicated <- gwas1.df.subset %>%
         dplyr::mutate(row.num = 1:n()) %>%
-        dplyr::filter(SNP == SNP[duplicated(SNP)]) %>%
-        dplyr::mutate(SNP_A1_A2 = paste(SNP, A1, A2, sep = "_"))
+        dplyr::filter(.data$SNP == .data$SNP[duplicated(.data$SNP)]) %>%
+        dplyr::mutate(SNP_A1_A2 = paste(.data$SNP, .data$A1, .data$A2, sep = "_"))
       snps.ref.df.duplicated <- snps.ref.df %>%
-        dplyr::filter(id %in% gwas1.df.subset.duplicated$SNP)
+        dplyr::filter(.data$id %in% gwas1.df.subset.duplicated$SNP)
       SNP_A1_A2.valid <- c(paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A1, snps.ref.df.duplicated$A2, sep = "_"),
                            paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A2, snps.ref.df.duplicated$A1, sep = "_"))
-      row.remove <- gwas1.df.subset.duplicated %>% dplyr::filter(!(SNP_A1_A2 %in% SNP_A1_A2.valid)) %>% dplyr::select(row.num) %>% unlist()
+      row.remove <- gwas1.df.subset.duplicated %>% dplyr::filter(!(.data$SNP_A1_A2 %in% SNP_A1_A2.valid)) %>% dplyr::select(.data$row.num) %>% unlist()
       gwas1.df.subset <- gwas1.df.subset[-row.remove,]
     }
 
@@ -8682,19 +8686,19 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     idx.sign1 <- A2.gwas1 == A2.ref[names(A2.gwas1)]
     bhat1.raw <- bhat1.raw*(2*as.numeric(idx.sign1)-1)
 
-    gwas2.df.subset <- gwas2.df %>% dplyr::filter(SNP %in% snps.ref) %>% dplyr::distinct(SNP, A1, A2, .keep_all = TRUE)
+    gwas2.df.subset <- gwas2.df %>% dplyr::filter(.data$SNP %in% snps.ref) %>% dplyr::distinct(.data$SNP, .data$A1, .data$A2, .keep_all = TRUE)
 
     ## Check if there are multiallelic or duplicated SNPs
     if(any(duplicated(gwas2.df.subset$SNP)) == TRUE){
       gwas2.df.subset.duplicated <- gwas2.df.subset %>%
         dplyr::mutate(row.num = 1:n()) %>%
-        dplyr::filter(SNP == SNP[duplicated(SNP)]) %>%
-        dplyr::mutate(SNP_A1_A2 = paste(SNP, A1, A2, sep = "_"))
+        dplyr::filter(.data$SNP == .data$SNP[duplicated(.data$SNP)]) %>%
+        dplyr::mutate(SNP_A1_A2 = paste(.data$SNP, .data$A1, .data$A2, sep = "_"))
       snps.ref.df.duplicated <- snps.ref.df %>%
-        dplyr::filter(id %in% gwas2.df.subset.duplicated$SNP)
+        dplyr::filter(.data$id %in% gwas2.df.subset.duplicated$SNP)
       SNP_A1_A2.valid <- c(paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A1, snps.ref.df.duplicated$A2, sep = "_"),
                            paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A2, snps.ref.df.duplicated$A1, sep = "_"))
-      row.remove <- gwas2.df.subset.duplicated %>% dplyr::filter(!(SNP_A1_A2 %in% SNP_A1_A2.valid)) %>% dplyr::select(row.num) %>% unlist()
+      row.remove <- gwas2.df.subset.duplicated %>% dplyr::filter(!(.data$SNP_A1_A2 %in% SNP_A1_A2.valid)) %>% dplyr::select(.data$row.num) %>% unlist()
       gwas2.df.subset <- gwas2.df.subset[-row.remove,]
     }
     bhat2.raw <- gwas2.df.subset[, "Z"] / sqrt(gwas2.df.subset[, "N"])
