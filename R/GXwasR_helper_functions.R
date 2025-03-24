@@ -7640,6 +7640,7 @@ read_plink_clumped_clean <- function(resultDir, filename) {
 
 
 ## Helper function from HDL R package ##
+#' @importFrom dplyr n
 HDL.rg <-
   function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min(gwas1.df$N, gwas2.df$N), output.file = "", eigen.cut = "automatic",
            jackknife.df = FALSE, intercept.output = FALSE, fill.missing.N = NULL, lim = exp(-18)){
@@ -7738,8 +7739,8 @@ HDL.rg <-
     k2.0 <- length(unique(gwas2.df$SNP))
 
     if(is.null(fill.missing.N)){
-      gwas1.df <- dplyr::filter(gwas1.df, !is.na(.data$Z), !is.na(N))
-      gwas2.df <- dplyr::filter(gwas2.df, !is.na(.data$Z), !is.na(N))
+      gwas1.df <- dplyr::filter(gwas1.df, !is.na(.data$Z), !is.na(.data$N))
+      gwas2.df <- dplyr::filter(gwas2.df, !is.na(.data$Z), !is.na(.data$N))
     } else if(fill.missing.N == "min"){
       gwas1.df <- dplyr::filter(gwas1.df, !is.na(.data$Z))
       gwas1.df$N[is.na(gwas1.df$N)] <- min(gwas1.df$N, na.rm = T)
@@ -7832,14 +7833,14 @@ HDL.rg <-
         A2.ref <- snps.ref.df$A2
         names(A2.ref) <- snps.ref
 
-        gwas1.df.subset <- dplyr::filter(gwas1.df, .data$SNP %in% snps.ref) %>% dplyr::distinct(.data$SNP, A1, A2, .keep_all = TRUE)
+        gwas1.df.subset <- dplyr::filter(gwas1.df, .data$SNP %in% snps.ref) %>% dplyr::distinct(.data$SNP, .data$A1, .data$A2, .keep_all = TRUE)
 
         ## Check if there are multiallelic or duplicated SNPs
         if(any(duplicated(gwas1.df.subset$SNP)) == TRUE){
           gwas1.df.subset.duplicated <- gwas1.df.subset %>%
             dplyr::mutate(row.num = 1:n()) %>%
             dplyr::filter(.data$SNP == SNP[duplicated(SNP)]) %>%
-            dplyr::mutate(SNP_A1_A2 = paste(.data$SNP, A1, A2, sep = "_"))
+            dplyr::mutate(SNP_A1_A2 = paste(.data$SNP, .data$A1, .data$A2, sep = "_"))
           snps.ref.df.duplicated <- dplyr::filter(snps.ref.df, id %in% gwas1.df.subset.duplicated$SNP)
           SNP_A1_A2.valid <- c(paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A1, snps.ref.df.duplicated$A2, sep = "_"),
                                paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A2, snps.ref.df.duplicated$A1, sep = "_"))
@@ -7853,14 +7854,14 @@ HDL.rg <-
         idx.sign1 <- A2.gwas1 == A2.ref[names(A2.gwas1)]
         bhat1.raw <- bhat1.raw * (2 * as.numeric(idx.sign1) - 1)
 
-        gwas2.df.subset <- dplyr::filter(gwas2.df, .data$SNP %in% snps.ref) %>% dplyr::distinct(.data$SNP, A1, A2, .keep_all = TRUE)
+        gwas2.df.subset <- dplyr::filter(gwas2.df, .data$SNP %in% snps.ref) %>% dplyr::distinct(.data$SNP, .data$A1, .data$A2, .keep_all = TRUE)
 
         ## Check if there are multiallelic or duplicated SNPs
         if(any(duplicated(gwas2.df.subset$SNP)) == TRUE){
           gwas2.df.subset.duplicated <- gwas2.df.subset %>%
             dplyr::mutate(row.num = 1:n()) %>%
             dplyr::filter(.data$SNP == SNP[duplicated(SNP)]) %>%
-            dplyr::mutate(SNP_A1_A2 = paste(.data$SNP, A1, A2, sep = "_"))
+            dplyr::mutate(SNP_A1_A2 = paste(.data$SNP, .data$A1, .data$A2, sep = "_"))
           snps.ref.df.duplicated <- dplyr::filter(snps.ref.df, id %in% gwas2.df.subset.duplicated$SNP)
           SNP_A1_A2.valid <- c(paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A1, snps.ref.df.duplicated$A2, sep = "_"),
                                paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A2, snps.ref.df.duplicated$A1, sep = "_"))
