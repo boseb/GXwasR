@@ -7737,25 +7737,25 @@ HDL.rg <-
     k2.0 <- length(unique(gwas2.df$SNP))
 
     if(is.null(fill.missing.N)){
-      gwas1.df <- dplyr::filter(gwas1.df, !is.na(Z), !is.na(N))
-      gwas2.df <- dplyr::filter(gwas2.df, !is.na(Z), !is.na(N))
+      gwas1.df <- dplyr::filter(gwas1.df, !is.na(.data$Z), !is.na(N))
+      gwas2.df <- dplyr::filter(gwas2.df, !is.na(.data$Z), !is.na(N))
     } else if(fill.missing.N == "min"){
-      gwas1.df <- dplyr::filter(gwas1.df, !is.na(Z))
+      gwas1.df <- dplyr::filter(gwas1.df, !is.na(.data$Z))
       gwas1.df$N[is.na(gwas1.df$N)] <- min(gwas1.df$N, na.rm = T)
 
-      gwas2.df <- dplyr::filter(gwas2.df, !is.na(Z))
+      gwas2.df <- dplyr::filter(gwas2.df, !is.na(.data$Z))
       gwas2.df$N[is.na(gwas2.df$N)] <- min(gwas2.df$N, na.rm = T)
     } else if(fill.missing.N == "max"){
-      gwas1.df <- dplyr::filter(gwas1.df, !is.na(Z))
+      gwas1.df <- dplyr::filter(gwas1.df, !is.na(.data$Z))
       gwas1.df$N[is.na(gwas1.df$N)] <- max(gwas1.df$N, na.rm = T)
 
-      gwas2.df <- dplyr::filter(gwas2.df, !is.na(Z))
+      gwas2.df <- dplyr::filter(gwas2.df, !is.na(.data$Z))
       gwas2.df$N[is.na(gwas2.df$N)] <- max(gwas2.df$N, na.rm = T)
     } else if(fill.missing.N == "median"){
-      gwas1.df <- dplyr::filter(gwas1.df, !is.na(Z))
+      gwas1.df <- dplyr::filter(gwas1.df, !is.na(.data$Z))
       gwas1.df$N[is.na(gwas1.df$N)] <- median(gwas1.df$N, na.rm = T)
 
-      gwas2.df <- dplyr::filter(gwas2.df, !is.na(Z))
+      gwas2.df <- dplyr::filter(gwas2.df, !is.na(.data$Z))
       gwas2.df$N[is.na(gwas2.df$N)] <- median(gwas2.df$N, na.rm = T)
     } else{
       error.message <- "If given, the argument fill.missing.N can only be one of below: 'min', 'max', 'median'."
@@ -7807,7 +7807,7 @@ HDL.rg <-
     p1 <- N0 / N1
     p2 <- N0 / N2
 
-    rho12 <- suppressWarnings(dplyr::inner_join(gwas1.df %>% dplyr::select(.data$SNP, Z), gwas2.df %>% dplyr::select(.data$SNP, Z), by = "SNP") %>%
+    rho12 <- suppressWarnings(dplyr::inner_join(gwas1.df %>% dplyr::select(.data$SNP, .data$Z), gwas2.df %>% dplyr::select(.data$SNP, .data$Z), by = "SNP") %>%
                                 dplyr::summarise(x = cor(Z.x, Z.y, use = "complete.obs")) %>% unlist)
 
     bstar1.v <- bstar2.v <- lam.v <- list()
