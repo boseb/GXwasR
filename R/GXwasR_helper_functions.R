@@ -7809,7 +7809,7 @@ HDL.rg <-
     p2 <- N0 / N2
 
     rho12 <- suppressWarnings(dplyr::inner_join(gwas1.df %>% dplyr::select(.data$SNP, .data$Z), gwas2.df %>% dplyr::select(.data$SNP, .data$Z), by = "SNP") %>%
-                                dplyr::summarise(x = cor(Z.x, Z.y, use = "complete.obs")) %>% unlist)
+                                dplyr::summarise(x = cor(.data$Z.x, .data$Z.y, use = "complete.obs")) %>% unlist)
 
     bstar1.v <- bstar2.v <- lam.v <- list()
     HDL11.df <- HDL12.df <- HDL22.df <- names.row <- NULL
