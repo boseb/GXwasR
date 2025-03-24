@@ -7841,10 +7841,10 @@ HDL.rg <-
             dplyr::mutate(row.num = 1:n()) %>%
             dplyr::filter(.data$SNP == .data$SNP[duplicated(.data$SNP)]) %>%
             dplyr::mutate(SNP_A1_A2 = paste(.data$SNP, .data$A1, .data$A2, sep = "_"))
-          snps.ref.df.duplicated <- dplyr::filter(snps.ref.df, id %in% gwas1.df.subset.duplicated$SNP)
+          snps.ref.df.duplicated <- dplyr::filter(snps.ref.df, .data$id %in% gwas1.df.subset.duplicated$SNP)
           SNP_A1_A2.valid <- c(paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A1, snps.ref.df.duplicated$A2, sep = "_"),
                                paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A2, snps.ref.df.duplicated$A1, sep = "_"))
-          row.remove <- dplyr::filter(gwas1.df.subset.duplicated, !(SNP_A1_A2 %in% SNP_A1_A2.valid)) %>% dplyr::select(row.num) %>% unlist()
+          row.remove <- dplyr::filter(gwas1.df.subset.duplicated, !(.data$SNP_A1_A2 %in% SNP_A1_A2.valid)) %>% dplyr::select(.data$row.num) %>% unlist()
           gwas1.df.subset <- gwas1.df.subset[-row.remove,]
         }
 
@@ -7862,10 +7862,10 @@ HDL.rg <-
             dplyr::mutate(row.num = 1:n()) %>%
             dplyr::filter(.data$SNP == .data$SNP[duplicated(.data$SNP)]) %>%
             dplyr::mutate(SNP_A1_A2 = paste(.data$SNP, .data$A1, .data$A2, sep = "_"))
-          snps.ref.df.duplicated <- dplyr::filter(snps.ref.df, id %in% gwas2.df.subset.duplicated$SNP)
+          snps.ref.df.duplicated <- dplyr::filter(snps.ref.df, .data$id %in% gwas2.df.subset.duplicated$SNP)
           SNP_A1_A2.valid <- c(paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A1, snps.ref.df.duplicated$A2, sep = "_"),
                                paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A2, snps.ref.df.duplicated$A1, sep = "_"))
-          row.remove <- dplyr::filter(gwas2.df.subset.duplicated, !(SNP_A1_A2 %in% SNP_A1_A2.valid)) %>% dplyr::select(row.num) %>% unlist()
+          row.remove <- dplyr::filter(gwas2.df.subset.duplicated, !(.data$SNP_A1_A2 %in% SNP_A1_A2.valid)) %>% dplyr::select(.data$row.num) %>% unlist()
           gwas2.df.subset <- gwas2.df.subset[-row.remove,]
         }
         bhat2.raw <- gwas2.df.subset[, "Z"] / sqrt(gwas2.df.subset[, "N"])
