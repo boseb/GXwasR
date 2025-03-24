@@ -1707,8 +1707,8 @@ SexCheck <-
 
       # Read BIM file to check for X and Y chromosomes
       bim_file <- read.table(file.path(DataDir, paste0(finput, ".bim")))
-      xChr <- nrow(subset(bim_file, V1 == 23 | V1 == "X"))
-      yChr <- nrow(subset(bim_file, V1 == 24 | V1 == "Y"))
+      xChr <- nrow(subset(bim_file, bim_file$V1 == 23 | bim_file$V1 == "X"))
+      yChr <- nrow(subset(bim_file, bim_file$V1 == 24 | bim_file$V1 == "Y"))
 
       if (xChr == 0) {
         stop("There are no X chromosomes in the input PLINK files.")
