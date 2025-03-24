@@ -25,14 +25,13 @@ Suggests:
     grid,
     ggplotify,
     GenomicFeatures,
-    graphics, 
-    knitr, 
-    rmarkdown, 
-    tools, 
+    graphics,
+    knitr,
+    rmarkdown,
+    tools,
     qpdf,
     printr,
-    doSNOW,
-    foreach
+    doSNOW
 Imports:
     utils,
     ggpubr,
@@ -58,4 +57,5 @@ Imports:
     magrittr,
     poolr,
     progress,
-    rlang
+    rlang,
+    foreach
