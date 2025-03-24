@@ -7642,6 +7642,9 @@ read_plink_clumped_clean <- function(resultDir, filename) {
 HDL.rg <-
   function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min(gwas1.df$N, gwas2.df$N), output.file = "", eigen.cut = "automatic",
            jackknife.df = FALSE, intercept.output = FALSE, fill.missing.N = NULL, lim = exp(-18)){
+    ## Initialize vars used later
+    snps.list.imputed.vector <- NULL
+    nsnps.list.imputed <- NULL
 
     if(output.file != ""){
       if(file.exists(output.file) == T){
