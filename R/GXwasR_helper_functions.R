@@ -3900,7 +3900,7 @@ GeneProtein <- function(ResultDir,hg,chromosome){ ## Automatically using HG data
 }
 
 ## Function 81
-PlotHeritability <- function(Hdata,miMAF,maMAF,plotjpeg,plotname){
+PlotHeritability <- function(Hdata,miMAF,maMAF,plotjpeg,plotname, ResultDir){
   #create plot with regression line, regression equation, Pearson correlation and p-value.
   Hdata <- na.omit(Hdata)
   p1<- ggplot2::ggplot(data=Hdata, ggplot2::aes(x=Hdata$size_mb, y=Hdata$Variance)) +
