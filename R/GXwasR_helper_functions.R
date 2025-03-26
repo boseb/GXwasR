@@ -963,7 +963,7 @@ applySNPmissCCFilter <- function(ResultDir, SNPmissCC, diffmissFilter, foutput) 
 }
 
 ## Function 36
-#' @importFrom ggplot2 element_rect
+#' @importFrom ggplot2 element_rect expansion
 gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"),log10=TRUE,
                     yaxis, opacity=1, annotate_snp, annotate_p, toptitle=NULL,
                     bottomtitle=NULL, highlight_snp, highlight_p, highlighter="red",
@@ -1036,13 +1036,13 @@ gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"),log10=
   p1 <- ggplot2::ggplot() + eval(parse(text=backpanel1))
   #Add shape info if available
   if("Shape" %in% topn){
-    p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$Location=="Top",], ggplot2::aes(x=pos_index, y=pval, color=factor(Color), shape=factor(Shape)), alpha=opacity)
+    p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$Location=="Top",], ggplot2::aes(x=.data$pos_index, y=.data$pval, color=factor(.data$Color), shape=factor(.data$Shape)), alpha=opacity)
   } else {
-    p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$Location=="Top",], ggplot2::aes(x=pos_index, y=pval, color=factor(Color)), alpha=opacity)
+    p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$Location=="Top",], ggplot2::aes(x=.data$pos_index, y=.data$pval, color=factor(.data$Color)), alpha=opacity)
   }
   p1 <- p1 + ggplot2::scale_x_continuous(breaks=lims$av, labels=lims$Color, expand=c(0,0))
   if(chrblocks==TRUE){
-    p1 <- p1 + ggplot2::geom_rect(data = lims, ggplot2::aes(xmin = posmin-.5, xmax = posmax+.5, ymin = -Inf, ymax = min(d_order$pval), fill=as.factor(Color)), alpha = 1)
+    p1 <- p1 + ggplot2::geom_rect(data = lims, ggplot2::aes(xmin = .data$posmin-.5, xmax = .data$posmax+.5, ymin = -Inf, ymax = min(d_order$pval), fill=as.factor(.data$Color)), alpha = 1)
   }
   p1 <- p1 + ggplot2::scale_colour_manual(name = "Color", values = newcols) + ggplot2::scale_fill_manual(name = "Color", values = newcols)
   p1 <- p1 + ggplot2::theme(panel.grid.minor.x = ggplot2::element_blank(), panel.grid.major.x = ggplot2::element_blank(), axis.title.x=ggplot2::element_blank(), legend.position="top", legend.title = ggplot2::element_blank())
@@ -1051,13 +1051,13 @@ gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"),log10=
   p2 <- ggplot2::ggplot() + eval(parse(text=backpanel2))
   #Add shape info if available
   if("Shape" %in% bottomn){
-    p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$Location=="Bottom",], ggplot2::aes(x=pos_index, y=pval, color=factor(Color), shape=factor(Shape)), alpha=opacity)
+    p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$Location=="Bottom",], ggplot2::aes(x=.data$pos_index, y=.data$pval, color=factor(.data$Color), shape=factor(.data$Shape)), alpha=opacity)
   } else {
-    p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$Location=="Bottom",], ggplot2::aes(x=pos_index, y=pval, color=factor(Color)), alpha=opacity)
+    p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$Location=="Bottom",], ggplot2::aes(x=.data$pos_index, y=.data$pval, color=factor(.data$Color)), alpha=opacity)
   }
   p2 <- p2 + ggplot2::scale_x_continuous(breaks=lims$av, labels=lims$Color, expand=c(0,0))
   if(chrblocks==TRUE){
-    p2 <- p2 + ggplot2::geom_rect(data = lims, ggplot2::aes(xmin = posmin-.5, xmax = posmax+.5, ymin = -Inf, ymax = min(d_order$pval), fill=as.factor(Color)), alpha = 1)
+    p2 <- p2 + ggplot2::geom_rect(data = lims, ggplot2::aes(xmin = .data$posmin-.5, xmax = .data$posmax+.5, ymin = -Inf, ymax = min(d_order$pval), fill=as.factor(.data$Color)), alpha = 1)
   }
   p2 <- p2 + ggplot2::scale_colour_manual(name = "Color", values = newcols) + ggplot2::scale_fill_manual(name = "Color", values = newcols)
   p2 <- p2 + ggplot2::theme(axis.text.x = ggplot2::element_text(angle=90), panel.grid.minor.x = ggplot2::element_blank(), panel.grid.major.x = ggplot2::element_blank(), axis.title.x = ggplot2::element_blank(), legend.position="bottom", legend.title = ggplot2::element_blank())
@@ -1065,30 +1065,30 @@ gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"),log10=
   #Highlight if given
   if(!missing(highlight_snp)){
     if("Shape" %in% topn){
-      p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$SNP %in% highlight_snp & d_order$Location=="Top", ], ggplot2::aes(x=pos_index, y=pval, shape=Shape), colour=highlighter)
+      p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$SNP %in% highlight_snp & d_order$Location=="Top", ], ggplot2::aes(x=.data$pos_index, y=.data$pval, shape=.data$Shape), colour=highlighter)
       p1 <- p1 + ggplot2::guides(shape = ggplot2::guide_legend(override.aes = list(colour = "black")))
     } else {
-      p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$SNP %in% highlight_snp & d_order$Location=="Top", ], ggplot2::aes(x=pos_index, y=pval), colour=highlighter)
+      p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$SNP %in% highlight_snp & d_order$Location=="Top", ], ggplot2::aes(x=.data$pos_index, y=.data$pval), colour=highlighter)
     }
     if("Shape" %in% bottomn){
-      p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$SNP %in% highlight_snp & d_order$Location=="Bottom", ], ggplot2::aes(x=pos_index, y=pval, shape=Shape), colour=highlighter)
+      p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$SNP %in% highlight_snp & d_order$Location=="Bottom", ], ggplot2::aes(x=.data$pos_index, y=.data$pval, shape=.data$Shape), colour=highlighter)
       p2 <- p2 + ggplot2::guides(shape = ggplot2::guide_legend(override.aes = list(colour = "black")))
     } else {
-      p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$SNP %in% highlight_snp & d_order$Location=="Bottom", ], ggplot2::aes(x=pos_index, y=pval), colour=highlighter)
+      p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$SNP %in% highlight_snp & d_order$Location=="Bottom", ], ggplot2::aes(x=.data$pos_index, y=.data$pval), colour=highlighter)
     }
   }
   if(!missing(highlight_p)){
     if("Shape" %in% topn){
-      p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$pvalue < highlight_p[1] & d_order$Location=="Top", ], ggplot2::aes(x=pos_index, y=pval, shape=Shape), colour=highlighter)
+      p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$pvalue < highlight_p[1] & d_order$Location=="Top", ], ggplot2::aes(x=.data$pos_index, y=.data$pval, shape=.data$Shape), colour=highlighter)
       p1 <- p1 + ggplot2::guides(shape = ggplot2::guide_legend(override.aes = list(colour = "black")))
     } else {
-      p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$pvalue < highlight_p[1] & d_order$Location=="Top", ], ggplot2::aes(x=pos_index, y=pval), colour=highlighter)
+      p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$pvalue < highlight_p[1] & d_order$Location=="Top", ], ggplot2::aes(x=.data$pos_index, y=.data$pval), colour=highlighter)
     }
     if("Shape" %in% bottomn){
-      p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$pvalue < highlight_p[2] & d_order$Location=="Bottom", ], ggplot2::aes(x=pos_index, y=pval, shape=Shape), colour=highlighter)
+      p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$pvalue < highlight_p[2] & d_order$Location=="Bottom", ], ggplot2::aes(x=.data$pos_index, y=.data$pval, shape=.data$Shape), colour=highlighter)
       p2 <- p2 + ggplot2::guides(shape = ggplot2::guide_legend(override.aes = list(colour = "black")))
     } else {
-      p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$pvalue < highlight_p[2] & d_order$Location=="Bottom", ], ggplot2::aes(x=pos_index, y=pval), colour=highlighter)
+      p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$pvalue < highlight_p[2] & d_order$Location=="Bottom", ], ggplot2::aes(x=.data$pos_index, y=.data$pval), colour=highlighter)
     }
   }
   #Add pvalue threshold line
@@ -1106,21 +1106,21 @@ gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"),log10=
   if(!missing(annotate_p)){
     if (!requireNamespace(c("ggrepel"), quietly = TRUE)==TRUE) {
       print("Consider installing 'ggrepel' for improved text annotation")
-      p1 <- p1 + ggplot2::geom_text(data=d_order[d_order$pvalue < annotate_p[1] & d_order$Location=="Top",], ggplot2::aes(pos_index,pval,label=SNP))
-      p2 <- p2 + ggplot2::geom_text(data=d_order[d_order$pvalue < annotate_p[2] & d_order$Location=="Bottom",], ggplot2::aes(pos_index,pval,label=SNP))
+      p1 <- p1 + ggplot2::geom_text(data=d_order[d_order$pvalue < annotate_p[1] & d_order$Location=="Top",], ggplot2::aes(.data$pos_index,.data$pval,label=.data$SNP))
+      p2 <- p2 + ggplot2::geom_text(data=d_order[d_order$pvalue < annotate_p[2] & d_order$Location=="Bottom",], ggplot2::aes(.data$pos_index,.data$pval,label=.data$SNP))
     } else {
-      p1 <- p1 + ggrepel::geom_text_repel(data=d_order[d_order$pvalue < annotate_p[1] & d_order$Location=="Top",], ggplot2::aes(pos_index,pval,label=SNP))
-      p2 <- p2 + ggrepel::geom_text_repel(data=d_order[d_order$pvalue < annotate_p[2] & d_order$Location=="Bottom",], ggplot2::aes(pos_index,pval,label=SNP))
+      p1 <- p1 + ggrepel::geom_text_repel(data=d_order[d_order$pvalue < annotate_p[1] & d_order$Location=="Top",], ggplot2::aes(.data$pos_index,.data$pval,label=.data$SNP))
+      p2 <- p2 + ggrepel::geom_text_repel(data=d_order[d_order$pvalue < annotate_p[2] & d_order$Location=="Bottom",], ggplot2::aes(.data$pos_index,.data$pval,label=.data$SNP))
     }
   }
   if(!missing(annotate_snp)){
     if (!requireNamespace(c("ggrepel"), quietly = TRUE)==TRUE){
       print("Consider installing 'ggrepel' for improved text annotation")
-      p1 <- p1 + ggplot2::geom_text(data=d_order[d_order$SNP %in% annotate_snp & d_order$Location=="Top",], ggplot2::aes(pos_index,pval,label=SNP))
-      p2 <- p2 + ggplot2::geom_text(data=d_order[d_order$SNP %in% annotate_snp & d_order$Location=="Bottom",], ggplot2::aes(pos_index,pval,label=SNP))
+      p1 <- p1 + ggplot2::geom_text(data=d_order[d_order$SNP %in% annotate_snp & d_order$Location=="Top",], ggplot2::aes(.data$pos_index,.data$pval,label=.data$SNP))
+      p2 <- p2 + ggplot2::geom_text(data=d_order[d_order$SNP %in% annotate_snp & d_order$Location=="Bottom",], ggplot2::aes(.data$pos_index,.data$pval,label=.data$SNP))
     } else {
-      p1 <- p1 + ggrepel::geom_text_repel(data=d_order[d_order$SNP %in% annotate_snp & d_order$Location=="Top",], ggplot2::aes(pos_index,pval,label=SNP))
-      p2 <- p2 + ggrepel::geom_text_repel(data=d_order[d_order$SNP %in% annotate_snp & d_order$Location=="Bottom",], ggplot2::aes(pos_index,pval,label=SNP))
+      p1 <- p1 + ggrepel::geom_text_repel(data=d_order[d_order$SNP %in% annotate_snp & d_order$Location=="Top",], ggplot2::aes(.data$pos_index,.data$pval,label=.data$SNP))
+      p2 <- p2 + ggrepel::geom_text_repel(data=d_order[d_order$SNP %in% annotate_snp & d_order$Location=="Bottom",], ggplot2::aes(.data$pos_index,.data$pval,label=.data$SNP))
     }
   }
   #Add title and y axis title
