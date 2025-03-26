@@ -5649,7 +5649,7 @@ mergeDatasetsAndPerformPCA <- function(ResultDir) {
 
 ## Function 111
 ## Added in 3.0
-loadAndProcessReferenceAncestry <- function(reference) {
+loadAndProcessReferenceAncestry <- function(ResultDir, reference) {
   if (reference == "HapMapIII_NCBI36") {
 
     ref_ancestry1 <-
