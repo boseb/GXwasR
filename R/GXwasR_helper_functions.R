@@ -47,7 +47,8 @@ setupPlink <- function(wdir) {
   os_specific_files <- list(
     Linux = list(file = "plink_linux_x86_64_20220402.zip", exec = "plink", remove = c("LICENSE", "prettify", "toy.map", "toy.ped")),
     Windows = list(file = "plink_win64_20230116.zip", exec = "plink.exe", remove = c("LICENSE", "prettify.exe", "toy.map", "toy.ped")),
-    macOS = list(file = "plink_mac_20230116.zip", exec = "plink", remove = c("LICENSE", "prettify", "toy.map", "toy.ped"))
+    macOS = list(file = "plink_mac_20230116.zip", exec = "plink", remove = c("LICENSE", "prettify", "toy.map", "toy.ped")),
+    Darwin = list(file = "plink_mac_20230116.zip", exec = "plink", remove = c("LICENSE", "prettify", "toy.map", "toy.ped"))
   )
 
   if (!OS %in% names(os_specific_files)) {
@@ -5799,7 +5800,7 @@ reportAlleleFlips <- function(snp_allele_flips, ResultDir) {
 
 ## Function 117
 ## Added in 3.0
-detectOutliers <- function(tab, ResultDir, outlier, outlierOf, outlier_threshold) {
+detectOutliers <- function(tab, ResultDir, DataDir, finput, outlier, outlierOf, outlier_threshold) {
   if (!outlier) {
     return(data.frame())  # Return an empty data frame if outlier detection is not required
   }
@@ -5922,7 +5923,7 @@ detectOutliers <- function(tab, ResultDir, outlier, outlierOf, outlier_threshold
       abs(z_score_PC1_EAS) < outlier_threshold & abs(z_score_PC2_EAS) < outlier_threshold ~ "EAS",
       abs(z_score_PC1_EUR) < outlier_threshold & abs(z_score_PC2_EUR) < outlier_threshold ~ "EUR",
       abs(z_score_PC1_SAS) < outlier_threshold & abs(z_score_PC2_SAS) < outlier_threshold ~ "SAS",
-      TRUE ~ Assigned_Pop_ZScore  # This keeps the current value for rows not meeting any conditions above
+      TRUE ~ .data$Assigned_Pop_ZScore  # This keeps the current value for rows not meeting any conditions above
     ))
 
   #Non_Ref_Pop <- study_pop[study_pop$dis > ref_mean_dis * outlier_threshold, ]
@@ -5931,7 +5932,7 @@ detectOutliers <- function(tab, ResultDir, outlier, outlierOf, outlier_threshold
 
   ## Added in 5.0 by BB
   Outlier_samples <- study_pop %>%
-    dplyr::filter(is.na(Assigned_Pop_ZScore) | Assigned_Pop_ZScore != outlierOf) %>%
+    dplyr::filter(is.na(.data$Assigned_Pop_ZScore) | .data$Assigned_Pop_ZScore != outlierOf) %>%
     dplyr::select(sample)
 
   Samples_with_predicted_ancestry <- study_pop[,c(1,13)]
