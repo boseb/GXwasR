@@ -2407,7 +2407,7 @@ FMcomb <-
 
 ## Function 58
 ## Added in 3.0
-paraGwasAuto <- function(chunks,chunk,ResultDir,finput,regress,sexv,interactionv, standard_b,parameterv,Inphenocovv,covar,covarv,
+paraGwasAuto <- function(chunks,chunk,ResultDir,finput,regress,sexv,noxsexv, interactionv, standard_b,parameterv,Inphenocovv,covar,covarv,
                          snpfile){
 
   ## Chunkfile create
