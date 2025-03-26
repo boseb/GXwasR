@@ -1307,7 +1307,7 @@ createSexDistributionPlot <- function(dat) {
   }
 
   # Create the plot
-  p2 <- ggplot2::ggplot(dat, ggplot2::aes(x = SCORE, color = SEX)) +
+  p2 <- ggplot2::ggplot(dat, ggplot2::aes(x = .data$SCORE, color = .data$SEX)) +
     ggplot2::geom_density() +
     ggplot2::ggtitle(title) +
     ggplot2::xlab("PRS") +
@@ -1326,7 +1326,7 @@ createBinaryPhenotypePlots <- function(dat, p1, p2) {
   dat$Pheno1 <- factor(ifelse(dat$Pheno1 == 1, "control", "cases"))
 
   # Generate density plot for overall distribution
-  p3 <- ggplot2::ggplot(dat, ggplot2::aes(x = `SCORE`, color = Pheno1)) +
+  p3 <- ggplot2::ggplot(dat, ggplot2::aes(x = .data$`SCORE`, color = .data$Pheno1)) +
     ggplot2::geom_density() +
     ggplot2::ggtitle("Best PRS distribution\n(cases vs controls)") +
     ggplot2::xlab("PRS") +
@@ -1337,14 +1337,14 @@ createBinaryPhenotypePlots <- function(dat, p1, p2) {
   mdat <- dat[dat$SEX == "Male", ]
   fdat <- dat[dat$SEX == "Female", ]
 
-  p4 <- ggplot2::ggplot(mdat, ggplot2::aes(x = SCORE, color = Pheno1)) +
+  p4 <- ggplot2::ggplot(mdat, ggplot2::aes(x = .data$SCORE, color = .data$Pheno1)) +
     ggplot2::geom_density() +
     ggplot2::ggtitle("Best PRS distribution in males\n(cases vs controls)") +
     ggplot2::xlab("PRS") +
     ggplot2::theme(plot.title = ggplot2::element_text(size = 10, face = "bold")) +
     ggplot2::theme(axis.title.x = ggplot2::element_text(size = 8))
 
-  p5 <- ggplot2::ggplot(fdat, ggplot2::aes(x = SCORE, color = Pheno1)) +
+  p5 <- ggplot2::ggplot(fdat, ggplot2::aes(x = .data$SCORE, color = .data$Pheno1)) +
     ggplot2::geom_density() +
     ggplot2::ggtitle("Best PRS distribution in females\n(cases vs controls)") +
     ggplot2::xlab("PRS") +
