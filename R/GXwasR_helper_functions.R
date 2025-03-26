@@ -5765,9 +5765,9 @@ plotPCA <- function(tab, pop_type) {
   ## Added in 5.0
   # Sorting based on whether 'pop' starts with "Study_" or "Ref_"
   tab1 <- tab %>%
-    dplyr::mutate(Sort_Order = ifelse(grepl("^Ref_", pop), 0, 1)) %>%
-    dplyr::arrange(Sort_Order) %>%
-    dplyr::select(-Sort_Order) # Removing the temporary Sort_Order column
+    dplyr::mutate(Sort_Order = ifelse(grepl("^Ref_", .data$pop), 0, 1)) %>%
+    dplyr::arrange(.data$Sort_Order) %>%
+    dplyr::select(-.data$Sort_Order) # Removing the temporary Sort_Order column
 
   p <- ggplot2::ggplot(data = tab1, ggplot2::aes(
     x = tab1$PC1, y = tab1$PC2, color = tab1$pop, shape = tab1$pop
