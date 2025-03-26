@@ -2454,7 +2454,7 @@ paraGwasAuto <- function(chunks,chunk,ResultDir,finput,regress,sexv,interactionv
 
 ## Function 59
 ## Added in 3.0
-autoFun <- function(DataDir, ResultDir, finput, sex, standard_beta, covarfile, interaction, covartest, Inphenocov, ncores){
+autoFun <- function(DataDir, ResultDir, finput, sex, standard_beta, covarfile, interaction, covartest, Inphenocov, ncores, noxsexv){
 
   regress <- "--logistic"
   standard_b <- "beta"
