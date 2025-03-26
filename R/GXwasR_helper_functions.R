@@ -963,7 +963,7 @@ applySNPmissCCFilter <- function(ResultDir, SNPmissCC, diffmissFilter, foutput) 
 }
 
 ## Function 36
-
+#' @importFrom ggplot2 element_rect
 gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"),log10=TRUE,
                     yaxis, opacity=1, annotate_snp, annotate_p, toptitle=NULL,
                     bottomtitle=NULL, highlight_snp, highlight_p, highlighter="red",
