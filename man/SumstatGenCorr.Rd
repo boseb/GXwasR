@@ -59,11 +59,12 @@ estimates will be used.}
 \value{
 A list is returned with:
 \itemize{
-\item{rg }{The estimated genetic correlation.}
-\item{rg.se }{The standard error of the estimated genetic correlation.}
-\item{P }{P-value based on Wald test.}
-\item{estimates.df }{A detailed matrix includes the estimates and standard errors of heritabilities, genetic covariance and genetic correlation.}
-\item{eigen.use }{The eigen.cut used in computation.}
+\item{\code{rg}}: The estimated genetic correlation.
+\item{\code{rg.se}}: The standard error of the estimated genetic correlation.
+\item{\code{P}}: P-value based on Wald test.
+\item{\code{estimates.df}}: A detailed matrix includes the estimates and standard errors of heritabilities, genetic covariance
+and genetic correlation.
+\item{\code{eigen.use}}: The eigen.cut used in computation.
 }
 }
 \description{

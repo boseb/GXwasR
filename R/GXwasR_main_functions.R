@@ -4924,11 +4924,12 @@ LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, st
 #'
 #' @return A list is returned with:
 #' \itemize{
-#' \item{rg }{The estimated genetic correlation.}
-#' \item{rg.se }{The standard error of the estimated genetic correlation.}
-#' \item{P }{P-value based on Wald test.}
-#' \item{estimates.df }{A detailed matrix includes the estimates and standard errors of heritabilities, genetic covariance and genetic correlation.}
-#' \item{eigen.use }{The eigen.cut used in computation.}
+#' \item{`rg`}: The estimated genetic correlation.
+#' \item{`rg.se`}: The standard error of the estimated genetic correlation.
+#' \item{`P`}: P-value based on Wald test.
+#' \item{`estimates.df`}: A detailed matrix includes the estimates and standard errors of heritabilities, genetic covariance 
+#' and genetic correlation.
+#' \item{`eigen.use`}: The eigen.cut used in computation.
 #' }
 #'
 #' @references
