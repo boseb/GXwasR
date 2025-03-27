@@ -38,14 +38,16 @@ GXwas(
 \item{ResultDir}{Character string for the folder path where the outputs will be saved.}
 
 \item{finput}{Character string, specifying the prefix of the input PLINK binary files with both male and female samples.
-This file needs to be in DataDir. Note: Case/control phenotypes are expected to be encoded as 1=unaffected (control),
-2=affected (case); 0 is accepted as an alternate missing value encoding. The missing case/control or quantitative phenotypes
-are expected to be encoded as 'NA'/'nan' (any capitalization) or -9.}
+This file needs to be in \code{DataDir}.
+
+Note: Case/control phenotypes are expected to be encoded as 1=unaffected (control), 2=affected (case); 0 is accepted as
+an alternate missing value encoding. The missing case/control or quantitative phenotypes are expected to be encoded as 'NA'/'nan'
+(any capitalization) or -9.}
 
 \item{trait}{Boolean value, 'binary' or 'quantitative' for the phenotype i.e. the trait.}
 
-\item{standard_beta}{Boolean value, 'TRUE' or 'FALSE' in case of quantitative trait for standardizing the trait or phenotype values
-(mean 0, unit variance), so the resulting coefficients will be standardized. The default is TRUE.}
+\item{standard_beta}{Boolean value, \code{TRUE} or \code{FALSE} in case of quantitative trait for standardizing the trait or phenotype values
+(mean 0, unit variance), so the resulting coefficients will be standardized. The default is \code{TRUE}.}
 
 \item{xmodel}{Models "FMcombx01","FMcombx02",and "FMstatrified" can be chosen for both binary and quantitative traits
 while "GWAcxci" can only apply to the binary trait. These models take care of the X-chromosomal marker.
@@ -60,10 +62,10 @@ is not required for the XCGA. By simultaneously accounting for four distinct XCI
 XCI-SN (XCI fully toward normal allele), and XCI-SR (XCI fully toward risk allele), this model may maintain a
 respectably high power \insertCite{Su2022}{GXwasR}. Note that, sex shouldn't be provided as a covariate in the XCGA model.}
 
-\item{sex}{Boolean value, 'TRUE' or 'FALSE' for using sex as covariate in association test. It is applicable genome-wide.
+\item{sex}{Boolean value, \code{TRUE} or \code{FALSE} for using sex as covariate in association test. It is applicable genome-wide.
 The default is FALSE.}
 
-\item{xsex}{Boolean value, 'TRUE' or 'FALSE' for using sex as covariate in association test for X-chromosomal SNPs.
+\item{xsex}{Boolean value, \code{TRUE} or \code{FALSE} for using sex as covariate in association test for X-chromosomal SNPs.
 The default is FALSE. This will overwrite 'sex' argument for X-chromosome.}
 
 \item{covarfile}{Character string for the full name of the covariate file in .txt format. This file should be placed in DataDir.
@@ -77,7 +79,7 @@ as covar then it should be generated separately for each cohort and then include
 the covariate file with categorical variables. For instance, if a variable has K categories, K-1 new dummy variables
 are constructed, and the original covariate is now estimated with a coefficient for each category.}
 
-\item{interaction}{Boolean value, 'TRUE' or 'FALSE' for including SNP x covariate interaction term/terms from the association analysis.
+\item{interaction}{Boolean value, \code{TRUE} or \code{FALSE} for including SNP x covariate interaction term/terms from the association analysis.
 The default is FALSE. If a permutation procedure is chosen then the interaction will be automatically FALSE. For the
 interaction with the two covariates COV1 and COV2, the model will look like: \eqn{Y = b0 + b1.ADD + b2.COV1 + b3.COV2 + 
 b4.ADD x COV1 + b5.ADD x COV2 + e}. When interaction factors are incorporated into the model, the main effects'
@@ -123,13 +125,13 @@ FM01comb and FM02comb XWAS models. The default is 10000.}
 
 \item{MF.mc.cores}{Number of cores used for fisher.method.perm in stratified GWAS with FM01comb and FM02comb XWAS models.}
 
-\item{MF.na.rm}{Boolean value, 'TRUE' or 'FALSE' for removing p-values of NA in stratified GWAS with FM01comb and FM02comb XWAS
+\item{MF.na.rm}{Boolean value, \code{TRUE} or \code{FALSE} for removing p-values of NA in stratified GWAS with FM01comb and FM02comb XWAS
 in case of using Fisher’s and Stouffer’s methods. The default is FALSE.}
 
 \item{MF.p.corr}{Character vector specifying method for correcting the summary p-values for FMfcomb and FMscomb models. Choices
 are "bonferroni", "BH" and "none" for Bonferroni,  Benjamini-Hochberg and none, respectively. The default is "none".}
 
-\item{plot.jpeg}{Boolean value, 'TRUE' or 'FALSE' for saving the plots in .jpeg file. The default is TRUE.}
+\item{plot.jpeg}{Boolean value, \code{TRUE} or \code{FALSE} for saving the plots in .jpeg file. The default is TRUE.}
 
 \item{plotname}{A character string specifying the prefix of the file for plots. This file will be saved in DataDir. The default is
 "GXwas.plot".}
@@ -137,7 +139,7 @@ are "bonferroni", "BH" and "none" for Bonferroni,  Benjamini-Hochberg and none, 
 \item{snp_pval}{Numeric value as p-value threshold for annotation. SNPs below this p-value will be annotated on the plot. The default
 is 1e-08.}
 
-\item{annotateTopSnp}{Boolean value, 'TRUE' or 'FALSE. If TRUE, it only annotates the top hit on each chromosome that is below the
+\item{annotateTopSnp}{Boolean value, \code{TRUE} or 'FALSE. If TRUE, it only annotates the top hit on each chromosome that is below the
 snp_pval threshold. The default is FALSE.}
 
 \item{suggestiveline}{The default is 5 (for p-value 1e-05).}
