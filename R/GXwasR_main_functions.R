@@ -2775,35 +2775,35 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #'
 #' For details about the different XWAS model, please follow the associated publication.
 #'
-#' @param DataDir 
+#' @param DataDir
 #' Character string for the file path of the input PLINK binary files.
-#' 
-#' @param ResultDir 
+#'
+#' @param ResultDir
 #' Character string for the folder path where the outputs will be saved.
-#' 
-#' @param finput 
+#'
+#' @param finput
 #' Character string, specifying the prefix of the input PLINK binary files with both male and female samples.
 #' This file needs to be in `DataDir`.
 #'
 #' Note: Case/control phenotypes are expected to be encoded as 1=unaffected (control), 2=affected (case); 0 is accepted as
 #' an alternate missing value encoding. The missing case/control or quantitative phenotypes are expected to be encoded as 'NA'/'nan'
 #' (any capitalization) or -9.
-#' @param trait 
+#' @param trait
 #' Boolean value, 'binary' or 'quantitative' for the phenotype i.e. the trait.
-#' 
-#' @param sex 
+#'
+#' @param sex
 #' Boolean value, `TRUE` or `FALSE` for using sex as covariate in association test. It is applicable genome-wide.
-#' 
+#'
 #' The default is FALSE.
-#' @param xsex 
+#' @param xsex
 #' Boolean value, `TRUE` or `FALSE` for using sex as covariate in association test for X-chromosomal SNPs.
 #' The default is FALSE. This will overwrite 'sex' argument for X-chromosome.
-#' 
-#' @param standard_beta 
+#'
+#' @param standard_beta
 #' Boolean value, `TRUE` or `FALSE` in case of quantitative trait for standardizing the trait or phenotype values
 #' (mean 0, unit variance), so the resulting coefficients will be standardized. The default is `TRUE`.
-#' 
-#' @param xmodel 
+#'
+#' @param xmodel
 #' Models "FMcombx01","FMcombx02",and "FMstatrified" can be chosen for both binary and quantitative traits
 #' while "GWAcxci" can only apply to the binary trait. These models take care of the X-chromosomal marker.
 #' Three female genotypes are coded by 0, 1, and 2 in FM01 and FM02. The two genotypes of males that follow the
@@ -2819,10 +2819,10 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #' respectably high power \insertCite{Su2022}{GXwasR}.
 #'
 #' Note: `sex` shouldn't be provided as a covariate in the XCGA model.
-#' 
-#' @param covarfile 
+#'
+#' @param covarfile
 #' Character string for the full name of the covariate file in .txt format. This file should be placed in `DataDir`.
-#' 
+#'
 #' Note about the covariate file: The first column of this file should be `FID`, the second column should be `IID` and
 #' the other columns should be covariates. The primary header line should be there starting with “FID”, and “IID”
 #' followed by covariate names. If an individual is not present in the covariate file, or if the individual has a
@@ -2832,31 +2832,31 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #' \code{\link{DummyCovar}} to generate a new covariate file with categorical variables down-coded as binary dummy variables for
 #' the covariate file with categorical variables. For instance, if a variable has K categories, K-1 new dummy variables
 #' are constructed, and the original covariate is now estimated with a coefficient for each category.
-#' 
-#' @param covartest 
+#'
+#' @param covartest
 #' Vector value with `NULL`,"ALL" or covarite name/names to be included in the test. The default is `NULL.` For instance,
 #' the user can choose “AGE” and “SEX” as covartest = c(“AGE”, “SEX”) or all the covariates as covartest = c(“ALL”).
-#' 
-#' @param interaction 
+#'
+#' @param interaction
 #' Boolean value, `TRUE` or `FALSE` for including SNP x covariate interaction term/terms from the association analysis.
 #' The default is `FALSE`. If a permutation procedure is chosen then the interaction will be automatically `FALSE`. For the
 #' interaction with the two covariates COV1 and COV2, the model will look like: \eqn{Y = b0 + b1.ADD + b2.COV1 + b3.COV2 +
 #' b4.ADD x COV1 + b5.ADD x COV2 + e}. When interaction factors are incorporated into the model, the main effects'
-#' significance is not always determined simply; rather, it depends on the arbitrary coding of the variables. To put it 
+#' significance is not always determined simply; rather, it depends on the arbitrary coding of the variables. To put it
 #' another way, you should probably just interpret the p-value for the interaction. Also, The p-values for the covariates
 #' do not represent the test for the SNP-phenotype association after controlling for the covariate. That is the first row
 #' (ADD). Rather, the covariate term is the test associated with the covariate-phenotype association. These p-values might
 #' be extremely significant (e.g. if one covaries for smoking in an analysis of heart disease, etc) but this does not mean
 #' that the SNP has a highly significant effect necessarily. Note that, this feature is not valid for XCGA model for XWAS part.
-#' 
+#'
 #' @param Inphenocov Vector of integer values starting from 1 to extract the terms which user wants from the above model:
 #' \eqn{Y = b0 + b1.ADD + b2.COV1 + b3.COV2 + b4.ADDxCOV1 + b5.ADDxCOV2 + e}. The terms will appear in order as
 #' \insertCite{Purcell2007}{GXwasR} for ADD, \insertCite{Su2022}{GXwasR} for COV1, \insertCite{Rhodes2002}{GXwasR} for ADD x COV1,
 #' and \insertCite{Moreau2003}{GXwasR} for ADD x COV2. If the user wants to extract the terms for COV1 and ADD x COV1, they need to specify it as c(2,4).
-#' The default is `c(“ALL”)`. 
-#' 
+#' The default is `c(“ALL”)`.
+#'
 #' Note: This feature is not valid for the XCGA model for the XWAS part.
-#' 
+#'
 #' @param combtest
 #' Character vector specifying method for combining p-values for stratified GWAS with FM01comb and FM02comb XWAS models.
 #' Choices are “stouffer.method”, "fisher.method" and "fisher.method.perm". For fisher.method the function for combining
@@ -2875,48 +2875,48 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #' functionality is taken from the R package poolr \insertCite{Cinar2022}{GXwasR}.
 #'
 #' Note that only p-values between 0 and 1 are allowed to be passed to these methods.
-#' 
-#' @param MF.zero.sub 
+#'
+#' @param MF.zero.sub
 #' Small numeric value for substituting p-values of 0 in in stratified GWAS with FM01comb and FM02comb XWAS models.
 #' The default is 0.00001. As log(0) results in Inf this replaces p-values of 0 by default with a small float.
-#' 
-#' @param B 
+#'
+#' @param B
 #' Integer value specifying the number of permutation in case of using fisher.method.perm method in stratified GWAS with
 #' FM01comb and FM02comb XWAS models. The default is 10000.
-#' 
-#' @param 
+#'
+#' @param
 #' MF.na.rm Boolean value, `TRUE` or `FALSE` for removing p-values of NA in stratified GWAS with FM01comb and FM02comb XWAS
 #' in case of using Fisher’s and Stouffer’s methods. The default is FALSE.
-#' 
-#' @param MF.p.corr 
+#'
+#' @param MF.p.corr
 #' Character vector specifying method for correcting the summary p-values for FMfcomb and FMscomb models. Choices
 #' are "bonferroni", "BH" and "none" for Bonferroni,  Benjamini-Hochberg and none, respectively. The default is "none".
-#' 
-#' @param MF.mc.cores 
+#'
+#' @param MF.mc.cores
 #' Number of cores used for fisher.method.perm in stratified GWAS with FM01comb and FM02comb XWAS models.
-#' 
-#' @param plot.jpeg 
+#'
+#' @param plot.jpeg
 #' Boolean value, `TRUE` or `FALSE` for saving the plots in .jpeg file. The default is TRUE.
-#' 
-#' @param plotname 
+#'
+#' @param plotname
 #' A character string specifying the prefix of the file for plots. This file will be saved in DataDir. The default is
 #' "GXwas.plot".
-#' 
-#' @param snp_pval 
+#'
+#' @param snp_pval
 #' Numeric value as p-value threshold for annotation. SNPs below this p-value will be annotated on the plot. The default
 #' is 1e-08.
-#' 
-#' @param annotateTopSnp 
+#'
+#' @param annotateTopSnp
 #' Boolean value, `TRUE` or 'FALSE. If TRUE, it only annotates the top hit on each chromosome that is below the
 #' snp_pval threshold. The default is FALSE.
-#' 
-#' @param suggestiveline 
+#'
+#' @param suggestiveline
 #' The default is 5 (for p-value 1e-05).
-#' 
-#' @param genomewideline 
+#'
+#' @param genomewideline
 #' The default is 7.3 (for p-value 5e-08).
-#' 
-#' @param ncores 
+#'
+#' @param ncores
 #' Integer value, specifying the number of cores for parallel processing. The default is 0 (no parallel computation).
 #'
 #' @importFrom progress progress_bar
