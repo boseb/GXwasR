@@ -2,32 +2,92 @@
 #'
 #' @author Banabithi Bose
 #'
-#' @description This function displays the result of the ancestry analysis in a color-coded scatter plot of the first two principal components for samples of the reference populations and the study population. Specifically, it compares the study samples' ancestry labels to a panel representing a reference population, and it also flags the outlier samples with respect to a chosen reference population. The function first filters the reference and study data for non-A-T or G-C SNPs. It next conducts LD pruning, fixes the chromosome mismatch between the reference and study datasets, checks for allele flips, updates the locations, and flips the alleles. The two datasets are then joined, and the resulting genotype dataset is subjected to Principal Component Analysis (PCA). The detection of population structure down to the level of the reference dataset can then be accomplished using PCA on this combined genotyping panel.  For instance, the center of the European reference samples is determined using the data from principal components 1 and 2 (median(PC1 europeanRef), median(PC2 europeanRef)). It determines the European reference samples' maximum Euclidean distance (maxDist) from this center. All study samples that are non-European, or outliers, are those whose Euclidean distances from the center are more than or equal to the radius r= outlier threshold* maxDist. This function utilizes the HapMap phase 3 data in NCBI 36 and 1000GenomeIII in CGRCh37. Both study and reference datasets should be of the same genome build. If not, users need to lift over one of the datasets to the same build.
+#' @description 
+#' This function displays the result of the ancestry analysis in a color-coded scatter plot of the first two principal 
+#' components for samples of the reference populations and the study population. Specifically, it compares the study samples' 
+#' ancestry labels to a panel representing a reference population, and it also flags the outlier samples with respect to a 
+#' chosen reference population. 
+#' 
+#' The function first filters the reference and study data for non-A-T or G-C SNPs. It next conducts 
+#' LD pruning, fixes the chromosome mismatch between the reference and study datasets, checks for allele flips, updates the 
+#' locations, and flips the alleles. The two datasets are then joined, and the resulting genotype dataset is subjected to Principal 
+#' Component Analysis (PCA). 
+#' 
+#' The detection of population structure down to the level of the reference dataset can then be accomplished 
+#' using PCA on this combined genotyping panel. For instance, the center of the European reference samples is determined using the 
+#' data from principal components 1 and 2 (median(PC1 europeanRef), median(PC2 europeanRef)). It determines the European reference 
+#' samples' maximum Euclidean distance (maxDist) from this center. 
+#' 
+#' All study samples that are non-European, or outliers, are those whose Euclidean distances from the center are more than or 
+#' equal to the radius r= outlier threshold* maxDist. This function utilizes the HapMap phase 3 data in NCBI 36 and 1000GenomeIII 
+#' in CGRCh37. Both study and reference datasets should be of the same genome build. If not, users need to lift over one of the 
+#' datasets to the same build.
 #'
-#' @param DataDir A character string for the file path of the input PLINK binary files.
-#' @param ResultDir A character string for the file path where all output files will be stored. The default is tempdir().
-#' @param finput Character string, specifying the prefix of the input PLINK binary files for the study samples.
-#' @param reference Boolean value,'HapMapIII_NCBI36' and 'ThousandGenome', specifying Hapmap Phase3 (1) and 1000 Genomes phase III (2) reference population, respectively. The default is 'HapMapIII_NCBI36'.
-#' @param filterSNP Boolean value, 'TRUE' or 'FALSE' for filtering out the SNPs. The default is TRUE. We recommend setting it FALSE only when the users are sure that they could join the study and reference samples directly.
-#' @param studyLD Boolean value, 'TRUE' or 'FALSE' for applying linkage disequilibrium (LD)-based filtering on study genotype data.
-#' @param studyLD_window_size Integer value, specifying a window size in variant count or kilobase for LD-based filtering of the variants for the study data.
-#' @param studyLD_step_size Integer value, specifying a variant count to shift the window at the end of each step for LD filtering for the study data.
-#' @param studyLD_r2_threshold Numeric value between 0 to 1 of pairwise r^2 threshold for LD-based filtering for the study data.
-#' @param referLD Boolean value, 'TRUE' or 'FALSE' for applying linkage disequilibrium (LD)-based filtering on reference genotype data.
-#' @param referLD_window_size Integer value, specifying a window size in variant count or kilobase for LD-based filtering of the variants for the reference data.
-#' @param referLD_step_size Integer value, specifying a variant count to shift the window at the end of each step for LD filtering for the reference data.
-#' @param referLD_r2_threshold Numeric value between 0 to 1 of pairwise r^2 threshold for LD-based filtering for the reference data.
-#' @param highLD_regions A dataframe with known high LD regions. A dataframe from Anderson et. al, 2010 (3) is provided with the package.
-#' @param study_pop A dataframe containing two columns for study in first column, sample ID (i.e., IID) and in second column, the ancestry label.
-#' @param outlier Boolean value, 'TRUE' or 'FALSE', specifying outlier detection will be performed or not.
-#' @param outlierOf Chracter string, specifying the reference ancestry name for detecting outlier samples. The default is "outlierOf = "EUR".
-#' @param outlier_threshold Numeric value, specifying the threshold to be be used to detect outlier samples. This threshold will be multiplied with the Eucledean distance from the center of the PC 1 and PC2 to the maximum Euclidean distance of the reference samples. Study samples outside this distance will be considered as outlier. The default is 3.
+#' @param DataDir 
+#' A character string for the file path of the input PLINK binary files.
+#' 
+#' @param ResultDir 
+#' A character string for the file path where all output files will be stored. The default is `tempdir()`.
+#' 
+#' @param finput 
+#' Character string, specifying the prefix of the input PLINK binary files for the study samples.
+#' 
+#' @param reference 
+#' Boolean value,'HapMapIII_NCBI36' and 'ThousandGenome', specifying Hapmap Phase3 (1) and 1000 Genomes phase III 
+#' (2) reference population, respectively. The default is 'HapMapIII_NCBI36'.
+#' 
+#' @param filterSNP 
+#' Boolean value, `TRUE` or `FALSE` for filtering out the SNPs. The default is `TRUE.` We recommend setting it `FALSE` 
+#' only when the users are sure that they could join the study and reference samples directly.
+#' 
+#' @param studyLD 
+#' Boolean value, `TRUE` or `FALSE` for applying linkage disequilibrium (LD)-based filtering on study genotype data.
+#' 
+#' @param studyLD_window_size 
+#' Integer value, specifying a window size in variant count or kilobase for LD-based filtering of the variants for the study data.
+#' 
+#' @param studyLD_step_size 
+#' Integer value, specifying a variant count to shift the window at the end of each step for LD filtering for the study data.
+#' 
+#' @param studyLD_r2_threshold 
+#' Numeric value between 0 to 1 of pairwise r^2 threshold for LD-based filtering for the study data.
+#' 
+#' @param referLD 
+#' Boolean value, 'TRUE' or 'FALSE' for applying linkage disequilibrium (LD)-based filtering on reference genotype data.
+#' 
+#' @param referLD_window_size 
+#' Integer value, specifying a window size in variant count or kilobase for LD-based filtering of the variants for the reference data.
+#' 
+#' @param referLD_step_size 
+#' Integer value, specifying a variant count to shift the window at the end of each step for LD filtering for the reference data.
+#' 
+#' @param referLD_r2_threshold 
+#' Numeric value between 0 to 1 of pairwise r^2 threshold for LD-based filtering for the reference data.
+#' 
+#' @param highLD_regions 
+#' A dataframe with known high LD regions. A dataframe from Anderson et. al, 2010 (3) is provided with the package.
+#' 
+#' @param study_pop 
+#' A dataframe containing two columns for study in first column, sample ID (i.e., IID) and in second column, the ancestry label.
+#' 
+#' @param outlier 
+#' Boolean value, 'TRUE' or 'FALSE', specifying outlier detection will be performed or not.
+#' 
+#' @param outlierOf 
+#' Chracter string, specifying the reference ancestry name for detecting outlier samples. The default is "outlierOf = "EUR".
+#' 
+#' @param outlier_threshold 
+#' Numeric value, specifying the threshold to be be used to detect outlier samples. This threshold will be multiplied with the 
+#' Eucledean distance from the center of the PC 1 and PC2 to the maximum Euclidean distance of the reference samples. Study samples 
+#' outside this distance will be considered as outlier. The default is 3.
+#' 
 #' @importFrom data.table as.data.table
 #' @importFrom ggplot2 ggplot aes geom_hline geom_vline guides geom_point guide_legend scale_shape_manual
 #'
 #' @return A dataframe with the IDs of non-European samples as outliers. #importFrom DescTools %like%   Removing DescTools from Description imports.
 #'
-#' @references (1) The International HapMap 3 Consortium. Integrating common and rare genetic variation in diverse human populations. Nature 467, 52–58 (2010). https://doi.org/10.1038/nature09298
+#' @references 
+#' (1) The International HapMap 3 Consortium. Integrating common and rare genetic variation in diverse human populations. Nature 467, 52–58 (2010). https://doi.org/10.1038/nature09298
 #' (2) The 1000 Genomes Project Consortium. A global reference for human genetic variation. Nature 526, 68–74 (2015). https://doi.org/10.1038/nature15393
 #' (3) Anderson CA, Pettersson FH, Clarke GM, Cardon LR, Morris AP, Zondervan KT. Data quality control in genetic case-control association studies. Nat Protoc. 2010 Sep;5(9):1564-73. doi: 10.1038/nprot.2010.116. Epub 2010 Aug 26. PMID: 21085122; PMCID: PMC3025522.
 #' @export
@@ -54,8 +114,10 @@
 #' outlier <- TRUE
 #' outlier_threshold <- 3
 #' x <- AncestryCheck(
-#'   DataDir = DataDir, ResultDir = ResultDir, finput = finput, reference = "HapMapIII_NCBI36", highLD_regions = highLD_regions,
-#'   study_pop = study_pop, studyLD = studyLD, referLD = referLD, outlierOf = "EUR", outlier = outlier, outlier_threshold = outlier_threshold
+#'   DataDir = DataDir, ResultDir = ResultDir, finput = finput, 
+#'   reference = "HapMapIII_NCBI36", highLD_regions = highLD_regions,
+#'   study_pop = study_pop, studyLD = studyLD, referLD = referLD, 
+#'   outlierOf = "EUR", outlier = outlier, outlier_threshold = outlier_threshold
 #' )
 #'
 #' # x <- AncestryCheck(DataDir = DataDir, ResultDir = ResultDir, finput = finput, reference = "ThousandGenome",highLD_regions = highLD_regions,
