@@ -4872,30 +4872,55 @@ LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, st
 
 #' SumstatGenCorr: Genetic Correlation Calculation from GWAS Summary Statistics
 #'
+#' @description
 #' This function calculates the genetic correlation between two summary statistics
 #' using a specified reference linkage disequilibrium (LD) matrix from the UK Biobank.
 #'
-#' @param ResultDir Directory where results should be saved.
-#' @param referenceLD Reference LD matrix identifier.
-#' #' These are the LD matrices and their eigen-decomposition from 335,265 genomic British UK Biobank individuals. Two sets of reference panel are provided:
+#' @param ResultDir 
+#' Directory where results should be saved.
+#' 
+#' @param referenceLD 
+#' Reference LD matrix identifier. These are the LD matrices and their eigen-decomposition from 335,265 genomic 
+#' British UK Biobank individuals. Two sets of reference panel are provided:
 #' 1) 307,519 QCed UK Biobank Axiom Array SNPs. The size is about 7.5 GB after unzipping.
-#' 2) 1,029,876 QCed UK Biobank imputed SNPs. The size is about 31 GB after unzipping. Although it takes more time, using the imputed panel provides more accurate estimates of genetic correlations.
+#' 2) 1,029,876 QCed UK Biobank imputed SNPs. The size is about 31 GB after unzipping. Although it takes more time, 
+#' using the imputed panel provides more accurate estimates of genetic correlations.
 #' Therefore if the GWAS includes most of the HapMap3 SNPs, then it is recommend using the imputed reference panel.
-#' @param sumstat1 Data frame for the first set of summary statistics.
+#' 
+#' @param sumstat1 
+#' Data frame for the first set of summary statistics.
 #' The input data frame should include following columns: SNP, SNP ID; A1, effect allele; A2, reference allele;
-#' N, sample size; Z, z-score; If Z is not given, alternatively, you may provide: b, estimate of marginal effect in GWAS; se, standard error of the estimates of marginal effects in GWAS.
-#' @param sumstat2 Data frame for the second set of summary statistics.
+#' N, sample size; Z, z-score; If Z is not given, alternatively, you may provide: b, estimate of marginal effect in GWAS; se, 
+#' standard error of the estimates of marginal effects in GWAS.
+#' 
+#' @param sumstat2 
+#' Data frame for the second set of summary statistics.
 #' The input data frame should include following columns: SNP, SNP ID; A1, effect allele; A2, reference allele;
-#' N, sample size; Z, z-score; If Z is not given, alternatively, you may provide: b, estimate of marginal effect in GWAS; se, standard error of the estimates of marginal effects in GWAS.
-#' @param Nref Sample size of the reference sample where LD is computed. If the default UK Biobank reference sample is used, Nref = 335265
-#' @param N0 Number of individuals included in both cohorts. The estimated genetic correlation is usually robust against misspecified N0.
+#' N, sample size; Z, z-score; If Z is not given, alternatively, you may provide: b, estimate of marginal effect in GWAS; se, 
+#' standard error of the estimates of marginal effects in GWAS.
+#' 
+#' @param Nref 
+#' Sample size of the reference sample where LD is computed. If the default UK Biobank reference sample is used, Nref = 335265
+#' 
+#' @param N0 
+#' Number of individuals included in both cohorts. The estimated genetic correlation is usually robust against misspecified N0.
 #' If not given, the default value is set to the minimum sample size across all SNPs in cohort 1 and cohort 2.
-#' @param eigen.cut Which eigenvalues and eigenvectors in each LD score matrix should be used for HDL.
-#' Users are allowed to specify a numeric value between 0 and 1 for eigen.cut. For example, eigen.cut = 0.99 means using the leading eigenvalues explaining 99% of the variance
-#' and their correspondent eigenvectors. If the default 'automatic' is used, the eigen.cut gives the most stable heritability estimates will be used.
-#' @param lim Tolerance limitation, default lim = exp(-18).
-#' @param parallel Boolean value, TRUE or FALSE for whether to perform parallel computation. The default is FALSE
-#' @param numCores The number of cores to be used. The default is 2.
+#' 
+#' @param eigen.cut 
+#' Which eigenvalues and eigenvectors in each LD score matrix should be used for HDL.
+#' Users are allowed to specify a numeric value between 0 and 1 for eigen.cut. For example, eigen.cut = 0.99 means using the 
+#' leading eigenvalues explaining 99% of the variance
+#' and their correspondent eigenvectors. If the default 'automatic' is used, the eigen.cut gives the most stable heritability 
+#' estimates will be used.
+#' 
+#' @param lim 
+#' Tolerance limitation, default lim = exp(-18).
+#' 
+#' @param parallel 
+#' Boolean value, TRUE or FALSE for whether to perform parallel computation. The default is FALSE
+#' 
+#' @param numCores 
+#' The number of cores to be used. The default is 2.
 #'
 #' @return A list is returned with:
 #' \itemize{
@@ -4909,6 +4934,7 @@ LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, st
 #' @references
 #' Ning Z, Pawitan Y, Shen X (2020). High-definition likelihood inference of genetic correlations
 #' across human complex traits.
+#' 
 #' @examples
 #' # Not Run
 #' # ResultDir = tempdir()
