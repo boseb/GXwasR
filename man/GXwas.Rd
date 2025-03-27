@@ -54,22 +54,27 @@ while "GWAcxci" can only apply to the binary trait. These models take care of th
 Three female genotypes are coded by 0, 1, and 2 in FM01 and FM02. The two genotypes of males that follow the
 X-chromosome inactivation (XCI) pattern as random (XCI-R) in the FM01 model are coded by 0 and 1, while the two
 genotypes that follow the XCI is escaped (XCI-E) in the FM02 model are coded by 0 and 1. To reflect the dose
-compensation connection between the sexes, FM02 treats men as homozygous females. In the FM01comb and FM01comb
-methods, associations are tested separately for males and females with the FM01 and FM02 models, respectively,
-and then the combined p values are computed the Fisher's method, Fisher's method with permutation, or Stouffer's
-method(1,3-7]. An X-chromosome inactivation (XCI) pattern, or coding technique for X-chromosomal genotypes between sexes,
-is not required for the XCGA. By simultaneously accounting for four distinct XCI patterns, namely XCI-R, XCI-E,
+compensation connection between the sexes, FM02 treats men as homozygous females.
+
+In the FM01comb and FM01comb methods, associations are tested separately for males and females with the FM01 and FM02
+models, respectively, and then the combined p values are computed the Fisher's method, Fisher's method with permutation,
+or Stouffer's method(1,3-7]. An X-chromosome inactivation (XCI) pattern, or coding technique for X-chromosomal genotypes
+between sexes, is not required for the XCGA. By simultaneously accounting for four distinct XCI patterns, namely XCI-R, XCI-E,
 XCI-SN (XCI fully toward normal allele), and XCI-SR (XCI fully toward risk allele), this model may maintain a
-respectably high power \insertCite{Su2022}{GXwasR}. Note that, sex shouldn't be provided as a covariate in the XCGA model.}
+respectably high power \insertCite{Su2022}{GXwasR}.
+
+Note: \code{sex} shouldn't be provided as a covariate in the XCGA model.}
 
 \item{sex}{Boolean value, \code{TRUE} or \code{FALSE} for using sex as covariate in association test. It is applicable genome-wide.
+
 The default is FALSE.}
 
 \item{xsex}{Boolean value, \code{TRUE} or \code{FALSE} for using sex as covariate in association test for X-chromosomal SNPs.
 The default is FALSE. This will overwrite 'sex' argument for X-chromosome.}
 
-\item{covarfile}{Character string for the full name of the covariate file in .txt format. This file should be placed in DataDir.
-Note about the covariate file: The first column of this file should be FID, the second column should be IID and
+\item{covarfile}{Character string for the full name of the covariate file in .txt format. This file should be placed in \code{DataDir}.
+
+Note about the covariate file: The first column of this file should be \code{FID}, the second column should be \code{IID} and
 the other columns should be covariates. The primary header line should be there starting with “FID”, and “IID”
 followed by covariate names. If an individual is not present in the covariate file, or if the individual has a
 missing phenotype value (i.e. -9 by default) for the covariate, then that individual is set to missing (i.e. will
@@ -80,37 +85,39 @@ the covariate file with categorical variables. For instance, if a variable has K
 are constructed, and the original covariate is now estimated with a coefficient for each category.}
 
 \item{interaction}{Boolean value, \code{TRUE} or \code{FALSE} for including SNP x covariate interaction term/terms from the association analysis.
-The default is FALSE. If a permutation procedure is chosen then the interaction will be automatically FALSE. For the
-interaction with the two covariates COV1 and COV2, the model will look like: \eqn{Y = b0 + b1.ADD + b2.COV1 + b3.COV2 + 
+The default is \code{FALSE}. If a permutation procedure is chosen then the interaction will be automatically \code{FALSE}. For the
+interaction with the two covariates COV1 and COV2, the model will look like: \eqn{Y = b0 + b1.ADD + b2.COV1 + b3.COV2 +
 b4.ADD x COV1 + b5.ADD x COV2 + e}. When interaction factors are incorporated into the model, the main effects'
-significance is not always determined simply; rather, it depends on the arbitrary coding of the variables. To put it a
-nother way, you should probably just interpret the p-value for the interaction. Also, The p-values for the covariates
+significance is not always determined simply; rather, it depends on the arbitrary coding of the variables. To put it
+another way, you should probably just interpret the p-value for the interaction. Also, The p-values for the covariates
 do not represent the test for the SNP-phenotype association after controlling for the covariate. That is the first row
 (ADD). Rather, the covariate term is the test associated with the covariate-phenotype association. These p-values might
 be extremely significant (e.g. if one covaries for smoking in an analysis of heart disease, etc) but this does not mean
 that the SNP has a highly significant effect necessarily. Note that, this feature is not valid for XCGA model for XWAS part.}
 
-\item{covartest}{Vector value with "NULL","ALL" or covarite name/names to be included in the test. The default is NULL. For instance,
+\item{covartest}{Vector value with \code{NULL},"ALL" or covarite name/names to be included in the test. The default is \code{NULL.} For instance,
 the user can choose “AGE” and “SEX” as covartest = c(“AGE”, “SEX”) or all the covariates as covartest = c(“ALL”).}
 
 \item{Inphenocov}{Vector of integer values starting from 1 to extract the terms which user wants from the above model:
 \eqn{Y = b0 + b1.ADD + b2.COV1 + b3.COV2 + b4.ADDxCOV1 + b5.ADDxCOV2 + e}. The terms will appear in order as
 \insertCite{Purcell2007}{GXwasR} for ADD, \insertCite{Su2022}{GXwasR} for COV1, \insertCite{Rhodes2002}{GXwasR} for ADD x COV1,
 and \insertCite{Moreau2003}{GXwasR} for ADD x COV2. If the user wants to extract the terms for COV1 and ADD x COV1, they need to specify it as c(2,4).
-The default is c(“ALL”). Note that, this feature is not valid for the XCGA model for the XWAS part.}
+The default is \verb{c(“ALL”)}.
+
+Note: This feature is not valid for the XCGA model for the XWAS part.}
 
 \item{combtest}{Character vector specifying method for combining p-values for stratified GWAS with FM01comb and FM02comb XWAS models.
 Choices are “stouffer.method”, "fisher.method" and "fisher.method.perm". For fisher.method the function for combining
 p-values uses a statistic, \eqn{S = -2 ∑^k /log p}, which follows a \eqn{χ^2} distribution with 2k degrees of freedom \insertCite{Fisher1925}{GXwasR}.
 
-For fisher.method.perm, using p-values from stratified tests, the summary statistic for combining p-values is \eqn{S = -2 ∑ /log p}. 
+For fisher.method.perm, using p-values from stratified tests, the summary statistic for combining p-values is \eqn{S = -2 ∑ /log p}.
 A p-value for this statistic can be derived by randomly generating summary statistics \insertCite{Rhodes2002}{GXwasR}. Therefore, a p-value is randomly
 sampled from each contributing study, and a random statistic is calculated. The fraction of random statistics greater or
 equal to S then gives the final p-value.
 
 For stouffer.method ,the function applies Stouffer’s method \insertCite{Stouffer1949}{GXwasR} to the p-values assuming that the p-values to be combined are
 independent. Letting p1, p2, . . . , pk denote the individual (one- or two-sided) p-values of the k hypothesis tests to be
-combined, the test statistic is then computed with \eqn{$z = ∑^k_{1}frac{z_{i}}{sqrt(k)}$} where \eqn{$z_{i}$ = Φ−1 (1 – $p_{i}$)} and 
+combined, the test statistic is then computed with \eqn{$z = ∑^k_{1}frac{z_{i}}{sqrt(k)}$} where \eqn{$z_{i}$ = Φ−1 (1 – $p_{i}$)} and
 \eqn{Φ −1 (·)} denotes the inverse of the cumulative distribution function of a standard normal distribution. Under the joint null
 hypothesis, the test statistic follows a standard normal distribution which is used to compute the combined p-value. This
 functionality is taken from the R package poolr \insertCite{Cinar2022}{GXwasR}.
@@ -191,11 +198,12 @@ covarfile <- NULL
 ncores <- 0
 MF.mc.cores <- 1
 ResultGXwas <- GXwas(
-  DataDir = DataDir, ResultDir = ResultDir, 
-  finput = finput, xmodel = xmodel, trait = trait, covarfile = covarfile, 
-  sex = sex, xsex = xsex, combtest = combtest, MF.p.corr = "none", 
-  snp_pval = snp_pval, plot.jpeg = TRUE, suggestiveline = 5, genomewideline = 7.3, 
-  MF.mc.cores = 1, ncores = ncores)
+  DataDir = DataDir, ResultDir = ResultDir,
+  finput = finput, xmodel = xmodel, trait = trait, covarfile = covarfile,
+  sex = sex, xsex = xsex, combtest = combtest, MF.p.corr = "none",
+  snp_pval = snp_pval, plot.jpeg = TRUE, suggestiveline = 5, genomewideline = 7.3,
+  MF.mc.cores = 1, ncores = ncores
+)
 }
 \references{
 \insertAllCited{}
