@@ -2884,8 +2884,8 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #' Integer value specifying the number of permutation in case of using fisher.method.perm method in stratified GWAS with
 #' FM01comb and FM02comb XWAS models. The default is 10000.
 #'
-#' @param
-#' MF.na.rm Boolean value, `TRUE` or `FALSE` for removing p-values of NA in stratified GWAS with FM01comb and FM02comb XWAS
+#' @param MF.na.rm 
+#' Boolean value, `TRUE` or `FALSE` for removing p-values of NA in stratified GWAS with FM01comb and FM02comb XWAS
 #' in case of using Fisher’s and Stouffer’s methods. The default is FALSE.
 #'
 #' @param MF.p.corr
