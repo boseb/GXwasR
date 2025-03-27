@@ -2760,49 +2760,142 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #'
 #' @author Banabithi Bose
 #'
-#' @description This function runs GWAS models in autosomes with several alternative XWAS models, such as "FMcombx01","FMcombx02",and "FMstatrified" can be applied to both binary and quantitative traits while "GWAcxci" can only be applied to a binary trait. For binary and quantitative features, this function uses logistic and linear regression, allowing for multiple covariates and the interactions with those covariates in a multiple-regression approach. These models are all run using the additive effects of SNPs, and each additional minor allele's influence is represented by the direction of the regression coefficient. This function attempts to identify the multi-collinearity among predictors by displaying NA for the test statistic and a p-value for all terms in the model. The more terms you add, the more likely you are to run into issues. For details about the different XWAS model, please follow the associated publication.
+#' @description 
+#' This function runs GWAS models in autosomes with several alternative XWAS models.
+#' Models such as "FMcombx01","FMcombx02",and "FMstatrified" can be applied to both binary and quantitative traits,
+#' while "GWAcxci" can only be applied to a binary trait. 
+#' 
+#' For binary and quantitative features, this function uses logistic and linear regression, 
+#' allowing for multiple covariates and the interactions with those covariates in a multiple-regression approach. 
+#' These models are all run using the additive effects of SNPs, and each additional minor allele's influence 
+#' is represented by the direction of the regression coefficient. 
+#' 
+#' This function attempts to identify the multi-collinearity among predictors by displaying NA for the test statistic 
+#' and a p-value for all terms in the model. The more terms you add, the more likely you are to run into issues. 
+#' 
+#' For details about the different XWAS model, please follow the associated publication.
+#' 
 #' @param DataDir Character string for the file path of the input PLINK binary files.
 #' @param ResultDir Character string for the folder path where the outputs will be saved.
-#' @param finput Character string, specifying the prefix of the input PLINK binary files with both male and female samples. This file needs to be in DataDir. Note: Case/control phenotypes are expected to be encoded as 1=unaffected (control), 2=affected (case); 0 is accepted as an alternate missing value encoding. The missing case/control or quantitative phenotypes are expected to be encoded as 'NA'/'nan' (any capitalization) or -9.
+#' @param finput Character string, specifying the prefix of the input PLINK binary files with both male and female samples. 
+#' This file needs to be in DataDir. Note: Case/control phenotypes are expected to be encoded as 1=unaffected (control), 
+#' 2=affected (case); 0 is accepted as an alternate missing value encoding. The missing case/control or quantitative phenotypes 
+#' are expected to be encoded as 'NA'/'nan' (any capitalization) or -9.
 #' @param trait Boolean value, 'binary' or 'quantitative' for the phenotype i.e. the trait.
-#' @param sex Boolean value, 'TRUE' or 'FALSE' for using sex as covariate in association test. It is applicable genome-wide. The default is FALSE.
-#' @param xsex Boolean value, 'TRUE' or 'FALSE' for using sex as covariate in association test for X-chromosomal SNPs. The default is FALSE. This will overwrite 'sex' argument for X-chromosome.
-#' @param standard_beta Boolean value, 'TRUE' or 'FALSE' in case of quantitative trait for standardizing the trait or phenotype values (mean 0, unit variance), so the resulting coefficients will be standardized. The default is TRUE.
-#' @param xmodel Models "FMcombx01","FMcombx02",and "FMstatrified" can be chosen for both binary and quantitative traits while "GWAcxci" can only apply to the binary trait. These models take care of the X-chromosomal marker Three female genotypes are coded by 0, 1, and 2 in FM01 and FM02. The two genotypes of males that follow the X-chromosome inactivation (XCI) pattern as random (XCI-R) in the FM01 model are coded by 0 and 1, while the two genotypes that follow the XCI is escaped (XCI-E) in the FM02 model are coded by 0 and 1. To reflect the dose compensation connection between the sexes, FM02 treats men as homozygous females. In the FM01comb and FM01comb methods, associations are tested separately for males and females with the FM01 and FM02 models, respectively, and then the combined p values are computed the Fisher's method, Fisher's method with permutation, or Stouffer's method(1,3-7]. An X-chromosome inactivation (XCI) pattern, or coding technique for X-chromosomal genotypes between sexes, is not required for the XCGA. By simultaneously accounting for four distinct XCI patterns, namely XCI-R, XCI-E, XCI-SN (XCI fully toward normal allele), and XCI-SR (XCI fully toward risk allele), this model may maintain a respectably high power (2). Note that, sex shouldn't be provided as a covariate in the XCGA model.
-#' @param covarfile Character string for the full name of the covariate file in .txt format. This file should be placed in DataDir. Note about the covariate file: The first column of this file should be FID, the second column should be IID and the other columns should be covariates. The primary header line should be there starting with “FID”, and “IID” followed by covariate names. If an individual is not present in the covariate file, or if the individual has a missing phenotype value (i.e. -9 by default) for the covariate, then that individual is set to missing (i.e. will be excluded from association analysis). It is important to note that for statrified GWAS model, if PCs are included as covar then it should be generated separately for each cohort and then included in the covarfile. Use the function "DummyCovar()" to generate a new covariate file with categorical variables down-coded as binary dummy variables for the covariate file with categorical variables. For instance, if a variable has K categories, K-1 new dummy variables are constructed, and the original covariate is now estimated with a coefficient for each category.
-#' @param covartest Vector value with "NULL","ALL" or covarite name/names to be included in the test. The default is NULL. For instance, the user can choose “AGE” and “SEX” as covartest = c(“AGE”, “SEX”) or all the covariates as covartest = c(“ALL”).
-#' @param interaction Boolean value, 'TRUE' or 'FALSE' for including SNP x covariate interaction term/terms from the association analysis. The default is FALSE. If a permutation procedure is chosen then the interaction will be automatically FALSE. For the interaction with the two covariates COV1 and COV2, the model will look like: Y = b0 + b1.ADD + b2.COV1 + b3.COV2 + b4.ADD x COV1 + b5.ADD x COV2 + e. When interaction factors are incorporated into the model, the main effects' significance is not always determined simply; rather, it depends on the arbitrary coding of the variables. To put it another way, you should probably just interpret the p-value for the interaction. Also, The p-values for the covariates do not represent the test for the SNP-phenotype association after controlling for the covariate. That is the first row (ADD). Rather, the covariate term is the test associated with the covariate-phenotype association. These p-values might be extremely significant (e.g. if one covaries for smoking in an analysis of heart disease, etc) but this does not mean that the SNP has a highly significant effect necessarily. Note that, this feature is not valid for XCGA model for XWAS part
-#' @param Inphenocov Vector of integer values starting from 1 to extract the terms which user wants from the above model: Y = b0 + b1.ADD + b2.COV1 + b3.COV2 + b4.ADDxCOV1 + b5.ADDxCOV2 + e. The terms will appear in order as (1) for ADD, (2) for COV1, (4) for ADD x COV1, and (5) for ADD x COV2. If the user wants to extract the terms for COV1 and ADD x COV1, she needs to specify it as c(2,4). The default is c(“ALL”). Note that, this feature is not valid for the XCGA model for the XWAS part.
-#' @param combtest Character vector specifying method for combining p-values for stratified GWAS with FM01comb and FM02comb XWAS models. Choices are “stouffer.method”, "fisher.method" and "fisher.method.perm". For fisher.method the function for combining p-values uses a statistic, S = -2 ∑^k /log p, which follows a χ^2 distribution with 2k degrees of freedom (3).
-#' For fisher.method.perm, using p-values from stratified tests, the summary statistic for combining p-values is S = -2 ∑ /log p. A p-value for this statistic can be derived by randomly generating summary statistics (4). Therefore, a p-value is randomly sampled from each contributing study, and a random statistic is calculated. The fraction of random statistics greater or equal to S then gives the final p-value.
+#' @param sex Boolean value, 'TRUE' or 'FALSE' for using sex as covariate in association test. It is applicable genome-wide. 
+#' The default is FALSE.
+#' @param xsex Boolean value, 'TRUE' or 'FALSE' for using sex as covariate in association test for X-chromosomal SNPs. 
+#' The default is FALSE. This will overwrite 'sex' argument for X-chromosome.
+#' @param standard_beta Boolean value, 'TRUE' or 'FALSE' in case of quantitative trait for standardizing the trait or phenotype values 
+#' (mean 0, unit variance), so the resulting coefficients will be standardized. The default is TRUE.
+#' @param xmodel Models "FMcombx01","FMcombx02",and "FMstatrified" can be chosen for both binary and quantitative traits 
+#' while "GWAcxci" can only apply to the binary trait. These models take care of the X-chromosomal marker. 
+#' Three female genotypes are coded by 0, 1, and 2 in FM01 and FM02. The two genotypes of males that follow the 
+#' X-chromosome inactivation (XCI) pattern as random (XCI-R) in the FM01 model are coded by 0 and 1, while the two 
+#' genotypes that follow the XCI is escaped (XCI-E) in the FM02 model are coded by 0 and 1. To reflect the dose 
+#' compensation connection between the sexes, FM02 treats men as homozygous females. In the FM01comb and FM01comb 
+#' methods, associations are tested separately for males and females with the FM01 and FM02 models, respectively, 
+#' and then the combined p values are computed the Fisher's method, Fisher's method with permutation, or Stouffer's 
+#' method(1,3-7]. An X-chromosome inactivation (XCI) pattern, or coding technique for X-chromosomal genotypes between sexes, 
+#' is not required for the XCGA. By simultaneously accounting for four distinct XCI patterns, namely XCI-R, XCI-E, 
+#' XCI-SN (XCI fully toward normal allele), and XCI-SR (XCI fully toward risk allele), this model may maintain a 
+#' respectably high power [2]. Note that, sex shouldn't be provided as a covariate in the XCGA model.
+#' @param covarfile Character string for the full name of the covariate file in .txt format. This file should be placed in DataDir. 
+#' Note about the covariate file: The first column of this file should be FID, the second column should be IID and 
+#' the other columns should be covariates. The primary header line should be there starting with “FID”, and “IID” 
+#' followed by covariate names. If an individual is not present in the covariate file, or if the individual has a 
+#' missing phenotype value (i.e. -9 by default) for the covariate, then that individual is set to missing (i.e. will 
+#' be excluded from association analysis). It is important to note that for statrified GWAS model, if PCs are included 
+#' as covar then it should be generated separately for each cohort and then included in the covarfile. Use the function 
+#' \code{\link{DummyCovar}} to generate a new covariate file with categorical variables down-coded as binary dummy variables for 
+#' the covariate file with categorical variables. For instance, if a variable has K categories, K-1 new dummy variables 
+#' are constructed, and the original covariate is now estimated with a coefficient for each category.
+#' @param covartest Vector value with "NULL","ALL" or covarite name/names to be included in the test. The default is NULL. For instance, 
+#' the user can choose “AGE” and “SEX” as covartest = c(“AGE”, “SEX”) or all the covariates as covartest = c(“ALL”).
+#' @param interaction Boolean value, 'TRUE' or 'FALSE' for including SNP x covariate interaction term/terms from the association analysis. 
+#' The default is FALSE. If a permutation procedure is chosen then the interaction will be automatically FALSE. For the 
+#' interaction with the two covariates COV1 and COV2, the model will look like: \eqn{Y = b0 + b1.ADD + b2.COV1 + b3.COV2 + 
+#' b4.ADD x COV1 + b5.ADD x COV2 + e}. When interaction factors are incorporated into the model, the main effects' 
+#' significance is not always determined simply; rather, it depends on the arbitrary coding of the variables. To put it a
+#' nother way, you should probably just interpret the p-value for the interaction. Also, The p-values for the covariates 
+#' do not represent the test for the SNP-phenotype association after controlling for the covariate. That is the first row 
+#' (ADD). Rather, the covariate term is the test associated with the covariate-phenotype association. These p-values might 
+#' be extremely significant (e.g. if one covaries for smoking in an analysis of heart disease, etc) but this does not mean 
+#' that the SNP has a highly significant effect necessarily. Note that, this feature is not valid for XCGA model for XWAS part.
+#' @param Inphenocov Vector of integer values starting from 1 to extract the terms which user wants from the above model: 
+#' \eqn{Y = b0 + b1.ADD + b2.COV1 + b3.COV2 + b4.ADDxCOV1 + b5.ADDxCOV2 + e}. The terms will appear in order as [1] for ADD, [2] 
+#' for COV1, [4] for ADD x COV1, and [5] for ADD x COV2. If the user wants to extract the terms for COV1 and ADD x COV1, they need 
+#' to specify it as c(2,4). The default is c(“ALL”). Note that, this feature is not valid for the XCGA model for the XWAS part.
+#' @param combtest 
+#' Character vector specifying method for combining p-values for stratified GWAS with FM01comb and FM02comb XWAS models. 
+#' Choices are “stouffer.method”, "fisher.method" and "fisher.method.perm". For fisher.method the function for combining 
+#' p-values uses a statistic, \eqn{S = -2 ∑^k /log p}, which follows a \eqn{χ^2} distribution with 2k degrees of freedom [3].
+#' 
+#' For fisher.method.perm, using p-values from stratified tests, the summary statistic for combining p-values is \eqn{S = -2 ∑ /log p}. 
+#' A p-value for this statistic can be derived by randomly generating summary statistics [4]. Therefore, a p-value is randomly 
+#' sampled from each contributing study, and a random statistic is calculated. The fraction of random statistics greater or 
+#' equal to S then gives the final p-value.
 #'
-#' For stouffer.method ,the function applies Stouffer’s method (6]) to the p-values assuming that the p-values to be combined are independent. Letting p1, p2, . . . , pk denote the individual (one- or two-sided) p-values of the k hypothesis tests to be combined, the test statistic is then computed with $z = ∑^k_{1}frac{z_{i}}{sqrt(k)}$ where $z_{i}$ = Φ−1 (1 – $p_{i}$) and Φ −1 (·) denotes the inverse of the cumulative distribution function of a standard normal distribution. Under the joint null hypothesis, the test statistic follows a standard normal distribution which is used to compute the combined p-value. This functionality is taken from the R package poolr (7).
+#' For stouffer.method ,the function applies Stouffer’s method [6] to the p-values assuming that the p-values to be combined are 
+#' independent. Letting p1, p2, . . . , pk denote the individual (one- or two-sided) p-values of the k hypothesis tests to be 
+#' combined, the test statistic is then computed with \eqn{$z = ∑^k_{1}frac{z_{i}}{sqrt(k)}$} where \eqn{$z_{i}$ = Φ−1 (1 – $p_{i}$)} and 
+#' \eqn{Φ −1 (·)} denotes the inverse of the cumulative distribution function of a standard normal distribution. Under the joint null 
+#' hypothesis, the test statistic follows a standard normal distribution which is used to compute the combined p-value. This 
+#' functionality is taken from the R package poolr [7].
+#' 
 #' Note that only p-values between 0 and 1 are allowed to be passed to these methods.
-#' @param MF.zero.sub Small numeric value for substituting p-values of 0 in in stratified GWAS with FM01comb and FM02comb XWAS models. The default is 0.00001. As log(0) results in Inf this replaces p-values of 0 by default with a small float.
-#' @param B Integer value specifying the number of permutation in case of using fisher.method.perm method in stratified GWAS with FM01comb and FM02comb XWAS models. The default is 10000.
-#' @param MF.na.rm Boolean value, 'TRUE' or 'FALSE' for removing p-values of NA in stratified GWAS with FM01comb and FM02comb XWAS in case of using Fisher’s and Stouffer’s methods. The default is FALSE.
-#' @param MF.p.corr Character vector specifying method for correcting the summary p-values for FMfcomb and FMscomb models. Choices are "bonferroni", "BH" and "none" for Bonferroni,  Benjamini-Hochberg and none, respectively. The default is "none".
+#' @param MF.zero.sub Small numeric value for substituting p-values of 0 in in stratified GWAS with FM01comb and FM02comb XWAS models. 
+#' The default is 0.00001. As log(0) results in Inf this replaces p-values of 0 by default with a small float.
+#' @param B Integer value specifying the number of permutation in case of using fisher.method.perm method in stratified GWAS with 
+#' FM01comb and FM02comb XWAS models. The default is 10000.
+#' @param MF.na.rm Boolean value, 'TRUE' or 'FALSE' for removing p-values of NA in stratified GWAS with FM01comb and FM02comb XWAS 
+#' in case of using Fisher’s and Stouffer’s methods. The default is FALSE.
+#' @param MF.p.corr Character vector specifying method for correcting the summary p-values for FMfcomb and FMscomb models. Choices 
+#' are "bonferroni", "BH" and "none" for Bonferroni,  Benjamini-Hochberg and none, respectively. The default is "none".
 #' @param MF.mc.cores Number of cores used for fisher.method.perm in stratified GWAS with FM01comb and FM02comb XWAS models.
 #' @param plot.jpeg Boolean value, 'TRUE' or 'FALSE' for saving the plots in .jpeg file. The default is TRUE.
-#' @param plotname A character string specifying the prefix of the file for plots. This file will be saved in DataDir. The default is "GXwas.plot".
-#' @param snp_pval Numeric value as p-value threshold for annotation. SNPs below this p-value will be annotated on the plot. The default is 1e-08.
-#' @param annotateTopSnp Boolean value, 'TRUE' or 'FALSE. If TRUE, it only annotates the top hit on each chromosome that is below the snp_pval threshold. The default is FALSE.
+#' @param plotname A character string specifying the prefix of the file for plots. This file will be saved in DataDir. The default is 
+#' "GXwas.plot".
+#' @param snp_pval Numeric value as p-value threshold for annotation. SNPs below this p-value will be annotated on the plot. The default 
+#' is 1e-08.
+#' @param annotateTopSnp Boolean value, 'TRUE' or 'FALSE. If TRUE, it only annotates the top hit on each chromosome that is below the 
+#' snp_pval threshold. The default is FALSE.
 #' @param suggestiveline The default is 5 (for p-value 1e-05).
 #' @param genomewideline The default is 7.3 (for p-value 5e-08).
 #' @param ncores Integer value, specifying the number of cores for parallel processing. The default is 0 (no parallel computation).
+#' 
 #' @importFrom progress progress_bar
 #'
 #' @return A dataframe with GWAS (with XWAS for X-chromosomal variants) along with Manhattan and Q-Q plots.
-#' In the case of the stratified test, the return is a list containing three dataframes, namely, FWAS, MWAS, and MFWAS with association results in only female, only male, and both cohorts, respectively. This will be accompanied by Miami and Q-Q plots. The individual manhattan and Q-Q-plots for stratified tests prefixed with xmodel type will be in the DataDir.
+#' In the case of the stratified test, the return is a list containing three dataframes, namely, FWAS, MWAS, and MFWAS with association 
+#' results in only female, only male, and both cohorts, respectively. This will be accompanied by Miami and Q-Q plots. The individual manhattan 
+#' and Q-Q-plots for stratified tests prefixed with xmodel type will be in the DataDir.
+#' 
 #' @export
 #'
-#' @references (1) Purcell et. al.,(2007). PLINK: A Tool Set for Whole-Genome Association and Population-Based Linkage Analyses. The American Journal of Human Genetics, 81(3), 559-575. https://doi.org/10.1086/519795.
-#' (2) Su Y, Hu J, Yin P, Jiang H, Chen S, Dai M, Chen Z, Wang P. XCMAX4: A Robust X Chromosomal Genetic Association Test Accounting for Covariates. Genes (Basel). 2022 May 9;13(5):847. doi: 10.3390/genes13050847. PMID: 35627231; PMCID: PMC9141238.
-#' (3) Fisher, R.A. (1925). Statistical Methods for Research Workers. Oliver and Boyd (Edinburgh);
-#' (4) Rhodes, D. R., (2002). Meta-analysis of microarrays: interstudy validation of gene expression profiles reveals pathway dysregulation in prostate cancer. Cancer research, 62(15), 4427-33;
-#' (5) Moreau, Y.et al. (2003). Comparison and meta-analysis of microarray data: from the bench to the computer desk. Trends in Genetics, 19(10), 570-577.
-#' (6) Stouffer, S. A., Suchman, E. A., DeVinney, L. C., Star, S. A., & Williams, R. M., Jr. (1949). The American Soldier: Adjustment During Army Life (Vol. 1). Princeton, NJ: Princeton University Press.
-#' (7) Cinar, O. & Viechtbauer, W. (2022). The poolr package for combining independent and dependent p values. Journal of Statistical Software, 101(1), 1–42. https://doi.org/10.18637/jss.v101.i01
+#' @references 
+#' [1] Purcell et. al.,(2007). PLINK: A Tool Set for Whole-Genome Association and Population-Based Linkage Analyses. 
+#' The American Journal of Human Genetics, 81(3), 559-575. 
+#' https://doi.org/10.1086/519795.
+#' 
+#' [2] Su Y, Hu J, Yin P, Jiang H, Chen S, Dai M, Chen Z, Wang P. XCMAX4: A Robust X Chromosomal Genetic Association Test 
+#' Accounting for Covariates. Genes (Basel). 2022 May 9;13(5):847. 
+#' doi: 10.3390/genes13050847. PMID: 35627231; PMCID: PMC9141238.
+#' 
+#' [3] Fisher, R.A. (1925). Statistical Methods for Research Workers. Oliver and Boyd (Edinburgh);
+#' 
+#' [4] Rhodes, D. R., (2002). Meta-analysis of microarrays: interstudy validation of gene expression profiles reveals pathway 
+#' dysregulation in prostate cancer. Cancer research, 62(15), 4427-33;
+#' 
+#' [5] Moreau, Y.et al. (2003). Comparison and meta-analysis of microarray data: from the bench to the computer desk. 
+#' Trends in Genetics, 19(10), 570-577.
+#' 
+#' [6] Stouffer, S. A., Suchman, E. A., DeVinney, L. C., Star, S. A., & Williams, R. M., Jr. (1949). The American Soldier: 
+#' Adjustment During Army Life (Vol. 1). Princeton, NJ: Princeton University Press.
+#' 
+#' [7] Cinar, O. & Viechtbauer, W. (2022). The poolr package for combining independent and dependent p values. Journal of 
+#' Statistical Software, 101(1), 1–42. 
+#' https://doi.org/10.18637/jss.v101.i01
 #'
 #' @examples
 #'
@@ -2825,7 +2918,13 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #' covarfile <- NULL
 #' ncores <- 0
 #' MF.mc.cores <- 1
-#' ResultGXwas <- GXwas(DataDir = DataDir, ResultDir = ResultDir, finput = finput, xmodel = xmodel, trait = trait, covarfile = covarfile, sex = sex, xsex = xsex, combtest = combtest, MF.p.corr = "none", snp_pval = snp_pval, plot.jpeg = TRUE, suggestiveline = 5, genomewideline = 7.3, MF.mc.cores = 1, ncores = ncores)
+#' ResultGXwas <- GXwas(
+#'   DataDir = DataDir, ResultDir = ResultDir, 
+#'   finput = finput, xmodel = xmodel, trait = trait, covarfile = covarfile, 
+#'   sex = sex, xsex = xsex, combtest = combtest, MF.p.corr = "none", 
+#'   snp_pval = snp_pval, plot.jpeg = TRUE, suggestiveline = 5, genomewideline = 7.3, 
+#'   MF.mc.cores = 1, ncores = ncores)
+
 GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"), standard_beta = TRUE,
                   xmodel = c("FMcombx01", "FMcombx02", "FMstatrified", "GWAScxci"), sex = FALSE, xsex = FALSE,
                   covarfile = NULL, interaction = FALSE, covartest = c("ALL"), Inphenocov = c("ALL"), combtest = c("fisher.method", "fisher.method.perm", "stouffer.method"),
