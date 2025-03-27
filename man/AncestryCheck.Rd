@@ -74,26 +74,28 @@ ResultDir <- tempdir()
 finput <- "GXwasR_example"
 reference <- "HapMapIII_NCBI36"
 data("GXwasRData")
-#load("~/b1137/BBose/GXwasR/data/highLD_hg19.Rda")
-highLD_regions <- highLD_hg19 #"high-LD-regions-hg19-GRCh37.txt" # four columns, chr, start, end, index
-#load("~/b1137/BBose/GXwasR/data/example_data_study_sample_ancestry.Rda")
-study_pop <- example_data_study_sample_ancestry #PreimputeEX
-studyLD_window_size = 50
-studyLD_step_size = 5
-studyLD_r2_threshold = 0.02
-filterSNP = TRUE
-studyLD = TRUE
-referLD = TRUE
-referLD_window_size = 50
-referLD_step_size = 5
-referLD_r2_threshold = 0.02
-outlier = TRUE
-outlier_threshold = 3
-x <- AncestryCheck(DataDir = DataDir, ResultDir = ResultDir, finput = finput, reference = "HapMapIII_NCBI36",highLD_regions = highLD_regions,
-study_pop = study_pop, studyLD = studyLD, referLD = referLD, outlierOf = "EUR", outlier = outlier, outlier_threshold = outlier_threshold )
+# load("~/b1137/BBose/GXwasR/data/highLD_hg19.Rda")
+highLD_regions <- highLD_hg19 # "high-LD-regions-hg19-GRCh37.txt" # four columns, chr, start, end, index
+# load("~/b1137/BBose/GXwasR/data/example_data_study_sample_ancestry.Rda")
+study_pop <- example_data_study_sample_ancestry # PreimputeEX
+studyLD_window_size <- 50
+studyLD_step_size <- 5
+studyLD_r2_threshold <- 0.02
+filterSNP <- TRUE
+studyLD <- TRUE
+referLD <- TRUE
+referLD_window_size <- 50
+referLD_step_size <- 5
+referLD_r2_threshold <- 0.02
+outlier <- TRUE
+outlier_threshold <- 3
+x <- AncestryCheck(
+  DataDir = DataDir, ResultDir = ResultDir, finput = finput, reference = "HapMapIII_NCBI36", highLD_regions = highLD_regions,
+  study_pop = study_pop, studyLD = studyLD, referLD = referLD, outlierOf = "EUR", outlier = outlier, outlier_threshold = outlier_threshold
+)
 
-#x <- AncestryCheck(DataDir = DataDir, ResultDir = ResultDir, finput = finput, reference = "ThousandGenome",highLD_regions = highLD_regions,
-#study_pop = study_pop, studyLD = studyLD, referLD = referLD, outlierOf = "EUR", outlier = outlier, outlier_threshold = outlier_threshold )
+# x <- AncestryCheck(DataDir = DataDir, ResultDir = ResultDir, finput = finput, reference = "ThousandGenome",highLD_regions = highLD_regions,
+# study_pop = study_pop, studyLD = studyLD, referLD = referLD, outlierOf = "EUR", outlier = outlier, outlier_threshold = outlier_threshold )
 }
 \references{
 (1) The International HapMap 3 Consortium. Integrating common and rare genetic variation in diverse human populations. Nature 467, 52–58 (2010). https://doi.org/10.1038/nature09298

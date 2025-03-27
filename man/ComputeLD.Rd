@@ -26,6 +26,6 @@ Returns a data frame containing the computed LD values among SNPs, read from the
 This function computes linkage disequilibrium (LD) statistics for SNP data using PLINK. It allows for computation across all SNPs or within specific chromosomes.
 }
 \examples{
-#Not Run
-#ComputeLD(DataDir = "path/to/data", ResultDir = "path/to/results", finput = "dataset", ByCHR = TRUE, CHRnum = 1, r2_LD = 0.2)
+# Not Run
+# ComputeLD(DataDir = "path/to/data", ResultDir = "path/to/results", finput = "dataset", ByCHR = TRUE, CHRnum = 1, r2_LD = 0.2)
 }

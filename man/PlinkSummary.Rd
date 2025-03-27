@@ -21,6 +21,6 @@ DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 
-x <- PlinkSummary(DataDir,ResultDir, finput)
+x <- PlinkSummary(DataDir, ResultDir, finput)
 
 }

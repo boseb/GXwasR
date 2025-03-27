@@ -70,14 +70,14 @@ DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 foutput <- "Test_output"
-imiss = 0.01
-het = 2
-small_sample_mod = FALSE
-IBD = 0.2
-IBDmatrix = FALSE
-ambi_out = TRUE
+imiss <- 0.01
+het <- 2
+small_sample_mod <- FALSE
+IBD <- 0.2
+IBDmatrix <- FALSE
+ambi_out <- TRUE
 
-x = QCsample(DataDir = DataDir,ResultDir = ResultDir, finput = finput,foutput = foutput, imiss = imiss,het = het, IBD = IBD,ambi_out = ambi_out)
+x <- QCsample(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, imiss = imiss, het = het, IBD = IBD, ambi_out = ambi_out)
 }
 \author{
 Banabithi Bose

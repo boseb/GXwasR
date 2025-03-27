@@ -66,9 +66,9 @@ Title: This function combines the p-values of two separate GWAS summary statisti
 \examples{
 data("GXwasRData")
 SumstatMale <- Mfile
-colnames(SumstatMale)[3]<- "POS"
+colnames(SumstatMale)[3] <- "POS"
 SumstatFemale <- Ffile
-colnames(SumstatFemale)[3]<- "POS"
+colnames(SumstatFemale)[3] <- "POS"
 # Use the below datasets for tutorial document
 # SumstatMale <- Summary_Stat_Ex1
 # colnames(SumstatMale)[3]<- "POS"

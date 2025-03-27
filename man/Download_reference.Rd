@@ -21,7 +21,7 @@ Currently supports 'HapMapIII_NCBI36' and 'ThousandGenome'.
 \examples{
 
 # Not run
-#Download_reference("ThousandGenome", "path/to/your/directory")
-#Download_reference("HapMapIII_NCBI36", tempdir())
+# Download_reference("ThousandGenome", "path/to/your/directory")
+# Download_reference("HapMapIII_NCBI36", tempdir())
 
 }

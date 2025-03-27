@@ -22,7 +22,7 @@ This function could be used to check association of two variables. For instance,
 \examples{
 
 data("GXwasRData")
-fdata = Regression_Ex
+fdata <- Regression_Ex
 fdata$SEX <- as.factor(as.character(fdata$SEX))
 response_index <- 1
 regressor_index <- 2
