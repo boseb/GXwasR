@@ -38,6 +38,8 @@ This function prepares PLINK binary files with the desired samples.
 }
 \examples{
 # Not Run
+#
+#
 }
 \author{
 Banabithi Bose

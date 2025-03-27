@@ -97,25 +97,25 @@ This function runs GWAS models in autosomes with several alternative XWAS models
 \examples{
 
 DataDir <- system.file("extdata", package = "GXwasR")
-ResultDir = tempdir()
+ResultDir <- tempdir()
 finput <- "GXwasR_example"
-standard_beta = TRUE
-xsex = FALSE
-sex = TRUE
-Inphenocov = NULL
-covartest = NULL
-interaction = FALSE
-MF.na.rm = FALSE
-B = 10000
-MF.zero.sub = 0.00001
-trait = "binary"
-xmodel = "FMcombx02"
-combtest = "fisher.method"
-snp_pval = 1e-08
-covarfile = NULL
-ncores = 0
-MF.mc.cores = 1
-ResultGXwas <- GXwas(DataDir = DataDir,ResultDir = ResultDir, finput = finput, xmodel = xmodel, trait = trait, covarfile = covarfile, sex = sex, xsex = xsex, combtest = combtest, MF.p.corr = "none", snp_pval = snp_pval, plot.jpeg = TRUE, suggestiveline = 5, genomewideline = 7.3,MF.mc.cores = 1, ncores = ncores)
+standard_beta <- TRUE
+xsex <- FALSE
+sex <- TRUE
+Inphenocov <- NULL
+covartest <- NULL
+interaction <- FALSE
+MF.na.rm <- FALSE
+B <- 10000
+MF.zero.sub <- 0.00001
+trait <- "binary"
+xmodel <- "FMcombx02"
+combtest <- "fisher.method"
+snp_pval <- 1e-08
+covarfile <- NULL
+ncores <- 0
+MF.mc.cores <- 1
+ResultGXwas <- GXwas(DataDir = DataDir, ResultDir = ResultDir, finput = finput, xmodel = xmodel, trait = trait, covarfile = covarfile, sex = sex, xsex = xsex, combtest = combtest, MF.p.corr = "none", snp_pval = snp_pval, plot.jpeg = TRUE, suggestiveline = 5, genomewideline = 7.3, MF.mc.cores = 1, ncores = ncores)
 }
 \references{
 (1) Purcell et. al.,(2007). PLINK: A Tool Set for Whole-Genome Association and Population-Based Linkage Analyses. The American Journal of Human Genetics, 81(3), 559-575. https://doi.org/10.1086/519795.

@@ -50,6 +50,8 @@ Due to the use of allele frequencies, if a cohort is comprised of individuals of
 }
 \examples{
 # Not Run
+#
+#
 }
 \references{
 (1) Purcell et. al.,(2007). PLINK: A Tool Set for Whole-Genome Association and Population-Based Linkage Analyses. The American Journal of Human Genetics, 81(3), 559-575. https://doi.org/10.1086/519795.

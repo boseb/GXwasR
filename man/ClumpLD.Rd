@@ -50,18 +50,18 @@ The clumping process begins with the index SNPs that are significant at threshol
 }
 \examples{
 DataDir <- system.file("extdata", package = "GXwasR")
-ResultDir = tempdir()
+ResultDir <- tempdir()
 finput <- "GXwasR_example"
 data("GXwasRData")
-#load(paste0("/projects/b1137/BBose/GXwasR/data/Summary_Stat_Ex1.Rda"))
-#load(paste0("/projects/b1137/BBose/GXwasR/data/Summary_Stat_Ex2.Rda"))
-SNPdata <- list(Summary_Stat_Ex1,Summary_Stat_Ex2)
-clump_p1 = 0.0001
-clump_p2 = 0.001
-clump_r2 = 0.5
-clump_kb = 250
-byCHR = TRUE
-clumpedResult <- ClumpLD(DataDir,finput,SNPdata,ResultDir,clump_p1,clump_p2,clump_r2,clump_kb, byCHR)
+# load(paste0("/projects/b1137/BBose/GXwasR/data/Summary_Stat_Ex1.Rda"))
+# load(paste0("/projects/b1137/BBose/GXwasR/data/Summary_Stat_Ex2.Rda"))
+SNPdata <- list(Summary_Stat_Ex1, Summary_Stat_Ex2)
+clump_p1 <- 0.0001
+clump_p2 <- 0.001
+clump_r2 <- 0.5
+clump_kb <- 250
+byCHR <- TRUE
+clumpedResult <- ClumpLD(DataDir, finput, SNPdata, ResultDir, clump_p1, clump_p2, clump_r2, clump_kb, byCHR)
 }
 \references{
 (1) Purcell et. al.,(2007). PLINK: A Tool Set for Whole-Genome Association and Population-Based Linkage Analyses. The American Journal of Human Genetics, 81(3), 559-575. https://doi.org/10.1086/519795.

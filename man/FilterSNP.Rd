@@ -32,6 +32,6 @@ ResultDir <- tempdir()
 SNPvec <- c("rs6529954", "rs12858640", "rs5962098")
 finput <- "GXwasR_example"
 foutput <- "Filter_Test"
-FilterSNP(DataDir, ResultDir, finput, foutput, SNPvec = SNPvec,extract = TRUE)
+FilterSNP(DataDir, ResultDir, finput, foutput, SNPvec = SNPvec, extract = TRUE)
 
 }

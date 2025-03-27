@@ -92,7 +92,9 @@ analysis, there will be 'chromosome' column for chromosome code.
 This function computes genetic correlation, a quantitative genetic measure that describes the genetic link between two traits and has been predicted to indicate pleiotropic gene activity or correlation between causative loci in two traits. For example, it does a bivariate GREML analysis to determine the genetic association between two quantitative traits, two binary disease traits from case-control studies, and between a quantitative trait and a binary disease trait following (1,2). If users want, this function gives the flexibility to compute the genetic correlation chromosome-wise.
 }
 \examples{
-#Not Run
+# Not Run
+#
+#
 }
 \references{
 (1)	Yang et al. (2011) GCTA: a tool for Genome-wide Complex Trait Analysis. Am J Hum Genet. 88(1): 76-82.

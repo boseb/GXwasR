@@ -26,8 +26,8 @@ The input dataframes should only include X-chromosome in order to obtain results
 }
 \examples{
 data("GXwasRData")
-Difftest <- SexDiff(Mfile,Ffile)
-significant_snps <- Difftest[Difftest$adjP <0.05,]# 9
+Difftest <- SexDiff(Mfile, Ffile)
+significant_snps <- Difftest[Difftest$adjP < 0.05, ] # 9
 }
 \author{
 Banabithi Bose

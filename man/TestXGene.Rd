@@ -108,7 +108,8 @@ This function performs gene-based association tests using GWAS/XWAS summary stat
 Though this function implicitly performs X-linked gene-based test, it is flexible to perform this analysis genome-wide. For the details about the different tests, please follow the associated paper.
 }
 \examples{
-#Not Run
+# Not Run
+#
 }
 \references{
 (1) Purcell et. al.,(2007). PLINK: A Tool Set for Whole-Genome Association and Population-Based Linkage Analyses. The American Journal of Human Genetics, 81(3), 559-575. https://doi.org/10.1086/519795.

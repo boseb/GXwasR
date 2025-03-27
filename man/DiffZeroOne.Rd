@@ -22,7 +22,7 @@ For multiple tests, users are encouraged to apply a Bonferroni multiple-testing 
 }
 \examples{
 data("GXwasRData")
-colnames(Example_rgdata) <- c("Trait","Stat","SE")
-inputdata = Example_rgdata
-x <- DiffZeroOne(inputdata,FALSE,TRUE)
+colnames(Example_rgdata) <- c("Trait", "Stat", "SE")
+inputdata <- Example_rgdata
+x <- DiffZeroOne(inputdata, FALSE, TRUE)
 }

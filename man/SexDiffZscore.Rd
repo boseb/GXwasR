@@ -22,7 +22,7 @@ The input dataframes should only include X-chromosome in order to obtain results
 }
 \examples{
 data("GXwasRData")
-inputdata = Example_h2data
+inputdata <- Example_h2data
 x <- SexDiffZscore(inputdata)
 
 }

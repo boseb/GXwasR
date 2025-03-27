@@ -66,9 +66,9 @@ This function calculates the genetic correlation between two summary statistics
 using a specified reference linkage disequilibrium (LD) matrix from the UK Biobank.
 }
 \examples{
-#Not Run
-#ResultDir = tempdir()
-#res <- SumstatGenCorr(ResultDir, "UKB_imputed_hapmap2_SVD_eigen99_extraction",
+# Not Run
+# ResultDir = tempdir()
+# res <- SumstatGenCorr(ResultDir, "UKB_imputed_hapmap2_SVD_eigen99_extraction",
 #                      "sumstat1", "sumstat2")
 }
 \references{

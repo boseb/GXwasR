@@ -51,7 +51,7 @@ DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 data("GXwasRData")
-#highLD_regions <- "high-LD-regions-hg19-GRCh37.txt"
+# highLD_regions <- "high-LD-regions-hg19-GRCh37.txt"
 highLD_regions <- highLD_hg19
 ld_prunning <- "TRUE"
 window_size <- 50
