@@ -20,21 +20,24 @@ SumstatGenCorr(
 \arguments{
 \item{ResultDir}{Directory where results should be saved.}
 
-\item{referenceLD}{Reference LD matrix identifier.
-#' These are the LD matrices and their eigen-decomposition from 335,265 genomic British UK Biobank individuals. Two sets of reference panel are provided:
+\item{referenceLD}{Reference LD matrix identifier. These are the LD matrices and their eigen-decomposition from 335,265 genomic
+British UK Biobank individuals. Two sets of reference panel are provided:
 \enumerate{
 \item 307,519 QCed UK Biobank Axiom Array SNPs. The size is about 7.5 GB after unzipping.
-\item 1,029,876 QCed UK Biobank imputed SNPs. The size is about 31 GB after unzipping. Although it takes more time, using the imputed panel provides more accurate estimates of genetic correlations.
+\item 1,029,876 QCed UK Biobank imputed SNPs. The size is about 31 GB after unzipping. Although it takes more time,
+using the imputed panel provides more accurate estimates of genetic correlations.
 Therefore if the GWAS includes most of the HapMap3 SNPs, then it is recommend using the imputed reference panel.
 }}
 
 \item{sumstat1}{Data frame for the first set of summary statistics.
 The input data frame should include following columns: SNP, SNP ID; A1, effect allele; A2, reference allele;
-N, sample size; Z, z-score; If Z is not given, alternatively, you may provide: b, estimate of marginal effect in GWAS; se, standard error of the estimates of marginal effects in GWAS.}
+N, sample size; Z, z-score; If Z is not given, alternatively, you may provide: b, estimate of marginal effect in GWAS; se,
+standard error of the estimates of marginal effects in GWAS.}
 
 \item{sumstat2}{Data frame for the second set of summary statistics.
 The input data frame should include following columns: SNP, SNP ID; A1, effect allele; A2, reference allele;
-N, sample size; Z, z-score; If Z is not given, alternatively, you may provide: b, estimate of marginal effect in GWAS; se, standard error of the estimates of marginal effects in GWAS.}
+N, sample size; Z, z-score; If Z is not given, alternatively, you may provide: b, estimate of marginal effect in GWAS; se,
+standard error of the estimates of marginal effects in GWAS.}
 
 \item{Nref}{Sample size of the reference sample where LD is computed. If the default UK Biobank reference sample is used, Nref = 335265}
 
@@ -42,8 +45,10 @@ N, sample size; Z, z-score; If Z is not given, alternatively, you may provide: b
 If not given, the default value is set to the minimum sample size across all SNPs in cohort 1 and cohort 2.}
 
 \item{eigen.cut}{Which eigenvalues and eigenvectors in each LD score matrix should be used for HDL.
-Users are allowed to specify a numeric value between 0 and 1 for eigen.cut. For example, eigen.cut = 0.99 means using the leading eigenvalues explaining 99\% of the variance
-and their correspondent eigenvectors. If the default 'automatic' is used, the eigen.cut gives the most stable heritability estimates will be used.}
+Users are allowed to specify a numeric value between 0 and 1 for eigen.cut. For example, eigen.cut = 0.99 means using the
+leading eigenvalues explaining 99\% of the variance
+and their correspondent eigenvectors. If the default 'automatic' is used, the eigen.cut gives the most stable heritability
+estimates will be used.}
 
 \item{lim}{Tolerance limitation, default lim = exp(-18).}
 
