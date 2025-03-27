@@ -2799,7 +2799,7 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #' method(1,3-7]. An X-chromosome inactivation (XCI) pattern, or coding technique for X-chromosomal genotypes between sexes, 
 #' is not required for the XCGA. By simultaneously accounting for four distinct XCI patterns, namely XCI-R, XCI-E, 
 #' XCI-SN (XCI fully toward normal allele), and XCI-SR (XCI fully toward risk allele), this model may maintain a 
-#' respectably high power [2]. Note that, sex shouldn't be provided as a covariate in the XCGA model.
+#' respectably high power \insertCite{Su2022}{GXwasR}. Note that, sex shouldn't be provided as a covariate in the XCGA model.
 #' @param covarfile Character string for the full name of the covariate file in .txt format. This file should be placed in DataDir. 
 #' Note about the covariate file: The first column of this file should be FID, the second column should be IID and 
 #' the other columns should be covariates. The primary header line should be there starting with “FID”, and “IID” 
@@ -2823,25 +2823,26 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #' be extremely significant (e.g. if one covaries for smoking in an analysis of heart disease, etc) but this does not mean 
 #' that the SNP has a highly significant effect necessarily. Note that, this feature is not valid for XCGA model for XWAS part.
 #' @param Inphenocov Vector of integer values starting from 1 to extract the terms which user wants from the above model: 
-#' \eqn{Y = b0 + b1.ADD + b2.COV1 + b3.COV2 + b4.ADDxCOV1 + b5.ADDxCOV2 + e}. The terms will appear in order as [1] for ADD, [2] 
-#' for COV1, [4] for ADD x COV1, and [5] for ADD x COV2. If the user wants to extract the terms for COV1 and ADD x COV1, they need 
-#' to specify it as c(2,4). The default is c(“ALL”). Note that, this feature is not valid for the XCGA model for the XWAS part.
+#' \eqn{Y = b0 + b1.ADD + b2.COV1 + b3.COV2 + b4.ADDxCOV1 + b5.ADDxCOV2 + e}. The terms will appear in order as 
+#' \insertCite{Purcell2007}{GXwasR} for ADD, \insertCite{Su2022}{GXwasR} for COV1, \insertCite{Rhodes2002}{GXwasR} for ADD x COV1, 
+#' and \insertCite{Moreau2003}{GXwasR} for ADD x COV2. If the user wants to extract the terms for COV1 and ADD x COV1, they need to specify it as c(2,4). 
+#' The default is c(“ALL”). Note that, this feature is not valid for the XCGA model for the XWAS part.
 #' @param combtest 
 #' Character vector specifying method for combining p-values for stratified GWAS with FM01comb and FM02comb XWAS models. 
 #' Choices are “stouffer.method”, "fisher.method" and "fisher.method.perm". For fisher.method the function for combining 
-#' p-values uses a statistic, \eqn{S = -2 ∑^k /log p}, which follows a \eqn{χ^2} distribution with 2k degrees of freedom [3].
+#' p-values uses a statistic, \eqn{S = -2 ∑^k /log p}, which follows a \eqn{χ^2} distribution with 2k degrees of freedom \insertCite{Fisher1925}{GXwasR}.
 #' 
 #' For fisher.method.perm, using p-values from stratified tests, the summary statistic for combining p-values is \eqn{S = -2 ∑ /log p}. 
-#' A p-value for this statistic can be derived by randomly generating summary statistics [4]. Therefore, a p-value is randomly 
+#' A p-value for this statistic can be derived by randomly generating summary statistics \insertCite{Rhodes2002}{GXwasR}. Therefore, a p-value is randomly 
 #' sampled from each contributing study, and a random statistic is calculated. The fraction of random statistics greater or 
 #' equal to S then gives the final p-value.
 #'
-#' For stouffer.method ,the function applies Stouffer’s method [6] to the p-values assuming that the p-values to be combined are 
+#' For stouffer.method ,the function applies Stouffer’s method \insertCite{Stouffer1949}{GXwasR} to the p-values assuming that the p-values to be combined are 
 #' independent. Letting p1, p2, . . . , pk denote the individual (one- or two-sided) p-values of the k hypothesis tests to be 
 #' combined, the test statistic is then computed with \eqn{$z = ∑^k_{1}frac{z_{i}}{sqrt(k)}$} where \eqn{$z_{i}$ = Φ−1 (1 – $p_{i}$)} and 
 #' \eqn{Φ −1 (·)} denotes the inverse of the cumulative distribution function of a standard normal distribution. Under the joint null 
 #' hypothesis, the test statistic follows a standard normal distribution which is used to compute the combined p-value. This 
-#' functionality is taken from the R package poolr [7].
+#' functionality is taken from the R package poolr \insertCite{Cinar2022}{GXwasR}.
 #' 
 #' Note that only p-values between 0 and 1 are allowed to be passed to these methods.
 #' @param MF.zero.sub Small numeric value for substituting p-values of 0 in in stratified GWAS with FM01comb and FM02comb XWAS models. 
@@ -2865,6 +2866,7 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #' @param ncores Integer value, specifying the number of cores for parallel processing. The default is 0 (no parallel computation).
 #' 
 #' @importFrom progress progress_bar
+#' @importFrom Rdpack reprompt
 #'
 #' @return A dataframe with GWAS (with XWAS for X-chromosomal variants) along with Manhattan and Q-Q plots.
 #' In the case of the stratified test, the return is a list containing three dataframes, namely, FWAS, MWAS, and MFWAS with association 
@@ -2874,29 +2876,8 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #' @export
 #'
 #' @references 
-#' [1] Purcell et. al.,(2007). PLINK: A Tool Set for Whole-Genome Association and Population-Based Linkage Analyses. 
-#' The American Journal of Human Genetics, 81(3), 559-575. 
-#' https://doi.org/10.1086/519795.
+#' \insertAllCited{}
 #' 
-#' [2] Su Y, Hu J, Yin P, Jiang H, Chen S, Dai M, Chen Z, Wang P. XCMAX4: A Robust X Chromosomal Genetic Association Test 
-#' Accounting for Covariates. Genes (Basel). 2022 May 9;13(5):847. 
-#' doi: 10.3390/genes13050847. PMID: 35627231; PMCID: PMC9141238.
-#' 
-#' [3] Fisher, R.A. (1925). Statistical Methods for Research Workers. Oliver and Boyd (Edinburgh);
-#' 
-#' [4] Rhodes, D. R., (2002). Meta-analysis of microarrays: interstudy validation of gene expression profiles reveals pathway 
-#' dysregulation in prostate cancer. Cancer research, 62(15), 4427-33;
-#' 
-#' [5] Moreau, Y.et al. (2003). Comparison and meta-analysis of microarray data: from the bench to the computer desk. 
-#' Trends in Genetics, 19(10), 570-577.
-#' 
-#' [6] Stouffer, S. A., Suchman, E. A., DeVinney, L. C., Star, S. A., & Williams, R. M., Jr. (1949). The American Soldier: 
-#' Adjustment During Army Life (Vol. 1). Princeton, NJ: Princeton University Press.
-#' 
-#' [7] Cinar, O. & Viechtbauer, W. (2022). The poolr package for combining independent and dependent p values. Journal of 
-#' Statistical Software, 101(1), 1–42. 
-#' https://doi.org/10.18637/jss.v101.i01
-#'
 #' @examples
 #'
 #' DataDir <- system.file("extdata", package = "GXwasR")

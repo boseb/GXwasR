@@ -58,4 +58,6 @@ Imports:
     poolr,
     progress,
     rlang,
-    foreach
+    foreach,
+    Rdpack
+RdMacros: Rdpack
