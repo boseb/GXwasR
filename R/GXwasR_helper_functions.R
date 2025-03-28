@@ -3249,6 +3249,12 @@ setupGCTA <- function(wdir) {
       file_name = "gcta-1.94.1-macOS-x86_64.zip",
       exec = "gcta-1.94.1",
       remove = c("MIT_License.txt", "README.txt", "test.bed", "test.bim", "test.fam", "test.phen")
+    ),
+    Darwin = list(
+      file_url = "https://github.com/boseb/bose_binaries/blob/main/gcta-1.94.1-macOS-x86_64.zip",
+      file_name = "gcta-1.94.1-macOS-x86_64.zip",
+      exec = "gcta-1.94.1",
+      remove = c("MIT_License.txt", "README.txt", "test.bed", "test.bim", "test.fam", "test.phen")
     )
   )
 
