@@ -8,7 +8,7 @@ QCsnp(
   DataDir,
   ResultDir = tempdir(),
   finput,
-  foutput,
+  foutput = "FALSE",
   casecontrol = TRUE,
   hweCase = NULL,
   hweControl = NULL,
@@ -30,49 +30,68 @@ QCsnp(
 \arguments{
 \item{DataDir}{A character string for the file path of the input PLINK binary files.}
 
-\item{ResultDir}{A character string for the file path where all output files will be stored. The default is tempdir().}
+\item{ResultDir}{A character string for the file path where all output files will be stored. The default is \code{tempdir()}.}
 
-\item{finput}{Character string, specifying the prefix of the input PLINK binary files with both male and female samples. This file needs to be in DataDir.}
+\item{finput}{Character string, specifying the prefix of the input PLINK binary files with both male and female samples. This file needs
+to be in \code{DataDir}.}
 
-\item{foutput}{Character string, specifying the prefix of the output PLINK binary files if the filtering option for the SNPs is chosen. The default is "FALSE".}
+\item{foutput}{Character string, specifying the prefix of the output PLINK binary files if the filtering option for the SNPs is chosen.
+The default is "FALSE".}
 
-\item{casecontrol}{Boolean value, 'TRUE' or 'FALSE' indicating if the input plink files has cases-control status or not. The default is FALSE.}
+\item{casecontrol}{Boolean value, \code{TRUE} or \code{FALSE} indicating if the input plink files has cases-control status or not.
+The default is \code{FALSE}.}
 
-\item{hweCase}{Numeric value between 0 to 1 or NULL for removing SNPs which fail Hardy-Weinberg equilibrium for cases. The default is NULL.}
+\item{hweCase}{Numeric value between 0 to 1 or \code{NULL} for removing SNPs which fail Hardy-Weinberg equilibrium for cases.
+The default is \code{NULL}.}
 
-\item{hweControl}{Numeric value between 0 to 1 or NULL for removing SNPs which fail Hardy-Weinberg equilibrium for controls. The default is NULL.}
+\item{hweControl}{Numeric value between 0 to 1 or \code{NULL} for removing SNPs which fail Hardy-Weinberg equilibrium for controls.
+The default is \code{NULL}.}
 
-\item{hwe}{Numeric value between 0 to 1 or NULL for removing SNPs which fail Hardy-Weinberg equilibrium for entire dataset. The default is NULL.}
+\item{hwe}{Numeric value between 0 to 1 or \code{NULL} for removing SNPs which fail Hardy-Weinberg equilibrium for entire dataset.
+The default is \code{NULL}.}
 
-\item{maf}{Numeric value between 0 to 1 for removing SNPs with minor allele frequency less than the specified threshold. The default is 0.05.}
+\item{maf}{Numeric value between 0 to 1 for removing SNPs with minor allele frequency less than the specified threshold.
+The default is 0.05.}
 
-\item{geno}{Numeric value between 0 to 1 for removing SNPs that have less than the specified call rate. The default is 0.05. Users can set this as NULL for not applying this filter.}
+\item{geno}{Numeric value between 0 to 1 for removing SNPs that have less than the specified call rate. The default is 0.05.
 
-\item{monomorphicSNPs}{Boolean value, 'TRUE' or 'FALSE' for filtering out monomorphic SNP. The default is "TRUE".}
+Users can set this as \code{NULL} to not apply this filter.}
 
-\item{caldiffmiss}{Boolean value, 'TRUE' or 'FALSE', specifying whether to compute differential missingness between cases and controls for each SNP (threshold is 0.05/length(unique(No. of. SNPs in the test))). The default is TRUE.}
+\item{monomorphicSNPs}{Boolean value, \code{TRUE} or \code{FALSE} for filtering out monomorphic SNP. The default is \code{TRUE}.}
 
-\item{diffmissFilter}{Boolean value, 'TRUE' or 'FALSE', specifying whether to filter out the SNPs or only flagged them for differential missingness in cases vs contols. The deafailt is "TRUE".}
+\item{caldiffmiss}{Boolean value, \code{TRUE} or \code{FALSE}, specifying whether to compute differential missingness between cases and controls
+for each SNP (threshold is \eqn{0.05/length(unique(No. of. SNPs in the test))}). The default is \code{TRUE.}}
 
-\item{dmissX}{Boolean value, 'TRUE' or 'FALSE' for computing differential missingness between cases and controls for X chromosome SNPs only. The default is "FALSE". The diffmissFilter will work for all these SNPs.}
+\item{diffmissFilter}{Boolean value, \code{TRUE} or \code{FALSE}, specifying whether to filter out the SNPs or only flagged them for differential
+missingness in cases vs contols. The deafailt is \code{TRUE}.}
 
-\item{dmissAutoY}{Boolean value, 'TRUE' or 'FALSE' for computing differential missingness between cases and controls for SNPs on autosomes and Y chromosome only. The default is "FALSE". If dmissX and dmissAutoY are both FALSE, then this will be computed genome-wide. The diffmissFilter will work for all these SNPs.}
+\item{dmissX}{Boolean value, \code{TRUE} or \code{FALSE} for computing differential missingness between cases and controls for X chromosome
+SNPs only. The default is \code{FALSE}. The diffmissFilter will work for all these SNPs.}
 
-\item{highLD_regions}{A dataframe with known high LD regions. A dataframe from Anderson et. al, 2010 (3) is provided with the package.}
+\item{dmissAutoY}{Boolean value, \code{TRUE} or \code{FALSE} for computing differential missingness between cases and controls for SNPs on autosomes
+and Y chromosome only. The default is \code{FALSE}.
 
-\item{ld_prunning}{Boolean value, 'TRUE' or 'FALSE' for applying linkage disequilibrium (LD)-based filtering.}
+If \code{dmissX} and \code{dmissAutoY} are both \code{FALSE}, then this will be computed genome-wide. The \code{diffmissFilter} will work
+for all these SNPs.}
+
+\item{highLD_regions}{A dataframe with known high LD regions \insertCite{Anderson2010}{GXwasR} is provided with the package.}
+
+\item{ld_prunning}{Boolean value, \code{TRUE} or \code{FALSE} for applying linkage disequilibrium (LD)-based filtering.}
 
 \item{window_size}{Integer value, specifying a window size in the variant counts for LD-based filtering. The default is 50.}
 
 \item{step_size}{Integer value, specifying a variant count to shift the window at the end of each step for LD filtering. The default is 5.}
 
-\item{r2_threshold}{Numeric value between 0 to 1 of pairwise r^2 threshold for LD-based filtering. The default is 0.02.}
+\item{r2_threshold}{Numeric value between 0 to 1 of pairwise \eqn{r^2} threshold for LD-based filtering. The default is 0.02.}
 }
 \value{
-A list of two objects, namely, MonomorSNPs and DiffMissSNPs containing monomorphic SNPs and SNPs with differential missingness in cases vs controls, respectively. Output plink binary files in the working directory.
+A list of two objects, namely, \code{MonomorSNPs} and \code{DiffMissSNPs} containing monomorphic SNPs and SNPs with differential missingness
+in cases vs controls, respectively. Output plink binary files in the working directory.
 }
 \description{
-This function performs quality control on genetic variant data from PLINK binary files. It filters variants based on parameters like minor allele frequency, Hardy-Weinberg equilibrium, call rate, and differential missingness between cases and controls. It also handles monomorphic SNPs and applies linkage disequilibrium-based filtering if specified.
+This function performs quality control on genetic variant data from PLINK binary files. It filters variants based on parameters
+like minor allele frequency, Hardy-Weinberg equilibrium, call rate, and differential missingness between cases and controls.
+It also handles monomorphic SNPs and applies linkage disequilibrium-based filtering if specified.
 }
 \examples{
 DataDir <- system.file("extdata", package = "GXwasR")
@@ -88,7 +107,14 @@ hweCase <- NULL
 monomorphicSNPs <- FALSE
 caldiffmiss <- FALSE
 ld_prunning <- FALSE
-x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss)
+x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, 
+  geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl, 
+  ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, 
+  caldiffmiss = caldiffmiss
+)
+}
+\references{
+\insertAllCited{}
 }
 \author{
 Banabithi Bose
