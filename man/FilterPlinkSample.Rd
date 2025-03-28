@@ -23,23 +23,36 @@ FilterPlinkSample(
 
 \item{foutput}{Character string, specifying the prefix of the output PLINK binary files.}
 
-\item{filter_sample}{Character string, specifying the sample type to be retained. The choices are, "cases","controls","males" and "females". The default is "cases".}
+\item{filter_sample}{Character string, specifying the sample type to be retained. The choices are, "cases", "controls", "males" and "females".
+The default is "cases".}
 
-\item{keep_remove_sample_file}{Character string, specifying the prefix of a space/tab-delimited text file with no header. For the samples that we want to keep or remove, the family IDs should be in the first column and within-family IDs in the second column. This file needs to be in the DataDir. The default is NULL.}
+\item{keep_remove_sample_file}{Character string, specifying the prefix of a space/tab-delimited text file with no header. For the samples that we want
+to keep or remove, the family IDs should be in the first column and within-family IDs in the second column. This file
+needs to be in the \code{DataDir}. The default is \code{NULL}.}
 
-\item{keep}{Boolean value, "TRUE" or "FALSE" for specifying desired samples to keep or remove. The default is "TRUE".}
+\item{keep}{Boolean value, \code{TRUE} or \code{FALSE} for specifying desired samples to keep or remove. The default is \code{TRUE}.}
 }
 \value{
-NULL
+\code{NULL}
+
 The output plink files with passed samples will be saved in ResultDir.
 }
 \description{
 This function prepares PLINK binary files with the desired samples.
 }
 \examples{
-# Not Run
-#
-#
+DataDir <- system.file("extdata", package = "GXwasR")
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+foutput <- "casesPlink"
+filter_sample <- "cases"
+keep_remove_sample_file <- "samples_example"
+keep <- FALSE
+
+FilterPlinkSample(DataDir = DataDir,ResultDir = ResultDir,
+  finput = finput,foutput = foutput,keep_remove_sample_file = keep_remove_sample_file, 
+  keep = keep
+)
 }
 \author{
 Banabithi Bose
