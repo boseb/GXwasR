@@ -3412,7 +3412,7 @@ MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile =
 #' This file needs to be in `DataDir`.
 #' 
 #' @param SNPdata 
-#' a list of R dataframes containing a single or multiple summary statistics with SNP and P (i.e., p-values) in mandatory column 
+#' A list of R dataframes containing a single or multiple summary statistics with SNP and P (i.e., p-values) in mandatory column 
 #' headers. Other columns could be present.
 #' 
 #' @param ResultDir 
