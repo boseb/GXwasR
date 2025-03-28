@@ -1960,36 +1960,59 @@ MergeRegion <- function(DataDir, ResultDir, finput1, finput2, foutput, use_commo
 #'
 #' @author Banabithi Bose
 #'
-#' @description This function performs the conversion between VCF files to plink binary formats.
+#' @description 
+#' This function performs the conversion between VCF files to plink binary formats.
 #'
-#' For VCF to plink files conversion, if you do not specify any FAM file when you are converting from VCF to plink format, then plink will just create a 'dummy' FAM file with the same name as your dataset with missing phenotypes and missing sex.
-
-#' @param DataDir A character string for the file path of the input plink binary files and all other input files.
-#' @param ResultDir A character string for the file path where all output files will be stored. The default is tempdir().
-#' @param finput Character string, specifying the prefix of the input plink binary files or vcf files. This file needs to be in DataDir.
-#' @param foutput Character string, specifying the prefix of the output plink binary files if filtering option for the SNPs is chosen. The default is "FALSE".
-#' @param VtoP Boolean value, TRUE or FALSE, specifying the conversion of VCF files to plink binary files or not. The default is TRUE.
-#' @param PtoV Boolean value, TRUE or FALSE, specifying the conversion of plink binary files to VCF  files or not. The default is TRUE.
-#' @param Famfile Character string, specifying the name of the original .fam file if VtoP was set to be TRUE. This file needs to be in DataDir. The default is NULL.
-#' @param PVbyCHR Boolean value, TRUE or FALSE specifying to do the plink to vcf conversion chromosome-wise or not. The default is TRUE.
-#' @return NULL
+#' For VCF to plink files conversion, if you do not specify any FAM file when you are converting from VCF to plink 
+#' format, then plink will just create a 'dummy' FAM file with the same name as your dataset with missing phenotypes 
+#' and missing sex.
+#' 
+#' @param DataDir 
+#' A character string for the file path of the input plink binary files and all other input files.
+#' 
+#' @param ResultDir 
+#' A character string for the file path where all output files will be stored. The default is `tempdir()`.
+#' 
+#' @param finput 
+#' Character string, specifying the prefix of the input plink binary files or vcf files. This file needs to be in `DataDir`.
+#' 
+#' @param foutput 
+#' Character string, specifying the prefix of the output plink binary files if filtering option for the SNPs is chosen. 
+#' The default is "FALSE".
+#' 
+#' @param VtoP 
+#' Boolean value, `TRUE` or `FALSE`, specifying the conversion of VCF files to plink binary files or not. The default is `TRUE`.
+#' 
+#' @param PtoV 
+#' Boolean value, `TRUE` or `FALSE`, specifying the conversion of plink binary files to VCF  files or not. The default is `TRUE`.
+#' 
+#' @param Famfile 
+#' Character string, specifying the name of the original .fam file if VtoP was set to be `TRUE`. This file needs to be in `DataDir`. 
+#' The default is `NULL`.
+#' 
+#' @param PVbyCHR 
+#' Boolean value, `TRUE` or `FALSE` specifying to do the plink to vcf conversion chromosome-wise or not. The default is `TRUE`.
+#' 
+#' @return 
+#' `NULL`
 #'
-#' The output files will be saved in ResultDir.
+#' The output files will be saved in `ResultDir`.
 #'
 #' @export
 #'
 #' @examples
-#' # Not Run
-#' # finput <- "GXwasR_example" #Plink file
-#' # foutput <- "GXwasR_example1"
-#' # DataDir <- system.file("extdata", package = "GXwasR")
-#' # ResultDir <- tempdir()
-#' # PtoV = TRUE
-#' # VtoP = FALSE
-#' # Famfile = NULL
-#' # PVbyCHR = FALSE
-#' # x <- plinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)
-#'
+#' \dontrun{
+#' finput <- "GXwasR_example" #Plink file
+#' foutput <- "GXwasR_example1"
+#' DataDir <- system.file("extdata", package = "GXwasR")
+#' ResultDir <- tempdir()
+#' PtoV = TRUE
+#' VtoP = FALSE
+#' Famfile = NULL
+#' PVbyCHR = FALSE
+#' x <- plinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)
+#' }
+
 plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput, VtoP = FALSE, PtoV = TRUE, Famfile = NULL, PVbyCHR = TRUE) {
   # Validate inputs
   if (!validateInputForPlinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)) {
