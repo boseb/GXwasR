@@ -37,7 +37,7 @@
 #' phase III \insertCite{1000Genomes2015}{GXwasR} reference population, respectively. The default is 'HapMapIII_NCBI36'.
 #' 
 #' @param filterSNP 
-#' Boolean value, `TRUE` or `FALSE` for filtering out the SNPs. The default is `TRUE.` We recommend setting it `FALSE` 
+#' Boolean value, `TRUE` or `FALSE` for filtering out the SNPs. The default is `TRUE`. We recommend setting it `FALSE` 
 #' only when the users are sure that they could join the study and reference samples directly.
 #' 
 #' @param studyLD 
@@ -50,7 +50,7 @@
 #' Integer value, specifying a variant count to shift the window at the end of each step for LD filtering for the study data.
 #' 
 #' @param studyLD_r2_threshold 
-#' Numeric value between 0 to 1 of pairwise r^2 threshold for LD-based filtering for the study data.
+#' Numeric value between 0 to 1 of pairwise \eqn{r^2} threshold for LD-based filtering for the study data.
 #' 
 #' @param referLD 
 #' Boolean value, 'TRUE' or 'FALSE' for applying linkage disequilibrium (LD)-based filtering on reference genotype data.
@@ -62,16 +62,16 @@
 #' Integer value, specifying a variant count to shift the window at the end of each step for LD filtering for the reference data.
 #' 
 #' @param referLD_r2_threshold 
-#' Numeric value between 0 to 1 of pairwise r^2 threshold for LD-based filtering for the reference data.
+#' Numeric value between 0 to 1 of pairwise \eqn{r^2} threshold for LD-based filtering for the reference data.
 #' 
 #' @param highLD_regions 
-#' A dataframe with known high LD regions. A dataframe from Anderson et. al, 2010 \insertCite{Anderson2010}{GXwasR} is provided with the package.
+#' A dataframe with known high LD regions \insertCite{Anderson2010}{GXwasR} is provided with the package.
 #' 
 #' @param study_pop 
 #' A dataframe containing two columns for study in first column, sample ID (i.e., IID) and in second column, the ancestry label.
 #' 
 #' @param outlier 
-#' Boolean value, 'TRUE' or 'FALSE', specifying outlier detection will be performed or not.
+#' Boolean value, `TRUE` or `FALSE`, specifying outlier detection will be performed or not.
 #' 
 #' @param outlierOf 
 #' Chracter string, specifying the reference ancestry name for detecting outlier samples. The default is "outlierOf = "EUR".
@@ -116,9 +116,7 @@
 #'   study_pop = study_pop, studyLD = studyLD, referLD = referLD, 
 #'   outlierOf = "EUR", outlier = outlier, outlier_threshold = outlier_threshold
 #' )
-#'
-#' # x <- AncestryCheck(DataDir = DataDir, ResultDir = ResultDir, finput = finput, reference = "ThousandGenome",highLD_regions = highLD_regions,
-#' # study_pop = study_pop, studyLD = studyLD, referLD = referLD, outlierOf = "EUR", outlier = outlier, outlier_threshold = outlier_threshold )
+
 AncestryCheck <-
   function(DataDir,
            ResultDir = tempdir(),

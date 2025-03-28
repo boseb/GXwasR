@@ -35,7 +35,7 @@ AncestryCheck(
 \item{reference}{Boolean value,'HapMapIII_NCBI36' and 'ThousandGenome', specifying Hapmap Phase3 \insertCite{HapMap2010}{GXwasR} and 1000 Genomes
 phase III \insertCite{1000Genomes2015}{GXwasR} reference population, respectively. The default is 'HapMapIII_NCBI36'.}
 
-\item{filterSNP}{Boolean value, \code{TRUE} or \code{FALSE} for filtering out the SNPs. The default is \code{TRUE.} We recommend setting it \code{FALSE}
+\item{filterSNP}{Boolean value, \code{TRUE} or \code{FALSE} for filtering out the SNPs. The default is \code{TRUE}. We recommend setting it \code{FALSE}
 only when the users are sure that they could join the study and reference samples directly.}
 
 \item{studyLD}{Boolean value, \code{TRUE} or \code{FALSE} for applying linkage disequilibrium (LD)-based filtering on study genotype data.}
@@ -44,7 +44,7 @@ only when the users are sure that they could join the study and reference sample
 
 \item{studyLD_step_size}{Integer value, specifying a variant count to shift the window at the end of each step for LD filtering for the study data.}
 
-\item{studyLD_r2_threshold}{Numeric value between 0 to 1 of pairwise r^2 threshold for LD-based filtering for the study data.}
+\item{studyLD_r2_threshold}{Numeric value between 0 to 1 of pairwise \eqn{r^2} threshold for LD-based filtering for the study data.}
 
 \item{referLD}{Boolean value, 'TRUE' or 'FALSE' for applying linkage disequilibrium (LD)-based filtering on reference genotype data.}
 
@@ -52,13 +52,13 @@ only when the users are sure that they could join the study and reference sample
 
 \item{referLD_step_size}{Integer value, specifying a variant count to shift the window at the end of each step for LD filtering for the reference data.}
 
-\item{referLD_r2_threshold}{Numeric value between 0 to 1 of pairwise r^2 threshold for LD-based filtering for the reference data.}
+\item{referLD_r2_threshold}{Numeric value between 0 to 1 of pairwise \eqn{r^2} threshold for LD-based filtering for the reference data.}
 
-\item{highLD_regions}{A dataframe with known high LD regions. A dataframe from Anderson et. al, 2010 \insertCite{Anderson2010}{GXwasR} is provided with the package.}
+\item{highLD_regions}{A dataframe with known high LD regions \insertCite{Anderson2010}{GXwasR} is provided with the package.}
 
 \item{study_pop}{A dataframe containing two columns for study in first column, sample ID (i.e., IID) and in second column, the ancestry label.}
 
-\item{outlier}{Boolean value, 'TRUE' or 'FALSE', specifying outlier detection will be performed or not.}
+\item{outlier}{Boolean value, \code{TRUE} or \code{FALSE}, specifying outlier detection will be performed or not.}
 
 \item{outlierOf}{Chracter string, specifying the reference ancestry name for detecting outlier samples. The default is "outlierOf = "EUR".}
 
@@ -96,9 +96,7 @@ ResultDir <- tempdir()
 finput <- "GXwasR_example"
 reference <- "HapMapIII_NCBI36"
 data("GXwasRData")
-# load("~/b1137/BBose/GXwasR/data/highLD_hg19.Rda")
 highLD_regions <- highLD_hg19 # "high-LD-regions-hg19-GRCh37.txt" # four columns, chr, start, end, index
-# load("~/b1137/BBose/GXwasR/data/example_data_study_sample_ancestry.Rda")
 study_pop <- example_data_study_sample_ancestry # PreimputeEX
 studyLD_window_size <- 50
 studyLD_step_size <- 5
@@ -117,9 +115,6 @@ x <- AncestryCheck(
   study_pop = study_pop, studyLD = studyLD, referLD = referLD, 
   outlierOf = "EUR", outlier = outlier, outlier_threshold = outlier_threshold
 )
-
-# x <- AncestryCheck(DataDir = DataDir, ResultDir = ResultDir, finput = finput, reference = "ThousandGenome",highLD_regions = highLD_regions,
-# study_pop = study_pop, studyLD = studyLD, referLD = referLD, outlierOf = "EUR", outlier = outlier, outlier_threshold = outlier_threshold )
 }
 \references{
 \insertAllCited{}
