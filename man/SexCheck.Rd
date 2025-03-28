@@ -57,7 +57,7 @@ A dataframe with six columns:
 A PROBLEM arises if the two sexes do not match, or if the SNP data or pedigree data are ambiguous with regard to sex.
 }
 \description{
-This function compares sex assignments in the input dataset with those predicted from X chromosome inbreeding coefficients \insertCite{Purcell2007}{GXwaSR},
+This function compares sex assignments in the input dataset with those predicted from X chromosome inbreeding coefficients \insertCite{Purcell2007}{GXwasR},
 and gives the option to convert the sex assignments to the predicted values. Implicitly, this function computes observed and expected autosomal homozygous
 genotype counts for each sample and reports method-of-moments F coefficient estimates (i.e., observed hom. \eqn{count - expected count) / (total observations - expected count)}).
 The expected counts will be based on loaded or imputed minor allele frequencies.  Since imputed MAFs are highly inaccurate when there are few samples,
