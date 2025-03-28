@@ -2369,33 +2369,54 @@ SexCheck <-
 #'
 #' @author Banabithi Bose
 #'
-#' @description This function prepares PLINK binary files with the desired samples.
+#' @description 
+#' This function prepares PLINK binary files with the desired samples.
 #'
-#' @param DataDir Character string for the file path of the all input files.
-#' @param ResultDir character string for the file path where the output PLINK files will be stored.
-#' @param finput Character string, specifying the prefix of the input PLINK binary files.
-#' @param foutput Character string, specifying the prefix of the output PLINK binary files.
-#' @param filter_sample Character string, specifying the sample type to be retained. The choices are, "cases","controls","males" and "females". The default is "cases".
-#' @param keep_remove_sample_file Character string, specifying the prefix of a space/tab-delimited text file with no header. For the samples that we want to keep or remove, the family IDs should be in the first column and within-family IDs in the second column. This file needs to be in the DataDir. The default is NULL.
-#' @param keep Boolean value, "TRUE" or "FALSE" for specifying desired samples to keep or remove. The default is "TRUE".
+#' @param DataDir 
+#' Character string for the file path of the all input files.
+#' 
+#' @param ResultDir 
+#' character string for the file path where the output PLINK files will be stored.
+#' 
+#' @param finput 
+#' Character string, specifying the prefix of the input PLINK binary files.
+#' 
+#' @param foutput 
+#' Character string, specifying the prefix of the output PLINK binary files.
+#' 
+#' @param filter_sample 
+#' Character string, specifying the sample type to be retained. The choices are, "cases", "controls", "males" and "females". 
+#' The default is "cases".
+#' 
+#' @param keep_remove_sample_file 
+#' Character string, specifying the prefix of a space/tab-delimited text file with no header. For the samples that we want 
+#' to keep or remove, the family IDs should be in the first column and within-family IDs in the second column. This file 
+#' needs to be in the `DataDir`. The default is `NULL`.
+#' 
+#' @param keep 
+#' Boolean value, `TRUE` or `FALSE` for specifying desired samples to keep or remove. The default is `TRUE`.
 #'
-#' @return NULL
+#' @return 
+#' `NULL`
+#' 
 #' The output plink files with passed samples will be saved in ResultDir.
 #'
 #' @export
 #'
 #' @examples
-#' # Not Run
-# DataDir <- system.file("extdata", package = "GXwasR")
-# ResultDir <- tempdir()
-# finput <- "GXwasR_example"
-# foutput <- "casesPlink"
-# filter_sample <- "cases"
-# keep_remove_sample_file <- "samples_example"
-# keep <- FALSE
-#' #
-# FilterPlinkSample(DataDir = DataDir,ResultDir = ResultDir,finput = finput,foutput = foutput,keep_remove_sample_file = keep_remove_sample_file, keep = keep)
-#' #
+#' DataDir <- system.file("extdata", package = "GXwasR")
+#' ResultDir <- tempdir()
+#' finput <- "GXwasR_example"
+#' foutput <- "casesPlink"
+#' filter_sample <- "cases"
+#' keep_remove_sample_file <- "samples_example"
+#' keep <- FALSE
+#'
+#' FilterPlinkSample(DataDir = DataDir,ResultDir = ResultDir,
+#'   finput = finput,foutput = foutput,keep_remove_sample_file = keep_remove_sample_file, 
+#'   keep = keep
+#' )
+
 FilterPlinkSample <- function(DataDir, ResultDir,
                               finput,
                               foutput = NULL,
