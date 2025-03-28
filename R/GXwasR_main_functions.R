@@ -2692,31 +2692,83 @@ MAFdiffSexControl <- function(DataDir,
 #'
 #' @author Banabithi Bose
 #'
-#' @description This function identifies outlier individuals for heterozygosity and/or missing genotype rates, which aids in the detection of samples with subpar DNA quality and/or concentration that should be removed from the study. Individuals missing more than 3-7% of their genotype calls are often excluded (1)from the analysis.
-#' Having the correct designation of sex is important to obtain accurate genotype rate estimates, or avoid incorrectly removing samples, etc. Details can be accessed from the paper.
+#' @description 
+#' This function identifies outlier individuals for heterozygosity and/or missing genotype rates, which aids in the 
+#' detection of samples with subpar DNA quality and/or concentration that should be removed from the study. Individuals 
+#' missing more than 3-7% of their genotype calls are often excluded (1)from the analysis.
+#' 
+#' Having the correct designation of sex is important to obtain accurate genotype rate estimates, or avoid incorrectly 
+#' removing samples, etc. Details can be accessed from the paper.
 
-#' @param DataDir Character string, specifying the file path of the input PLINK binary files. The default is NULL.
-#' @param ResultDir A character string for the file path where all output files will be stored. The default is tempdir().
-#' @param finput Character string, specifying the prefix of the input PLINK binary files with both male and female samples. This file needs to be in DataDir.
-#' @param foutput Character string, specifying the prefix of the output PLINK binary files if filtering option for the samples is chosen.
-#' @param imiss Numeric value between 0 to 1 for removing samples that have more than the specified missingness. The default is 0.03.
-#' @param het Positive numeric value, specifying the standard deviation from the mean heterozygosity rate. The samples whose rates are more than the specified sd from the mean heterozygosity rate are removed. The default is 3. With this default value, outlying heterozygosity rates would remove individuals who are three sd away from the mean rate (1).
-#' @param small_sample_mod Boolean value indicating whether to apply modifications for small sample sizes. Default is FALSE.
-#' @param IBD Numeric value for setting the threshold for Identity by Descent (IBD) analysis. Default is NULL.
-#' @param IBDmatrix Boolean value indicating whether to generate an entire IBD matrix. Default is FALSE. In this case filtered IBD matrix will be stored.
-#' @param ambi_out Boolean value indicating whether to process ambiguous samples. Default
-#' @param title_size Integer, specifying the size of the title of the plot heterozygosity estimate vs missingness across samples.
-#' @param legend_text_size Integer, specifying the size for legend text in the plot.
-#' @param legend_title_size Integer, specifying the size for the legend title in the plot.
-#' @param axis_text_size Integer, specifying the size for axis text in the plot.
-#' @param axis_title_size Integer, specifying the size for the axis title in the plot.
-#' @param filterSample Boolean value, 'TRUE' or 'FALSE' for filtering out the samples or not (i.e., only flagged). The default is "TRUE".
+#' 
+#' @param DataDir 
+#' Character string, specifying the file path of the input PLINK binary files. The default is `NULL`.
+#' 
+#' @param ResultDir 
+#' A character string for the file path where all output files will be stored. The default is `tempdir()`.
+#' 
+#' @param finput 
+#' Character string, specifying the prefix of the input PLINK binary files with both male and female samples. 
+#' This file needs to be in `DataDir`.
+#' 
+#' @param foutput 
+#' Character string, specifying the prefix of the output PLINK binary files if filtering option for the samples is chosen.
+#' 
+#' @param imiss 
+#' Numeric value between 0 to 1 for removing samples that have more than the specified missingness. The default is 0.03.
+#' 
+#' @param het 
+#' Positive numeric value, specifying the standard deviation from the mean heterozygosity rate. The samples whose rates are more 
+#' than the specified sd from the mean heterozygosity rate are removed. The default is 3. With this default value, outlying 
+#' heterozygosity rates would remove individuals who are three sd away from the mean rate (1).
+#' 
+#' @param small_sample_mod 
+#' Boolean value indicating whether to apply modifications for small sample sizes. Default is `FALSE`.
+#' 
+#' @param IBD 
+#' Numeric value for setting the threshold for Identity by Descent (IBD) analysis. Default is `NULL`.
+#' 
+#' @param IBDmatrix 
+#' Boolean value indicating whether to generate an entire IBD matrix. Default is `FALSE`. In this case filtered IBD
+#' matrix will be stored.
+#' 
+#' @param ambi_out 
+#' Boolean value indicating whether to process ambiguous samples.
+#' 
+#' @param title_size 
+#' Integer, specifying the size of the title of the plot heterozygosity estimate vs missingness across samples.
+#' 
+#' @param legend_text_size 
+#' Integer, specifying the size for legend text in the plot.
+#' 
+#' @param legend_title_size 
+#' Integer, specifying the size for the legend title in the plot.
+#' 
+#' @param axis_text_size 
+#' Integer, specifying the size for axis text in the plot.
+#' 
+#' @param axis_title_size 
+#' Integer, specifying the size for the axis title in the plot.
+#' 
+#' @param filterSample 
+#' Boolean value, `TRUE` or `FALSE` for filtering out the samples or not (i.e., only flagged). The default is `TRUE`.
+#' 
 #' @importFrom stats sd
 #' @importFrom ggplot2 ggplot
 #'
-#' @return A plot of heterogysity estimate vs missingness accross sample and a list containing five R dataframe objects, namely, HM (samples with outlying heterozygosity and/or missing genotype rates), Failed_Missingness (samples with missing genotype rates), Failed_heterozygosity (samples with outlying heterozygosity), Missingness_results (missingness results) and Heterozygosity_results (heterozygosity results) with output plink files in ResultDir if filtering out the samples option is chosen.
-#' Missingness_results contains missingness results for each individual, with six columns as FID, IID, MISS_PHENO, N_MISS, N_GENO and F_MISS for Family ID, Within-family ID, Phenotype missing? (Y/N), Number of missing genotype call(s), not including obligatory missings or heterozygous haploids, number of potentially valid call(s), and missing call rate, respectively.
-#' Heterozygosity_results contains heterozygosity results for each individual, with six columns as FID, IID, O(HOM), E(HOM), N(NM), and F for Family ID, Within-family ID, Observed number of homozygotes, Expected number of homozygotes, Number of (non-missing, non-monomorphic) autosomal genotype observations and, Method-of-moments F coefficient estimate, respectively.
+#' @return 
+#' A plot of heterogysity estimate vs missingness accross sample and a list containing five R dataframe objects, namely, 
+#' `HM` (samples with outlying heterozygosity and/or missing genotype rates), `Failed_Missingness` (samples with missing genotype rates), 
+#' `Failed_heterozygosity` (samples with outlying heterozygosity), `Missingness_results` (missingness results) and `Heterozygosity_results` 
+#' (heterozygosity results) with output plink files in ResultDir if filtering out the samples option is chosen.
+#' 
+#' `Missingness_results` contains missingness results for each individual, with six columns as `FID`, `IID`, `MISS_PHENO`, `N_MISS`, `N_GENO` and 
+#' `F_MISS` for Family ID, Within-family ID, Phenotype missing? (Y/N), Number of missing genotype call(s), not including obligatory missings 
+#' or heterozygous haploids, number of potentially valid call(s), and missing call rate, respectively.
+#' 
+#' `Heterozygosity_results` contains heterozygosity results for each individual, with six columns as `FID`, `IID`, `O(HOM)`, `E(HOM)`, `N(NM)`, 
+#' and `F` for Family ID, Within-family ID, Observed number of homozygotes, Expected number of homozygotes, Number of (non-missing, non-monomorphic) 
+#' autosomal genotype observations and, Method-of-moments F coefficient estimate, respectively.
 #' @export
 #'
 #' @examples
@@ -2731,7 +2783,11 @@ MAFdiffSexControl <- function(DataDir,
 #' IBDmatrix <- FALSE
 #' ambi_out <- TRUE
 #'
-#' x <- QCsample(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, imiss = imiss, het = het, IBD = IBD, ambi_out = ambi_out)
+#' x <- QCsample(DataDir = DataDir, ResultDir = ResultDir, finput = finput, 
+#'   foutput = foutput, imiss = imiss, het = het, IBD = IBD, 
+#'   ambi_out = ambi_out
+#' )
+
 QCsample <- function(DataDir,
                      ResultDir,
                      finput,
@@ -2749,7 +2805,7 @@ QCsample <- function(DataDir,
                      title_size = 9,
                      filterSample = TRUE) {
   # Validate parameters
-  validateInputForQCsample(DataDir, ResultDir, finput, foutput, imiss, het, small_sample_mod, IBD, IBDmatrix, ambi_out, legend_text_size, legend_title_size, axis_text_size, axis_title_size, title_size, filterSample)
+  validateInputForQCsample(DataDir, ResultDir, finput, foutput, imiss, het, small_sample_mod, IBD, IBDmatrix, ambi_out, legend_text_size, legend_title_size, axis_text_size, axis_title_size, title_size, filterSample = TRUE)
 
   if (!checkFiles(DataDir, finput)) {
     stop("There are no Plink files in DataDir. Please specify correct directory path with input Plink files.")
