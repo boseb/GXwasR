@@ -3073,33 +3073,33 @@ XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
 }
 
 
-## Function 69
-ComputeLD <- function(DataDir, ResultDir, finput, ByCHR = FALSE, CHRnum = NULL, r2_LD) {
-  if (ByCHR == FALSE) {
-    chr <- NULL
-    CHRnum <- NULL
-  } else {
-    chr <- "--chr"
-    CHRnum <- CHRnum
-  }
-  invisible(sys::exec_wait(
-    paste0(ResultDir, "/", "./plink"),
-    args = c(
-      "--bfile",
-      paste0(DataDir, "/", finput),
-      chr, CHRnum,
-      "--r2",
-      "--ld-window-r2", r2_LD,
-      "--out",
-      paste0(ResultDir, "/", "snpcorr"),
-      "--silent"
-    ),
-    std_out = FALSE,
-    std_err = FALSE
-  ))
-  snpld <- read.table(paste0(ResultDir, "/snpcorr.ld"), header = T)
-  return(snpld)
-}
+# ## Function 69
+# ComputeLD <- function(DataDir, ResultDir, finput, ByCHR = FALSE, CHRnum = NULL, r2_LD) {
+#   if (ByCHR == FALSE) {
+#     chr <- NULL
+#     CHRnum <- NULL
+#   } else {
+#     chr <- "--chr"
+#     CHRnum <- CHRnum
+#   }
+#   invisible(sys::exec_wait(
+#     paste0(ResultDir, "/", "./plink"),
+#     args = c(
+#       "--bfile",
+#       paste0(DataDir, "/", finput),
+#       chr, CHRnum,
+#       "--r2",
+#       "--ld-window-r2", r2_LD,
+#       "--out",
+#       paste0(ResultDir, "/", "snpcorr"),
+#       "--silent"
+#     ),
+#     std_out = FALSE,
+#     std_err = FALSE
+#   ))
+#   snpld <- read.table(paste0(ResultDir, "/snpcorr.ld"), header = T)
+#   return(snpld)
+# }
 
 ## Function 70
 # ComputeLDSC <- function(snpld, test.df_beta, ncores, LDSC_blocks){
