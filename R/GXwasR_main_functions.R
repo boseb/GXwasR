@@ -97,7 +97,7 @@
 #' finput <- "GXwasR_example"
 #' reference <- "HapMapIII_NCBI36"
 #' data("GXwasRData")
-#' highLD_regions <- highLD_hg19 # "high-LD-regions-hg19-GRCh37.txt" # four columns, chr, start, end, index
+#' highLD_regions <- GXwasR::highLD_hg19 # See: ?GXwasr::highLD_hg19
 #' study_pop <- example_data_study_sample_ancestry # PreimputeEX
 #' studyLD_window_size <- 50
 #' studyLD_step_size <- 5
