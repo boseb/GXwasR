@@ -1054,23 +1054,52 @@ EstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL, 
 #' ComputeGeneticPC: Computing principal components from genetic relationship matrix
 #'
 #' @author Banabithi Bose
-#' @description  This function performs principal components analysis (PCA) based on the variance-standardized relationship matrix (1).
-#' Top principal components are generally used as covariates in association analysis regressions to help correct for population stratification
+#' @description  
+#' This function performs principal components analysis (PCA) based on the variance-standardized relationship 
+#' matrix \insertCite{Purcell2007}{GXwasR}.
+#' 
+#' Top principal components are generally used as covariates in association analysis regressions to help correct for 
+#' population stratification
 #'
-#' @param DataDir A character string for the file path of the input PLINK binary files.
-#' @param finput Character string, specifying the prefix of the input PLINK binary files. This file needs to be in DataDir.
-#' @param ResultDir A character string for the file path where all output files will be stored. The default is tempdir().
-#' @param countPC Integer value, specifying the number of principal components. The default is 10.
-#' @param plotPC Boolean value, 'TRUE' or 'FALSE', specifying whether to plot the first two PCs.
-#' @param highLD_regions A R dataframe with genomic regions with high LD for using in finding pruned SNPs in the plots. The default is NULL.
-#' @param ld_prunning Numeric value between 0 to 1 of pairwise r^2 threshold for LD-based filtering for pruned SNPs in the plots. The default is 0.02.
-#' @param window_size Integer value, specifying a window size in variant count or kilobase for LD-based filtering. The default is 50.
-#' @param step_size Integer value, specifying a variant count to shift the window at the end of each step for LD filtering for pruned SNPs in the plots. The default is 5.
-#' @param r2_threshold Numeric value between 0 to 1 of pairwise r^2 threshold for LD-based filtering for pruned SNPs in the plots. The default is 0.02.
+#' 
+#' @param DataDir 
+#' A character string for the file path of the input PLINK binary files.
+#' 
+#' @param finput 
+#' Character string, specifying the prefix of the input PLINK binary files. This file needs to be in `DataDir.`
+#' 
+#' @param ResultDir 
+#' A character string for the file path where all output files will be stored. The default is `tempdir()`.
+#' 
+#' @param countPC 
+#' Integer value, specifying the number of principal components. The default is 10.
+#' 
+#' @param plotPC 
+#' Boolean value, `TRUE` or `FALSE`, specifying whether to plot the first two PCs.
+#' 
+#' @param highLD_regions 
+#' A R dataframe with genomic regions with high LD for using in finding pruned SNPs in the plots. The default is `NULL`.
+#' 
+#' @param ld_prunning 
+#' Numeric value between 0 to 1 of pairwise \eqn{r^2} threshold for LD-based filtering for pruned SNPs in the plots. 
+#' The default is 0.02.
+#' 
+#' @param window_size 
+#' Integer value, specifying a window size in variant count or kilobase for LD-based filtering. The default is 50.
+#' 
+#' @param step_size 
+#' Integer value, specifying a variant count to shift the window at the end of each step for LD filtering for pruned SNPs 
+#' in the plots. The default is 5.
+#' 
+#' @param r2_threshold 
+#' Numeric value between 0 to 1 of pairwise \eqn{r^2} threshold for LD-based filtering for pruned SNPs in the plots. 
+#' The default is 0.02.
 #'
-#' @return A dataframe with genetic principal components. The first two columns are IID (i.e., Individual Id) and FID (i.e., Family ID). The other columns are PCs.
+#' @return A dataframe with genetic principal components. The first two columns are IID (i.e., Individual Id) and 
+#' FID (i.e., Family ID). The other columns are PCs.
 #'
-#' @references (1) Purcell et. al.,(2007). PLINK: A Tool Set for Whole-Genome Association and Population-Based Linkage Analyses. The American Journal of Human Genetics, 81(3), 559-575. https://doi.org/10.1086/519795.
+#' @references 
+#' \insertAllCited{}
 #'
 #' @importFrom ggplot2 ggplot geom_bar ylab xlab theme_classic geom_point theme_light coord_equal aes_string
 #' @importFrom ggpubr ggarrange
@@ -1079,20 +1108,20 @@ EstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL, 
 #' @export
 #'
 #' @examples
-#' #' # Not Run
 #' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' data("GXwasRData")
-#' # highLD_regions <- "high-LD-regions-hg19-GRCh37.txt"
 #' highLD_regions <- highLD_hg19
 #' ld_prunning <- "TRUE"
 #' window_size <- 50
 #' step_size <- 5
 #' r2_threshold <- 0.02
 #' countPC <- 20
-# ## Genetic PC
-#' # GP <- ComputeGeneticPC(DataDir = DataDir,ResultDir=ResultDir,finput=finput,highLD_regions = highLD_hg19, countPC = 20)
+#' ## Genetic PC
+#' GP <- ComputeGeneticPC(DataDir = DataDir,ResultDir=ResultDir,
+#'   finput=finput,highLD_regions = highLD_hg19, countPC = 20
+#' )
 ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 10, plotPC = TRUE,
                              highLD_regions = NULL, ld_prunning = TRUE,
                              window_size = 50, step_size = 5, r2_threshold = 0.02) {
