@@ -319,47 +319,177 @@ AncestryCheck <-
 #' TestXGene: Performing gene-based association test using GWAS/XWAS summary statistics.
 #'
 #' @author Banabithi Bose
-#' @description This function performs gene-based association tests using GWAS/XWAS summary statistics and SNP-SNP correlation matrices. For  SNP-SNP correlation matrices, users have the flexibility to use either the base genotype data or 1000 Genomes Phase 3 reference genotype data. Users also have options to define the regional positions of genes to include the SNPs according to their investigation. This function computes gene-wise SNP-SNP correlation matrices and can perform nine different gene-based tests, such as, “BT" (burden test), "SKAT" (sequence kernel association test), "SKATO" (combination of BT and SKAT), "sumchi" (sum of χ2-statistics), "ACAT" (aggregated Cauchy association test for combining P values), "PCA"(principal component approach), "FLM"( functional multiple linear regression model), "simpleM" (Bonferroni correction test), "minp" (minimum P-value) leveraging PLINK1.9 (1) and sumFREGAT (2,3) tools.
+#' 
+#' @description 
+#' This function performs gene-based association tests using GWAS/XWAS summary statistics and SNP-SNP correlation 
+#' matrices. For  SNP-SNP correlation matrices, users have the flexibility to use either the base genotype data or 1000 Genomes 
+#' Phase 3 reference genotype data. Users also have options to define the regional positions of genes to include the SNPs according 
+#' to their investigation. 
+#' 
+#' This function computes gene-wise SNP-SNP correlation matrices and can perform nine different gene-based tests, such as, “BT" (burden test), 
+#' "SKAT" (sequence kernel association test), "SKATO" (combination of BT and SKAT), "sumchi" (sum of χ2-statistics), "ACAT" (aggregated 
+#' Cauchy association test for combining P values), "PCA"(principal component approach), "FLM"( functional multiple linear regression model), 
+#' "simpleM" (Bonferroni correction test), "minp" (minimum P-value) leveraging PLINK1.9 \insertCite{Purcell2007}{GXwasR} and sumFREGAT 
+#' \insertCite{Svishcheva2019,Belonogova2022}{GXwasR} tools.
 #'
-#' Though this function implicitly performs X-linked gene-based test, it is flexible to perform this analysis genome-wide. For the details about the different tests, please follow the associated paper.
+#' Though this function implicitly performs X-linked gene-based test, it is flexible to perform this analysis genome-wide. 
+#' For the details about the different tests, please follow the associated paper.
 #'
-#' @param DataDir A character string for the file path of the all the input files.
-#' @param ResultDir A character string for the file path where all output files will be stored. The default is tempdir().
-#' @param finput Character string, specifying the prefix of the input PLINK binary files for the genotype data. This file is used to compute the correlation between the SNPs. This file needs to be in DataDir. If the base genotype data is unavailable, then users can use the 1000 Genomes Project samples. Users should use the population that most closely represents the base sample. For ACAT model, this parameter is not mandatory and could be set NULL.
-#' @param sumstat A dataframe object with GWAS summary statistics. When the base-genotype data is used to compute genetic correlations, the mandatory columns are Column 1: "CHROM" (i.e., chromosome code), Column 2: "POS" (i.e., base-pair position), Column 3: "ID" (i.e. SNP IDs), Column 4: “P” (i.e., p-values), Column 5: “BETA” (i.e., effect-size), Column 6: "A1" (i.e., effect allele), Column 7: “A2” (i.e., alternative allele) and Column 8: "EAF" (i.e., the effect allele frequency) are mandatory when base-genotype data is used to compute genetic correlations. Otherwise, if the users are using reference data, then columns 5 to 8 are optional. Also, in that case, columns, such as "REF" (i.e., reference allele), and "ALT" (i.e., alternative allele) could be present to compare alleles with those in the reference file and exclude genetic variants if alleles do not match. There could be an additional column, “ANNO” with functional annotations (like "intron_variant", "synonymous", "missense" etc.)
-#' @param gene_file Character string, specifying the prefix of the name of a .txt file listing genes in refFlat format. This file needs to be in DataDir. The X-linked gene files, "Xlinkedgenes_hg19.txt" and "Xlinkedgenes_hg38.txt" and autosomal gene files, “Autosomes_hg19.txt” and “Autosomes_hg38.txt” can be specified. The default is "Xlinkedgenes_hg19.txt". The genome built should be in agreement with the analysis.
-#' @param gene_range Integer value, specifying the up stream and down stream range (in kilo base) of a gene for SNPs to be considered. The default is 500000.
-#' @param score_file Character string, specifying the prefix of a file which will be used to produce score files with Z scores from P values and beta input from GWAS summary statistics.
-#' @param ref_data Character string, specifying the path to a reference dataframe with additional data needed to recode user data according to correlation matrices that will be used. It contains "ID" column with names of  SNPs,  "REF" and "ALT" columns with alleles that were coded as 0 and 1, respectively. Effect sizes from data will be inverted for variants with effect alleles different from "ALT" alleles in reference data. If presented, "REF" and "ALT" columns from the input data will be used to sort out variants with alleles different from those in reference data. This dataframe  can also be a source of map data and allele frequencies if they are not present in data. "AF" column in the reference file represents the allele frequency of "ALT" allele. The default is "ref1KG.MAC5.EUR_AF.RData".
-#' @param max_gene Positive integer value, specifying the number of genes for which the gene-based test will be performed. The default is NULL to consider all the genes.
-#' @param sample_size Positive integer value, specifying the sample size of the GWAS. Only needed for FLM and PCA models.
-#' @param genebasedTest Character string, specifying the name of the gene-based test. Nine different tests can be specified, "SKAT","SKATO","sumchi","ACAT","BT","PCA","FLM","simpleM","minp". The default is "SKAT".
-#' @param beta_par Boolean value, 'TRUE' or 'FALSE', specifying whether approximation for large genes (>= 500 SNPs) should be used. Applicable for SKAT, SKATO, sumchi, PCA, FLM (default = TRUE for these methods).
-#' @param weights_function A function of MAF to assign weights for each genetic variant. By default is NULL. In this case the weights will be calculated using the beta distribution.
-#' @param geno_variance_weights Character string, indicating whether scores should be weighted by the variance of genotypes: "none" (i.e., no weights applied, resulting in a sum chi-square test); "se.beta" (i.e., scores weighted by variance of genotypes estimated from P values and effect sizes); "af" (i.e., scores weighted by variance of genotypes calculated as AF * (1 - AF), where AF is allele frequency.
-#' @param kernel_p_method Character string, specifying the method for computing P value in kernel-based tests, such as SKAT, SKATO and sumchi. Available methods are "kuonen" (9), "davies" (10) and "hybrid" (11). The default is "kuonen".
-#' @param acc_devies Positive numeric value, specifying the accuracy parameter for "davies" method. The default is 1e-8.
-#' @param lim_devies Positive numeric value, specifying the limit parameter for "davies" method. The default is 1e+6.
-#' @param rho Logical value, 'TRUE' or 'FALSE' or can be a vector of grid values from 0 to 1. If TRUE, the optimal test (SKAT-O) is performed (12). The default grid is c(0, 0.1^2, 0.2^2, 0.3^2, 0.4^2, 0.5^2, 0.5, 1).
-#' @param skato_p_threshold Positive numeric value, specifying the largest P value that will be considered as important when performing computational optimization in SKAT-O. All P values larger than skato_p_threshold will be processed via burden test. The default is 0.8
-#' @param anno_type A character (or character vector) indicating annotation types to be used. The default is "" (i.e, nothing).
-#' @param mac_threshold Integer value, specifying the threshold of MACs (Minor allele content) calculated from MAFs. In ACAT, scores with MAC <= 10 will be combined using Burden test.
-#' @param regularize_fun Character string, specifying the one of two regularization algorithms if ‘reference_matrix’ is TRUE:  'LH' (default) or 'derivLH'. Currently, both give similar results.
-#' @param pca_var_fraction Positive numeric value, specifying the minimal proportion of genetic variance within the region that should be explained by principal components used in PCA method. This is also valid in 'simpleM'. The default is 0.85.
-#' @param flm_basis_function Character string, specifying the name of a basis function type for beta-smooth in FLM method. Can be set to "bspline" (B-spline basis) or "fourier" (Fourier basis, default).
-#' @param flm_num_basis Positive integer value, specifying the number of basis functions to be used for beta-smooth in FLM method. The default is 25.
-#' @param flm_poly_order Positive integer value, specifying the polynomial order to be used in "bspline" for FLM model. The default = 4, which corresponds to the cubic B-splines. This has no effect if only Fourier bases are used
-#' @param flip_genotypes Logical value, 'TRUE' or 'FALSE', indicating whether the genotypes of some genetic variants should be flipped (relabelled) for their better functional representation (13). The default is FALSE.
-#' @param omit_linear_variant Logical value, 'TRUE' or 'FALSE', indicating whether to omit linearly dependent genetic variants. It was done in the FLM test (4). The default is FALSE.
-#' @param gene_approximation Boolean value, 'TRUE' or 'FALSE', specifying whether approximation for large genes (>= 500 SNPs) should be used. Applicable for SKAT, SKATO, sumchi, PCA, FLM. The default is TRUE for these methods).
-#' @param reference_matrix_used Boolean value, 'TRUE' or'FALSE' logical indicating whether the correlation matrices were generated using the reference matrix. The default is FALSE. If  TRUE, regularization algorithms will be applied to ensure the invertibility and numerical stability of the matrices.
+#' 
+#' @param DataDir 
+#' A character string for the file path of the all the input files.
+#' 
+#' @param ResultDir 
+#' A character string for the file path where all output files will be stored. The default is `tempdir()`.
+#' 
+#' @param finput 
+#' Character string, specifying the prefix of the input PLINK binary files for the genotype data. This file is used to compute the 
+#' correlation between the SNPs. This file needs to be in DataDir. If the base genotype data is unavailable, then users can use the 
+#' 1000 Genomes Project samples. Users should use the population that most closely represents the base sample. For ACAT model, this 
+#' parameter is not mandatory and could be set `NULL`.
+#' 
+#' @param sumstat 
+#' A dataframe object with GWAS summary statistics. When the base-genotype data is used to compute genetic correlations, the mandatory 
+#' columns are: 
+#' 
+#' * Column 1: `CHROM` (i.e., chromosome code), 
+#' * Column 2: `POS` (i.e., base-pair position), 
+#' * Column 3: `ID` (i.e. SNP IDs), 
+#' * Column 4: `P` (i.e., p-values), 
+#' * Column 5: `BETA` (i.e., effect-size), 
+#' * Column 6: `A1` (i.e., effect allele), 
+#' * Column 7: `A2` (i.e., alternative allele) and 
+#' * Column 8: `EAF` (i.e., the effect allele frequency) 
+#' 
+#' These are mandatory when base-genotype data is used to compute genetic correlations. Otherwise, if the users are using reference data, 
+#' then columns 5 to 8 are optional. Also, in that case, columns, such as `REF` (i.e., reference allele), and `ALT` (i.e., alternative allele) 
+#' could be present to compare alleles with those in the reference file and exclude genetic variants if alleles do not match. There could be an 
+#' additional column, `ANNO` with functional annotations (like "intron_variant", "synonymous", "missense" etc.)
+#' 
+#' @param gene_file 
+#' Character string, specifying the prefix of the name of a .txt file listing genes in refFlat format. This file needs to be in `DataDir`. The 
+#' X-linked gene files, "Xlinkedgenes_hg19.txt" and "Xlinkedgenes_hg38.txt" and autosomal gene files, “Autosomes_hg19.txt” and “Autosomes_hg38.txt” 
+#' can be specified. The default is "Xlinkedgenes_hg19.txt". The genome built should be in agreement with the analysis.
+#' 
+#' @param gene_range 
+#' Integer value, specifying the up stream and down stream range (in kilo base) of a gene for SNPs to be considered. The default is 500000.
+#' 
+#' @param score_file 
+#' Character string, specifying the prefix of a file which will be used to produce score files with Z scores from P values and beta input 
+#' from GWAS summary statistics.
+#' 
+#' @param ref_data 
+#' Character string, specifying the path to a reference dataframe with additional data needed to recode user data according to correlation matrices 
+#' that will be used. It contains `ID` column with names of  SNPs,  `REF` and `ALT` columns with alleles that were coded as 0 and 1, respectively. 
+#' Effect sizes from data will be inverted for variants with effect alleles different from `ALT` alleles in reference data. If presented, `REF` and 
+#' `ALT` columns from the input data will be used to sort out variants with alleles different from those in reference data. This dataframe  can also 
+#' be a source of map data and allele frequencies if they are not present in data. `AF` column in the reference file represents the allele frequency 
+#' of `ALT` allele. The default is "ref1KG.MAC5.EUR_AF.RData".
+#' 
+#' @param max_gene 
+#' Positive integer value, specifying the number of genes for which the gene-based test will be performed. The default is NULL to consider 
+#' all the genes.
+#' 
+#' @param sample_size 
+#' Positive integer value, specifying the sample size of the GWAS. Only needed for FLM and PCA models.
+#' 
+#' @param genebasedTest 
+#' Character string, specifying the name of the gene-based test. Nine different tests can be specified, "SKAT","SKATO","sumchi","ACAT","BT","PCA",
+#' "FLM","simpleM","minp". The default is "SKAT".
+#' 
+#' @param beta_par 
+#' Boolean value, `TRUE` or `FALSE`, specifying whether approximation for large genes (>= 500 SNPs) should be used. Applicable for SKAT, SKATO, 
+#' sumchi, PCA, FLM (default = `TRUE` for these methods).
+#' 
+#' @param weights_function 
+#' A function of MAF to assign weights for each genetic variant. By default is `NULL`. In this case the weights will be calculated using 
+#' the beta distribution.
+#' 
+#' @param geno_variance_weights 
+#' Character string, indicating whether scores should be weighted by the variance of genotypes: "none" (i.e., no weights applied, resulting 
+#' in a sum chi-square test); "se.beta" (i.e., scores weighted by variance of genotypes estimated from P values and effect sizes); "af" 
+#' (i.e., scores weighted by variance of genotypes calculated as \eqn{AF * (1 - AF)}, where AF is allele frequency.
+#' 
+#' @param kernel_p_method 
+#' Character string, specifying the method for computing P value in kernel-based tests, such as SKAT, SKATO and sumchi. Available methods 
+#' are "kuonen" (9), "davies" (10) and "hybrid" (11). The default is "kuonen".
+#' 
+#' @param acc_devies 
+#' Positive numeric value, specifying the accuracy parameter for "davies" method. The default is 1e-8.
+#' 
+#' @param lim_devies 
+#' Positive numeric value, specifying the limit parameter for "davies" method. The default is 1e+6.
+#' 
+#' @param rho 
+#' Logical value, 'TRUE' or 'FALSE' or can be a vector of grid values from 0 to 1. If TRUE, the optimal test (SKAT-O) is performed (12). 
+#' The default grid is c(0, 0.1^2, 0.2^2, 0.3^2, 0.4^2, 0.5^2, 0.5, 1).
+#' 
+#' @param skato_p_threshold 
+#' Positive numeric value, specifying the largest P value that will be considered as important when performing computational optimization in 
+#' SKAT-O. All P values larger than skato_p_threshold will be processed via burden test. The default is 0.8
+#' 
+#' @param anno_type 
+#' A character (or character vector) indicating annotation types to be used. The default is "" (i.e, nothing).
+#' 
+#' @param mac_threshold 
+#' Integer value, specifying the threshold of MACs (Minor allele content) calculated from MAFs. In ACAT, scores with MAC <= 10 will be 
+#' combined using Burden test.
+#' 
+#' @param regularize_fun 
+#' Character string, specifying the one of two regularization algorithms if ‘reference_matrix’ is TRUE:  'LH' (default) or 'derivLH'. 
+#' Currently, both give similar results.
+#' 
+#' @param pca_var_fraction P
+#' ositive numeric value, specifying the minimal proportion of genetic variance within the region that should be explained by principal 
+#' components used in PCA method. This is also valid in 'simpleM'. The default is 0.85.
+#' 
+#' @param flm_basis_function 
+#' Character string, specifying the name of a basis function type for beta-smooth in FLM method. Can be set to "bspline" (B-spline basis) 
+#' or "fourier" (Fourier basis, default).
+#' 
+#' @param flm_num_basis 
+#' Positive integer value, specifying the number of basis functions to be used for beta-smooth in FLM method. The default is 25.
+#' 
+#' @param flm_poly_order 
+#' Positive integer value, specifying the polynomial order to be used in "bspline" for FLM model. The default = 4, which corresponds to 
+#' the cubic B-splines. This has no effect if only Fourier bases are used
+#' 
+#' @param flip_genotypes L
+#' ogical value, `TRUE` or `FALSE`, indicating whether the genotypes of some genetic variants should be flipped (relabelled) for their 
+#' better functional representation (13). The default is `FALSE`.
+#' 
+#' @param omit_linear_variant 
+#' Logical value, `TRUE` or `FALSE`, indicating whether to omit linearly dependent genetic variants. It was done in the FLM test (4). 
+#' The default is `FALSE`.
+#' 
+#' @param gene_approximation 
+#' Boolean value, `TRUE` or `FALSE`, specifying whether approximation for large genes (>= 500 SNPs) should be used. Applicable for SKAT, 
+#' SKATO, sumchi, PCA, FLM. The default is `TRUE` for these methods).
+#' 
+#' @param reference_matrix_used 
+#' Boolean value, `TRUE` or `FALSE` logical indicating whether the correlation matrices were generated using the reference matrix. The 
+#' default is `FALSE`. If  `TRUE`, regularization algorithms will be applied to ensure the invertibility and numerical stability of 
+#' the matrices.
 #'
-#' @returns A data frame with columns "gene",  "chrom", "start", "end", "markers" (i.e., numbers of SNPs), "filtered.markers" (i.e. filtered SNPs) and "pvalue" (i.e., p-value). Additionally, for  “BT”, there will be “beta” (i.e., gene-level estimates of betas) and “beta.se” (i.e., standard errors of betas).  For “FLM”, there will be the “model” column with the names of the functional models used for each region. Names shortly describe the functional basis and the number of basis functions used. E.g., "F25" means 25 Fourier basis functions, "B15" means 15 B-spline basis functions. For “PCA”, there will be the “ncomponents” (the number of the principal components used for each region) and “explained.variance.fraction”(i.e., the proportion of genetic variance they make up) columns.
+#' @returns 
+#' A data frame with columns:
+#' 
+#' * gene  
+#' * chrom 
+#' * start 
+#' * end 
+#' * markers (i.e., numbers of SNPs), 
+#' * filtered.markers (i.e. filtered SNPs) 
+#' * pvalue (i.e., p-value). 
+#' 
+#' Additionally, for  “BT”, there will be “beta” (i.e., gene-level estimates of betas) and “beta.se” (i.e., standard errors of betas). 
+#' For “FLM”, there will be the “model” column with the names of the functional models used for each region. Names shortly describe the 
+#' functional basis and the number of basis functions used. E.g., "F25" means 25 Fourier basis functions, "B15" means 15 B-spline basis 
+#' functions. For “PCA”, there will be the “ncomponents” (the number of the principal components used for each region) and 
+#' “explained.variance.fraction” (i.e., the proportion of genetic variance they make up) columns.
 #'
 #' @references
-#' (1) Purcell et. al.,(2007). PLINK: A Tool Set for Whole-Genome Association and Population-Based Linkage Analyses. The American Journal of Human Genetics, 81(3), 559-575. https://doi.org/10.1086/519795.
-#' (2) Svishcheva GR, Belonogova NM, Zorkoltseva IV, Kirichenko AV, Axenovich TI. Gene-based association tests using GWAS summary statistics. Bioinformatics. 2019 Oct 1;35(19):3701-3708. doi: 10.1093/bioinformatics/btz172. PMID: 30860568.
-#' (3) Belonogova NM, Svishcheva GR, Kirichenko AV, Zorkoltseva IV, Tsepilov YA, Axenovich TI. sumSTAAR: A flexible framework for gene-based association studies using GWAS summary statistics. PLoS Comput Biol. 2022 Jun 2;18(6):e1010172. doi: 10.1371/journal.pcbi.1010172. PMID: 35653402; PMCID: PMC9197066.
+#' \insertAllCited{}
 #'
 #' @importFrom GenomicRanges makeGRangesFromDataFrame
 #' @importFrom regioneR toGRanges
@@ -369,77 +499,47 @@ AncestryCheck <-
 #' @export
 #'
 #' @examples
-#' # Not Run
-# DataDir <- system.file("extdata", package = "GXwasR")
-# ResultDir <- tempdir()
-# #DataDir <- "inst/extdata"
-# #ResultDir <- "Data"
-# #finput <- "ExamplePLINK"
-# finput <- "GXwasR_example"
-# data("GXwasRData")
-# #load("~/b1137/BBose/GXwasR/inst/extdata/XWAS_Summary.Rda")
-# #load("~/b1137/BBose/GXwasR/inst/extdata/XWAS_Summary_Example.Rda")
-# #load("~/b1137/BBose/GXwasR/data/XWAS_Summary_Example.Rda")
-# #sumstat <- XWAS_Summary
-# sumstat <- XWAS_Summary_Example
-# ref_data <- NULL
-# gene_file <- "Xlinkedgenes_hg19.txt"
-# gene_range <- 500000
-# max_gene <- 10
-# gene_approximation <- TRUE
-# beta_par <- c(1, 25)
-# weights_function <- NULL
-# geno_variance_weights <- "se.beta"
-# method = "kuonen"
-# acc_devies = 1e-8
-# lim_devies = 1e+6
-# rho = TRUE
-# skato_p_threshold = 0.8
-# mac_threshold <- 3
-# sample_size <- 4000
-# reference_matrix_used <- FALSE
-# regularize_fun <- "LH"
-# pca_var_fraction <- 0.85
-# flm_basis_function <- "fourier"
-# flm_num_basis <- 25
-# flm_poly_order <- 4
-# flip_genotypes <- FALSE
-# omit_linear_variant <- FALSE
-# kernel_p_method <- "kuonen"
-# anno_type <- ""
-#' #
-# GenetestResult <- TestXGene(
-#   DataDir,
-#   ResultDir,
-#   finput,
-#   sumstat,
-#   gene_file,
-#   gene_range,
-#   score_file,
-#   ref_data,
-#   max_gene,
-#   sample_size,
-#   genebasedTest = "SKAT",
-#   gene_approximation,
-#   beta_par,
-#   weights_function,
-#   geno_variance_weights,
-#   kernel_p_method,
-#   acc_devies,
-#   lim_devies,
-#   rho,
-#   skato_p_threshold,
-#   anno_type,
-#   mac_threshold,
-#   reference_matrix_used,
-#   regularize_fun,
-#   pca_var_fraction,
-#   flm_basis_function,
-#   flm_num_basis,
-#   flm_poly_order,
-#   flip_genotypes,
-#   omit_linear_variant
-# )
+#' \dontrun{
+#' DataDir <- system.file("extdata", package = "GXwasR")
+#' ResultDir <- tempdir()
+#' finput <- "GXwasR_example"
+#' data("GXwasRData")
+#' sumstat <- XWAS_Summary_Example
+#' ref_data <- NULL
+#' gene_file <- "Xlinkedgenes_hg19.txt"
+#' gene_range <- 500000
+#' max_gene <- 10
+#' gene_approximation <- TRUE
+#' beta_par <- c(1, 25)
+#' weights_function <- NULL
+#' geno_variance_weights <- "se.beta"
+#' method = "kuonen"
+#' acc_devies = 1e-8
+#' lim_devies = 1e+6
+#' rho = TRUE
+#' skato_p_threshold = 0.8
+#' mac_threshold <- 3
+#' sample_size <- 4000
+#' reference_matrix_used <- FALSE
+#' regularize_fun <- "LH"
+#' pca_var_fraction <- 0.85
+#' flm_basis_function <- "fourier"
+#' flm_num_basis <- 25
+#' flm_poly_order <- 4
+#' flip_genotypes <- FALSE
+#' omit_linear_variant <- FALSE
+#' kernel_p_method <- "kuonen"
+#' anno_type <- ""
+#' GenetestResult <- TestXGene(DataDir, ResultDir, finput, sumstat, gene_file,
+#'   gene_range, score_file, ref_data, max_gene, sample_size, genebasedTest = "SKAT", 
+#'   gene_approximation, beta_par, weights_function, geno_variance_weights, 
+#'   kernel_p_method, acc_devies, lim_devies, rho, skato_p_threshold, anno_type, 
+#'   mac_threshold, reference_matrix_used, regularize_fun, pca_var_fraction, 
+#'   flm_basis_function, flm_num_basis, flm_poly_order, flip_genotypes, 
+#'   omit_linear_variant
+#' )
+#' }
+
 TestXGene <- function(DataDir,
                       ResultDir = tempdir(),
                       finput,
