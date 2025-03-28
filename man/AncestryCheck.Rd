@@ -96,7 +96,7 @@ ResultDir <- tempdir()
 finput <- "GXwasR_example"
 reference <- "HapMapIII_NCBI36"
 data("GXwasRData")
-highLD_regions <- GXwasR::highLD_hg19 # See: ?GXwasr::highLD_hg19
+highLD_regions <- GXwasR::highLD_hg19 # See: ?GXwasR::highLD_hg19
 study_pop <- example_data_study_sample_ancestry # PreimputeEX
 studyLD_window_size <- 50
 studyLD_step_size <- 5
