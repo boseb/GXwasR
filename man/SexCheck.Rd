@@ -21,40 +21,76 @@ SexCheck(
 \arguments{
 \item{DataDir}{Character string for the file path of the input PLINK binary files.}
 
-\item{ResultDir}{A character string for the file path where all output files will be stored. The default is tempdir().}
+\item{ResultDir}{A character string for the file path where all output files will be stored. The default is \code{tempdir()}.}
 
 \item{finput}{Character string, specifying the prefix of the input PLINK binary files. Note: Input dataset should contain X and Y regions.}
 
-\item{impute_sex}{Boolean value, 'TRUE' or 'FALSE', specifying sex to be imputed or not. If 'TRUE' then sex-imputed PLINK files, prefixed, 'seximputed_plink', will be produced in DataDir.}
+\item{impute_sex}{Boolean value, \code{TRUE} or \code{FALSE}, specifying sex to be imputed or not. If \code{TRUE} then sex-imputed PLINK files, prefixed, 'seximputed_plink', will
+be produced in \code{DataDir}.}
 
-\item{compute_freq}{Boolean value, 'TRUE' or 'FALSE', specifying minor allele frequency (MAF). This function requires reasonable MAF estimates, so it is essential to use compute_freq = TRUE for computing MAF from an input PLINK file if there are very few samples in the input dataset. The default is FALSE.}
+\item{compute_freq}{Boolean value, \code{TRUE} or \code{FALSE}, specifying minor allele frequency (MAF). This function requires reasonable MAF estimates, so it is essential
+to use \code{compute_freq} = \code{TRUE} for computing MAF from an input PLINK file if there are very few samples in the input dataset. The default is \code{FALSE}.}
 
-\item{LD}{Boolean value, 'TRUE' or 'FALSE' for applying linkage disequilibrium (LD)-based filtering. The default is TRUE.}
+\item{LD}{Boolean value, \code{TRUE} or \code{FALSE} for applying linkage disequilibrium (LD)-based filtering. The default is \code{TRUE}.}
 
 \item{LD_window_size}{Integer value, specifying a window size in variant count for LD-based filtering. The default is 50.}
 
 \item{LD_step_size}{Integer value, specifying a variant count to shift the window at the end of each step for LD filtering. The default is 5.}
 
-\item{LD_r2_threshold}{Numeric value between 0 to 1 of pairwise r^2 threshold for LD-based filtering. The default is 0.02.}
+\item{LD_r2_threshold}{Numeric value between 0 to 1 of pairwise \eqn{r^2} threshold for LD-based filtering. The default is 0.02.}
 
 \item{fmax_F}{Numeric value between 0 to 1. Samples with F estimates smaller than this value will be labeled as females. The default is 0.2.}
 
 \item{mmin_F}{Numeric value between 0 to 1. Samples with F estimates larger than this value will be labeled as males. The default is 0.8.}
 }
 \value{
-A dataframe with six columns:FID(Family ID), IID(Individual ID), PEDSEX(Sex as determined in pedigree file (1=male, 2=female)), SNPSEX(Sex as determined by X chromosome), STATUS(Displays "PROBLEM" or "OK" for each individual) and F(The actual X chromosome inbreeding (homozygosity) estimate).A PROBLEM arises if the two sexes do not match, or if the SNP data or pedigree data are ambiguous with regard to sex.
+A dataframe with six columns:
+\itemize{
+\item \code{FID} (Family ID)
+\item \code{IID} (Individual ID)
+\item \code{PEDSEX }(Sex as determined in pedigree file (1=male, 2=female))
+\item \code{SNPSEX} (Sex as determined by X chromosome)
+\item \code{STATUS} (Displays "PROBLEM" or "OK" for each individual)
+\item \code{F} (The actual X chromosome inbreeding (homozygosity) estimate)
+}
+
+A PROBLEM arises if the two sexes do not match, or if the SNP data or pedigree data are ambiguous with regard to sex.
 }
 \description{
-This function compares sex assignments in the input dataset with those predicted from X chromosome inbreeding coefficients following Purcell et. al.,(2007), and gives the option to convert the sex assignments to the predicted values. Implicitly, this function computes observed and expected autosomal homozygous genotype counts for each sample and reports method-of-moments F coefficient estimates (i.e., observed hom. count - expected count) / (total observations - expected count)). The expected counts will be based on loaded or imputed minor allele frequencies.  Since imputed MAFs are highly inaccurate when there are few samples, the 'compute freq' parameter should be set to TRUE to compute MAF implicitly.
-Due to the use of allele frequencies, if a cohort is comprised of individuals of different ancestries, users may need to process any samples with rare ancestry individually if the dataset has a very unbalanced ancestry distribution. It is advised to run this function with all the parameters set to zero, then examine the distribution of the F estimates (there should be a clear gap between a very tight male clump on the right side of the distribution and the females everywhere else). Then, rerun the function with the parameters that correspond to this gap.
+This function compares sex assignments in the input dataset with those predicted from X chromosome inbreeding coefficients \insertCite{Purcell2007}{GXwaSR},
+and gives the option to convert the sex assignments to the predicted values. Implicitly, this function computes observed and expected autosomal homozygous
+genotype counts for each sample and reports method-of-moments F coefficient estimates (i.e., observed hom. \eqn{count - expected count) / (total observations - expected count)}).
+The expected counts will be based on loaded or imputed minor allele frequencies.  Since imputed MAFs are highly inaccurate when there are few samples,
+the 'compute freq' parameter should be set to TRUE to compute MAF implicitly.
+
+Due to the use of allele frequencies, if a cohort is comprised of individuals of different ancestries, users may need to process any samples with rare
+ancestry individually if the dataset has a very unbalanced ancestry distribution. It is advised to run this function with all the parameters set to zero,
+then examine the distribution of the F estimates (there should be a clear gap between a very tight male clump on the right side of the distribution and the
+females everywhere else). Then, rerun the function with the parameters that correspond to this gap.
 }
 \examples{
-# Not Run
-#
-#
+DataDir <- system.file("extdata", package = "GXwasR")
+ResultDir = tempdir()
+finput <- "GXwasR_example"
+LD = TRUE
+LD_window_size <- 50
+LD_step_size <- 5
+LD_r2_threshold <- 0.02
+fmax_F <- 0.2
+mmin_F <- 0.8
+impute_sex <- FALSE
+compute_freq <- FALSE
+
+x <-SexCheck(DataDir=DataDir,ResultDir = ResultDir, finput=finput,impute_sex=impute_sex,
+  compute_freq =compute_freq,LD_window_size=LD_window_size,LD_step_size=LD_step_size,
+  LD_r2_threshold=0.02,fmax_F=0.2,mmin_F=0.8
+)
+
+# Checking if there is any wrong sex assignment
+problematic_sex <- x[x$STATUS != "OK",]
 }
 \references{
-(1) Purcell et. al.,(2007). PLINK: A Tool Set for Whole-Genome Association and Population-Based Linkage Analyses. The American Journal of Human Genetics, 81(3), 559-575. https://doi.org/10.1086/519795.
+\insertAllCited{}
 }
 \author{
 Banabithi Bose
