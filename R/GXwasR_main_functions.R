@@ -33,8 +33,8 @@
 #' Character string, specifying the prefix of the input PLINK binary files for the study samples.
 #' 
 #' @param reference 
-#' Boolean value,'HapMapIII_NCBI36' and 'ThousandGenome', specifying Hapmap Phase3 (1) and 1000 Genomes phase III 
-#' (2) reference population, respectively. The default is 'HapMapIII_NCBI36'.
+#' Boolean value,'HapMapIII_NCBI36' and 'ThousandGenome', specifying Hapmap Phase3 \insertCite{HapMap2010}{GXwasR} and 1000 Genomes 
+#' phase III \insertCite{1000Genomes2015}{GXwasR} reference population, respectively. The default is 'HapMapIII_NCBI36'.
 #' 
 #' @param filterSNP 
 #' Boolean value, `TRUE` or `FALSE` for filtering out the SNPs. The default is `TRUE.` We recommend setting it `FALSE` 
@@ -65,7 +65,7 @@
 #' Numeric value between 0 to 1 of pairwise r^2 threshold for LD-based filtering for the reference data.
 #' 
 #' @param highLD_regions 
-#' A dataframe with known high LD regions. A dataframe from Anderson et. al, 2010 (3) is provided with the package.
+#' A dataframe with known high LD regions. A dataframe from Anderson et. al, 2010 \insertCite{Anderson2010}{GXwasR} is provided with the package.
 #' 
 #' @param study_pop 
 #' A dataframe containing two columns for study in first column, sample ID (i.e., IID) and in second column, the ancestry label.
@@ -84,12 +84,11 @@
 #' @importFrom data.table as.data.table
 #' @importFrom ggplot2 ggplot aes geom_hline geom_vline guides geom_point guide_legend scale_shape_manual
 #'
-#' @return A dataframe with the IDs of non-European samples as outliers. #importFrom DescTools %like%   Removing DescTools from Description imports.
+#' @return A dataframe with the IDs of non-European samples as outliers.
 #'
 #' @references 
-#' (1) The International HapMap 3 Consortium. Integrating common and rare genetic variation in diverse human populations. Nature 467, 52–58 (2010). https://doi.org/10.1038/nature09298
-#' (2) The 1000 Genomes Project Consortium. A global reference for human genetic variation. Nature 526, 68–74 (2015). https://doi.org/10.1038/nature15393
-#' (3) Anderson CA, Pettersson FH, Clarke GM, Cardon LR, Morris AP, Zondervan KT. Data quality control in genetic case-control association studies. Nat Protoc. 2010 Sep;5(9):1564-73. doi: 10.1038/nprot.2010.116. Epub 2010 Aug 26. PMID: 21085122; PMCID: PMC3025522.
+#' \insertAllCited{}
+#' 
 #' @export
 #'
 #' @examples

@@ -32,8 +32,8 @@ AncestryCheck(
 
 \item{finput}{Character string, specifying the prefix of the input PLINK binary files for the study samples.}
 
-\item{reference}{Boolean value,'HapMapIII_NCBI36' and 'ThousandGenome', specifying Hapmap Phase3 (1) and 1000 Genomes phase III
-(2) reference population, respectively. The default is 'HapMapIII_NCBI36'.}
+\item{reference}{Boolean value,'HapMapIII_NCBI36' and 'ThousandGenome', specifying Hapmap Phase3 \insertCite{HapMap2010}{GXwasR} and 1000 Genomes
+phase III \insertCite{1000Genomes2015}{GXwasR} reference population, respectively. The default is 'HapMapIII_NCBI36'.}
 
 \item{filterSNP}{Boolean value, \code{TRUE} or \code{FALSE} for filtering out the SNPs. The default is \code{TRUE.} We recommend setting it \code{FALSE}
 only when the users are sure that they could join the study and reference samples directly.}
@@ -54,7 +54,7 @@ only when the users are sure that they could join the study and reference sample
 
 \item{referLD_r2_threshold}{Numeric value between 0 to 1 of pairwise r^2 threshold for LD-based filtering for the reference data.}
 
-\item{highLD_regions}{A dataframe with known high LD regions. A dataframe from Anderson et. al, 2010 (3) is provided with the package.}
+\item{highLD_regions}{A dataframe with known high LD regions. A dataframe from Anderson et. al, 2010 \insertCite{Anderson2010}{GXwasR} is provided with the package.}
 
 \item{study_pop}{A dataframe containing two columns for study in first column, sample ID (i.e., IID) and in second column, the ancestry label.}
 
@@ -67,7 +67,7 @@ Eucledean distance from the center of the PC 1 and PC2 to the maximum Euclidean 
 outside this distance will be considered as outlier. The default is 3.}
 }
 \value{
-A dataframe with the IDs of non-European samples as outliers. #importFrom DescTools \%like\%   Removing DescTools from Description imports.
+A dataframe with the IDs of non-European samples as outliers.
 }
 \description{
 This function displays the result of the ancestry analysis in a color-coded scatter plot of the first two principal
@@ -122,9 +122,7 @@ x <- AncestryCheck(
 # study_pop = study_pop, studyLD = studyLD, referLD = referLD, outlierOf = "EUR", outlier = outlier, outlier_threshold = outlier_threshold )
 }
 \references{
-(1) The International HapMap 3 Consortium. Integrating common and rare genetic variation in diverse human populations. Nature 467, 52–58 (2010). https://doi.org/10.1038/nature09298
-(2) The 1000 Genomes Project Consortium. A global reference for human genetic variation. Nature 526, 68–74 (2015). https://doi.org/10.1038/nature15393
-(3) Anderson CA, Pettersson FH, Clarke GM, Cardon LR, Morris AP, Zondervan KT. Data quality control in genetic case-control association studies. Nat Protoc. 2010 Sep;5(9):1564-73. doi: 10.1038/nprot.2010.116. Epub 2010 Aug 26. PMID: 21085122; PMCID: PMC3025522.
+\insertAllCited{}
 }
 \author{
 Banabithi Bose
