@@ -5137,8 +5137,10 @@ SumstatGenCorr <- function(ResultDir = tempdir(), referenceLD, sumstat1, sumstat
 
 # New Function Addedin 10.0
 #' ComputeLD: Compute Linkage Disequilibrium (LD) for SNP Data
-#'
-#' This function computes linkage disequilibrium (LD) statistics for SNP data using PLINK. It allows for computation across all SNPs or within specific chromosomes.
+#' 
+#' @description
+#' This function computes linkage disequilibrium (LD) statistics for SNP data using PLINK. It allows for computation across all 
+#' SNPs or within specific chromosomes.
 #'
 #' @param DataDir Character string representing the file path of the input PLINK binary files.
 #' @param finput Character string specifying the prefix of the input PLINK binary files.
@@ -5152,8 +5154,12 @@ SumstatGenCorr <- function(ResultDir = tempdir(), referenceLD, sumstat1, sumstat
 #' @export
 #'
 #' @examples
-#' # Not Run
-#' # ComputeLD(DataDir = "path/to/data", ResultDir = "path/to/results", finput = "dataset", ByCHR = TRUE, CHRnum = 1, r2_LD = 0.2)
+#' \donttest{
+#' ComputeLD(DataDir = system.file("extdata", package = "GXwasR"), ResultDir = tempdir(), 
+#'   finput = "GXwasR_example", ByCHR = TRUE, CHRnum = 1, r2_LD = 0.2
+#' )
+#' }
+
 ComputeLD <- function(DataDir, ResultDir, finput, ByCHR = FALSE, CHRnum = NULL, r2_LD) {
   if (ByCHR == FALSE) {
     chr <- NULL
