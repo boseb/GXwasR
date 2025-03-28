@@ -25,7 +25,7 @@ ClumpLD(
 between the SNPs. This actual genotype data may or may not be the same dataset that was used to generate the summary statistics.
 This file needs to be in \code{DataDir}.}
 
-\item{SNPdata}{a list of R dataframes containing a single or multiple summary statistics with SNP and P (i.e., p-values) in mandatory column
+\item{SNPdata}{A list of R dataframes containing a single or multiple summary statistics with SNP and P (i.e., p-values) in mandatory column
 headers. Other columns could be present.}
 
 \item{ResultDir}{A character string for the file path where all output files will be stored. The default is \code{tempdir()}.}
