@@ -2835,27 +2835,46 @@ Xhwe <- function(DataDir, ResultDir = tempdir(), finput, filterSNP = TRUE, foutp
 #'
 #' @author Banabithi Bose
 #'
-#' @description With parameters to filter out SNPs and/or flag the SNPs, this function tests for significantly different MAF (p-value < 0.05/no. of SNPs) between sexes in control samples solely for binary phenotypes. Since the disparities may be caused by technical confounding or sample biases for the research cohorts, it is advised that any SNPs in the controls with a sex difference in MAF be carefully evaluated and identified for further examination (Khramtsova et. al., 2023). In autosomal allele frequencies, sex differences are not anticipated.
+#' @description 
+#' With parameters to filter out SNPs and/or flag the SNPs, this function tests for significantly different MAF 
+#' (p-value < 0.05/no. of SNPs) between sexes in control samples solely for binary phenotypes. Since the disparities 
+#' may be caused by technical confounding or sample biases for the research cohorts, it is advised that any SNPs in 
+#' the controls with a sex difference in MAF be carefully evaluated and identified for further examination 
+#' (Khramtsova et. al., 2023). In autosomal allele frequencies, sex differences are not anticipated.
 #'
-#' @param DataDir A character string for the file path of the input PLINK binary files.
-#' @param ResultDir A character string for the file path where all output files will be stored. The default is tempdir().
-#' @param finput Character string, specifying the prefix of the input PLINK binary files with both male and female samples. This file needs to be in DataDir.
-#' @param foutput Character string, specifying the prefix of the output PLINK binary files if filtering option for the SNPs is chosen. The default is NULL.
-#' @param filterSNP Boolean value, 'TRUE' or 'FALSE' for filtering out the SNPs or not (i.e., only flagged). The default is "FALSE".
+#' @param DataDir 
+#' Character string for the file path of the input PLINK binary files.
+#' 
+#' @param ResultDir 
+#' Character string for the file path where all output files will be stored. The default is `tempdir()`.
+#' 
+#' @param finput 
+#' Character string, specifying the prefix of the input PLINK binary files with both male and female samples. 
+#' This file needs to be in `DataDir`.
+#' 
+#' @param foutput 
+#' Character string, specifying the prefix of the output PLINK binary files if filtering option for the SNPs 
+#' is chosen. The default is NULL.
+#' 
+#' @param filterSNP 
+#' Boolean value, `TRUE` or `FALSE` for filtering out the SNPs or not (i.e., only flagged). The default is `FALSE`.
 #'
-#' @return A list object containing excluded or flagged SNPs. If filterSNP = TRUE, the output filtered PLINK binary files will be produced inside DataDir.
+#' @return 
+#' A list object containing excluded or flagged SNPs. If filterSNP = TRUE, the output filtered PLINK binary 
+#' files will be produced inside `DataDir`.
+#' 
 #' @importFrom stats na.omit
 #' @importFrom utils download.file read.table unzip write.table
 #' @importFrom sys exec_wait
 #' @export
 #'
 #' @examples
-#' # Not Run
-# DataDir <- system.file("extdata", package = "GXwasR")
-# ResultDir <- tempdir()
-# finput <- "GXwasR_example"
-# foutput <- "Test_output"
-# x <- MAFdiffSexControl(DataDir, ResultDir, finput,filterSNP = TRUE,foutput = foutput)
+#' DataDir <- system.file("extdata", package = "GXwasR")
+#' ResultDir <- tempdir()
+#' finput <- "GXwasR_example"
+#' foutput <- "Test_output"
+#' x <- MAFdiffSexControl(DataDir, ResultDir, finput,filterSNP = TRUE,foutput = foutput)
+
 MAFdiffSexControl <- function(DataDir,
                               ResultDir = tempdir(),
                               finput,
