@@ -2658,26 +2658,46 @@ GetMFPlink <- function(DataDir,
 #'
 #' @author Banabithi Bose
 #'
-#' @description This function is a part of the post-imputation quality control process prior to GWAS. This tests for Hardy-Weinberg Equilibrium (HWE) for X-chromosome variants in females. Males' hemizygous X chromosome prevents testing for HWE on their haploid X calls, and testing for HWE across all samples would have a high failure rate. This function will check for HWE across the X in females (cases and controls combined), following the recommendation in Khramtsova et al., 2023, and can remove these regions from analysis in all samples. The p-value threshold for filtering out SNPs is 0.05/no.of. X-chromosome variants.
+#' @description 
+#' This function is a part of the post-imputation quality control process prior to GWAS. This tests for Hardy-Weinberg 
+#' Equilibrium (HWE) for X-chromosome variants in females. Males' hemizygous X chromosome prevents testing for HWE on 
+#' their haploid X calls, and testing for HWE across all samples would have a high failure rate. This function will check 
+#' for HWE across the X in females (cases and controls combined), following the recommendation in Khramtsova et al., 2023, 
+#' and can remove these regions from analysis in all samples. The p-value threshold for filtering out SNPs is 0.05/no.of. 
+#' X-chromosome variants.
 #'
-#' @param DataDir A character string for the file path of the input PLINK binary files.
-#' @param ResultDir A character string for the file path where all output files will be stored. The default is tempdir().
-#' @param finput Character string, specifying the prefix of the input PLINK binary files.
-#' @param foutput Character string, specifying the prefix of the output PLINK binary files if filtering option for the SNPs is chosen. The default is "FALSE".
-#' @param filterSNP Boolean value, 'TRUE' or 'FALSE' for filtering out the X-chromosome variants i.e., SNPs from the input file or not (i.e., only flagged). The default is "FALSE".
-
-#' @return A list object containing SNPs. If filterSNP = TRUE, the output filtered PLINK binary files will be produced inside DataDir.
+#' @param DataDir 
+#' Character string for the file path of the input PLINK binary files.
+#' 
+#' @param ResultDir 
+#' Character string for the file path where all output files will be stored. The default is `tempdir()`.
+#' 
+#' @param finput 
+#' Character string, specifying the prefix of the input PLINK binary files.
+#' 
+#' @param foutput 
+#' Character string, specifying the prefix of the output PLINK binary files if filtering option for the SNPs is chosen. 
+#' The default is "FALSE".
+#' 
+#' @param filterSNP 
+#' Boolean value, `TRUE` or `FALSE` for filtering out the X-chromosome variants i.e., SNPs from the input file or not 
+#' (i.e., only flagged). The default is `FALSE`.
+#' 
+#' @return A list object containing SNPs. If `filterSNP` = `TRUE`, the output filtered PLINK binary files will be 
+#' produced inside `DataDir`.
+#' 
 #' @export
 #'
 #' @examples
-#' # Not Run
-# DataDir <- system.file("extdata", package = "GXwasR")
-# ResultDir <- tempdir()
-# finput <- "GXwasR_example"
-# foutput <- "Test_output"
-# x <- Xhwe(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, filterSNP = TRUE)
-# # Failed SNPs for HWE in X chromosome
-# x
+#' DataDir <- system.file("extdata", package = "GXwasR")
+#' ResultDir <- tempdir()
+#' finput <- "GXwasR_example"
+#' foutput <- "Test_output"
+#' x <- Xhwe(DataDir = DataDir, ResultDir = ResultDir, 
+#'   finput = finput, foutput = foutput, filterSNP = TRUE
+#' )
+#' x
+
 Xhwe <- function(DataDir, ResultDir = tempdir(), finput, filterSNP = TRUE, foutput) {
   # Validate inputs
   if (!validateInputForXhwe(DataDir, ResultDir, finput, foutput, filterSNP)) {
