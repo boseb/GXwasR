@@ -7,17 +7,30 @@
 DiffZeroOne(inputdata, diffzero = TRUE, diffone = TRUE)
 }
 \arguments{
-\item{inputdata}{A dataframe object, contaning three columns, namely, 'Trait' (i.e., the phenotype of interest), 'Stat' (i.e., the measured statistics) and 'SE' (i.e., the standard error of the measured statistics).}
+\item{inputdata}{A dataframe object, contaning three columns:
+\itemize{
+\item \code{Trait} (i.e., the phenotype of interest)
+\item \code{Stat} (i.e., the measured statistics)
+\item \code{SE} (i.e., the standard error of the measured statistics)
+}}
 
-\item{diffzero}{Boolean value, 'TRUE' or 'FALSE', specifying to perform diviation from 0 test.}
+\item{diffzero}{Boolean value, \code{TRUE} or \code{FALSE}, specifying to perform diviation from 0 test.}
 
-\item{diffone}{Boolean value, 'TRUE' or 'FALSE', specifying to perform diviation from 1 test.}
+\item{diffone}{Boolean value, \code{TRUE} or \code{FALSE}, specifying to perform diviation from 1 test.}
 }
 \value{
-A dataframe with columns, 'Trait','Stat','SE', 'P0' (i.e, p-value for deviation from zero test) and 'P1' (i.e., p-value for deviation from 1 test)
+A dataframe with columns:
+\itemize{
+\item \code{Trait}
+\item \code{Stat}
+\item \code{SE}
+\item \code{P0} (i.e, p-value for deviation from zero test)
+\item \code{P1} (i.e., p-value for deviation from 1 test)
+}
 }
 \description{
-This function tests the null hypothesis that a measured statistics (example: genetic correlation, rg for a trait) < 1 using a 1-tailed test compared with a normal distribution (z = (1 − measure statistics)/Standard error).
+This function tests the null hypothesis that a measured statistics (example: genetic correlation,
+rg for a trait) < 1 using a 1-tailed test compared with a normal distribution (z = (1 − measure statistics)/Standard error).
 For multiple tests, users are encouraged to apply a Bonferroni multiple-testing correction.
 }
 \examples{
