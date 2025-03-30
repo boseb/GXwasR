@@ -2517,28 +2517,47 @@ FilterPlinkSample <- function(DataDir, ResultDir,
 #'
 #' @author Banabithi Bose
 #'
-#' @description This function prepares separate male and female PLINK binary files from combined PLINK files.
-
+#' @description 
+#' This function prepares separate male and female PLINK binary files from combined PLINK files.
 #'
-#' @param DataDir Character string for the file path of the input PLINK binary files.
-#' @param ResultDir A character string for the file path where all output files will be stored. The default is tempdir().
-#' @param finput Character string, specifying the prefix of the input PLINK binary files.
-#' @param foutput Character string, specifying the prefix of the output PLINK binary files.
-#' @param sex Boolean value, 'males' or 'females', specifying output plink binary files with male or female samples.
-#' @param xplink Boolean value, 'TRUE' or 'FALSE', specifying output plink binary files with only X chromosome or not. Default is FALSE.
-#' @param autoplink Boolean value, 'TRUE' or 'FALSE', specifying output plink binary files with only autosome or not. Default is FALSE.
+#' 
+#' @param DataDir 
+#' Character string for the file path of the input PLINK binary files.
+#' 
+#' @param ResultDir 
+#' Character string for the file path where all output files will be stored. The default is `tempdir()`.
+#' 
+#' @param finput 
+#' Character string, specifying the prefix of the input PLINK binary files.
+#' 
+#' @param foutput 
+#' Character string, specifying the prefix of the output PLINK binary files.
+#' 
+#' @param sex 
+#' Boolean value, 'males' or 'females', specifying output plink binary files with male or female samples.
+#' 
+#' @param xplink 
+#' Boolean value, `TRUE` or `FALSE`, specifying output plink binary files with only X chromosome or not. Default is `FALSE.`
+#' 
+#' @param autoplink 
+#' Boolean value, `TRUE` or `FALSE`, specifying output plink binary files with only autosome or not. Default is `FALSE.`
 #'
-#' @return None
+#' @return 
+#' None
+#' 
 #' @export
 #'
 #' @examples
-#' # Not Run
-# DataDir <- system.file("extdata", package = "GXwasR")
-# ResultDir <- tempdir()
-# finput <- "GXwasR_example"
-# foutput <- "Test_output"
-# sex <- "females"
-# x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput,sex = sex, xplink = FALSE, autoplink = FALSE)
+#' DataDir <- system.file("extdata", package = "GXwasR")
+#' ResultDir <- tempdir()
+#' finput <- "GXwasR_example"
+#' foutput <- "Test_output"
+#' sex <- "females"
+#' x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, 
+#'   finput = finput, foutput = foutput,sex = sex, 
+#'   xplink = FALSE, autoplink = FALSE
+#' )
+
 GetMFPlink <- function(DataDir,
                        ResultDir = tempdir(),
                        finput,
