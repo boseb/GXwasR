@@ -3733,44 +3733,115 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
 
 #' MetaGWAS: Combining summary-level results from two or more GWA studies into a single estimate.
 #'
-#' @description  This function combine K sets of GWAS association statistics on same (or at least similar) phenotype. This function employs PLINK's (1) inverse variance-based analysis to run a number of models, including a) Fixed-effect model and b) Random-effect model, assuming there may be variation between the genuine underlying effects, i.e., effect size beta. 'This function also calculates weighted Z-score-based p-values after METAL (3). For more information about the algorithms, please see the associated paper.
+#' @description  
+#' This function combine K sets of GWAS association statistics on same (or at least similar) phenotype. This function employs 
+#' PLINK's \insertCite{Purcell2007}{GXwasR} inverse variance-based analysis to run a number of models, including a) 
+#' Fixed-effect model and b) Random-effect model, assuming there may be variation between the genuine underlying effects, 
+#' i.e., effect size beta. 'This function also calculates weighted Z-score-based p-values after METAL \insertCite{Willer2010}{GXwasR}. 
+#' For more information about the algorithms, please see the associated paper.
 #'
-#' @param DataDir A character string for the file path of the input files needed for ‘SummData’ and ‘SNPfile’ arguments.
-#' @param SummData Vector value containing the name/names of the .Rda file/files with GWAS summary statistics, with ‘SNP’ (i.e., SNP idenitifier), ‘BETA’ (i.e., effect-size or logarithm of odds ratio), ‘SE’ (i.e., standard error of BETA), ‘P’ (i.e., p-values), 'NMISS' (i.e., effective sample size), 'L95' (i.e., lower limit of 95% confidence interval) and 'U95' (i.e., upper limit of 95% confidence interval) are in mandatory column headers. These files needed to be in DataDir. If the numbers of cases and controls are unequal, effective sample size should be 4 / (1/<# of cases> + 1/<# of controls>). A smaller "effective" sample size may be used for samples that include related individuals, however simulations indicate that small changes in the effective sample size have relatively little effect on the final p-value (3). Columns, such as, 'CHR'(Chromosome code), 'BP'(Basepair position), 'A1' (First allele code), 'A2' (Second allele code) columns are optional. If these are present, setting ‘useSNPposition’ to FALSE, causes 'CHR', ‘BP’ and ‘A1’ to be ignored and setting ‘UseA1’ to be ‘FALSE’ causes A1 to be ignored. If, both these arguments are true, this function takes care of A1/A2 allele flips properly. Otherwise, A1 mismatches are thrown out. Values of CHR/BP are allowed to vary.
-#' @param ResultDir A character string for the file path where all output files will be stored. The default is tempdir().
-#' @param SNPfile Character string specifying the name of the plain-text file with a column of SNP names. These could be LD clumped SNPs or any other list of chosen SNPs for Meta analysis. This file needs to be in DataDir.
-#' @param useSNPposition Boolean value, 'TRUE' or 'FALSE' for using 'CHR', 'BP', and ‘A1’ or not. The default is FALSE. Note: if this is FALSE then there will be no Manhattan and QQ plot will be generated.
-#' @param UseA1 Boolean value, 'TRUE' or 'FALSE' for ‘A1’ to be used or not. The default is FALSE.
-#' @param GCse  Boolean value, 'TRUE' or 'FALSE' for applying study specific genomic control to adjust each study for potential population structure for all the SNPs. The default is TRUE. If users would want to apply genomic control separately for directly genotyped and imputed SNPs prior using the function, set this parameter as FALSE.
-#' @param plotname Character string, spycifying the plot name of the file containg forest plots for the SNPs. The default is “Meta_Analysis.plot”.
-#' @param pval_filter Character value as "R","F" or "W", specifying whether p-value threshold should be chosen based on “Random”, “Fixed” or “Weighted” effect model for the SNPs to be included in the forest plots.
-#' @param top_snp_pval Numeric value, specifying the threshold to be used to filter the SNPs for the forest plots. The default is 1e-08.
-#' @param max_top_snps Integer value, specifying the maximum number of top SNPs (SNPs with the lowest p-values) to be ploted in the forest plot file. The default is 6.
-#' @param chosen_snps_file Character string specifing the name of the plain-text file with a column of SNP names for the forest plots. The default is NULL.
-#' @param byCHR Boolean value, 'TRUE' or 'FALSE', specifying whether the meta analysis will be performed chromosome wise or not. The default is FALSE.
-#' @param pval_threshold_manplot Numeric value, specifying the p-value threshold for plotting Manhattan plots.
+#' @param DataDir 
+#' A character string for the file path of the input files needed for `SummData` and `SNPfile` arguments.
+#' 
+#' @param SummData
+#' Vector value containing the name(s) of the .Rda file(s) with GWAS summary statistics, with ‘SNP’ 
+#' (i.e., SNP idenitifier), ‘BETA’ (i.e., effect-size or logarithm of odds ratio), ‘SE’ (i.e., standard error of BETA), 
+#' ‘P’ (i.e., p-values), 'NMISS' (i.e., effective sample size), 'L95' (i.e., lower limit of 95% confidence interval) and 
+#' 'U95' (i.e., upper limit of 95% confidence interval) are in mandatory column headers. These files needed to be in DataDir. 
+#' If the numbers of cases and controls are unequal, effective sample size should be \eqn{4 / (1/<# of cases> + 1/<# of controls>)}. 
+#' A smaller "effective" sample size may be used for samples that include related individuals, however simulations indicate 
+#' that small changes in the effective sample size have relatively little effect on the final p-value 
+#' \insertCite{Willer2010}{GXwasR}. Columns, such as, `CHR` (Chromosome code), `BP` (Basepair position), `A1` (First allele code), 
+#' `A2` (Second allele code) columns are optional. If these are present, setting `useSNPposition` to `FALSE`, causes `CHR`, `BP` 
+#' and `A1` to be ignored and setting `UseA1` to be `FALSE` causes `A1` to be ignored. If, both these arguments are `TRUE`, this 
+#' function takes care of A1/A2 allele flips properly. Otherwise, A1 mismatches are thrown out. Values of CHR/BP are allowed 
+#' to vary.
+#' 
+#' @param ResultDir 
+#' A character string for the file path where all output files will be stored. The default is `tempdir()`.
+#' 
+#' @param SNPfile 
+#' Character string specifying the name of the plain-text file with a column of SNP names. These could be LD clumped SNPs or 
+#' any other list of chosen SNPs for Meta analysis. This file needs to be in `DataDir`.
+#' 
+#' @param useSNPposition 
+#' Boolean value, `TRUE` or `FALSE` for using `CHR`, `BP`, and `A1` or not. The default is `FALSE.` Note: if 
+#' this is `FALSE` then there will be no Manhattan and QQ plot will be generated.
+#' 
+#' @param UseA1 
+#' Boolean value, `TRUE` or `FALSE` for `A1` to be used or not. The default is `FALSE`.
+#' 
+#' @param GCse  
+#' Boolean value, `TRUE` or `FALSE` for applying study specific genomic control to adjust each study for potential population 
+#' structure for all the SNPs. The default is `TRUE`. If users would want to apply genomic control separately for directly 
+#' genotyped and imputed SNPs prior using the function, set this parameter as `FALSE`.
+#' 
+#' @param plotname 
+#' Character string, spycifying the plot name of the file containg forest plots for the SNPs. The default is 
+#' “Meta_Analysis.plot”.
+#' 
+#' @param pval_filter
+#' Character value as "R","F" or "W", specifying whether p-value threshold should be chosen based on “Random”, “Fixed” or 
+#' “Weighted” effect model for the SNPs to be included in the forest plots.
+#' 
+#' @param top_snp_pval 
+#' Numeric value, specifying the threshold to be used to filter the SNPs for the forest plots. The default is 1e-08.
+#' 
+#' @param max_top_snps 
+#' Integer value, specifying the maximum number of top SNPs (SNPs with the lowest p-values) to be ploted in the forest 
+#' plot file. The default is 6.
+#' 
+#' @param chosen_snps_file 
+#' Character string specifing the name of the plain-text file with a column of SNP names for the forest plots. 
+#' The default is NULL.
+#' 
+#' @param byCHR
+#' Boolean value, `TRUE` or `FALSE`, specifying whether the meta analysis will be performed chromosome wise or not. 
+#' The default is `FALSE`.
+#' 
+#' @param pval_threshold_manplot 
+#' Numeric value, specifying the p-value threshold for plotting Manhattan plots.
 #'
-#' @returns A list object containing five dataframes. The first three dataframes, such as Mfixed, Mrandom and Mweighted contain results
-#' for fixed effect, random effect and weighted model. Each of these dataframes can have maximum 12 columns, such as 'CHR'(Chromosome code),'BP'(Basepair position),'SNP'(SNP identifier), 'A1' (First allele code),
-#' 'A2' (Second allele code), Q (p-value for Cochrane's Q statistic), I (I^2 heterogeneity index (0-100)),
-#' P (P-value from mata analysis), ES (Effect-size estimate from mata analysis), SE (Standard Error from mata analysis),
-#' CI_L (Lower limit of confidence interval) and CI_U (Uper limit of confidence interval).
+#' @returns 
+#' A list object containing five dataframes. The first three dataframes, such as Mfixed, Mrandom and Mweighted contain results
+#' for fixed effect, random effect and weighted model. Each of these dataframes can have maximum 12 columns, such as: 
+#' * `CHR` (Chromosome code)
+#' * `BP` (Basepair position)
+#' * `SNP` (SNP identifier)
+#' * `A1` (First allele code)
+#' * `A2` (Second allele code)
+#' * `Q` (p-value for Cochrane's Q statistic)
+#' * `I` (I^2 heterogeneity index (0-100))
+#' * `P` (P-value from mata analysis)
+#' * `ES` (Effect-size estimate from mata analysis)
+#' * `SE` (Standard Error from mata analysis)
+#' * `CI_L` (Lower limit of confidence interval)
+#' * `CI_U` (Uper limit of confidence interval)
 #'
-#' The fourth dataframe contains the same columns "CHR","BP","SNP","A1","A2","Q","I", with column N' ( Number of valid studies for this SNP), P (Fixed-effects meta-analysis p-value),
-#' and other columns as Fx... (Study x (0-based input file indices) effect estimate, Examples: F0, F1 etc.).
+#' The fourth dataframe contains the same columns `CHR`, `BP`, `SNP`, `A1`, `A2`, `Q`, `I`", with column `N`' ( Number of 
+#' valid studies for this SNP), P (Fixed-effects meta-analysis p-value), and other columns as `Fx...` (Study x (0-based input file 
+#' indices) effect estimate, Examples: F0, F1 etc.).
 #'
-#' The fifth dataframe, ProblemSNP has three columns, such as, 'File' (file name of input data), 'SNP' (Problematic SNPs that are thrown)
-#' and 'Problem' (Problem code). Problem codes are, BAD_CHR (Invalid chromosome code), BAD_BP (Invalid base-position code),
-#' BAD_ES (Invalid effect-size), BAD_SE (Invalid standard error), MISSING_A1 (Missing allele 1 label),
-#' MISSING_A2 (Missing allele 2 label), ALLELE_MISMATCH (Mismatching allele codes across files).
+#' The fifth dataframe, ProblemSNP has three columns, such as 
+#' * `File` (file name of input data), 
+#' * `SNP` (Problematic SNPs that are thrown)
+#' * `Problem` (Problem code)
+#' 
+#' Problem codes are:
+#' * BAD_CHR (Invalid chromosome code)
+#' * BAD_BP  (Invalid base-position code), BAD_ES (Invalid effect-size)
+#' * BAD_SE (Invalid standard error), MISSING_A1 (Missing allele 1 label)
+#' * MISSING_A2 (Missing allele 2 label)
+#' * ALLELE_MISMATCH (Mismatching allele codes across files)
 #'
 #' A .pdf file comprising the forest plots of the SNPs is produced in the ResultDir with Plotname as prefix.
-#' If useSNPposition is set TRUE, a .jpeg file with Manhattan Plot and Q-Q plot will be in the ResultDir with Plotname as prefix.
+#' If `useSNPposition` is set `TRUE`, a .jpeg file with Manhattan Plot and Q-Q plot will be in the `ResultDir` with Plotname 
+#' as prefix.
 #'
-#' @references (1) Purcell et. al.,(2007). PLINK: A Tool Set for Whole-Genome Association and Population-Based Linkage Analyses. The American Journal of Human Genetics, 81(3), 559-575. https://doi.org/10.1086/519795.
+#' @references 
+#' \insertAllCited()
 #' (2) Mägi, R., Morris, A.P. GWAMA: software for genome-wide association meta-analysis. BMC Bioinformatics 11, 288 (2010). https://doi.org/10.1186/1471-2105-11-288
-#' (3) Willer CJ, Li Y, Abecasis GR. METAL: fast and efficient meta-analysis of genomewide association scans. Bioinformatics. 2010 Sep 1;26(17):2190-1. doi: 10.1093/bioinformatics/btq340. Epub 2010 Jul 8. PMID: 20616382; PMCID: PMC2922887.
-
+#' 
 #' @importFrom qqman manhattan qq
 #' @importFrom graphics par
 #' @importFrom grDevices jpeg pdf
@@ -3778,25 +3849,30 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
 #' @export
 #'
 #' @examples
-#'
-#' # Not Run
-# DataDir = system.file("extdata", package = "GXwasR")
-# ResultDir = tempdir()
-# data("GXwasRData")
-# SummData <- list(Summary_Stat_Ex1,Summary_Stat_Ex2)
-# SNPfile = "UniqueLoci"
-# useSNPposition = FALSE
-# UseA1 = TRUE
-# GCse = TRUE
-# byCHR = FALSE
-# pval_filter = "R"
-# top_snp_pval = 1e-08
-# max_top_snps = 10
-# chosen_snps_file = NULL
-# #chosen_snps_file = "MainSNP"
-# pval_threshold_manplot = 1e-05
-# plotname = "Meta_Analysis.plot"
-# x <- MetaGWAS(DataDir = DataDir, SummData = SummData,ResultDir=ResultDir, SNPfile = NULL, useSNPposition = TRUE, UseA1 = UseA1,GCse = GCse, plotname = "Meta_Analysis.plot", pval_filter, top_snp_pval, max_top_snps, chosen_snps_file = NULL, byCHR, pval_threshold_manplot)
+#' \dontrun{
+#' DataDir = system.file("extdata", package = "GXwasR")
+#' ResultDir = tempdir()
+#' data("GXwasRData")
+#' SummData <- list(Summary_Stat_Ex1,Summary_Stat_Ex2)
+#' SNPfile = "UniqueLoci"
+#' useSNPposition = FALSE
+#' UseA1 = TRUE
+#' GCse = TRUE
+#' byCHR = FALSE
+#' pval_filter = "R"
+#' top_snp_pval = 1e-08
+#' max_top_snps = 10
+#' chosen_snps_file = NULL
+#' #chosen_snps_file = "MainSNP"
+#' pval_threshold_manplot = 1e-05
+#' plotname = "Meta_Analysis.plot"
+#' x <- MetaGWAS(DataDir = DataDir, SummData = SummData,ResultDir=ResultDir, 
+#'   SNPfile = NULL, useSNPposition = TRUE, UseA1 = UseA1,GCse = GCse, 
+#'   plotname = "Meta_Analysis.plot", pval_filter, top_snp_pval, max_top_snps, 
+#'   chosen_snps_file = NULL, byCHR, pval_threshold_manplot
+#' )
+#' }
+
 MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile = NULL,
                      useSNPposition = TRUE,
                      UseA1 = FALSE, GCse = TRUE,
