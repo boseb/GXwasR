@@ -2860,7 +2860,7 @@ Xhwe <- function(DataDir, ResultDir = tempdir(), finput, filterSNP = TRUE, foutp
 #' Boolean value, `TRUE` or `FALSE` for filtering out the SNPs or not (i.e., only flagged). The default is `FALSE`.
 #'
 #' @return 
-#' A list object containing excluded or flagged SNPs. If filterSNP = TRUE, the output filtered PLINK binary 
+#' A list object containing excluded or flagged SNPs. If `filterSNP` = `TRUE`, the output filtered PLINK binary 
 #' files will be produced inside `DataDir`.
 #' 
 #' @importFrom stats na.omit

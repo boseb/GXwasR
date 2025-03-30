@@ -26,7 +26,7 @@ This file needs to be in \code{DataDir}.}
 is chosen. The default is NULL.}
 }
 \value{
-A list object containing excluded or flagged SNPs. If filterSNP = TRUE, the output filtered PLINK binary
+A list object containing excluded or flagged SNPs. If \code{filterSNP} = \code{TRUE}, the output filtered PLINK binary
 files will be produced inside \code{DataDir}.
 }
 \description{
