@@ -4358,14 +4358,31 @@ ClumpLD <- function(DataDir, finput, SNPdata, ResultDir = tempdir(),
 
 #' DiffZeroOne: Assessing the Z-score for deviation from one and zero.
 #'
-#' @description This function tests the null hypothesis that a measured statistics (example: genetic correlation, rg for a trait) < 1 using a 1-tailed test compared with a normal distribution (z = (1 − measure statistics)/Standard error).
+#' @description 
+#' This function tests the null hypothesis that a measured statistics (example: genetic correlation, 
+#' rg for a trait) < 1 using a 1-tailed test compared with a normal distribution (z = (1 − measure statistics)/Standard error).
 #' For multiple tests, users are encouraged to apply a Bonferroni multiple-testing correction.
 #'
-#' @param inputdata A dataframe object, contaning three columns, namely, 'Trait' (i.e., the phenotype of interest), 'Stat' (i.e., the measured statistics) and 'SE' (i.e., the standard error of the measured statistics).
-#' @param diffzero Boolean value, 'TRUE' or 'FALSE', specifying to perform diviation from 0 test.
-#' @param diffone Boolean value, 'TRUE' or 'FALSE', specifying to perform diviation from 1 test.
+#' @param inputdata 
+#' A dataframe object, contaning three columns: 
+#' * `Trait` (i.e., the phenotype of interest)
+#' * `Stat` (i.e., the measured statistics)
+#' * `SE` (i.e., the standard error of the measured statistics)
+#' 
+#' @param diffzero 
+#' Boolean value, `TRUE` or `FALSE`, specifying to perform diviation from 0 test.
+#' 
+#' @param diffone 
+#' Boolean value, `TRUE` or `FALSE`, specifying to perform diviation from 1 test.
 #'
-#' @return A dataframe with columns, 'Trait','Stat','SE', 'P0' (i.e, p-value for deviation from zero test) and 'P1' (i.e., p-value for deviation from 1 test)
+#' @return 
+#' A dataframe with columns:
+#' * `Trait`
+#' * `Stat`
+#' * `SE`
+#' * `P0` (i.e, p-value for deviation from zero test) 
+#' * `P1` (i.e., p-value for deviation from 1 test)
+#' 
 #' @export
 #'
 #' @examples
