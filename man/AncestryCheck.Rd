@@ -110,9 +110,9 @@ referLD_r2_threshold <- 0.02
 outlier <- TRUE
 outlier_threshold <- 3
 x <- AncestryCheck(
-  DataDir = DataDir, ResultDir = ResultDir, finput = finput, 
+  DataDir = DataDir, ResultDir = ResultDir, finput = finput,
   reference = "HapMapIII_NCBI36", highLD_regions = highLD_regions,
-  study_pop = study_pop, studyLD = studyLD, referLD = referLD, 
+  study_pop = study_pop, studyLD = studyLD, referLD = referLD,
   outlierOf = "EUR", outlier = outlier, outlier_threshold = outlier_threshold
 )
 }

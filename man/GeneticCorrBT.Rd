@@ -108,27 +108,28 @@ correlation chromosome-wise.
 DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
-byCHR = FALSE
-REMLalgo = 0
+byCHR <- FALSE
+REMLalgo <- 0
 nitr <- 3
 ncores <- 3
 data("GXwasRData")
-phenofile <- Example_phenofile #Cannot be NULL, the interested phenotype column should be labeled as
+phenofile <- Example_phenofile # Cannot be NULL, the interested phenotype column should be labeled as
 #
 cat_covarfile <- NULL
 quant_covarfile <- NULL
-partGRM <- FALSE #Partition the GRM into m parts (by row),
-autosome = TRUE
+partGRM <- FALSE # Partition the GRM into m parts (by row),
+autosome <- TRUE
 Xsome <- TRUE
-cripticut = 0.025
+cripticut <- 0.025
 minMAF <- 0.01 # if MAF filter apply
 maxMAF <- 0.04
-excludeResidual = "TRUE"
+excludeResidual <- "TRUE"
 #
-GC <- GeneticCorrBT(DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = TRUE,
+GC <- GeneticCorrBT(
+  DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = TRUE,
   REMLalgo = 0, nitr = 10, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL,
   partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
-  cripticut = 0.025, minMAF = NULL, maxMAF = NULL,excludeResidual = TRUE, ncores = ncores
+  cripticut = 0.025, minMAF = NULL, maxMAF = NULL, excludeResidual = TRUE, ncores = ncores
 )
 }
 }

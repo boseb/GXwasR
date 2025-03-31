@@ -94,8 +94,9 @@ IBD <- 0.2
 IBDmatrix <- FALSE
 ambi_out <- TRUE
 
-x <- QCsample(DataDir = DataDir, ResultDir = ResultDir, finput = finput, 
-  foutput = foutput, imiss = imiss, het = het, IBD = IBD, 
+x <- QCsample(
+  DataDir = DataDir, ResultDir = ResultDir, finput = finput,
+  foutput = foutput, imiss = imiss, het = het, IBD = IBD,
   ambi_out = ambi_out
 )
 }

@@ -41,8 +41,9 @@ ResultDir <- tempdir()
 finput <- "GXwasR_example"
 foutput <- "Test_output"
 sex <- "females"
-x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, 
-  finput = finput, foutput = foutput,sex = sex, 
+x <- GetMFPlink(
+  DataDir = DataDir, ResultDir = ResultDir,
+  finput = finput, foutput = foutput, sex = sex,
   xplink = FALSE, autoplink = FALSE
 )
 }

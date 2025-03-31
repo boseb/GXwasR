@@ -49,8 +49,9 @@ filter_sample <- "cases"
 keep_remove_sample_file <- "samples_example"
 keep <- FALSE
 
-FilterPlinkSample(DataDir = DataDir,ResultDir = ResultDir,
-  finput = finput,foutput = foutput,keep_remove_sample_file = keep_remove_sample_file, 
+FilterPlinkSample(
+  DataDir = DataDir, ResultDir = ResultDir,
+  finput = finput, foutput = foutput, keep_remove_sample_file = keep_remove_sample_file,
   keep = keep
 )
 }

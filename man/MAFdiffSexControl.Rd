@@ -41,7 +41,7 @@ DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 foutput <- "Test_output"
-x <- MAFdiffSexControl(DataDir, ResultDir, finput,filterSNP = TRUE,foutput = foutput)
+x <- MAFdiffSexControl(DataDir, ResultDir, finput, filterSNP = TRUE, foutput = foutput)
 }
 \author{
 Banabithi Bose

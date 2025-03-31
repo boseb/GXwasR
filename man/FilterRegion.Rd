@@ -75,10 +75,11 @@ DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 foutput <- "PostimputeEX_QC1"
-x <- FilterRegion(DataDir = DataDir, ResultDir = ResultDir, 
-  finput = finput, foutput = foutput, CHRX = TRUE, CHRY = FALSE, 
-  filterPAR = TRUE, filterXTR = TRUE, filterAmpliconic = TRUE, 
-  regionfile = FALSE, filterCHR = NULL, Hg = "38",exclude = TRUE
+x <- FilterRegion(
+  DataDir = DataDir, ResultDir = ResultDir,
+  finput = finput, foutput = foutput, CHRX = TRUE, CHRY = FALSE,
+  filterPAR = TRUE, filterXTR = TRUE, filterAmpliconic = TRUE,
+  regionfile = FALSE, filterCHR = NULL, Hg = "38", exclude = TRUE
 )
 }
 \author{

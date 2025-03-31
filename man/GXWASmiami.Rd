@@ -34,10 +34,10 @@ This function generates Miami plots for GWAS and XWAS.
 }
 \examples{
 data("GXwasRData")
-FemaleWAS <- na.omit(Ffile[,c("SNP","CHR","BP","P")])
-colnames(FemaleWAS) <- c("SNP","CHR","POS","pvalue")
-MaleWAS <- na.omit(Mfile[,c("SNP","CHR","BP","P")])
-colnames(MaleWAS) <- c("SNP","CHR","POS","pvalue")
+FemaleWAS <- na.omit(Ffile[, c("SNP", "CHR", "BP", "P")])
+colnames(FemaleWAS) <- c("SNP", "CHR", "POS", "pvalue")
+MaleWAS <- na.omit(Mfile[, c("SNP", "CHR", "BP", "P")])
+colnames(MaleWAS) <- c("SNP", "CHR", "POS", "pvalue")
 
 GXWASmiami(FemaleWAS = FemaleWAS, MaleWAS = MaleWAS, snp_pval = 0.05)
 }
