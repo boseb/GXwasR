@@ -5185,14 +5185,24 @@ PlinkSummary <- function(DataDir, ResultDir = tempdir(), finput) {
 #'
 #' @author Banabithi Bose
 #'
-#' @description This function filters out the multi-allelic SNPs from the input dataset.
-#' @param DataDir A character string for the file path of the input PLINK binary files.
-#' @param ResultDir A character string for the file path where all output files will be stored. The default is tempdir().
-#' @param finput Character string, specifying the prefix of the input PLINK binary files.
-#' @param foutput Character string, specifying the prefix of the output PLINK binary files. If multi-allelic variants are present, this file will be produced after filtering out these variants.
+#' @description 
+#' This function filters out the multi-allelic SNPs from the input dataset.
+#' 
+#' @param DataDir 
+#' A character string for the file path of the input PLINK binary files.
+#' 
+#' @param ResultDir 
+#' A character string for the file path where all output files will be stored. The default is `tempdir()`.
+#' 
+#' @param finput 
+#' Character string, specifying the prefix of the input PLINK binary files.
+#' 
+#' @param foutput 
+#' Character string, specifying the prefix of the output PLINK binary files. If multi-allelic variants are present, 
+#' this file will be produced after filtering out these variants.
 #'
-#' @return NULL
-#' After multi-allelic variant filtering, the filtered plink files with only biallelic SNPs will be saved in ResultDir.
+#' @return 
+#' `NULL`. After multi-allelic variant filtering, the filtered plink files with only biallelic SNPs will be saved in `ResultDir`.
 #' @export
 #'
 #' @examples
@@ -5201,6 +5211,7 @@ PlinkSummary <- function(DataDir, ResultDir = tempdir(), finput) {
 #' finput <- "GXwasR_example"
 #' foutput <- "Filter_Test"
 #' x <- FilterAllele(DataDir, ResultDir, finput, foutput)
+
 FilterAllele <- function(DataDir, ResultDir, finput, foutput) {
   # Validate DataDir
   if (!is.character(DataDir) || !dir.exists(DataDir)) {
