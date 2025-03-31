@@ -5598,19 +5598,25 @@ FilterSNP <- function(DataDir, ResultDir, finput, foutput, SNPvec, extract = FAL
 
 #' Download Hapmap phase 3 and 1000 Genome phase 3 Data
 #'
+#' @description
 #' Downloads reference data sets from specified URLs based on the reference dataset name and working directory.
 #' Currently supports 'HapMapIII_NCBI36' and 'ThousandGenome'.
 #'
-#' @param refdata A character string specifying the reference dataset to download. Should be one of 'HapMapIII_NCBI36' or 'ThousandGenome'.
-#' @param wdir A character string specifying the working directory where the reference data will be downloaded and extracted.
-#' @return Invisible. The function prints a message upon successful download and extraction of the reference data.
+#' @param refdata 
+#' A character string specifying the reference dataset to download. Should be one of 'HapMapIII_NCBI36' or 'ThousandGenome'.
+#' 
+#' @param wdir 
+#' A character string specifying the working directory where the reference data will be downloaded and extracted.
+#' 
+#' @return 
+#' Invisible. The function prints a message upon successful download and extraction of the reference data.
+#' 
 #' @export
 #' @examples
-#'
-#' # Not run
-#' # Download_reference("ThousandGenome", "path/to/your/directory")
-#' # Download_reference("HapMapIII_NCBI36", tempdir())
-#'
+#' \dontrun{
+#' Download_reference("ThousandGenome", "path/to/your/directory")
+#' Download_reference("HapMapIII_NCBI36", tempdir())
+#' }
 Download_reference <- function(refdata, wdir = tempdir()) {
   # Input validation
   if (!is.character(refdata) || !is.character(wdir)) {
