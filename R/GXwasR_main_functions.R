@@ -4805,13 +4805,21 @@ GeneticCorrBT <- function(DataDir, ResultDir, finput, byCHR = FALSE,
 
 #' SexRegress: Performing linear regression analysis with quantitative response variable.
 #'
-#' @description This function could be used to check association of two variables. For instance, PRS with sex.
+#' @description 
+#' This function could be used to check association of two variables. For instance, PRS with sex.
 #'
-#' @param fdata R dataframe object. The column with header "response" should contain the response variable. All other column are the regressor.
-#' @param regressor_index Integer value, specifying the column number of the main regressor variable.
-#' @param response_index Integer value, specifying the column number of the response variable.
+#' @param fdata 
+#' R dataframe object. The column with header `response` should contain the response variable. All other column are the regressor.
+#' 
+#' @param regressor_index 
+#' Integer value, specifying the column number of the main regressor variable.
+#' 
+#' @param response_index 
+#' Integer value, specifying the column number of the response variable.
 #'
-#' @return Numeric value containing the regression estimate ("Estimate"), standard error ("Std. Error"), statistics ("t value") and p-value ("Pr(>|t|)")
+#' @return
+#' Numeric value containing the regression estimate ("Estimate"), standard error ("Std. Error"), statistics ("t value") and 
+#' p-value (\eqn{Pr(>|t|)})
 #'
 #' @importFrom stats lm
 #'
@@ -4826,7 +4834,7 @@ GeneticCorrBT <- function(DataDir, ResultDir, finput, byCHR = FALSE,
 #' regressor_index <- 2
 #'
 #' x <- SexRegress(fdata, regressor_index, response_index)
-#'
+
 SexRegress <- function(fdata, regressor_index, response_index) {
   # Validate input parameters
   validateInputForSexRegress(fdata, regressor_index, response_index)
