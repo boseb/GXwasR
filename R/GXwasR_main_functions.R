@@ -4869,38 +4869,82 @@ SexRegress <- function(fdata, regressor_index, response_index) {
 #'
 #' @author Banabithi Bose
 #'
-#' @description Filtering Pseudo-Autosomal Region (PAR), X-transposed region (XTR), Ampliconic, filter based on chromosome code or user-defined regions from input plink files.Only one type of filtering can be done from three types, either by region (using regionfile = TRUE), by chromosome (filterCHR) or by any combination of these three, filterPAR, XTR and Ampliconic.
+#' @description 
+#' Filtering Pseudo-Autosomal Region (PAR), X-transposed region (XTR), Ampliconic, filter based on chromosome code or 
+#' user-defined regions from input plink files. Only one type of filtering can be done from three types, either by region 
+#' (using `regionfile` = `TRUE`), by chromosome (`filterCHR`) or by any combination of these three, `filterPAR`, 
+#' `filterXTR` and `filterAmpliconic.`
 
 #'
-#' @param DataDir A character string for the file path of the input PLINK binary files.
-#' @param ResultDir A character string for the file path where all output files will be stored. The default is tempdir().
-#' @param finput Character string, specifying the prefix of the input PLINK binary files.
-#' @param foutput Character string, specifying the prefix of the output PLINK binary files if the filtering option for the SNPs is chosen. The default is "FALSE".
-#' @param CHRX Boolean value, 'TRUE' or 'FALSE' to filter/flag regions from chromosome X. The default is TRUE. Note: CHRX only in effect if one of PAR, XTR or Ampliconic filter is in effect.
-#' @param CHRY Boolean value, 'TRUE' or 'FALSE' to filter/flag regions from chromosome X. The default is FALSE. Note: CHRY only in effect if one of PAR, XTR or Ampliconic filter is in effect.
-#' @param filterPAR Boolean value, 'TRUE' or 'FALSE' to filter out PARs from input plink file. The default is TRUE.
-#' @param filterXTR Boolean value, 'TRUE' or 'FALSE' to filter out XTRs from input plink file. The default is TRUE.
-#' @param filterAmpliconic Boolean value, 'TRUE' or 'FALSE' to filter out Ampliconic regions from input plink file. The default is TRUE.
-#' @param regionfile Character string, specifying the name of the .txt file containing the user-defined regions to be filtered out from input plink file in bed format. The default is FALSE. If regionfile = TRUE, only this filtering will be in effect. Also, PAR, XTR and Ampliconic SNPs from X-chomosome will be flagged and returned.
-#' @param filterCHR Vector value with positive integer, specifying the chromosome code to filter/flag the SNPs. The default is 0, means no filtering based on chromosome code. For non-zero values of this argument, the function will only consider the chromosome code to filter or flag. All other filtering will not work. If filterCHR = TRUE, only this filtering will be in effect. Also, PAR, XTR and Ampliconic SNPs from X-chomosome will be flagged and returned.
-#' @param Hg Character value, '19', or '38', specifying which genome build to use for PAR, XTR and Ampliconic regions. The default is Hg = "19".
-#' @param exclude Boolean value, 'TRUE' or 'FALSE' to filter and flag or only flag the SNPs. The default is TRUE.
+#' @param DataDir 
+#' A character string for the file path of the input PLINK binary files.
+#' 
+#' @param ResultDir 
+#' A character string for the file path where all output files will be stored. The default is `tempdir()`.
+#' 
+#' @param finput 
+#' Character string, specifying the prefix of the input PLINK binary files.
+#' 
+#' @param foutput 
+#' Character string, specifying the prefix of the output PLINK binary files if the filtering option for the SNPs is chosen. 
+#' The default is "FALSE".
+#' 
+#' @param CHRX 
+#' Boolean value, `TRUE` or `FALSE` to filter/flag regions from chromosome X. The default is `TRUE`. Note: `CHRX` only in effect if 
+#' one of `filterPAR`, `filterXTR` or `filterAmpliconic` filter is in effect.
+#' 
+#' @param CHRY 
+#' Boolean value, `TRUE` or `FALSE` to filter/flag regions from chromosome X. The default is `FALSE`. Note: CHRY only in effect 
+#' if one of `filterPAR`, `filterXTR` or `filterAmpliconic` filter is in effect.
+#' 
+#' @param filterPAR 
+#' Boolean value, `TRUE` or `FALSE` to filter out PARs from input plink file. The default is `TRUE`.
+#' 
+#' @param filterXTR 
+#' Boolean value, `TRUE` or `FALSE` to filter out XTRs from input plink file. The default is `TRUE`.
+#' 
+#' @param filterAmpliconic 
+#' Boolean value, `TRUE` or `FALSE` to filter out Ampliconic regions from input plink file. The default is `TRUE`.
+#' 
+#' @param regionfile 
+#' Character string, specifying the name of the .txt file containing the user-defined regions to be filtered out from input plink 
+#' file in bed format. The default is `FALSE`. If `regionfile` = `TRUE`, only this filtering will be in effect. Also, PAR, XTR and 
+#' Ampliconic SNPs from X-chomosome will be flagged and returned.
+#' 
+#' @param filterCHR 
+#' Vector value with positive integer, specifying the chromosome code to filter/flag the SNPs. The default is 0, means no filtering 
+#' based on chromosome code. For non-zero values of this argument, the function will only consider the chromosome code to filter or 
+#' flag. All other filtering will not work. If filterCHR = TRUE, only this filtering will be in effect. Also, PAR, XTR and Ampliconic 
+#' SNPs from X-chomosome will be flagged and returned.
+#' 
+#' @param Hg 
+#' Character value, '19', or '38', specifying which genome build to use for PAR, XTR and Ampliconic regions. The default is Hg = "19".
+#' 
+#' @param exclude 
+#' Boolean value, `TRUE` or `FALSE` to filter and flag or only flag the SNPs. The default is `TRUE`.
 #'
-#' @return A list of three dataframes: PAR containing SNPs from PAR regions; XTR containing SNPs from XTR region and Ampliconic containing SNPs from Ampliconic region.
+#' @return 
+#' A list of three dataframes: PAR containing SNPs from PAR regions; XTR containing SNPs from XTR region and Ampliconic containing 
+#' SNPs from Ampliconic region.
 #'
-#' For non-zero value of filterCHR, a dataframe containing the excluded/flagged SNPs will be returned.
+#' For non-zero value of `filterCHR`, a dataframe containing the excluded/flagged SNPs will be returned.
 #'
-#' For exclude = TRUE, two sets of plink binary files will be produced in ResultDir. One set will have the remaining SNPs after filtering and other one will have the discarded SNPs.
+#' For `exclude` = `TRUE`, two sets of plink binary files will be produced in ResultDir. One set will have the remaining SNPs after 
+#' filtering and other one will have the discarded SNPs.
+#' 
 #' @export
 #'
 #' @examples
-#' # Not Run
-# DataDir <- system.file("extdata", package = "GXwasR")
-# ResultDir <- tempdir()
-# finput <- "GXwasR_example"
-# foutput <- "PostimputeEX_QC1"
-# x <- FilterRegion(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, CHRX = TRUE, CHRY = FALSE, filterPAR = TRUE, filterXTR = TRUE, filterAmpliconic = TRUE, regionfile = FALSE, filterCHR = NULL, Hg = "38",exclude = TRUE)
-# Updated in 3.0
+#' DataDir <- system.file("extdata", package = "GXwasR")
+#' ResultDir <- tempdir()
+#' finput <- "GXwasR_example"
+#' foutput <- "PostimputeEX_QC1"
+#' x <- FilterRegion(DataDir = DataDir, ResultDir = ResultDir, 
+#'   finput = finput, foutput = foutput, CHRX = TRUE, CHRY = FALSE, 
+#'   filterPAR = TRUE, filterXTR = TRUE, filterAmpliconic = TRUE, 
+#'   regionfile = FALSE, filterCHR = NULL, Hg = "38",exclude = TRUE
+#' )
+
 FilterRegion <-
   function(DataDir,
            ResultDir,
