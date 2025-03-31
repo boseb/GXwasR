@@ -3839,7 +3839,7 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
 #' as prefix.
 #'
 #' @references 
-#' \insertAllCited()
+#' \insertAllCited{}
 #' (2) Mägi, R., Morris, A.P. GWAMA: software for genome-wide association meta-analysis. BMC Bioinformatics 11, 288 (2010). https://doi.org/10.1186/1471-2105-11-288
 #' 
 #' @importFrom qqman manhattan qq
@@ -4503,83 +4503,134 @@ SexDiffZscore <- function(inputdata) {
 
 #' GeneticCorrBT: Computing genetic correlation between two traits.
 #'
-#' @description This function computes genetic correlation, a quantitative genetic measure that describes the genetic link between two traits and has been predicted to indicate pleiotropic gene activity or correlation between causative loci in two traits. For example, it does a bivariate GREML analysis to determine the genetic association between two quantitative traits, two binary disease traits from case-control studies, and between a quantitative trait and a binary disease trait following (1,2). If users want, this function gives the flexibility to compute the genetic correlation chromosome-wise.
+#' @description 
+#' This function computes genetic correlation, a quantitative genetic measure that describes the genetic link between two 
+#' traits and has been predicted to indicate pleiotropic gene activity or correlation between causative loci in two traits. 
+#' For example, it does a bivariate GREML analysis to determine the genetic association between two quantitative traits, 
+#' two binary disease traits from case-control studies, and between a quantitative trait and a binary disease trait 
+#' following \insertCite{Yang2011,Lee2012}{GXwasR}. If users want, this function gives the flexibility to compute the genetic 
+#' correlation chromosome-wise.
 #'
-#' @param DataDir A character string for the file path of the all the input files.
-#' @param ResultDir A character string for the file path where all output files will be stored. The default is tempdir().
-#' @param finput Character string, specifying the prefix of the input PLINK binary files for the genotype data. This file needs to be in DataDir.
-#' @param byCHR Boolean value, 'TRUE' or 'FALSE', specifying whether the analysis will be performed chromosome wise or not. The default is FALSE.
-#' @param REMLalgo Integer value of 0, 1 or 2, specifying the algorithm to run REML iterations, 0 for average information (AI), 1 for Fisher-scoring and 2 for EM. The default option is 0, i.e. AI-REML (1).
-#' @param nitr Integer value, specifying the number of iterations for performing the REML. The default is 100.
-#' @param phenofile A dataframe for Bivar RELM has four columns family ID, individual ID and two trait columns. For binary trait, the phenotypic value should be coded as 0 or 1, then it will be recognized as a case-control study (0 for controls and 1 for cases). Missing value should be represented by "-9" or "NA".
-#' @param cat_covarfile A character string, specifying the name of the categorical covariate file which is a plain text file with no header line; columns are family ID, individual ID and discrete covariates. The default is NULL. This file needs to be in DataDir.
-#' @param quant_covarfile A character string, specifying the name of the quantitative covariate file which is a plain text file with no header line; columns are family ID, individual ID and continuous covariates. The default is NULL. This file needs to be in DataDir.
-#' @param computeGRM Boolean value, 'TRUE' or 'FALSE', specifying whether to compute GRM matrices or not. The default is TRUE.
-#' @param grmfile_name A string of characters specifying the prefix of autosomal .grm.bin file.
+#' @param DataDir 
+#' A character string for the file path of the all the input files.
+#' 
+#' @param ResultDir 
+#' A character string for the file path where all output files will be stored. The default is `tempdir()`.
+#' 
+#' @param finput 
+#' Character string, specifying the prefix of the input PLINK binary files for the genotype data. This file needs to be in `DataDir`.
+#' 
+#' @param byCHR 
+#' Boolean value, `TRUE` or `FALSE`, specifying whether the analysis will be performed chromosome wise or not. The default is `FALSE`.
+#' 
+#' @param REMLalgo 
+#' Integer value of 0, 1 or 2, specifying the algorithm to run REML iterations, 0 for average information (AI), 1 for Fisher-scoring and 
+#' 2 for EM. The default option is 0, i.e. AI-REML (1).
+#' 
+#' @param nitr 
+#' Integer value, specifying the number of iterations for performing the REML. The default is 100.
+#' 
+#' @param phenofile 
+#' A dataframe for Bivar RELM has four columns `family ID`, `individual ID` and two trait columns. For binary trait, the phenotypic value 
+#' should be coded as 0 or 1, then it will be recognized as a case-control study (0 for controls and 1 for cases). Missing value should 
+#' be represented by "-9" or "NA".
+#' 
+#' @param cat_covarfile 
+#' A character string, specifying the name of the categorical covariate file which is a plain text file with no header line; columns are 
+#' `family ID`, `individual ID` and discrete covariates. The default is `NULL`. This file needs to be in `DataDir`.
+#' 
+#' @param quant_covarfile 
+#' A character string, specifying the name of the quantitative covariate file which is a plain text file with no header line; columns 
+#' are `family ID`, `individual ID` and continuous covariates. The default is `NULL`. This file needs to be in `DataDir`.
+#' 
+#' @param computeGRM 
+#' Boolean value, `TRUE` or `FALSE`, specifying whether to compute GRM matrices or not. The default is `TRUE`.
+#' 
+#' @param grmfile_name 
+#' A string of characters specifying the prefix of autosomal .grm.bin file. Users need to provide separate GRM files for autosomes 
+#' and X chromosome in `ResultDir`. The X chromosomal GRM file should have "x" added in the autosomal prefix as file name.
 #'
-#' Users need to provide separate GRM files for autosomes and X chromosome in ResultDir.
+#' For instance, if autosomal file is "ABC.grm.bin", then X chromosomal file should be "xABC.grm.bim". If you are providing 
+#' chromosome-wise GRMs, then the prefix should add "ChrNumber_" at the starting of the prefix like, "Chr1_ABC.grm.bin". 
+#' The default is `NULL`.
+#' 
+#' @param partGRM 
+#' Boolean value, `TRUE` or `FALSE`, specifying whether the GRM will be partitioned into n parts (by row) in GREML model. The default is `FALSE`.
+#' 
+#' @param autosome 
+#' Boolean value, `TRUE` or `FALSE`, specifying whether estimate of heritability will be done for autosomes or not. The default is `TRUE`.
+#' 
+#' @param Xsome 
+#' Boolean value, `TRUE` or `FALSE`, specifying whether estimate of heritability will be done for X chromosome or not. The default is `TRUE`.
+#' 
+#' @param nGRM 
+#' Integer value, specifying the number of the partition of the GRM in GREML model. The default is 3.
+#' 
+#' @param cripticut 
+#' Numeric value, specifying the threshold to create a new GRM of "unrelated" individuals in GREML model. The default is arbitrary 
+#' chosen as 0.025 following \insertCite{Yang2011}{GXwasR}.
+#' 
+#' @param minMAF 
+#' Positive numeric value (< maxMAF), specifying the minimum threshold for the MAF filter of the SNPs in the Bivariate GREML model.
+#' 
+#' @param maxMAF 
+#' Positive numeric value (minMAF,1), specifying the maximum threshold for the MAF filter of the SNPs in the Bivariate GREML model.
+#' 
+#' @param excludeResidual 
+#' Boolean value, `TRUE` or `FALSE`, specifying whether to drop the residual covariance from the model. Recommended to set this `TRUE` 
+#' if the traits were measured on different individuals. The default is `FALSE`.
+#' 
+#' @param ncores 
+#' Integer value, specifying the number of cores to be used.
 #'
-#' The X chromosomal GRM file should have "x" added in the autosomal prefix as file name.
-#'
-#' For instance, if autosomal file is "ABC.grm.bin", then X chromosomal file should be "xABC.grm.bim".
-#'
-#' If you are providing chromosome-wise GRMs, then the prefix should add "ChrNumber_" at the starting
-#'
-#' of the prefix like, "Chr1_ABC.grm.bin". The default is NULL.
-#' @param partGRM Boolean value, 'TRUE' or 'FALSE', specifying whether the GRM will be partitioned into n parts (by row) in GREML model. The default is FALSE.
-#' @param autosome Boolean value, 'TRUE' or 'FALSE', specifying whether estimate of heritability will be done for autosomes or not. The default is ‘TRUE’.
-#' @param Xsome Boolean value, 'TRUE' or 'FALSE', specifying whether estimate of heritability will be done for X chromosome or not. The default is ‘TRUE’.
-#' @param nGRM Integer value, specifying the number of the partition of the GRM in GREML model. The default is 3.
-#' @param cripticut Numeric value, specifying the threshold to create a new GRM of "unrelated" individuals in GREML model. The default is arbitrary chosen as 0.025 following (1).
-#' @param minMAF Positive numeric value (< maxMAF), specifying the minimum threshold for the MAF filter of the SNPs in the Bivariate GREML model.
-#' @param maxMAF Positive numeric value (minMAF,1), specifying the maximum threshold for the MAF filter of the SNPs in the Bivariate GREML model.
-#' @param excludeResidual Boolean value, 'TRUE' or 'FALSE', specifying whether to drop the residual covariance from the model. Recommended to set this TRUE if the traits were measured on different individuals. The default is FALSE.
-#' @param ncores Integer value, specifying the number of cores to be used.
-#'
-#' @return A dataframe with minimum three columns, such as "Source" (i.e., source of heritability),
-#' "Variance" (i.e., estimated heritability), and "SE" (i.e., standard error of the estimated heritability).
-#' Source column will have rows, such as V(G)_tr1 (genetic variance for trait 1),V(G)_tr2 (genetic variance for trait 2),
+#' @return 
+#' A dataframe with minimum three columns:
+#' 
+#' * Source" (i.e., source of heritability)
+#' * Variance" (i.e. estimated heritability)
+#' * SE" (i.e., standard error of the estimated heritability)
+#' 
+#' Source column will have rows, such as V(G)_tr1 (genetic variance for trait 1), V(G)_tr2 (genetic variance for trait 2),
 #' C(G)_tr12 (genetic covariance between traits 1 and 2),V(e)_tr1 (residual variance for trait 1), V(e)_tr2 (residual variance for trait 2),
 #' C(e)_tr12 (residual covariance between traits 1 and 2), Vp_tr1 (proportion of variance explained by all SNPs for trait 1),
 #' Vp_tr2 (proportion of variance explained by all SNPs for trait 2), V(G)/Vp_tr1 (phenotypic variance for trait 1),
 #' V(G)/Vp_tr2 (phenotypic variance for trait 2), rG (genetic correlation) and n (sample size). In case of chromosome-wise
 #' analysis, there will be 'chromosome' column for chromosome code.
 #'
-#'
 #' @export
 #'
 #' @references
-#' (1)	Yang et al. (2011) GCTA: a tool for Genome-wide Complex Trait Analysis. Am J Hum Genet. 88(1): 76-82.
-#' (2) Lee et al. (2012) Estimation of pleiotropy between complex diseases using SNP-derived genomic relationships and restricted maximum likelihood. Bioinformatics, 28: 2540-2542. PubMed ID: 22843982.
+#' \insertAllCited{}
 #'
 #' @examples
-#' # Not Run
-# DataDir <- system.file("extdata", package = "GXwasR")
-# ResultDir <- tempdir()
-# finput <- "GXwasR_example"
-# byCHR = FALSE
-# REMLalgo = 0
-# nitr <- 3
-# ncores <- 3
-# #phenofile <- "GCphenofile.phen"
-# #load("/projects/b1137/BBose/GXwasR/data/Example_phenofile.Rda")
-# data("GXwasRData")
-# phenofile <- Example_phenofile #Cannot be NULL, the interested phenotype column should be labeled as
+#' \dontrun{
+#' DataDir <- system.file("extdata", package = "GXwasR")
+#' ResultDir <- tempdir()
+#' finput <- "GXwasR_example"
+#' byCHR = FALSE
+#' REMLalgo = 0
+#' nitr <- 3
+#' ncores <- 3
+#' data("GXwasRData")
+#' phenofile <- Example_phenofile #Cannot be NULL, the interested phenotype column should be labeled as
 #' #
-# cat_covarfile <- NULL
-# quant_covarfile <- NULL
-# partGRM <- FALSE #Partition the GRM into m parts (by row),
-# autosome = TRUE
-# Xsome <- TRUE
-# cripticut = 0.025
-# minMAF <- 0.01 # if MAF filter apply
-# maxMAF <- 0.04
-# excludeResidual = "TRUE"
+#' cat_covarfile <- NULL
+#' quant_covarfile <- NULL
+#' partGRM <- FALSE #Partition the GRM into m parts (by row),
+#' autosome = TRUE
+#' Xsome <- TRUE
+#' cripticut = 0.025
+#' minMAF <- 0.01 # if MAF filter apply
+#' maxMAF <- 0.04
+#' excludeResidual = "TRUE"
 #' #
-# GC <- GeneticCorrBT(DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = TRUE,
-#                     REMLalgo = 0, nitr = 10, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL,
-#                     partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
-#                     cripticut = 0.025, minMAF = NULL, maxMAF = NULL,excludeResidual = TRUE, ncores = ncores)
+#' GC <- GeneticCorrBT(DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = TRUE,
+#'                     REMLalgo = 0, nitr = 10, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL,
+#'                     partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
+#'                     cripticut = 0.025, minMAF = NULL, maxMAF = NULL,excludeResidual = TRUE, ncores = ncores
+#' )
+#' }
+
 GeneticCorrBT <- function(DataDir, ResultDir, finput, byCHR = FALSE,
                           REMLalgo = c(0, 1, 2), nitr = 100, phenofile, cat_covarfile = NULL, quant_covarfile = NULL,
                           computeGRM = TRUE, grmfile_name = NULL,
