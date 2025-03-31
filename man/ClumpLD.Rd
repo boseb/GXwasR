@@ -87,7 +87,8 @@ clump_p2 <- 0.001
 clump_r2 <- 0.5
 clump_kb <- 250
 byCHR <- TRUE
-clumpedResult <- ClumpLD(DataDir, finput, SNPdata, ResultDir, clump_p1, 
+clumpedResult <- ClumpLD(
+  DataDir, finput, SNPdata, ResultDir, clump_p1,
   clump_p2, clump_r2, clump_kb, byCHR
 )
 }

@@ -172,42 +172,43 @@ Prior to using this function, it is recommended to apply QCsnp and QCsample to e
 }
 \examples{
 \dontrun{
-DataDir = system.file("extdata", package = "GXwasR")
-ResultDir = tempdir()
-precomputedLD = NULL
+DataDir <- system.file("extdata", package = "GXwasR")
+ResultDir <- tempdir()
+precomputedLD <- NULL
 finput <- "GXwasR_example"
 data("GXwasRData")
-test.sumstats <- na.omit(Summary_Stat_Ex1[Summary_Stat_Ex1$TEST=="ADD",c(1:4,6:8)])
-colnames(test.sumstats) <- c("chr","rsid","pos","a1","n_eff","beta","beta_se")
-summarystat = test.sumstats
-ncores = 3
-model = "GREML"
-byCHR = FALSE
-r2_LD = 0
-LDSC_blocks = 20
-REMLalgo = 0
-nitr = 3
-cat_covarfile = NULL
-quant_covarfile = NULL
-prevalence = 0.01
-partGRM = FALSE
-autosome = TRUE
-Xsome = TRUE
-nGRM = 3
-cripticut = 0.025
-minMAF = NULL
-maxMAF = NULL
-hg = "hg19"
-PlotIndepSNP = TRUE
-IndepSNP_window_size = 50
-IndepSNP_step_size = 5
-IndepSNP_r2_threshold = 0.02
-H2 <- EstimateHerit(DataDir = DataDir, ResultDir = ResultDir, finput = finput, 
-  summarystat = NULL, ncores, model = "GREML", byCHR = TRUE, r2_LD = 0, 
-  LDSC_blocks = 20,REMLalgo = 0, nitr = 100, cat_covarfile = NULL, quant_covarfile = NULL,
+test.sumstats <- na.omit(Summary_Stat_Ex1[Summary_Stat_Ex1$TEST == "ADD", c(1:4, 6:8)])
+colnames(test.sumstats) <- c("chr", "rsid", "pos", "a1", "n_eff", "beta", "beta_se")
+summarystat <- test.sumstats
+ncores <- 3
+model <- "GREML"
+byCHR <- FALSE
+r2_LD <- 0
+LDSC_blocks <- 20
+REMLalgo <- 0
+nitr <- 3
+cat_covarfile <- NULL
+quant_covarfile <- NULL
+prevalence <- 0.01
+partGRM <- FALSE
+autosome <- TRUE
+Xsome <- TRUE
+nGRM <- 3
+cripticut <- 0.025
+minMAF <- NULL
+maxMAF <- NULL
+hg <- "hg19"
+PlotIndepSNP <- TRUE
+IndepSNP_window_size <- 50
+IndepSNP_step_size <- 5
+IndepSNP_r2_threshold <- 0.02
+H2 <- EstimateHerit(
+  DataDir = DataDir, ResultDir = ResultDir, finput = finput,
+  summarystat = NULL, ncores, model = "GREML", byCHR = TRUE, r2_LD = 0,
+  LDSC_blocks = 20, REMLalgo = 0, nitr = 100, cat_covarfile = NULL, quant_covarfile = NULL,
   prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
-  cripticut = 0.025, minMAF = NULL, maxMAF = NULL,hg = "hg19",PlotIndepSNP = TRUE, 
-  IndepSNP_window_size = 50,IndepSNP_step_size = 5,IndepSNP_r2_threshold = 0.02,
+  cripticut = 0.025, minMAF = NULL, maxMAF = NULL, hg = "hg19", PlotIndepSNP = TRUE,
+  IndepSNP_window_size = 50, IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02,
   highLD_regions = highLD_hg19
 )
 }

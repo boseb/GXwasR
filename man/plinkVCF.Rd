@@ -48,14 +48,14 @@ and missing sex.
 }
 \examples{
 \dontrun{
-finput <- "GXwasR_example" #Plink file
+finput <- "GXwasR_example" # Plink file
 foutput <- "GXwasR_example1"
 DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
-PtoV = TRUE
-VtoP = FALSE
-Famfile = NULL
-PVbyCHR = FALSE
+PtoV <- TRUE
+VtoP <- FALSE
+Famfile <- NULL
+PVbyCHR <- FALSE
 x <- plinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)
 }
 }

@@ -195,11 +195,11 @@ gene_approximation <- TRUE
 beta_par <- c(1, 25)
 weights_function <- NULL
 geno_variance_weights <- "se.beta"
-method = "kuonen"
-acc_devies = 1e-8
-lim_devies = 1e+6
-rho = TRUE
-skato_p_threshold = 0.8
+method <- "kuonen"
+acc_devies <- 1e-8
+lim_devies <- 1e+6
+rho <- TRUE
+skato_p_threshold <- 0.8
 mac_threshold <- 3
 sample_size <- 4000
 reference_matrix_used <- FALSE
@@ -213,11 +213,12 @@ omit_linear_variant <- FALSE
 kernel_p_method <- "kuonen"
 anno_type <- ""
 GenetestResult <- TestXGene(DataDir, ResultDir, finput, sumstat, gene_file,
-  gene_range, score_file, ref_data, max_gene, sample_size, genebasedTest = "SKAT", 
-  gene_approximation, beta_par, weights_function, geno_variance_weights, 
-  kernel_p_method, acc_devies, lim_devies, rho, skato_p_threshold, anno_type, 
-  mac_threshold, reference_matrix_used, regularize_fun, pca_var_fraction, 
-  flm_basis_function, flm_num_basis, flm_poly_order, flip_genotypes, 
+  gene_range, score_file, ref_data, max_gene, sample_size,
+  genebasedTest = "SKAT",
+  gene_approximation, beta_par, weights_function, geno_variance_weights,
+  kernel_p_method, acc_devies, lim_devies, rho, skato_p_threshold, anno_type,
+  mac_threshold, reference_matrix_used, regularize_fun, pca_var_fraction,
+  flm_basis_function, flm_num_basis, flm_poly_order, flip_genotypes,
   omit_linear_variant
 )
 }

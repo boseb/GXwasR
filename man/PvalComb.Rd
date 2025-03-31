@@ -103,8 +103,9 @@ colnames(SumstatFemale)[3] <- "POS"
 # colnames(SumstatMale)[3]<- "POS"
 # SumstatFemale <- Summary_Stat_Ex2
 # colnames(SumstatFemale)[3]<- "POS"
-PvalComb_Result <- PvalComb(SumstatMale = SumstatMale, SumstatFemale = SumstatFemale, 
-  combtest = "fisher.method", MF.mc.cores = 1, snp_pval = 0.001, plot.jpeg = FALSE, 
+PvalComb_Result <- PvalComb(
+  SumstatMale = SumstatMale, SumstatFemale = SumstatFemale,
+  combtest = "fisher.method", MF.mc.cores = 1, snp_pval = 0.001, plot.jpeg = FALSE,
   suggestiveline = 3, genomewideline = 5.69897, ncores = 1
 )
 

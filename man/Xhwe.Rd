@@ -36,7 +36,8 @@ DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 foutput <- "Test_output"
-x <- Xhwe(DataDir = DataDir, ResultDir = ResultDir, 
+x <- Xhwe(
+  DataDir = DataDir, ResultDir = ResultDir,
   finput = finput, foutput = foutput, filterSNP = TRUE
 )
 x

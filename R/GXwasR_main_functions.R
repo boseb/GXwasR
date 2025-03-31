@@ -2,93 +2,93 @@
 #'
 #' @author Banabithi Bose
 #'
-#' @description 
-#' This function displays the result of the ancestry analysis in a color-coded scatter plot of the first two principal 
-#' components for samples of the reference populations and the study population. Specifically, it compares the study samples' 
-#' ancestry labels to a panel representing a reference population, and it also flags the outlier samples with respect to a 
-#' chosen reference population. 
-#' 
-#' The function first filters the reference and study data for non-A-T or G-C SNPs. It next conducts 
-#' LD pruning, fixes the chromosome mismatch between the reference and study datasets, checks for allele flips, updates the 
-#' locations, and flips the alleles. The two datasets are then joined, and the resulting genotype dataset is subjected to Principal 
-#' Component Analysis (PCA). 
-#' 
-#' The detection of population structure down to the level of the reference dataset can then be accomplished 
-#' using PCA on this combined genotyping panel. For instance, the center of the European reference samples is determined using the 
-#' data from principal components 1 and 2 (median(PC1 europeanRef), median(PC2 europeanRef)). It determines the European reference 
-#' samples' maximum Euclidean distance (maxDist) from this center. 
-#' 
-#' All study samples that are non-European, or outliers, are those whose Euclidean distances from the center are more than or 
-#' equal to the radius r= outlier threshold* maxDist. This function utilizes the HapMap phase 3 data in NCBI 36 and 1000GenomeIII 
-#' in CGRCh37. Both study and reference datasets should be of the same genome build. If not, users need to lift over one of the 
+#' @description
+#' This function displays the result of the ancestry analysis in a color-coded scatter plot of the first two principal
+#' components for samples of the reference populations and the study population. Specifically, it compares the study samples'
+#' ancestry labels to a panel representing a reference population, and it also flags the outlier samples with respect to a
+#' chosen reference population.
+#'
+#' The function first filters the reference and study data for non-A-T or G-C SNPs. It next conducts
+#' LD pruning, fixes the chromosome mismatch between the reference and study datasets, checks for allele flips, updates the
+#' locations, and flips the alleles. The two datasets are then joined, and the resulting genotype dataset is subjected to Principal
+#' Component Analysis (PCA).
+#'
+#' The detection of population structure down to the level of the reference dataset can then be accomplished
+#' using PCA on this combined genotyping panel. For instance, the center of the European reference samples is determined using the
+#' data from principal components 1 and 2 (median(PC1 europeanRef), median(PC2 europeanRef)). It determines the European reference
+#' samples' maximum Euclidean distance (maxDist) from this center.
+#'
+#' All study samples that are non-European, or outliers, are those whose Euclidean distances from the center are more than or
+#' equal to the radius r= outlier threshold* maxDist. This function utilizes the HapMap phase 3 data in NCBI 36 and 1000GenomeIII
+#' in CGRCh37. Both study and reference datasets should be of the same genome build. If not, users need to lift over one of the
 #' datasets to the same build.
 #'
-#' @param DataDir 
+#' @param DataDir
 #' A character string for the file path of the input PLINK binary files.
-#' 
-#' @param ResultDir 
+#'
+#' @param ResultDir
 #' A character string for the file path where all output files will be stored. The default is `tempdir()`.
-#' 
-#' @param finput 
+#'
+#' @param finput
 #' Character string, specifying the prefix of the input PLINK binary files for the study samples.
-#' 
-#' @param reference 
-#' Boolean value,'HapMapIII_NCBI36' and 'ThousandGenome', specifying Hapmap Phase3 \insertCite{HapMap2010}{GXwasR} and 1000 Genomes 
+#'
+#' @param reference
+#' Boolean value,'HapMapIII_NCBI36' and 'ThousandGenome', specifying Hapmap Phase3 \insertCite{HapMap2010}{GXwasR} and 1000 Genomes
 #' phase III \insertCite{1000Genomes2015}{GXwasR} reference population, respectively. The default is 'HapMapIII_NCBI36'.
-#' 
-#' @param filterSNP 
-#' Boolean value, `TRUE` or `FALSE` for filtering out the SNPs. The default is `TRUE`. We recommend setting it `FALSE` 
+#'
+#' @param filterSNP
+#' Boolean value, `TRUE` or `FALSE` for filtering out the SNPs. The default is `TRUE`. We recommend setting it `FALSE`
 #' only when the users are sure that they could join the study and reference samples directly.
-#' 
-#' @param studyLD 
+#'
+#' @param studyLD
 #' Boolean value, `TRUE` or `FALSE` for applying linkage disequilibrium (LD)-based filtering on study genotype data.
-#' 
-#' @param studyLD_window_size 
+#'
+#' @param studyLD_window_size
 #' Integer value, specifying a window size in variant count or kilobase for LD-based filtering of the variants for the study data.
-#' 
-#' @param studyLD_step_size 
+#'
+#' @param studyLD_step_size
 #' Integer value, specifying a variant count to shift the window at the end of each step for LD filtering for the study data.
-#' 
-#' @param studyLD_r2_threshold 
+#'
+#' @param studyLD_r2_threshold
 #' Numeric value between 0 to 1 of pairwise \eqn{r^2} threshold for LD-based filtering for the study data.
-#' 
-#' @param referLD 
+#'
+#' @param referLD
 #' Boolean value, 'TRUE' or 'FALSE' for applying linkage disequilibrium (LD)-based filtering on reference genotype data.
-#' 
-#' @param referLD_window_size 
+#'
+#' @param referLD_window_size
 #' Integer value, specifying a window size in variant count or kilobase for LD-based filtering of the variants for the reference data.
-#' 
-#' @param referLD_step_size 
+#'
+#' @param referLD_step_size
 #' Integer value, specifying a variant count to shift the window at the end of each step for LD filtering for the reference data.
-#' 
-#' @param referLD_r2_threshold 
+#'
+#' @param referLD_r2_threshold
 #' Numeric value between 0 to 1 of pairwise \eqn{r^2} threshold for LD-based filtering for the reference data.
-#' 
-#' @param highLD_regions 
+#'
+#' @param highLD_regions
 #' A dataframe with known high LD regions \insertCite{Anderson2010}{GXwasR} is provided with the package.
-#' 
-#' @param study_pop 
+#'
+#' @param study_pop
 #' A dataframe containing two columns for study in first column, sample ID (i.e., IID) and in second column, the ancestry label.
-#' 
-#' @param outlier 
+#'
+#' @param outlier
 #' Boolean value, `TRUE` or `FALSE`, specifying outlier detection will be performed or not.
-#' 
-#' @param outlierOf 
+#'
+#' @param outlierOf
 #' Chracter string, specifying the reference ancestry name for detecting outlier samples. The default is "outlierOf = "EUR".
-#' 
-#' @param outlier_threshold 
-#' Numeric value, specifying the threshold to be be used to detect outlier samples. This threshold will be multiplied with the 
-#' Eucledean distance from the center of the PC 1 and PC2 to the maximum Euclidean distance of the reference samples. Study samples 
+#'
+#' @param outlier_threshold
+#' Numeric value, specifying the threshold to be be used to detect outlier samples. This threshold will be multiplied with the
+#' Eucledean distance from the center of the PC 1 and PC2 to the maximum Euclidean distance of the reference samples. Study samples
 #' outside this distance will be considered as outlier. The default is 3.
-#' 
+#'
 #' @importFrom data.table as.data.table
 #' @importFrom ggplot2 ggplot aes geom_hline geom_vline guides geom_point guide_legend scale_shape_manual
 #'
 #' @return A dataframe with the IDs of non-European samples as outliers.
 #'
-#' @references 
+#' @references
 #' \insertAllCited{}
-#' 
+#'
 #' @export
 #'
 #' @examples
@@ -111,12 +111,11 @@
 #' outlier <- TRUE
 #' outlier_threshold <- 3
 #' x <- AncestryCheck(
-#'   DataDir = DataDir, ResultDir = ResultDir, finput = finput, 
+#'   DataDir = DataDir, ResultDir = ResultDir, finput = finput,
 #'   reference = "HapMapIII_NCBI36", highLD_regions = highLD_regions,
-#'   study_pop = study_pop, studyLD = studyLD, referLD = referLD, 
+#'   study_pop = study_pop, studyLD = studyLD, referLD = referLD,
 #'   outlierOf = "EUR", outlier = outlier, outlier_threshold = outlier_threshold
 #' )
-
 AncestryCheck <-
   function(DataDir,
            ResultDir = tempdir(),
@@ -319,173 +318,173 @@ AncestryCheck <-
 #' TestXGene: Performing gene-based association test using GWAS/XWAS summary statistics.
 #'
 #' @author Banabithi Bose
-#' 
-#' @description 
-#' This function performs gene-based association tests using GWAS/XWAS summary statistics and SNP-SNP correlation 
-#' matrices. For  SNP-SNP correlation matrices, users have the flexibility to use either the base genotype data or 1000 Genomes 
-#' Phase 3 reference genotype data. Users also have options to define the regional positions of genes to include the SNPs according 
-#' to their investigation. 
-#' 
-#' This function computes gene-wise SNP-SNP correlation matrices and can perform nine different gene-based tests, such as, “BT" (burden test), 
-#' "SKAT" (sequence kernel association test), "SKATO" (combination of BT and SKAT), "sumchi" (sum of χ2-statistics), "ACAT" (aggregated 
-#' Cauchy association test for combining P values), "PCA"(principal component approach), "FLM"( functional multiple linear regression model), 
-#' "simpleM" (Bonferroni correction test), "minp" (minimum P-value) leveraging PLINK1.9 \insertCite{Purcell2007}{GXwasR} and sumFREGAT 
+#'
+#' @description
+#' This function performs gene-based association tests using GWAS/XWAS summary statistics and SNP-SNP correlation
+#' matrices. For  SNP-SNP correlation matrices, users have the flexibility to use either the base genotype data or 1000 Genomes
+#' Phase 3 reference genotype data. Users also have options to define the regional positions of genes to include the SNPs according
+#' to their investigation.
+#'
+#' This function computes gene-wise SNP-SNP correlation matrices and can perform nine different gene-based tests, such as, “BT" (burden test),
+#' "SKAT" (sequence kernel association test), "SKATO" (combination of BT and SKAT), "sumchi" (sum of χ2-statistics), "ACAT" (aggregated
+#' Cauchy association test for combining P values), "PCA"(principal component approach), "FLM"( functional multiple linear regression model),
+#' "simpleM" (Bonferroni correction test), "minp" (minimum P-value) leveraging PLINK1.9 \insertCite{Purcell2007}{GXwasR} and sumFREGAT
 #' \insertCite{Svishcheva2019,Belonogova2022}{GXwasR} tools.
 #'
-#' Though this function implicitly performs X-linked gene-based test, it is flexible to perform this analysis genome-wide. 
+#' Though this function implicitly performs X-linked gene-based test, it is flexible to perform this analysis genome-wide.
 #' For the details about the different tests, please follow the associated paper.
 #'
-#' 
-#' @param DataDir 
+#'
+#' @param DataDir
 #' A character string for the file path of the all the input files.
-#' 
-#' @param ResultDir 
+#'
+#' @param ResultDir
 #' A character string for the file path where all output files will be stored. The default is `tempdir()`.
-#' 
-#' @param finput 
-#' Character string, specifying the prefix of the input PLINK binary files for the genotype data. This file is used to compute the 
-#' correlation between the SNPs. This file needs to be in DataDir. If the base genotype data is unavailable, then users can use the 
-#' 1000 Genomes Project samples. Users should use the population that most closely represents the base sample. For ACAT model, this 
+#'
+#' @param finput
+#' Character string, specifying the prefix of the input PLINK binary files for the genotype data. This file is used to compute the
+#' correlation between the SNPs. This file needs to be in DataDir. If the base genotype data is unavailable, then users can use the
+#' 1000 Genomes Project samples. Users should use the population that most closely represents the base sample. For ACAT model, this
 #' parameter is not mandatory and could be set `NULL`.
-#' 
-#' @param sumstat 
-#' A dataframe object with GWAS summary statistics. When the base-genotype data is used to compute genetic correlations, the mandatory 
-#' columns are: 
-#' 
-#' * Column 1: `CHROM` (i.e., chromosome code), 
-#' * Column 2: `POS` (i.e., base-pair position), 
-#' * Column 3: `ID` (i.e. SNP IDs), 
-#' * Column 4: `P` (i.e., p-values), 
-#' * Column 5: `BETA` (i.e., effect-size), 
-#' * Column 6: `A1` (i.e., effect allele), 
-#' * Column 7: `A2` (i.e., alternative allele) and 
-#' * Column 8: `EAF` (i.e., the effect allele frequency) 
-#' 
-#' These are mandatory when base-genotype data is used to compute genetic correlations. Otherwise, if the users are using reference data, 
-#' then columns 5 to 8 are optional. Also, in that case, columns, such as `REF` (i.e., reference allele), and `ALT` (i.e., alternative allele) 
-#' could be present to compare alleles with those in the reference file and exclude genetic variants if alleles do not match. There could be an 
+#'
+#' @param sumstat
+#' A dataframe object with GWAS summary statistics. When the base-genotype data is used to compute genetic correlations, the mandatory
+#' columns are:
+#'
+#' * Column 1: `CHROM` (i.e., chromosome code),
+#' * Column 2: `POS` (i.e., base-pair position),
+#' * Column 3: `ID` (i.e. SNP IDs),
+#' * Column 4: `P` (i.e., p-values),
+#' * Column 5: `BETA` (i.e., effect-size),
+#' * Column 6: `A1` (i.e., effect allele),
+#' * Column 7: `A2` (i.e., alternative allele) and
+#' * Column 8: `EAF` (i.e., the effect allele frequency)
+#'
+#' These are mandatory when base-genotype data is used to compute genetic correlations. Otherwise, if the users are using reference data,
+#' then columns 5 to 8 are optional. Also, in that case, columns, such as `REF` (i.e., reference allele), and `ALT` (i.e., alternative allele)
+#' could be present to compare alleles with those in the reference file and exclude genetic variants if alleles do not match. There could be an
 #' additional column, `ANNO` with functional annotations (like "intron_variant", "synonymous", "missense" etc.)
-#' 
-#' @param gene_file 
-#' Character string, specifying the prefix of the name of a .txt file listing genes in refFlat format. This file needs to be in `DataDir`. The 
-#' X-linked gene files, "Xlinkedgenes_hg19.txt" and "Xlinkedgenes_hg38.txt" and autosomal gene files, “Autosomes_hg19.txt” and “Autosomes_hg38.txt” 
+#'
+#' @param gene_file
+#' Character string, specifying the prefix of the name of a .txt file listing genes in refFlat format. This file needs to be in `DataDir`. The
+#' X-linked gene files, "Xlinkedgenes_hg19.txt" and "Xlinkedgenes_hg38.txt" and autosomal gene files, “Autosomes_hg19.txt” and “Autosomes_hg38.txt”
 #' can be specified. The default is "Xlinkedgenes_hg19.txt". The genome built should be in agreement with the analysis.
-#' 
-#' @param gene_range 
+#'
+#' @param gene_range
 #' Integer value, specifying the up stream and down stream range (in kilo base) of a gene for SNPs to be considered. The default is 500000.
-#' 
-#' @param score_file 
-#' Character string, specifying the prefix of a file which will be used to produce score files with Z scores from P values and beta input 
+#'
+#' @param score_file
+#' Character string, specifying the prefix of a file which will be used to produce score files with Z scores from P values and beta input
 #' from GWAS summary statistics.
-#' 
-#' @param ref_data 
-#' Character string, specifying the path to a reference dataframe with additional data needed to recode user data according to correlation matrices 
-#' that will be used. It contains `ID` column with names of  SNPs,  `REF` and `ALT` columns with alleles that were coded as 0 and 1, respectively. 
-#' Effect sizes from data will be inverted for variants with effect alleles different from `ALT` alleles in reference data. If presented, `REF` and 
-#' `ALT` columns from the input data will be used to sort out variants with alleles different from those in reference data. This dataframe  can also 
-#' be a source of map data and allele frequencies if they are not present in data. `AF` column in the reference file represents the allele frequency 
+#'
+#' @param ref_data
+#' Character string, specifying the path to a reference dataframe with additional data needed to recode user data according to correlation matrices
+#' that will be used. It contains `ID` column with names of  SNPs,  `REF` and `ALT` columns with alleles that were coded as 0 and 1, respectively.
+#' Effect sizes from data will be inverted for variants with effect alleles different from `ALT` alleles in reference data. If presented, `REF` and
+#' `ALT` columns from the input data will be used to sort out variants with alleles different from those in reference data. This dataframe  can also
+#' be a source of map data and allele frequencies if they are not present in data. `AF` column in the reference file represents the allele frequency
 #' of `ALT` allele. The default is "ref1KG.MAC5.EUR_AF.RData".
-#' 
-#' @param max_gene 
-#' Positive integer value, specifying the number of genes for which the gene-based test will be performed. The default is NULL to consider 
+#'
+#' @param max_gene
+#' Positive integer value, specifying the number of genes for which the gene-based test will be performed. The default is NULL to consider
 #' all the genes.
-#' 
-#' @param sample_size 
+#'
+#' @param sample_size
 #' Positive integer value, specifying the sample size of the GWAS. Only needed for FLM and PCA models.
-#' 
-#' @param genebasedTest 
+#'
+#' @param genebasedTest
 #' Character string, specifying the name of the gene-based test. Nine different tests can be specified, "SKAT","SKATO","sumchi","ACAT","BT","PCA",
 #' "FLM","simpleM","minp". The default is "SKAT".
-#' 
-#' @param beta_par 
-#' Boolean value, `TRUE` or `FALSE`, specifying whether approximation for large genes (>= 500 SNPs) should be used. Applicable for SKAT, SKATO, 
+#'
+#' @param beta_par
+#' Boolean value, `TRUE` or `FALSE`, specifying whether approximation for large genes (>= 500 SNPs) should be used. Applicable for SKAT, SKATO,
 #' sumchi, PCA, FLM (default = `TRUE` for these methods).
-#' 
-#' @param weights_function 
-#' A function of MAF to assign weights for each genetic variant. By default is `NULL`. In this case the weights will be calculated using 
+#'
+#' @param weights_function
+#' A function of MAF to assign weights for each genetic variant. By default is `NULL`. In this case the weights will be calculated using
 #' the beta distribution.
-#' 
-#' @param geno_variance_weights 
-#' Character string, indicating whether scores should be weighted by the variance of genotypes: "none" (i.e., no weights applied, resulting 
-#' in a sum chi-square test); "se.beta" (i.e., scores weighted by variance of genotypes estimated from P values and effect sizes); "af" 
+#'
+#' @param geno_variance_weights
+#' Character string, indicating whether scores should be weighted by the variance of genotypes: "none" (i.e., no weights applied, resulting
+#' in a sum chi-square test); "se.beta" (i.e., scores weighted by variance of genotypes estimated from P values and effect sizes); "af"
 #' (i.e., scores weighted by variance of genotypes calculated as \eqn{AF * (1 - AF)}, where AF is allele frequency.
-#' 
-#' @param kernel_p_method 
-#' Character string, specifying the method for computing P value in kernel-based tests, such as SKAT, SKATO and sumchi. Available methods 
+#'
+#' @param kernel_p_method
+#' Character string, specifying the method for computing P value in kernel-based tests, such as SKAT, SKATO and sumchi. Available methods
 #' are "kuonen" (9), "davies" (10) and "hybrid" (11). The default is "kuonen".
-#' 
-#' @param acc_devies 
+#'
+#' @param acc_devies
 #' Positive numeric value, specifying the accuracy parameter for "davies" method. The default is 1e-8.
-#' 
-#' @param lim_devies 
+#'
+#' @param lim_devies
 #' Positive numeric value, specifying the limit parameter for "davies" method. The default is 1e+6.
-#' 
-#' @param rho 
-#' Logical value, 'TRUE' or 'FALSE' or can be a vector of grid values from 0 to 1. If TRUE, the optimal test (SKAT-O) is performed (12). 
+#'
+#' @param rho
+#' Logical value, 'TRUE' or 'FALSE' or can be a vector of grid values from 0 to 1. If TRUE, the optimal test (SKAT-O) is performed (12).
 #' The default grid is c(0, 0.1^2, 0.2^2, 0.3^2, 0.4^2, 0.5^2, 0.5, 1).
-#' 
-#' @param skato_p_threshold 
-#' Positive numeric value, specifying the largest P value that will be considered as important when performing computational optimization in 
+#'
+#' @param skato_p_threshold
+#' Positive numeric value, specifying the largest P value that will be considered as important when performing computational optimization in
 #' SKAT-O. All P values larger than skato_p_threshold will be processed via burden test. The default is 0.8
-#' 
-#' @param anno_type 
+#'
+#' @param anno_type
 #' A character (or character vector) indicating annotation types to be used. The default is "" (i.e, nothing).
-#' 
-#' @param mac_threshold 
-#' Integer value, specifying the threshold of MACs (Minor allele content) calculated from MAFs. In ACAT, scores with MAC <= 10 will be 
+#'
+#' @param mac_threshold
+#' Integer value, specifying the threshold of MACs (Minor allele content) calculated from MAFs. In ACAT, scores with MAC <= 10 will be
 #' combined using Burden test.
-#' 
-#' @param regularize_fun 
-#' Character string, specifying the one of two regularization algorithms if ‘reference_matrix’ is TRUE:  'LH' (default) or 'derivLH'. 
+#'
+#' @param regularize_fun
+#' Character string, specifying the one of two regularization algorithms if ‘reference_matrix’ is TRUE:  'LH' (default) or 'derivLH'.
 #' Currently, both give similar results.
-#' 
+#'
 #' @param pca_var_fraction P
-#' ositive numeric value, specifying the minimal proportion of genetic variance within the region that should be explained by principal 
+#' ositive numeric value, specifying the minimal proportion of genetic variance within the region that should be explained by principal
 #' components used in PCA method. This is also valid in 'simpleM'. The default is 0.85.
-#' 
-#' @param flm_basis_function 
-#' Character string, specifying the name of a basis function type for beta-smooth in FLM method. Can be set to "bspline" (B-spline basis) 
+#'
+#' @param flm_basis_function
+#' Character string, specifying the name of a basis function type for beta-smooth in FLM method. Can be set to "bspline" (B-spline basis)
 #' or "fourier" (Fourier basis, default).
-#' 
-#' @param flm_num_basis 
+#'
+#' @param flm_num_basis
 #' Positive integer value, specifying the number of basis functions to be used for beta-smooth in FLM method. The default is 25.
-#' 
-#' @param flm_poly_order 
-#' Positive integer value, specifying the polynomial order to be used in "bspline" for FLM model. The default = 4, which corresponds to 
+#'
+#' @param flm_poly_order
+#' Positive integer value, specifying the polynomial order to be used in "bspline" for FLM model. The default = 4, which corresponds to
 #' the cubic B-splines. This has no effect if only Fourier bases are used
-#' 
+#'
 #' @param flip_genotypes L
-#' ogical value, `TRUE` or `FALSE`, indicating whether the genotypes of some genetic variants should be flipped (relabelled) for their 
+#' ogical value, `TRUE` or `FALSE`, indicating whether the genotypes of some genetic variants should be flipped (relabelled) for their
 #' better functional representation (13). The default is `FALSE`.
-#' 
-#' @param omit_linear_variant 
-#' Logical value, `TRUE` or `FALSE`, indicating whether to omit linearly dependent genetic variants. It was done in the FLM test (4). 
+#'
+#' @param omit_linear_variant
+#' Logical value, `TRUE` or `FALSE`, indicating whether to omit linearly dependent genetic variants. It was done in the FLM test (4).
 #' The default is `FALSE`.
-#' 
-#' @param gene_approximation 
-#' Boolean value, `TRUE` or `FALSE`, specifying whether approximation for large genes (>= 500 SNPs) should be used. Applicable for SKAT, 
+#'
+#' @param gene_approximation
+#' Boolean value, `TRUE` or `FALSE`, specifying whether approximation for large genes (>= 500 SNPs) should be used. Applicable for SKAT,
 #' SKATO, sumchi, PCA, FLM. The default is `TRUE` for these methods).
-#' 
-#' @param reference_matrix_used 
-#' Boolean value, `TRUE` or `FALSE` logical indicating whether the correlation matrices were generated using the reference matrix. The 
-#' default is `FALSE`. If  `TRUE`, regularization algorithms will be applied to ensure the invertibility and numerical stability of 
+#'
+#' @param reference_matrix_used
+#' Boolean value, `TRUE` or `FALSE` logical indicating whether the correlation matrices were generated using the reference matrix. The
+#' default is `FALSE`. If  `TRUE`, regularization algorithms will be applied to ensure the invertibility and numerical stability of
 #' the matrices.
 #'
-#' @returns 
+#' @returns
 #' A data frame with columns:
-#' 
-#' * gene  
-#' * chrom 
-#' * start 
-#' * end 
-#' * markers (i.e., numbers of SNPs), 
-#' * filtered.markers (i.e. filtered SNPs) 
-#' * pvalue (i.e., p-value). 
-#' 
-#' Additionally, for  “BT”, there will be “beta” (i.e., gene-level estimates of betas) and “beta.se” (i.e., standard errors of betas). 
-#' For “FLM”, there will be the “model” column with the names of the functional models used for each region. Names shortly describe the 
-#' functional basis and the number of basis functions used. E.g., "F25" means 25 Fourier basis functions, "B15" means 15 B-spline basis 
-#' functions. For “PCA”, there will be the “ncomponents” (the number of the principal components used for each region) and 
+#'
+#' * gene
+#' * chrom
+#' * start
+#' * end
+#' * markers (i.e., numbers of SNPs),
+#' * filtered.markers (i.e. filtered SNPs)
+#' * pvalue (i.e., p-value).
+#'
+#' Additionally, for  “BT”, there will be “beta” (i.e., gene-level estimates of betas) and “beta.se” (i.e., standard errors of betas).
+#' For “FLM”, there will be the “model” column with the names of the functional models used for each region. Names shortly describe the
+#' functional basis and the number of basis functions used. E.g., "F25" means 25 Fourier basis functions, "B15" means 15 B-spline basis
+#' functions. For “PCA”, there will be the “ncomponents” (the number of the principal components used for each region) and
 #' “explained.variance.fraction” (i.e., the proportion of genetic variance they make up) columns.
 #'
 #' @references
@@ -513,11 +512,11 @@ AncestryCheck <-
 #' beta_par <- c(1, 25)
 #' weights_function <- NULL
 #' geno_variance_weights <- "se.beta"
-#' method = "kuonen"
-#' acc_devies = 1e-8
-#' lim_devies = 1e+6
-#' rho = TRUE
-#' skato_p_threshold = 0.8
+#' method <- "kuonen"
+#' acc_devies <- 1e-8
+#' lim_devies <- 1e+6
+#' rho <- TRUE
+#' skato_p_threshold <- 0.8
 #' mac_threshold <- 3
 #' sample_size <- 4000
 #' reference_matrix_used <- FALSE
@@ -531,15 +530,15 @@ AncestryCheck <-
 #' kernel_p_method <- "kuonen"
 #' anno_type <- ""
 #' GenetestResult <- TestXGene(DataDir, ResultDir, finput, sumstat, gene_file,
-#'   gene_range, score_file, ref_data, max_gene, sample_size, genebasedTest = "SKAT", 
-#'   gene_approximation, beta_par, weights_function, geno_variance_weights, 
-#'   kernel_p_method, acc_devies, lim_devies, rho, skato_p_threshold, anno_type, 
-#'   mac_threshold, reference_matrix_used, regularize_fun, pca_var_fraction, 
-#'   flm_basis_function, flm_num_basis, flm_poly_order, flip_genotypes, 
+#'   gene_range, score_file, ref_data, max_gene, sample_size,
+#'   genebasedTest = "SKAT",
+#'   gene_approximation, beta_par, weights_function, geno_variance_weights,
+#'   kernel_p_method, acc_devies, lim_devies, rho, skato_p_threshold, anno_type,
+#'   mac_threshold, reference_matrix_used, regularize_fun, pca_var_fraction,
+#'   flm_basis_function, flm_num_basis, flm_poly_order, flip_genotypes,
 #'   omit_linear_variant
 #' )
 #' }
-
 TestXGene <- function(DataDir,
                       ResultDir = tempdir(),
                       finput,
@@ -727,32 +726,32 @@ TestXGene <- function(DataDir,
 #'
 #' @author Banabithi Bose
 #'
-#' @description 
-#' This function uses the GWAS summary statistics from sex-stratified tests like FM01comb or FM02comb, to evaluate 
+#' @description
+#' This function uses the GWAS summary statistics from sex-stratified tests like FM01comb or FM02comb, to evaluate
 #' the difference in effect size between males and females at each SNP using a t-test.
 #'
-#' The input dataframes should only include X-chromosome in order to obtain results for sex differences based solely 
+#' The input dataframes should only include X-chromosome in order to obtain results for sex differences based solely
 #' on X-linked loci.
-#' 
-#' @param Mfile 
-#' R dataframe of summary statistics of GWAS or XWAS of male samples with six mandatory columns, SNP(Variant),CHR(Chromosome number), 
+#'
+#' @param Mfile
+#' R dataframe of summary statistics of GWAS or XWAS of male samples with six mandatory columns, SNP(Variant),CHR(Chromosome number),
 #' BP(Base pair position),A1(Minor allele),BETA_M(Effect size) and SE_M(Standard error). This can be generated by running FM01comb or
 #' FM02comb model with GXWAS function.
-#' 
-#' @param Ffile 
-#' R dataframe of summary statistics of GWAS or XWAS of male samples with six mandatory columns, SNP(Variant),CHR(Chromosome number), 
+#'
+#' @param Ffile
+#' R dataframe of summary statistics of GWAS or XWAS of male samples with six mandatory columns, SNP(Variant),CHR(Chromosome number),
 #' BP(Base pair position),A1(Minor allele),BETA_F(Effect size) and SE_F(Standard error). This can be generated by running FM01comb or
 #' FM02comb model with GXWAS function.
-#' 
-#' @return 
+#'
+#' @return
 #' R dataframe with seven columns:
-#' 
+#'
 #' * `SNP` (Variant)
 #' * `CHR` (Chromosome number)
 #' * `BP` (Base pair position)
 #' * `A1` (Minor allele)
 #' * `tstat` (t-statistics for effect-size test)
-#' * `P` (p-value) and 
+#' * `P` (p-value) and
 #' * `adjP` (Bonferroni corrected p-value)
 #'
 #' @importFrom stats cor pt
@@ -763,7 +762,6 @@ TestXGene <- function(DataDir,
 #' data("GXwasRData")
 #' Difftest <- SexDiff(Mfile, Ffile)
 #' significant_snps <- Difftest[Difftest$adjP < 0.05, ] # 9
-
 SexDiff <- function(Mfile, Ffile) {
   # Validate input data
   if (!validateInputDataSexDiff(Mfile, Ffile)) {
@@ -812,92 +810,92 @@ SexDiff <- function(Mfile, Ffile) {
 #'
 #' @author Banabithi Bose
 #'
-#' @description 
-#' This function performs quality control on genetic variant data from PLINK binary files. It filters variants based on parameters 
-#' like minor allele frequency, Hardy-Weinberg equilibrium, call rate, and differential missingness between cases and controls. 
+#' @description
+#' This function performs quality control on genetic variant data from PLINK binary files. It filters variants based on parameters
+#' like minor allele frequency, Hardy-Weinberg equilibrium, call rate, and differential missingness between cases and controls.
 #' It also handles monomorphic SNPs and applies linkage disequilibrium-based filtering if specified.
 #'
-#' @param DataDir 
+#' @param DataDir
 #' A character string for the file path of the input PLINK binary files.
-#' 
-#' @param ResultDir 
+#'
+#' @param ResultDir
 #' A character string for the file path where all output files will be stored. The default is `tempdir()`.
-#' 
-#' @param finput 
-#' Character string, specifying the prefix of the input PLINK binary files with both male and female samples. This file needs 
+#'
+#' @param finput
+#' Character string, specifying the prefix of the input PLINK binary files with both male and female samples. This file needs
 #' to be in `DataDir`.
-#' 
-#' @param foutput 
-#' Character string, specifying the prefix of the output PLINK binary files if the filtering option for the SNPs is chosen. 
+#'
+#' @param foutput
+#' Character string, specifying the prefix of the output PLINK binary files if the filtering option for the SNPs is chosen.
 #' The default is "FALSE".
-#' 
-#' @param casecontrol 
-#' Boolean value, `TRUE` or `FALSE` indicating if the input plink files has cases-control status or not. 
+#'
+#' @param casecontrol
+#' Boolean value, `TRUE` or `FALSE` indicating if the input plink files has cases-control status or not.
 #' The default is `FALSE`.
-#' 
-#' @param hweCase 
-#' Numeric value between 0 to 1 or `NULL` for removing SNPs which fail Hardy-Weinberg equilibrium for cases. 
+#'
+#' @param hweCase
+#' Numeric value between 0 to 1 or `NULL` for removing SNPs which fail Hardy-Weinberg equilibrium for cases.
 #' The default is `NULL`.
-#' 
-#' @param hweControl 
-#' Numeric value between 0 to 1 or `NULL` for removing SNPs which fail Hardy-Weinberg equilibrium for controls. 
+#'
+#' @param hweControl
+#' Numeric value between 0 to 1 or `NULL` for removing SNPs which fail Hardy-Weinberg equilibrium for controls.
 #' The default is `NULL`.
-#' 
-#' @param hwe 
-#' Numeric value between 0 to 1 or `NULL` for removing SNPs which fail Hardy-Weinberg equilibrium for entire dataset. 
+#'
+#' @param hwe
+#' Numeric value between 0 to 1 or `NULL` for removing SNPs which fail Hardy-Weinberg equilibrium for entire dataset.
 #' The default is `NULL`.
-#' 
-#' @param maf 
-#' Numeric value between 0 to 1 for removing SNPs with minor allele frequency less than the specified threshold. 
+#'
+#' @param maf
+#' Numeric value between 0 to 1 for removing SNPs with minor allele frequency less than the specified threshold.
 #' The default is 0.05.
-#' 
-#' @param geno 
-#' Numeric value between 0 to 1 for removing SNPs that have less than the specified call rate. The default is 0.05. 
-#' 
+#'
+#' @param geno
+#' Numeric value between 0 to 1 for removing SNPs that have less than the specified call rate. The default is 0.05.
+#'
 #' Users can set this as `NULL` to not apply this filter.
-#' 
-#' @param monomorphicSNPs 
+#'
+#' @param monomorphicSNPs
 #' Boolean value, `TRUE` or `FALSE` for filtering out monomorphic SNP. The default is `TRUE`.
-#' 
-#' @param caldiffmiss 
-#' Boolean value, `TRUE` or `FALSE`, specifying whether to compute differential missingness between cases and controls 
+#'
+#' @param caldiffmiss
+#' Boolean value, `TRUE` or `FALSE`, specifying whether to compute differential missingness between cases and controls
 #' for each SNP (threshold is \eqn{0.05/length(unique(No. of. SNPs in the test))}). The default is `TRUE.`
-#' 
-#' @param diffmissFilter 
-#' Boolean value, `TRUE` or `FALSE`, specifying whether to filter out the SNPs or only flagged them for differential 
+#'
+#' @param diffmissFilter
+#' Boolean value, `TRUE` or `FALSE`, specifying whether to filter out the SNPs or only flagged them for differential
 #' missingness in cases vs contols. The deafailt is `TRUE`.
-#' 
-#' @param dmissX 
-#' Boolean value, `TRUE` or `FALSE` for computing differential missingness between cases and controls for X chromosome 
+#'
+#' @param dmissX
+#' Boolean value, `TRUE` or `FALSE` for computing differential missingness between cases and controls for X chromosome
 #' SNPs only. The default is `FALSE`. The diffmissFilter will work for all these SNPs.
-#' 
-#' @param dmissAutoY 
-#' Boolean value, `TRUE` or `FALSE` for computing differential missingness between cases and controls for SNPs on autosomes 
-#' and Y chromosome only. The default is `FALSE`. 
-#' 
-#' If `dmissX` and `dmissAutoY` are both `FALSE`, then this will be computed genome-wide. The `diffmissFilter` will work 
+#'
+#' @param dmissAutoY
+#' Boolean value, `TRUE` or `FALSE` for computing differential missingness between cases and controls for SNPs on autosomes
+#' and Y chromosome only. The default is `FALSE`.
+#'
+#' If `dmissX` and `dmissAutoY` are both `FALSE`, then this will be computed genome-wide. The `diffmissFilter` will work
 #' for all these SNPs.
-#' 
-#' @param ld_prunning 
+#'
+#' @param ld_prunning
 #' Boolean value, `TRUE` or `FALSE` for applying linkage disequilibrium (LD)-based filtering.
-#' 
-#' @param highLD_regions 
+#'
+#' @param highLD_regions
 #' A dataframe with known high LD regions \insertCite{Anderson2010}{GXwasR} is provided with the package.
-#' 
-#' @param window_size 
+#'
+#' @param window_size
 #' Integer value, specifying a window size in the variant counts for LD-based filtering. The default is 50.
-#' 
-#' @param step_size 
+#'
+#' @param step_size
 #' Integer value, specifying a variant count to shift the window at the end of each step for LD filtering. The default is 5.
-#' 
-#' @param r2_threshold 
+#'
+#' @param r2_threshold
 #' Numeric value between 0 to 1 of pairwise \eqn{r^2} threshold for LD-based filtering. The default is 0.02.
-#' 
+#'
 #' @references
 #' \insertAllCited{}
 #'
-#' @return 
-#' A list of two objects, namely, `MonomorSNPs` and `DiffMissSNPs` containing monomorphic SNPs and SNPs with differential missingness 
+#' @return
+#' A list of two objects, namely, `MonomorSNPs` and `DiffMissSNPs` containing monomorphic SNPs and SNPs with differential missingness
 #' in cases vs controls, respectively. Output plink binary files in the working directory.
 #' @export
 #'
@@ -915,17 +913,17 @@ SexDiff <- function(Mfile, Ffile) {
 #' monomorphicSNPs <- FALSE
 #' caldiffmiss <- FALSE
 #' ld_prunning <- FALSE
-#' x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, 
-#'   geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl, 
-#'   ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, 
+#' x <- QCsnp(
+#'   DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput,
+#'   geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl,
+#'   ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs,
 #'   caldiffmiss = caldiffmiss
 #' )
-
 QCsnp <-
   function(DataDir,
            ResultDir = tempdir(),
            finput,
-           foutput ="FALSE",
+           foutput = "FALSE",
            casecontrol = TRUE,
            hweCase = NULL,
            hweControl = NULL,
@@ -1062,163 +1060,163 @@ QCsnp <-
 #'
 #' @author Banabithi Bose
 #'
-#' @description This functions performs two types of heritability estimation, (i)GREML:Genomic relatedness matrix (GRM) restricted 
-#' maximum likelihood-based method following GCTA \insertCite{Yang2011}{GXwasR} and (ii)LDSC: LD score regression-based method 
+#' @description This functions performs two types of heritability estimation, (i)GREML:Genomic relatedness matrix (GRM) restricted
+#' maximum likelihood-based method following GCTA \insertCite{Yang2011}{GXwasR} and (ii)LDSC: LD score regression-based method
 #' following \insertCite{Bulik-Sullivan2014,Prive2020}{GXwasR}. For the details, please follow the associated paper.
 #'
 #' Prior to using this function, it is recommended to apply QCsnp and QCsample to ensure data quality control.
 #'
-#' @param DataDir 
+#' @param DataDir
 #' A character string for the file path of the all the input files. The default is `NULL`.
-#' 
-#' @param ResultDir 
+#'
+#' @param ResultDir
 #' A character string for the file path where all output files will be stored. The default is `tempdir()`.
-#' 
-#' @param finput 
-#' Character string, specifying the prefix of the input PLINK binary files for the genotype data. This file needs to be in `DataDir`. 
-#' For LDSC model, if the original genotype data is not available, Hapmap 3 or 1000Genome data can be used. If use NULL, then you need 
+#'
+#' @param finput
+#' Character string, specifying the prefix of the input PLINK binary files for the genotype data. This file needs to be in `DataDir`.
+#' For LDSC model, if the original genotype data is not available, Hapmap 3 or 1000Genome data can be used. If use NULL, then you need
 #' to provide `precomputedLD` argument. See below.
-#' 
-#' @param precomputedLD 
+#'
+#' @param precomputedLD
 #' A dataframe object as LD matrix with columns: `CHR`, `SNP`, `BP`, `ld_size`, `MAF`, `ld_score`. . The default is `NULL`.
-#' 
-#' @param chi2_thr1 
+#'
+#' @param chi2_thr1
 #' Numeric value for threshold on chi2 in step 1 of LDSC regression. Default is 30.
-#' 
-#' @param chi2_thr2 
+#'
+#' @param chi2_thr2
 #' Numeric value for threshold on chi2 in step 2. Default is `Inf` (none).
-#' 
-#' @param intercept 
+#'
+#' @param intercept
 #' Numeric value to constrain the intercept to some value (e.g. 1) in LDSC regression. Default is `NULL`.
-#' 
-#' @param summarystat 
-#' A dataframe object with GWAS summary statistics. The mandatory column headers in this dataframe are 
-#' * `chr` (Chromosome code), 
+#'
+#' @param summarystat
+#' A dataframe object with GWAS summary statistics. The mandatory column headers in this dataframe are
+#' * `chr` (Chromosome code),
 #' * `pos` (Basepair position)
 #' * `a1` (First allele code)
 #' * `rsid` (i.e., SNP idenitifier)
 #' * `beta` (i.e., effect-size or logarithm of odds ratio)
 #' * `beta_se` (i.e., standard error of beta)
-#' * `P` (i.e., p-values) 
+#' * `P` (i.e., p-values)
 #' * `n_eff` (i.e., effective sample size)
-#' 
+#'
 #' For case-control study, effective sample size should be \eqn{4 / (1/<# of cases> + 1/<# of controls>)}. The default is `NULL`.
-#' 
-#' @param ncores 
+#'
+#' @param ncores
 #' Integer value, specifying the number of cores to be used for running LDSC model. The default is 2.
-#' 
-#' @param model 
-#' Character string, specifying the heritability estimation model. There are two options, “GREML” or “LDSC”. The default is “GREML”. 
-#' 
+#'
+#' @param model
+#' Character string, specifying the heritability estimation model. There are two options, “GREML” or “LDSC”. The default is “GREML”.
+#'
 #' Note: argument For LDSC, DataDir and finput can be `NULL`.
-#' 
-#' @param byCHR 
+#'
+#' @param byCHR
 #' Boolean value, `TRUE` or `FALSE`, specifying whether the analysis will be performed chromosome wise or not. The default is `FALSE`.
-#' 
-#' @param r2_LD 
+#'
+#' @param r2_LD
 #' Numeric value, specifying the LD threshold for clumping in LDSC model. The default is 0.
-#' 
-#' @param LDSC_blocks 
-#' Integer value, specifying the block size for performing jackknife variance estimator in LDSC model following \insertCite{Prive2020}{GXwasR}. 
+#'
+#' @param LDSC_blocks
+#' Integer value, specifying the block size for performing jackknife variance estimator in LDSC model following \insertCite{Prive2020}{GXwasR}.
 #' The default is 200.
-#' 
-#' @param REMLalgo 
-#' Integer value of 0, 1 or 2, specifying the algorithm to run REML iterations, 0 for average information (AI), 1 for Fisher-scoring and 
+#'
+#' @param REMLalgo
+#' Integer value of 0, 1 or 2, specifying the algorithm to run REML iterations, 0 for average information (AI), 1 for Fisher-scoring and
 #' 2 for EM. The default option is 0, i.e. AI-REML \insertCite{Yang2011}{GXwasR}.
-#' 
-#' @param nitr 
+#'
+#' @param nitr
 #' Integer value, specifying the number of iterations for performing the REML. The default is 100.
-#' 
-#' @param cat_covarfile 
-#' A character string, specifying the name of the categorical covariate file which is a plain text file with no header line; columns 
+#'
+#' @param cat_covarfile
+#' A character string, specifying the name of the categorical covariate file which is a plain text file with no header line; columns
 #' are family ID, individual ID and discrete covariates. The default is `NULL`. This file needs to be in `DataDir`.
-#' 
-#' @param quant_covarfile 
-#' A character string, specifying the name of the quantitative covariate file which is a plain text file with no header line; 
+#'
+#' @param quant_covarfile
+#' A character string, specifying the name of the quantitative covariate file which is a plain text file with no header line;
 #' columns are family ID, individual ID and continuous covariates. The default is `NULL`. This file needs to be in `DataDir`.
-#' 
-#' @param prevalence 
-#' Numeric value, specifying the disease prevalence. The default is `NULL`. 
-#' 
+#'
+#' @param prevalence
+#' Numeric value, specifying the disease prevalence. The default is `NULL`.
+#'
 #' Note: for the continuous trait value, users should use the default.
-#' 
-#' @param computeGRM 
+#'
+#' @param computeGRM
 #' Boolean value, `TRUE` or `FALSE`, specifying whether to compute GRM matrices or not. The default is `TRUE`.
-#' 
-#' @param grmfile_name 
-#' A string of characters specifying the prefix of autosomal .grm.bin file. Users need to provide separate GRM files 
+#'
+#' @param grmfile_name
+#' A string of characters specifying the prefix of autosomal .grm.bin file. Users need to provide separate GRM files
 #' for autosomes and X chromosome in `ResultDir`.
 #'
-#' The X chromosomal GRM file should have "x" added in the autosomal prefix as file name. For instance, if autosomal file 
+#' The X chromosomal GRM file should have "x" added in the autosomal prefix as file name. For instance, if autosomal file
 #' is "ABC.grm.bin", then X chromosomal file should be "xABC.grm.bim".
 #'
-#' If you are providing chromosome-wise GRMs, then the prefix should add "ChrNumber_" at the start of the prefix like, 
+#' If you are providing chromosome-wise GRMs, then the prefix should add "ChrNumber_" at the start of the prefix like,
 #' "Chr1_ABC.grm.bin". The default is NULL.
-#' 
-#' @param partGRM 
+#'
+#' @param partGRM
 #' Boolean value, `TRUE` or `FALSE`, specifying whether the GRM will be partitioned into n parts (by row) in GREML model. The default is `FALSE`.
-#' 
-#' @param autosome 
+#'
+#' @param autosome
 #' Boolean value, `TRUE` or `FALSE`, specifying whether estimate of heritability will be done for autosomes or not. The default is `TRUE`.
-#' 
-#' @param Xsome 
+#'
+#' @param Xsome
 #' Boolean value, `TRUE` or `FALSE`, specifying whether estimate of heritability will be done for X chromosome or not. The default is `TRUE`.
-#' 
-#' @param nGRM 
+#'
+#' @param nGRM
 #' Integer value, specifying the number of the partision of the GRM in GREML model. The default is 3.
-#' 
-#' @param cripticut 
-#' Numeric value, specifying the threshold to create a new GRM of "unrelated" individuals in GREML model. The default is arbitrary chosen 
+#'
+#' @param cripticut
+#' Numeric value, specifying the threshold to create a new GRM of "unrelated" individuals in GREML model. The default is arbitrary chosen
 #' as 0.025 following \insertCite{Yang2011}{GXwasR}.
-#' 
-#' @param minMAF 
-#' Positive numeric value (0,1), specifying the minimum threshold for the MAF filter of the SNPs in the GREML model. This value cannot be 
-#' greater than `maxMAF` parameter. The default is `NULL`. For `NULL`, maximum MAF value of the genotype data will be computed and printed 
+#'
+#' @param minMAF
+#' Positive numeric value (0,1), specifying the minimum threshold for the MAF filter of the SNPs in the GREML model. This value cannot be
+#' greater than `maxMAF` parameter. The default is `NULL`. For `NULL`, maximum MAF value of the genotype data will be computed and printed
 #' on the plot.
-#' 
-#' @param maxMAF 
-#' Positive numeric value (0,1), specifying the maximum threshold for the MAF filter of the SNPs in the GREML model. This value cannot be less 
+#'
+#' @param maxMAF
+#' Positive numeric value (0,1), specifying the maximum threshold for the MAF filter of the SNPs in the GREML model. This value cannot be less
 #' than `minMAF` parameter. The default is `NULL`. For `NULL`, minimum MAF value of the genotype data will be computed and printed on the plot.
-#' 
-#' @param hg 
-#' Boolean value, specifying the genome built, “hg19” or “hg38” to use chromosome length from UCSC genome browser and getting genes and proteins 
+#'
+#' @param hg
+#' Boolean value, specifying the genome built, “hg19” or “hg38” to use chromosome length from UCSC genome browser and getting genes and proteins
 #' according to this built. The default is “hg19”.
-#' 
-#' @param PlotIndepSNP 
-#' Boolean value, `TRUE` or `FALSE`, specifying whether to use independent SNPs i.e., chromosome-wise LD pruned SNPs in the plots or not. 
+#'
+#' @param PlotIndepSNP
+#' Boolean value, `TRUE` or `FALSE`, specifying whether to use independent SNPs i.e., chromosome-wise LD pruned SNPs in the plots or not.
 #' The default is `TRUE`.
-#' 
-#' @param indepSNPs 
+#'
+#' @param indepSNPs
 #' A dataframe with independent SNP ids with column name "rsid". The default is `NULL`.
-#' 
-#' @param IndepSNP_window_size 
+#'
+#' @param IndepSNP_window_size
 #' Integer value, specifying a window size in variant count or kilobase for LD-based filtering. The default is 50.
-#' 
-#' @param IndepSNP_step_size 
-#' Integer value, specifying a variant count to shift the window at the end of each step for LD filtering for pruned SNPs in the plots. 
+#'
+#' @param IndepSNP_step_size
+#' Integer value, specifying a variant count to shift the window at the end of each step for LD filtering for pruned SNPs in the plots.
 #' The default is 5.
-#' 
-#' @param IndepSNP_r2_threshold 
+#'
+#' @param IndepSNP_r2_threshold
 #' Numeric value between 0 to 1 of pairwise \eqn{r^2} threshold for LD-based filtering for pruned SNPs in the plots. The default is 0.02.
-#' 
-#' @param highLD_regions 
-#' Character string, specifying the .txt file name with genomic regions with high LD for using in finding pruned SNPs in the plots. 
+#'
+#' @param highLD_regions
+#' Character string, specifying the .txt file name with genomic regions with high LD for using in finding pruned SNPs in the plots.
 #' This file needs to be in `DataDir`.
-#' 
-#' @param plotjpeg 
+#'
+#' @param plotjpeg
 #' Boolean value, `TRUE` or `FALSE`, specifying whether to save the plots in jpeg file in `ResultDir`. The default is `TRUE`.
-#' 
-#' @param plotname 
+#'
+#' @param plotname
 #' String of character value specifying the name of the jpeg file with the plots. The deafult is "Heritability_Plots".
-#' 
-#' @returns 
-#' A dataframe with maximum eight columns for GREML (here, three columns if running genome-wide) and ten columns for LDSC model if byCHR is `TRUE`. 
-#' The columns, such as, "chromosome"(i.e., chromosome code),"snp_proportion" (i.e.,chromosome-wise SNP propotion)", "no.of.genes" (i.e., number of genes per chromosome), 
-#' "no.of.proteins" (i.e., number of genes per chromosome),"size_mb" (i.e., chromosome length), "Source" (i.e., source of heritability), 
-#' "Variance" (i.e., estimated heritability), and "SE" (i.e., standard error of the estimated heritability) are common for both GREML and LDSC model. 
-#' The column, "Intercept" (i.e., LDSC regression intercept) and "Int_SE" (i.e., standard error of the intercept) will be two extra columns for LDSC models. 
-#' Source column will have rows, such as `V(1)` (i.e., name of genetic variance), `V(e)` (i.e., residual variance), `V(p)` (i.e., phenotypic variance), `V(1)/Vp` (i.e., 
-#' ratio of genetic variance to phenotypic variance), and `V(1)/Vp_L` (i.e., ratio of genetic variance to phenotypic variance in liability scale for binary phenotypes). 
+#'
+#' @returns
+#' A dataframe with maximum eight columns for GREML (here, three columns if running genome-wide) and ten columns for LDSC model if byCHR is `TRUE`.
+#' The columns, such as, "chromosome"(i.e., chromosome code),"snp_proportion" (i.e.,chromosome-wise SNP propotion)", "no.of.genes" (i.e., number of genes per chromosome),
+#' "no.of.proteins" (i.e., number of genes per chromosome),"size_mb" (i.e., chromosome length), "Source" (i.e., source of heritability),
+#' "Variance" (i.e., estimated heritability), and "SE" (i.e., standard error of the estimated heritability) are common for both GREML and LDSC model.
+#' The column, "Intercept" (i.e., LDSC regression intercept) and "Int_SE" (i.e., standard error of the intercept) will be two extra columns for LDSC models.
+#' Source column will have rows, such as `V(1)` (i.e., name of genetic variance), `V(e)` (i.e., residual variance), `V(p)` (i.e., phenotypic variance), `V(1)/Vp` (i.e.,
+#' ratio of genetic variance to phenotypic variance), and `V(1)/Vp_L` (i.e., ratio of genetic variance to phenotypic variance in liability scale for binary phenotypes).
 #' If `byCHR` is `FALSE`, then the first five columns will not be reported in the dataframe.
 #'
 #' @references
@@ -1231,46 +1229,46 @@ QCsnp <-
 #'
 #' @examples
 #' \dontrun{
-#' DataDir = system.file("extdata", package = "GXwasR")
-#' ResultDir = tempdir()
-#' precomputedLD = NULL
+#' DataDir <- system.file("extdata", package = "GXwasR")
+#' ResultDir <- tempdir()
+#' precomputedLD <- NULL
 #' finput <- "GXwasR_example"
 #' data("GXwasRData")
-#' test.sumstats <- na.omit(Summary_Stat_Ex1[Summary_Stat_Ex1$TEST=="ADD",c(1:4,6:8)])
-#' colnames(test.sumstats) <- c("chr","rsid","pos","a1","n_eff","beta","beta_se")
-#' summarystat = test.sumstats
-#' ncores = 3
-#' model = "GREML"
-#' byCHR = FALSE
-#' r2_LD = 0
-#' LDSC_blocks = 20
-#' REMLalgo = 0
-#' nitr = 3
-#' cat_covarfile = NULL
-#' quant_covarfile = NULL
-#' prevalence = 0.01
-#' partGRM = FALSE
-#' autosome = TRUE
-#' Xsome = TRUE
-#' nGRM = 3
-#' cripticut = 0.025
-#' minMAF = NULL
-#' maxMAF = NULL
-#' hg = "hg19"
-#' PlotIndepSNP = TRUE
-#' IndepSNP_window_size = 50
-#' IndepSNP_step_size = 5
-#' IndepSNP_r2_threshold = 0.02
-#' H2 <- EstimateHerit(DataDir = DataDir, ResultDir = ResultDir, finput = finput, 
-#'   summarystat = NULL, ncores, model = "GREML", byCHR = TRUE, r2_LD = 0, 
-#'   LDSC_blocks = 20,REMLalgo = 0, nitr = 100, cat_covarfile = NULL, quant_covarfile = NULL,
+#' test.sumstats <- na.omit(Summary_Stat_Ex1[Summary_Stat_Ex1$TEST == "ADD", c(1:4, 6:8)])
+#' colnames(test.sumstats) <- c("chr", "rsid", "pos", "a1", "n_eff", "beta", "beta_se")
+#' summarystat <- test.sumstats
+#' ncores <- 3
+#' model <- "GREML"
+#' byCHR <- FALSE
+#' r2_LD <- 0
+#' LDSC_blocks <- 20
+#' REMLalgo <- 0
+#' nitr <- 3
+#' cat_covarfile <- NULL
+#' quant_covarfile <- NULL
+#' prevalence <- 0.01
+#' partGRM <- FALSE
+#' autosome <- TRUE
+#' Xsome <- TRUE
+#' nGRM <- 3
+#' cripticut <- 0.025
+#' minMAF <- NULL
+#' maxMAF <- NULL
+#' hg <- "hg19"
+#' PlotIndepSNP <- TRUE
+#' IndepSNP_window_size <- 50
+#' IndepSNP_step_size <- 5
+#' IndepSNP_r2_threshold <- 0.02
+#' H2 <- EstimateHerit(
+#'   DataDir = DataDir, ResultDir = ResultDir, finput = finput,
+#'   summarystat = NULL, ncores, model = "GREML", byCHR = TRUE, r2_LD = 0,
+#'   LDSC_blocks = 20, REMLalgo = 0, nitr = 100, cat_covarfile = NULL, quant_covarfile = NULL,
 #'   prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
-#'   cripticut = 0.025, minMAF = NULL, maxMAF = NULL,hg = "hg19",PlotIndepSNP = TRUE, 
-#'   IndepSNP_window_size = 50,IndepSNP_step_size = 5,IndepSNP_r2_threshold = 0.02,
+#'   cripticut = 0.025, minMAF = NULL, maxMAF = NULL, hg = "hg19", PlotIndepSNP = TRUE,
+#'   IndepSNP_window_size = 50, IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02,
 #'   highLD_regions = highLD_hg19
 #' )
 #' }
-
 EstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL, precomputedLD = NULL,
                           indepSNPs = NULL, summarystat = NULL, ncores = 2, model = c("LDSC", "GREML"),
                           computeGRM = TRUE, grmfile_name = NULL, byCHR = FALSE,
@@ -1346,51 +1344,51 @@ EstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL, 
 #' ComputeGeneticPC: Computing principal components from genetic relationship matrix
 #'
 #' @author Banabithi Bose
-#' @description  
-#' This function performs principal components analysis (PCA) based on the variance-standardized relationship 
+#' @description
+#' This function performs principal components analysis (PCA) based on the variance-standardized relationship
 #' matrix \insertCite{Purcell2007}{GXwasR}.
-#' 
-#' Top principal components are generally used as covariates in association analysis regressions to help correct for 
+#'
+#' Top principal components are generally used as covariates in association analysis regressions to help correct for
 #' population stratification
 #'
-#' 
-#' @param DataDir 
+#'
+#' @param DataDir
 #' A character string for the file path of the input PLINK binary files.
-#' 
-#' @param finput 
+#'
+#' @param finput
 #' Character string, specifying the prefix of the input PLINK binary files. This file needs to be in `DataDir.`
-#' 
-#' @param ResultDir 
+#'
+#' @param ResultDir
 #' A character string for the file path where all output files will be stored. The default is `tempdir()`.
-#' 
-#' @param countPC 
+#'
+#' @param countPC
 #' Integer value, specifying the number of principal components. The default is 10.
-#' 
-#' @param plotPC 
+#'
+#' @param plotPC
 #' Boolean value, `TRUE` or `FALSE`, specifying whether to plot the first two PCs.
-#' 
-#' @param highLD_regions 
+#'
+#' @param highLD_regions
 #' A R dataframe with genomic regions with high LD for using in finding pruned SNPs in the plots. The default is `NULL`.
-#' 
-#' @param ld_prunning 
-#' Numeric value between 0 to 1 of pairwise \eqn{r^2} threshold for LD-based filtering for pruned SNPs in the plots. 
-#' The default is 0.02.
-#' 
-#' @param window_size 
-#' Integer value, specifying a window size in variant count or kilobase for LD-based filtering. The default is 50.
-#' 
-#' @param step_size 
-#' Integer value, specifying a variant count to shift the window at the end of each step for LD filtering for pruned SNPs 
-#' in the plots. The default is 5.
-#' 
-#' @param r2_threshold 
-#' Numeric value between 0 to 1 of pairwise \eqn{r^2} threshold for LD-based filtering for pruned SNPs in the plots. 
+#'
+#' @param ld_prunning
+#' Numeric value between 0 to 1 of pairwise \eqn{r^2} threshold for LD-based filtering for pruned SNPs in the plots.
 #' The default is 0.02.
 #'
-#' @return A dataframe with genetic principal components. The first two columns are IID (i.e., Individual Id) and 
+#' @param window_size
+#' Integer value, specifying a window size in variant count or kilobase for LD-based filtering. The default is 50.
+#'
+#' @param step_size
+#' Integer value, specifying a variant count to shift the window at the end of each step for LD filtering for pruned SNPs
+#' in the plots. The default is 5.
+#'
+#' @param r2_threshold
+#' Numeric value between 0 to 1 of pairwise \eqn{r^2} threshold for LD-based filtering for pruned SNPs in the plots.
+#' The default is 0.02.
+#'
+#' @return A dataframe with genetic principal components. The first two columns are IID (i.e., Individual Id) and
 #' FID (i.e., Family ID). The other columns are PCs.
 #'
-#' @references 
+#' @references
 #' \insertAllCited{}
 #'
 #' @importFrom ggplot2 ggplot geom_bar ylab xlab theme_classic geom_point theme_light coord_equal aes_string
@@ -1411,8 +1409,9 @@ EstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL, 
 #' r2_threshold <- 0.02
 #' countPC <- 20
 #' ## Genetic PC
-#' GP <- ComputeGeneticPC(DataDir = DataDir,ResultDir=ResultDir,
-#'   finput=finput,highLD_regions = highLD_hg19, countPC = 20
+#' GP <- ComputeGeneticPC(
+#'   DataDir = DataDir, ResultDir = ResultDir,
+#'   finput = finput, highLD_regions = highLD_hg19, countPC = 20
 #' )
 ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 10, plotPC = TRUE,
                              highLD_regions = NULL, ld_prunning = TRUE,
@@ -1566,103 +1565,103 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 #'
 #' @author Banabithi Bose
 #'
-#' @description This function calculates the polygenic risk score, which is the total of allele counts (genotypes) weighted by estimated 
-#' effect sizes from genome-wide association studies. It uses C+T filtering techniques. The users could perform clumping procedure 
-#' choromosome-wise and genome-wide. Also, the function offers the choice of including several genetic principal components along with 
-#' other covariates. Using this function, users have the freedom to experiment with various clumping and thresholding arrangements to 
+#' @description This function calculates the polygenic risk score, which is the total of allele counts (genotypes) weighted by estimated
+#' effect sizes from genome-wide association studies. It uses C+T filtering techniques. The users could perform clumping procedure
+#' choromosome-wise and genome-wide. Also, the function offers the choice of including several genetic principal components along with
+#' other covariates. Using this function, users have the freedom to experiment with various clumping and thresholding arrangements to
 #' test a wide range of various parameter values.
 #'
-#' 
-#' @param DataDir 
+#'
+#' @param DataDir
 #' A character string for the file path of the all the input files.
-#' 
-#' @param ResultDir 
+#'
+#' @param ResultDir
 #' A character string for the file path where all output files will be stored. The default is tempdir().
-#' 
-#' @param finput 
-#' Character string, specifying the prefix of the input PLINK binary files for the genotype data i.e., the target data based on which 
-#' clumping procedure will be performed. This file needs to be in DataDir. If your target data are small (e.g. N < 500) then you can use 
+#'
+#' @param finput
+#' Character string, specifying the prefix of the input PLINK binary files for the genotype data i.e., the target data based on which
+#' clumping procedure will be performed. This file needs to be in DataDir. If your target data are small (e.g. N < 500) then you can use
 #' the 1000 Genomes Project samples. Make sure to use the population that most closely reflects represents the base sample.
-#' 
-#' @param summarystat 
-#' A dataframe object with GWAS summary statistics. 
-#' 
-#' The mandatory column headers in this dataframe are: 
+#'
+#' @param summarystat
+#' A dataframe object with GWAS summary statistics.
+#'
+#' The mandatory column headers in this dataframe are:
 #' * `CHR`(Chromosome code)
 #' * `BP`(Basepair position)
 #' * `A1` (effect allele)
 #' * `SNP` (i.e., SNP idenitifier)
 #' * `BETA` or `OR` (i.e., effect-size or logarithm of odds ratio)
-#' * `P` (i.e., p-values). 
-#' 
+#' * `P` (i.e., p-values).
+#'
 #' Special Notes: The first three columns needed to be `SNP`, `A1` and `BETA` or `OR`.
-#' 
-#' @param phenofile 
-#' A character string, specifying the name of the mandatory phenotype file. This is a plain text file with no header line; columns 
-#' family ID, individual ID and phenotype columns. For binary trait, the phenotypic value should be coded as 0 or 1, then it will be 
-#' recognized as a case-control study (0 for controls and 1 for cases). Missing value should be represented by "-9" or "NA". The 
+#'
+#' @param phenofile
+#' A character string, specifying the name of the mandatory phenotype file. This is a plain text file with no header line; columns
+#' family ID, individual ID and phenotype columns. For binary trait, the phenotypic value should be coded as 0 or 1, then it will be
+#' recognized as a case-control study (0 for controls and 1 for cases). Missing value should be represented by "-9" or "NA". The
 #' interested phenotype column should be labeled as "Pheno1". This file needs to be in `DataDir`.
-#' 
-#' @param covarfile 
-#' A character string, specifying the name of the covariate file which is a plain .text file with no header line; columns are family ID, 
+#'
+#' @param covarfile
+#' A character string, specifying the name of the covariate file which is a plain .text file with no header line; columns are family ID,
 #' individual ID and the covariates. The default is `NULL`. This file needs to be in `DataDir`.
-#' 
-#' @param pheno_type 
+#'
+#' @param pheno_type
 #' Boolean value, ‘binary’ or ‘quantitative’, specifying the type of the trait. The default is ‘binary’.
-#' 
-#' @param effectsize 
+#'
+#' @param effectsize
 #' Boolean value, `BETA` or `OR`, specifying the type of the GWAS effectsize. The default is `BETA`.
-#' 
-#' @param ldclump 
+#'
+#' @param ldclump
 #' Boolean value, `TRUE` or `FALSE`, specifying whether to perform clumping or not.
-#' 
-#' @param LDreference 
-#' A character string, specifying the  prefix of the PLINK files of the population reference panel of the same ancestry, and ideally 
+#'
+#' @param LDreference
+#' A character string, specifying the  prefix of the PLINK files of the population reference panel of the same ancestry, and ideally
 #' the one that was used for imputing your target dataset. These files should be in `DataDir`.
-#' 
-#' @param clump_p1 
+#'
+#' @param clump_p1
 #' Numeric value, specifying the significance threshold for index SNPs if `ldclump` was set to be `TRUE`. The default is 0.0001.
-#' 
-#' @param clump_p2 
+#'
+#' @param clump_p2
 #' Numeric value, specifying the secondary significance threshold for clumped SNPs if `ldclump` was set to be `TRUE`. The default is 0.01
-#' 
-#' @param clump_r2 
+#'
+#' @param clump_r2
 #' Numeric value, specifying the linkage disequilibrium (LD) threshold for clumping if `ldclump` was set to be `TRUE`. The default is 0.50.
-#' 
-#' @param clump_kb 
+#'
+#' @param clump_kb
 #' Integer value, specifying the physical distance threshold in base-pair for clumping if `ldclump` was set to be `TRUE`. The default is 250.
-#' 
-#' @param byCHR 
+#'
+#' @param byCHR
 #' Boolean value, 'TRUE' or 'FALSE', specifying chromosome-wise clumping procedure if `ldclump` was set to be `TRUE`. The default is `TRUE`
-#' 
-#' @param pthreshold 
+#'
+#' @param pthreshold
 #' Numeric vector, containing several p value thresholds to maximize predictive ability of the derived polygenic scores.
-#' 
-#' @param ld_prunning 
+#'
+#' @param ld_prunning
 #' Boolean value, `TRUE` or `FALSE` for LD-based filtering for computing genetic PC as covariates.
-#' 
-#' @param nPC 
+#'
+#' @param nPC
 #' Positive integer value, specifying the number of genetic PCs to be included as predictor in the PRS model fit. The default is 6.
-#' 
-#' @param window_size 
+#'
+#' @param window_size
 #' Integer value, specifying a window size in variant count or kilobase for LD-based filtering in computing genetic PC. The default is 50.
-#' 
-#' @param step_size 
+#'
+#' @param step_size
 #' Integer value, specifying a variant count to shift the window at the end of each step for LD filtering in computing genetic PCs. The default is 5.
-#' 
-#' @param r2_threshold 
+#'
+#' @param r2_threshold
 #' Numeric value between 0 to 1 of pairwise \eqn{r^2} threshold for LD-based filtering in computing genetic PCs. The default is 0.02.
-#' 
-#' @param highLD_regions 
+#'
+#' @param highLD_regions
 #' Character string, specifying the .txt file name with known genomic regions with high LD. The default is `NULL`.
 #'
-#' @return 
+#' @return
 #' A list object containing a dataframe and a numeric value. The dataframe,PRS, contains four mandatory columns, such as,
-#' IID (i.e., Individual ID), FID (i.e., Family ID), Pheno1 (i.e., the trait for PRS) and Score (i.e., the best PRS). 
+#' IID (i.e., Individual ID), FID (i.e., Family ID), Pheno1 (i.e., the trait for PRS) and Score (i.e., the best PRS).
 #' Other columns of covariates could be there. The numeric value, BestP contains the threshold of
 #' of the best p-value for the best pRS model fit.
 #'
-#' Also, the function produces several plots such as p-value thresholds vs PRS model fit and PRS distribution among male and females. 
+#' Also, the function produces several plots such as p-value thresholds vs PRS model fit and PRS distribution among male and females.
 #' For case-control data, it shows PRS distribution among cases and controls and ROC curves as well.
 #'
 #' @importFrom dplyr distinct
@@ -1679,7 +1678,7 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 #' data("GXwasRData")
 #' summarystat <- Summary_Stat_Ex1[, c(2, 4, 7, 1, 3, 12)]
 #' phenofile <- Example_phenofile # Cannot be NULL
-#'                                # The interested phenotype column should be labeled as "Pheno1".
+#' # The interested phenotype column should be labeled as "Pheno1".
 #' covarfile <- Example_covarfile
 #' clump_p1 <- 0.0001
 #' clump_p2 <- 0.0001
@@ -1695,10 +1694,10 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 #' nPC <- 6 # We can incorporate PCs into our PRS analysis to account for population stratification.
 #' pheno_type <- "binary"
 #'
-#' PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, 
-#'   effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2, 
-#'   clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, 
-#'   ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, 
+#' PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile,
+#'   effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2,
+#'   clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions,
+#'   ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6,
 #'   pheno_type = "binary"
 #' )
 #'
@@ -1708,7 +1707,6 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 #' ## The best threshold
 #' BestPvalue <- PRSresult$BestP$Threshold
 #' BestPvalue
-
 ComputePRS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phenofile, covarfile = NULL,
                        effectsize = c("BETA", "OR"), ldclump = FALSE, LDreference, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE,
                        pthreshold = c(0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5), highLD_regions, ld_prunning = FALSE,
@@ -1960,40 +1958,40 @@ MergeRegion <- function(DataDir, ResultDir, finput1, finput2, foutput, use_commo
 #'
 #' @author Banabithi Bose
 #'
-#' @description 
+#' @description
 #' This function performs the conversion between VCF files to plink binary formats.
 #'
-#' For VCF to plink files conversion, if you do not specify any FAM file when you are converting from VCF to plink 
-#' format, then plink will just create a 'dummy' FAM file with the same name as your dataset with missing phenotypes 
+#' For VCF to plink files conversion, if you do not specify any FAM file when you are converting from VCF to plink
+#' format, then plink will just create a 'dummy' FAM file with the same name as your dataset with missing phenotypes
 #' and missing sex.
-#' 
-#' @param DataDir 
+#'
+#' @param DataDir
 #' A character string for the file path of the input plink binary files and all other input files.
-#' 
-#' @param ResultDir 
+#'
+#' @param ResultDir
 #' A character string for the file path where all output files will be stored. The default is `tempdir()`.
-#' 
-#' @param finput 
+#'
+#' @param finput
 #' Character string, specifying the prefix of the input plink binary files or vcf files. This file needs to be in `DataDir`.
-#' 
-#' @param foutput 
-#' Character string, specifying the prefix of the output plink binary files if filtering option for the SNPs is chosen. 
+#'
+#' @param foutput
+#' Character string, specifying the prefix of the output plink binary files if filtering option for the SNPs is chosen.
 #' The default is "FALSE".
-#' 
-#' @param VtoP 
+#'
+#' @param VtoP
 #' Boolean value, `TRUE` or `FALSE`, specifying the conversion of VCF files to plink binary files or not. The default is `TRUE`.
-#' 
-#' @param PtoV 
+#'
+#' @param PtoV
 #' Boolean value, `TRUE` or `FALSE`, specifying the conversion of plink binary files to VCF  files or not. The default is `TRUE`.
-#' 
-#' @param Famfile 
-#' Character string, specifying the name of the original .fam file if VtoP was set to be `TRUE`. This file needs to be in `DataDir`. 
+#'
+#' @param Famfile
+#' Character string, specifying the name of the original .fam file if VtoP was set to be `TRUE`. This file needs to be in `DataDir`.
 #' The default is `NULL`.
-#' 
-#' @param PVbyCHR 
+#'
+#' @param PVbyCHR
 #' Boolean value, `TRUE` or `FALSE` specifying to do the plink to vcf conversion chromosome-wise or not. The default is `TRUE`.
-#' 
-#' @return 
+#'
+#' @return
 #' `NULL`
 #'
 #' The output files will be saved in `ResultDir`.
@@ -2002,17 +2000,16 @@ MergeRegion <- function(DataDir, ResultDir, finput1, finput2, foutput, use_commo
 #'
 #' @examples
 #' \dontrun{
-#' finput <- "GXwasR_example" #Plink file
+#' finput <- "GXwasR_example" # Plink file
 #' foutput <- "GXwasR_example1"
 #' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
-#' PtoV = TRUE
-#' VtoP = FALSE
-#' Famfile = NULL
-#' PVbyCHR = FALSE
+#' PtoV <- TRUE
+#' VtoP <- FALSE
+#' Famfile <- NULL
+#' PVbyCHR <- FALSE
 #' x <- plinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)
 #' }
-
 plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput, VtoP = FALSE, PtoV = TRUE, Famfile = NULL, PVbyCHR = TRUE) {
   # Validate inputs
   if (!validateInputForPlinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)) {
@@ -2118,76 +2115,76 @@ plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput, VtoP = FAL
 #'
 #' @author Banabithi Bose
 #'
-#' @description 
-#' This function compares sex assignments in the input dataset with those predicted from X chromosome inbreeding coefficients \insertCite{Purcell2007}{GXwasR}, 
-#' and gives the option to convert the sex assignments to the predicted values. Implicitly, this function computes observed and expected autosomal homozygous 
-#' genotype counts for each sample and reports method-of-moments F coefficient estimates (i.e., observed hom. \eqn{count - expected count) / (total observations - expected count)}). 
-#' The expected counts will be based on loaded or imputed minor allele frequencies.  Since imputed MAFs are highly inaccurate when there are few samples, 
+#' @description
+#' This function compares sex assignments in the input dataset with those predicted from X chromosome inbreeding coefficients \insertCite{Purcell2007}{GXwasR},
+#' and gives the option to convert the sex assignments to the predicted values. Implicitly, this function computes observed and expected autosomal homozygous
+#' genotype counts for each sample and reports method-of-moments F coefficient estimates (i.e., observed hom. \eqn{count - expected count) / (total observations - expected count)}).
+#' The expected counts will be based on loaded or imputed minor allele frequencies.  Since imputed MAFs are highly inaccurate when there are few samples,
 #' the 'compute freq' parameter should be set to TRUE to compute MAF implicitly.
-#' 
-#' Due to the use of allele frequencies, if a cohort is comprised of individuals of different ancestries, users may need to process any samples with rare 
-#' ancestry individually if the dataset has a very unbalanced ancestry distribution. It is advised to run this function with all the parameters set to zero, 
-#' then examine the distribution of the F estimates (there should be a clear gap between a very tight male clump on the right side of the distribution and the 
+#'
+#' Due to the use of allele frequencies, if a cohort is comprised of individuals of different ancestries, users may need to process any samples with rare
+#' ancestry individually if the dataset has a very unbalanced ancestry distribution. It is advised to run this function with all the parameters set to zero,
+#' then examine the distribution of the F estimates (there should be a clear gap between a very tight male clump on the right side of the distribution and the
 #' females everywhere else). Then, rerun the function with the parameters that correspond to this gap.
 #'
-#' 
-#' @param DataDir 
+#'
+#' @param DataDir
 #' Character string for the file path of the input PLINK binary files.
-#' 
-#' @param ResultDir 
+#'
+#' @param ResultDir
 #' A character string for the file path where all output files will be stored. The default is `tempdir()`.
-#' 
-#' @param finput 
+#'
+#' @param finput
 #' Character string, specifying the prefix of the input PLINK binary files. Note: Input dataset should contain X and Y regions.
-#' 
-#' @param impute_sex 
-#' Boolean value, `TRUE` or `FALSE`, specifying sex to be imputed or not. If `TRUE` then sex-imputed PLINK files, prefixed, 'seximputed_plink', will 
+#'
+#' @param impute_sex
+#' Boolean value, `TRUE` or `FALSE`, specifying sex to be imputed or not. If `TRUE` then sex-imputed PLINK files, prefixed, 'seximputed_plink', will
 #' be produced in `DataDir`.
-#' 
-#' @param compute_freq 
-#' Boolean value, `TRUE` or `FALSE`, specifying minor allele frequency (MAF). This function requires reasonable MAF estimates, so it is essential 
+#'
+#' @param compute_freq
+#' Boolean value, `TRUE` or `FALSE`, specifying minor allele frequency (MAF). This function requires reasonable MAF estimates, so it is essential
 #' to use `compute_freq` = `TRUE` for computing MAF from an input PLINK file if there are very few samples in the input dataset. The default is `FALSE`.
-#' 
-#' @param LD 
+#'
+#' @param LD
 #' Boolean value, `TRUE` or `FALSE` for applying linkage disequilibrium (LD)-based filtering. The default is `TRUE`.
-#' 
-#' @param LD_window_size 
+#'
+#' @param LD_window_size
 #' Integer value, specifying a window size in variant count for LD-based filtering. The default is 50.
-#' 
-#' @param LD_step_size 
+#'
+#' @param LD_step_size
 #' Integer value, specifying a variant count to shift the window at the end of each step for LD filtering. The default is 5.
-#' 
-#' @param LD_r2_threshold 
+#'
+#' @param LD_r2_threshold
 #' Numeric value between 0 to 1 of pairwise \eqn{r^2} threshold for LD-based filtering. The default is 0.02.
-#' 
-#' @param fmax_F 
+#'
+#' @param fmax_F
 #' Numeric value between 0 to 1. Samples with F estimates smaller than this value will be labeled as females. The default is 0.2.
-#' 
-#' @param mmin_F 
+#'
+#' @param mmin_F
 #' Numeric value between 0 to 1. Samples with F estimates larger than this value will be labeled as males. The default is 0.8.
 #'
-#' @return 
+#' @return
 #' A dataframe with six columns:
-#' 
+#'
 #' * `FID` (Family ID)
-#' * `IID` (Individual ID) 
+#' * `IID` (Individual ID)
 #' * `PEDSEX `(Sex as determined in pedigree file (1=male, 2=female))
 #' * `SNPSEX` (Sex as determined by X chromosome)
-#' * `STATUS` (Displays "PROBLEM" or "OK" for each individual) 
+#' * `STATUS` (Displays "PROBLEM" or "OK" for each individual)
 #' * `F` (The actual X chromosome inbreeding (homozygosity) estimate)
-#' 
+#'
 #' A PROBLEM arises if the two sexes do not match, or if the SNP data or pedigree data are ambiguous with regard to sex.
-#' 
+#'
 #' @export
 #'
-#' @references 
+#' @references
 #' \insertAllCited{}
 #'
 #' @examples
 #' DataDir <- system.file("extdata", package = "GXwasR")
-#' ResultDir = tempdir()
+#' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
-#' LD = TRUE
+#' LD <- TRUE
 #' LD_window_size <- 50
 #' LD_step_size <- 5
 #' LD_r2_threshold <- 0.02
@@ -2195,15 +2192,15 @@ plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput, VtoP = FAL
 #' mmin_F <- 0.8
 #' impute_sex <- FALSE
 #' compute_freq <- FALSE
-#' 
-#' x <-SexCheck(DataDir=DataDir,ResultDir = ResultDir, finput=finput,impute_sex=impute_sex,
-#'   compute_freq =compute_freq,LD_window_size=LD_window_size,LD_step_size=LD_step_size,
-#'   LD_r2_threshold=0.02,fmax_F=0.2,mmin_F=0.8
+#'
+#' x <- SexCheck(
+#'   DataDir = DataDir, ResultDir = ResultDir, finput = finput, impute_sex = impute_sex,
+#'   compute_freq = compute_freq, LD_window_size = LD_window_size, LD_step_size = LD_step_size,
+#'   LD_r2_threshold = 0.02, fmax_F = 0.2, mmin_F = 0.8
 #' )
 #'
 #' # Checking if there is any wrong sex assignment
-#' problematic_sex <- x[x$STATUS != "OK",]
-
+#' problematic_sex <- x[x$STATUS != "OK", ]
 SexCheck <-
   function(DataDir,
            ResultDir = tempdir(),
@@ -2369,36 +2366,36 @@ SexCheck <-
 #'
 #' @author Banabithi Bose
 #'
-#' @description 
+#' @description
 #' This function prepares PLINK binary files with the desired samples.
 #'
-#' @param DataDir 
+#' @param DataDir
 #' Character string for the file path of the all input files.
-#' 
-#' @param ResultDir 
+#'
+#' @param ResultDir
 #' character string for the file path where the output PLINK files will be stored.
-#' 
-#' @param finput 
+#'
+#' @param finput
 #' Character string, specifying the prefix of the input PLINK binary files.
-#' 
-#' @param foutput 
+#'
+#' @param foutput
 #' Character string, specifying the prefix of the output PLINK binary files.
-#' 
-#' @param filter_sample 
-#' Character string, specifying the sample type to be retained. The choices are, "cases", "controls", "males" and "females". 
+#'
+#' @param filter_sample
+#' Character string, specifying the sample type to be retained. The choices are, "cases", "controls", "males" and "females".
 #' The default is "cases".
-#' 
-#' @param keep_remove_sample_file 
-#' Character string, specifying the prefix of a space/tab-delimited text file with no header. For the samples that we want 
-#' to keep or remove, the family IDs should be in the first column and within-family IDs in the second column. This file 
+#'
+#' @param keep_remove_sample_file
+#' Character string, specifying the prefix of a space/tab-delimited text file with no header. For the samples that we want
+#' to keep or remove, the family IDs should be in the first column and within-family IDs in the second column. This file
 #' needs to be in the `DataDir`. The default is `NULL`.
-#' 
-#' @param keep 
+#'
+#' @param keep
 #' Boolean value, `TRUE` or `FALSE` for specifying desired samples to keep or remove. The default is `TRUE`.
 #'
-#' @return 
+#' @return
 #' `NULL`
-#' 
+#'
 #' The output plink files with passed samples will be saved in ResultDir.
 #'
 #' @export
@@ -2412,11 +2409,11 @@ SexCheck <-
 #' keep_remove_sample_file <- "samples_example"
 #' keep <- FALSE
 #'
-#' FilterPlinkSample(DataDir = DataDir,ResultDir = ResultDir,
-#'   finput = finput,foutput = foutput,keep_remove_sample_file = keep_remove_sample_file, 
+#' FilterPlinkSample(
+#'   DataDir = DataDir, ResultDir = ResultDir,
+#'   finput = finput, foutput = foutput, keep_remove_sample_file = keep_remove_sample_file,
 #'   keep = keep
 #' )
-
 FilterPlinkSample <- function(DataDir, ResultDir,
                               finput,
                               foutput = NULL,
@@ -2517,34 +2514,34 @@ FilterPlinkSample <- function(DataDir, ResultDir,
 #'
 #' @author Banabithi Bose
 #'
-#' @description 
+#' @description
 #' This function prepares separate male and female PLINK binary files from combined PLINK files.
 #'
-#' 
-#' @param DataDir 
+#'
+#' @param DataDir
 #' Character string for the file path of the input PLINK binary files.
-#' 
-#' @param ResultDir 
+#'
+#' @param ResultDir
 #' Character string for the file path where all output files will be stored. The default is `tempdir()`.
-#' 
-#' @param finput 
+#'
+#' @param finput
 #' Character string, specifying the prefix of the input PLINK binary files.
-#' 
-#' @param foutput 
+#'
+#' @param foutput
 #' Character string, specifying the prefix of the output PLINK binary files.
-#' 
-#' @param sex 
+#'
+#' @param sex
 #' Boolean value, 'males' or 'females', specifying output plink binary files with male or female samples.
-#' 
-#' @param xplink 
+#'
+#' @param xplink
 #' Boolean value, `TRUE` or `FALSE`, specifying output plink binary files with only X chromosome or not. Default is `FALSE.`
-#' 
-#' @param autoplink 
+#'
+#' @param autoplink
 #' Boolean value, `TRUE` or `FALSE`, specifying output plink binary files with only autosome or not. Default is `FALSE.`
 #'
-#' @return 
+#' @return
 #' None
-#' 
+#'
 #' @export
 #'
 #' @examples
@@ -2553,11 +2550,11 @@ FilterPlinkSample <- function(DataDir, ResultDir,
 #' finput <- "GXwasR_example"
 #' foutput <- "Test_output"
 #' sex <- "females"
-#' x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, 
-#'   finput = finput, foutput = foutput,sex = sex, 
+#' x <- GetMFPlink(
+#'   DataDir = DataDir, ResultDir = ResultDir,
+#'   finput = finput, foutput = foutput, sex = sex,
 #'   xplink = FALSE, autoplink = FALSE
 #' )
-
 GetMFPlink <- function(DataDir,
                        ResultDir = tempdir(),
                        finput,
@@ -2658,34 +2655,34 @@ GetMFPlink <- function(DataDir,
 #'
 #' @author Banabithi Bose
 #'
-#' @description 
-#' This function is a part of the post-imputation quality control process prior to GWAS. This tests for Hardy-Weinberg 
-#' Equilibrium (HWE) for X-chromosome variants in females. Males' hemizygous X chromosome prevents testing for HWE on 
-#' their haploid X calls, and testing for HWE across all samples would have a high failure rate. This function will check 
-#' for HWE across the X in females (cases and controls combined), following the recommendation in Khramtsova et al., 2023, 
-#' and can remove these regions from analysis in all samples. The p-value threshold for filtering out SNPs is 0.05/no.of. 
+#' @description
+#' This function is a part of the post-imputation quality control process prior to GWAS. This tests for Hardy-Weinberg
+#' Equilibrium (HWE) for X-chromosome variants in females. Males' hemizygous X chromosome prevents testing for HWE on
+#' their haploid X calls, and testing for HWE across all samples would have a high failure rate. This function will check
+#' for HWE across the X in females (cases and controls combined), following the recommendation in Khramtsova et al., 2023,
+#' and can remove these regions from analysis in all samples. The p-value threshold for filtering out SNPs is 0.05/no.of.
 #' X-chromosome variants.
 #'
-#' @param DataDir 
+#' @param DataDir
 #' Character string for the file path of the input PLINK binary files.
-#' 
-#' @param ResultDir 
+#'
+#' @param ResultDir
 #' Character string for the file path where all output files will be stored. The default is `tempdir()`.
-#' 
-#' @param finput 
+#'
+#' @param finput
 #' Character string, specifying the prefix of the input PLINK binary files.
-#' 
-#' @param foutput 
-#' Character string, specifying the prefix of the output PLINK binary files if filtering option for the SNPs is chosen. 
+#'
+#' @param foutput
+#' Character string, specifying the prefix of the output PLINK binary files if filtering option for the SNPs is chosen.
 #' The default is "FALSE".
-#' 
-#' @param filterSNP 
-#' Boolean value, `TRUE` or `FALSE` for filtering out the X-chromosome variants i.e., SNPs from the input file or not 
+#'
+#' @param filterSNP
+#' Boolean value, `TRUE` or `FALSE` for filtering out the X-chromosome variants i.e., SNPs from the input file or not
 #' (i.e., only flagged). The default is `FALSE`.
-#' 
-#' @return A list object containing SNPs. If `filterSNP` = `TRUE`, the output filtered PLINK binary files will be 
+#'
+#' @return A list object containing SNPs. If `filterSNP` = `TRUE`, the output filtered PLINK binary files will be
 #' produced inside `DataDir`.
-#' 
+#'
 #' @export
 #'
 #' @examples
@@ -2693,11 +2690,11 @@ GetMFPlink <- function(DataDir,
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "Test_output"
-#' x <- Xhwe(DataDir = DataDir, ResultDir = ResultDir, 
+#' x <- Xhwe(
+#'   DataDir = DataDir, ResultDir = ResultDir,
 #'   finput = finput, foutput = foutput, filterSNP = TRUE
 #' )
 #' x
-
 Xhwe <- function(DataDir, ResultDir = tempdir(), finput, filterSNP = TRUE, foutput) {
   # Validate inputs
   if (!validateInputForXhwe(DataDir, ResultDir, finput, foutput, filterSNP)) {
@@ -2835,34 +2832,34 @@ Xhwe <- function(DataDir, ResultDir = tempdir(), finput, filterSNP = TRUE, foutp
 #'
 #' @author Banabithi Bose
 #'
-#' @description 
-#' With parameters to filter out SNPs and/or flag the SNPs, this function tests for significantly different MAF 
-#' (p-value < 0.05/no. of SNPs) between sexes in control samples solely for binary phenotypes. Since the disparities 
-#' may be caused by technical confounding or sample biases for the research cohorts, it is advised that any SNPs in 
-#' the controls with a sex difference in MAF be carefully evaluated and identified for further examination 
+#' @description
+#' With parameters to filter out SNPs and/or flag the SNPs, this function tests for significantly different MAF
+#' (p-value < 0.05/no. of SNPs) between sexes in control samples solely for binary phenotypes. Since the disparities
+#' may be caused by technical confounding or sample biases for the research cohorts, it is advised that any SNPs in
+#' the controls with a sex difference in MAF be carefully evaluated and identified for further examination
 #' (Khramtsova et. al., 2023). In autosomal allele frequencies, sex differences are not anticipated.
 #'
-#' @param DataDir 
+#' @param DataDir
 #' Character string for the file path of the input PLINK binary files.
-#' 
-#' @param ResultDir 
+#'
+#' @param ResultDir
 #' Character string for the file path where all output files will be stored. The default is `tempdir()`.
-#' 
-#' @param finput 
-#' Character string, specifying the prefix of the input PLINK binary files with both male and female samples. 
+#'
+#' @param finput
+#' Character string, specifying the prefix of the input PLINK binary files with both male and female samples.
 #' This file needs to be in `DataDir`.
-#' 
-#' @param foutput 
-#' Character string, specifying the prefix of the output PLINK binary files if filtering option for the SNPs 
+#'
+#' @param foutput
+#' Character string, specifying the prefix of the output PLINK binary files if filtering option for the SNPs
 #' is chosen. The default is NULL.
-#' 
-#' @param filterSNP 
+#'
+#' @param filterSNP
 #' Boolean value, `TRUE` or `FALSE` for filtering out the SNPs or not (i.e., only flagged). The default is `FALSE`.
 #'
-#' @return 
-#' A list object containing excluded or flagged SNPs. If `filterSNP` = `TRUE`, the output filtered PLINK binary 
+#' @return
+#' A list object containing excluded or flagged SNPs. If `filterSNP` = `TRUE`, the output filtered PLINK binary
 #' files will be produced inside `DataDir`.
-#' 
+#'
 #' @importFrom stats na.omit
 #' @importFrom utils download.file read.table unzip write.table
 #' @importFrom sys exec_wait
@@ -2873,8 +2870,7 @@ Xhwe <- function(DataDir, ResultDir = tempdir(), finput, filterSNP = TRUE, foutp
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "Test_output"
-#' x <- MAFdiffSexControl(DataDir, ResultDir, finput,filterSNP = TRUE,foutput = foutput)
-
+#' x <- MAFdiffSexControl(DataDir, ResultDir, finput, filterSNP = TRUE, foutput = foutput)
 MAFdiffSexControl <- function(DataDir,
                               ResultDir = tempdir(),
                               finput,
@@ -3025,82 +3021,82 @@ MAFdiffSexControl <- function(DataDir,
 #'
 #' @author Banabithi Bose
 #'
-#' @description 
-#' This function identifies outlier individuals for heterozygosity and/or missing genotype rates, which aids in the 
-#' detection of samples with subpar DNA quality and/or concentration that should be removed from the study. Individuals 
+#' @description
+#' This function identifies outlier individuals for heterozygosity and/or missing genotype rates, which aids in the
+#' detection of samples with subpar DNA quality and/or concentration that should be removed from the study. Individuals
 #' missing more than 3-7% of their genotype calls are often excluded (1)from the analysis.
-#' 
-#' Having the correct designation of sex is important to obtain accurate genotype rate estimates, or avoid incorrectly 
+#'
+#' Having the correct designation of sex is important to obtain accurate genotype rate estimates, or avoid incorrectly
 #' removing samples, etc. Details can be accessed from the paper.
 
-#' 
-#' @param DataDir 
+#'
+#' @param DataDir
 #' Character string, specifying the file path of the input PLINK binary files. The default is `NULL`.
-#' 
-#' @param ResultDir 
+#'
+#' @param ResultDir
 #' A character string for the file path where all output files will be stored. The default is `tempdir()`.
-#' 
-#' @param finput 
-#' Character string, specifying the prefix of the input PLINK binary files with both male and female samples. 
+#'
+#' @param finput
+#' Character string, specifying the prefix of the input PLINK binary files with both male and female samples.
 #' This file needs to be in `DataDir`.
-#' 
-#' @param foutput 
+#'
+#' @param foutput
 #' Character string, specifying the prefix of the output PLINK binary files if filtering option for the samples is chosen.
-#' 
-#' @param imiss 
+#'
+#' @param imiss
 #' Numeric value between 0 to 1 for removing samples that have more than the specified missingness. The default is 0.03.
-#' 
-#' @param het 
-#' Positive numeric value, specifying the standard deviation from the mean heterozygosity rate. The samples whose rates are more 
-#' than the specified sd from the mean heterozygosity rate are removed. The default is 3. With this default value, outlying 
+#'
+#' @param het
+#' Positive numeric value, specifying the standard deviation from the mean heterozygosity rate. The samples whose rates are more
+#' than the specified sd from the mean heterozygosity rate are removed. The default is 3. With this default value, outlying
 #' heterozygosity rates would remove individuals who are three sd away from the mean rate (1).
-#' 
-#' @param small_sample_mod 
+#'
+#' @param small_sample_mod
 #' Boolean value indicating whether to apply modifications for small sample sizes. Default is `FALSE`.
-#' 
-#' @param IBD 
+#'
+#' @param IBD
 #' Numeric value for setting the threshold for Identity by Descent (IBD) analysis. Default is `NULL`.
-#' 
-#' @param IBDmatrix 
+#'
+#' @param IBDmatrix
 #' Boolean value indicating whether to generate an entire IBD matrix. Default is `FALSE`. In this case filtered IBD
 #' matrix will be stored.
-#' 
-#' @param ambi_out 
+#'
+#' @param ambi_out
 #' Boolean value indicating whether to process ambiguous samples.
-#' 
-#' @param title_size 
+#'
+#' @param title_size
 #' Integer, specifying the size of the title of the plot heterozygosity estimate vs missingness across samples.
-#' 
-#' @param legend_text_size 
+#'
+#' @param legend_text_size
 #' Integer, specifying the size for legend text in the plot.
-#' 
-#' @param legend_title_size 
+#'
+#' @param legend_title_size
 #' Integer, specifying the size for the legend title in the plot.
-#' 
-#' @param axis_text_size 
+#'
+#' @param axis_text_size
 #' Integer, specifying the size for axis text in the plot.
-#' 
-#' @param axis_title_size 
+#'
+#' @param axis_title_size
 #' Integer, specifying the size for the axis title in the plot.
-#' 
-#' @param filterSample 
+#'
+#' @param filterSample
 #' Boolean value, `TRUE` or `FALSE` for filtering out the samples or not (i.e., only flagged). The default is `TRUE`.
-#' 
+#'
 #' @importFrom stats sd
 #' @importFrom ggplot2 ggplot
 #'
-#' @return 
-#' A plot of heterogysity estimate vs missingness accross sample and a list containing five R dataframe objects, namely, 
-#' `HM` (samples with outlying heterozygosity and/or missing genotype rates), `Failed_Missingness` (samples with missing genotype rates), 
-#' `Failed_heterozygosity` (samples with outlying heterozygosity), `Missingness_results` (missingness results) and `Heterozygosity_results` 
+#' @return
+#' A plot of heterogysity estimate vs missingness accross sample and a list containing five R dataframe objects, namely,
+#' `HM` (samples with outlying heterozygosity and/or missing genotype rates), `Failed_Missingness` (samples with missing genotype rates),
+#' `Failed_heterozygosity` (samples with outlying heterozygosity), `Missingness_results` (missingness results) and `Heterozygosity_results`
 #' (heterozygosity results) with output plink files in ResultDir if filtering out the samples option is chosen.
-#' 
-#' `Missingness_results` contains missingness results for each individual, with six columns as `FID`, `IID`, `MISS_PHENO`, `N_MISS`, `N_GENO` and 
-#' `F_MISS` for Family ID, Within-family ID, Phenotype missing? (Y/N), Number of missing genotype call(s), not including obligatory missings 
+#'
+#' `Missingness_results` contains missingness results for each individual, with six columns as `FID`, `IID`, `MISS_PHENO`, `N_MISS`, `N_GENO` and
+#' `F_MISS` for Family ID, Within-family ID, Phenotype missing? (Y/N), Number of missing genotype call(s), not including obligatory missings
 #' or heterozygous haploids, number of potentially valid call(s), and missing call rate, respectively.
-#' 
-#' `Heterozygosity_results` contains heterozygosity results for each individual, with six columns as `FID`, `IID`, `O(HOM)`, `E(HOM)`, `N(NM)`, 
-#' and `F` for Family ID, Within-family ID, Observed number of homozygotes, Expected number of homozygotes, Number of (non-missing, non-monomorphic) 
+#'
+#' `Heterozygosity_results` contains heterozygosity results for each individual, with six columns as `FID`, `IID`, `O(HOM)`, `E(HOM)`, `N(NM)`,
+#' and `F` for Family ID, Within-family ID, Observed number of homozygotes, Expected number of homozygotes, Number of (non-missing, non-monomorphic)
 #' autosomal genotype observations and, Method-of-moments F coefficient estimate, respectively.
 #' @export
 #'
@@ -3116,11 +3112,11 @@ MAFdiffSexControl <- function(DataDir,
 #' IBDmatrix <- FALSE
 #' ambi_out <- TRUE
 #'
-#' x <- QCsample(DataDir = DataDir, ResultDir = ResultDir, finput = finput, 
-#'   foutput = foutput, imiss = imiss, het = het, IBD = IBD, 
+#' x <- QCsample(
+#'   DataDir = DataDir, ResultDir = ResultDir, finput = finput,
+#'   foutput = foutput, imiss = imiss, het = het, IBD = IBD,
 #'   ambi_out = ambi_out
 #' )
-
 QCsample <- function(DataDir,
                      ResultDir,
                      finput,
@@ -3342,28 +3338,28 @@ QCsample <- function(DataDir,
 
 #' Miami plot
 #'
-#' @description 
+#' @description
 #' This function generates Miami plots for GWAS and XWAS.
-#' 
-#' @param ResultDir 
+#'
+#' @param ResultDir
 #' Character string for the folder path where the outputs will be saved.
-#' 
-#' @param FemaleWAS 
+#'
+#' @param FemaleWAS
 #' R dataframe of summary statistics of GWAS or XWAS of female samples with four columns, SNP(Variant),
-#' CHR(Chromosome number), POS(Base pair position) and pvalue(P-value of the test). This can be generated 
+#' CHR(Chromosome number), POS(Base pair position) and pvalue(P-value of the test). This can be generated
 #' by running FM01comb or FM02comb model with GXWAS function.
-#' 
-#' @param MaleWAS 
+#'
+#' @param MaleWAS
 #' R dataframe of summary statistics of GWAS or XWAS of male samples with four columns, SNP(Variant),
-#' CHR(Chromosome number), POS(Base pair position) and pvalue(P-value of the test). This can be generated 
+#' CHR(Chromosome number), POS(Base pair position) and pvalue(P-value of the test). This can be generated
 #' by running FM01comb or FM02comb model with GXWAS function.
-#' 
-#' @param snp_pval 
-#' Numeric value as p-value threshold for annotation. SNPs below this p-value will be annotated on the plot. 
+#'
+#' @param snp_pval
+#' Numeric value as p-value threshold for annotation. SNPs below this p-value will be annotated on the plot.
 #' The default is 1e-08.
-#' 
-#' @param Xchr 
-#' Boolean value, `TRUE` or `FALSE`, specifying whether to generate Miami plot for stratified XWAS or not. 
+#'
+#' @param Xchr
+#' Boolean value, `TRUE` or `FALSE`, specifying whether to generate Miami plot for stratified XWAS or not.
 #' The default is `TRUE`.
 #'
 #' @return NULL
@@ -3371,13 +3367,12 @@ QCsample <- function(DataDir,
 #'
 #' @examples
 #' data("GXwasRData")
-#' FemaleWAS <- na.omit(Ffile[,c("SNP","CHR","BP","P")])
-#' colnames(FemaleWAS) <- c("SNP","CHR","POS","pvalue")
-#' MaleWAS <- na.omit(Mfile[,c("SNP","CHR","BP","P")])
-#' colnames(MaleWAS) <- c("SNP","CHR","POS","pvalue")
-#' 
+#' FemaleWAS <- na.omit(Ffile[, c("SNP", "CHR", "BP", "P")])
+#' colnames(FemaleWAS) <- c("SNP", "CHR", "POS", "pvalue")
+#' MaleWAS <- na.omit(Mfile[, c("SNP", "CHR", "BP", "P")])
+#' colnames(MaleWAS) <- c("SNP", "CHR", "POS", "pvalue")
+#'
 #' GXWASmiami(FemaleWAS = FemaleWAS, MaleWAS = MaleWAS, snp_pval = 0.05)
-
 GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-08, Xchr = FALSE) {
   # Validate input parameters
   validateInputForGXWASmiami(ResultDir, FemaleWAS, MaleWAS, snp_pval, Xchr)
@@ -3555,7 +3550,7 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #' Integer value specifying the number of permutation in case of using fisher.method.perm method in stratified GWAS with
 #' FM01comb and FM02comb XWAS models. The default is 10000.
 #'
-#' @param MF.na.rm 
+#' @param MF.na.rm
 #' Boolean value, `TRUE` or `FALSE` for removing p-values of NA in stratified GWAS with FM01comb and FM02comb XWAS
 #' in case of using Fisher’s and Stouffer’s methods. The default is FALSE.
 #'
@@ -3733,78 +3728,78 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
 
 #' MetaGWAS: Combining summary-level results from two or more GWA studies into a single estimate.
 #'
-#' @description  
-#' This function combine K sets of GWAS association statistics on same (or at least similar) phenotype. This function employs 
-#' PLINK's \insertCite{Purcell2007}{GXwasR} inverse variance-based analysis to run a number of models, including a) 
-#' Fixed-effect model and b) Random-effect model, assuming there may be variation between the genuine underlying effects, 
-#' i.e., effect size beta. 'This function also calculates weighted Z-score-based p-values after METAL \insertCite{Willer2010}{GXwasR}. 
+#' @description
+#' This function combine K sets of GWAS association statistics on same (or at least similar) phenotype. This function employs
+#' PLINK's \insertCite{Purcell2007}{GXwasR} inverse variance-based analysis to run a number of models, including a)
+#' Fixed-effect model and b) Random-effect model, assuming there may be variation between the genuine underlying effects,
+#' i.e., effect size beta. 'This function also calculates weighted Z-score-based p-values after METAL \insertCite{Willer2010}{GXwasR}.
 #' For more information about the algorithms, please see the associated paper.
 #'
-#' @param DataDir 
+#' @param DataDir
 #' A character string for the file path of the input files needed for `SummData` and `SNPfile` arguments.
-#' 
+#'
 #' @param SummData
-#' Vector value containing the name(s) of the .Rda file(s) with GWAS summary statistics, with ‘SNP’ 
-#' (i.e., SNP idenitifier), ‘BETA’ (i.e., effect-size or logarithm of odds ratio), ‘SE’ (i.e., standard error of BETA), 
-#' ‘P’ (i.e., p-values), 'NMISS' (i.e., effective sample size), 'L95' (i.e., lower limit of 95% confidence interval) and 
-#' 'U95' (i.e., upper limit of 95% confidence interval) are in mandatory column headers. These files needed to be in DataDir. 
-#' If the numbers of cases and controls are unequal, effective sample size should be \eqn{4 / (1/<# of cases> + 1/<# of controls>)}. 
-#' A smaller "effective" sample size may be used for samples that include related individuals, however simulations indicate 
-#' that small changes in the effective sample size have relatively little effect on the final p-value 
-#' \insertCite{Willer2010}{GXwasR}. Columns, such as, `CHR` (Chromosome code), `BP` (Basepair position), `A1` (First allele code), 
-#' `A2` (Second allele code) columns are optional. If these are present, setting `useSNPposition` to `FALSE`, causes `CHR`, `BP` 
-#' and `A1` to be ignored and setting `UseA1` to be `FALSE` causes `A1` to be ignored. If, both these arguments are `TRUE`, this 
-#' function takes care of A1/A2 allele flips properly. Otherwise, A1 mismatches are thrown out. Values of CHR/BP are allowed 
+#' Vector value containing the name(s) of the .Rda file(s) with GWAS summary statistics, with ‘SNP’
+#' (i.e., SNP idenitifier), ‘BETA’ (i.e., effect-size or logarithm of odds ratio), ‘SE’ (i.e., standard error of BETA),
+#' ‘P’ (i.e., p-values), 'NMISS' (i.e., effective sample size), 'L95' (i.e., lower limit of 95% confidence interval) and
+#' 'U95' (i.e., upper limit of 95% confidence interval) are in mandatory column headers. These files needed to be in DataDir.
+#' If the numbers of cases and controls are unequal, effective sample size should be \eqn{4 / (1/<# of cases> + 1/<# of controls>)}.
+#' A smaller "effective" sample size may be used for samples that include related individuals, however simulations indicate
+#' that small changes in the effective sample size have relatively little effect on the final p-value
+#' \insertCite{Willer2010}{GXwasR}. Columns, such as, `CHR` (Chromosome code), `BP` (Basepair position), `A1` (First allele code),
+#' `A2` (Second allele code) columns are optional. If these are present, setting `useSNPposition` to `FALSE`, causes `CHR`, `BP`
+#' and `A1` to be ignored and setting `UseA1` to be `FALSE` causes `A1` to be ignored. If, both these arguments are `TRUE`, this
+#' function takes care of A1/A2 allele flips properly. Otherwise, A1 mismatches are thrown out. Values of CHR/BP are allowed
 #' to vary.
-#' 
-#' @param ResultDir 
+#'
+#' @param ResultDir
 #' A character string for the file path where all output files will be stored. The default is `tempdir()`.
-#' 
-#' @param SNPfile 
-#' Character string specifying the name of the plain-text file with a column of SNP names. These could be LD clumped SNPs or 
+#'
+#' @param SNPfile
+#' Character string specifying the name of the plain-text file with a column of SNP names. These could be LD clumped SNPs or
 #' any other list of chosen SNPs for Meta analysis. This file needs to be in `DataDir`.
-#' 
-#' @param useSNPposition 
-#' Boolean value, `TRUE` or `FALSE` for using `CHR`, `BP`, and `A1` or not. The default is `FALSE.` Note: if 
+#'
+#' @param useSNPposition
+#' Boolean value, `TRUE` or `FALSE` for using `CHR`, `BP`, and `A1` or not. The default is `FALSE.` Note: if
 #' this is `FALSE` then there will be no Manhattan and QQ plot will be generated.
-#' 
-#' @param UseA1 
+#'
+#' @param UseA1
 #' Boolean value, `TRUE` or `FALSE` for `A1` to be used or not. The default is `FALSE`.
-#' 
-#' @param GCse  
-#' Boolean value, `TRUE` or `FALSE` for applying study specific genomic control to adjust each study for potential population 
-#' structure for all the SNPs. The default is `TRUE`. If users would want to apply genomic control separately for directly 
+#'
+#' @param GCse
+#' Boolean value, `TRUE` or `FALSE` for applying study specific genomic control to adjust each study for potential population
+#' structure for all the SNPs. The default is `TRUE`. If users would want to apply genomic control separately for directly
 #' genotyped and imputed SNPs prior using the function, set this parameter as `FALSE`.
-#' 
-#' @param plotname 
-#' Character string, spycifying the plot name of the file containg forest plots for the SNPs. The default is 
+#'
+#' @param plotname
+#' Character string, spycifying the plot name of the file containg forest plots for the SNPs. The default is
 #' “Meta_Analysis.plot”.
-#' 
+#'
 #' @param pval_filter
-#' Character value as "R","F" or "W", specifying whether p-value threshold should be chosen based on “Random”, “Fixed” or 
+#' Character value as "R","F" or "W", specifying whether p-value threshold should be chosen based on “Random”, “Fixed” or
 #' “Weighted” effect model for the SNPs to be included in the forest plots.
-#' 
-#' @param top_snp_pval 
+#'
+#' @param top_snp_pval
 #' Numeric value, specifying the threshold to be used to filter the SNPs for the forest plots. The default is 1e-08.
-#' 
-#' @param max_top_snps 
-#' Integer value, specifying the maximum number of top SNPs (SNPs with the lowest p-values) to be ploted in the forest 
+#'
+#' @param max_top_snps
+#' Integer value, specifying the maximum number of top SNPs (SNPs with the lowest p-values) to be ploted in the forest
 #' plot file. The default is 6.
-#' 
-#' @param chosen_snps_file 
-#' Character string specifing the name of the plain-text file with a column of SNP names for the forest plots. 
+#'
+#' @param chosen_snps_file
+#' Character string specifing the name of the plain-text file with a column of SNP names for the forest plots.
 #' The default is NULL.
-#' 
+#'
 #' @param byCHR
-#' Boolean value, `TRUE` or `FALSE`, specifying whether the meta analysis will be performed chromosome wise or not. 
+#' Boolean value, `TRUE` or `FALSE`, specifying whether the meta analysis will be performed chromosome wise or not.
 #' The default is `FALSE`.
-#' 
-#' @param pval_threshold_manplot 
+#'
+#' @param pval_threshold_manplot
 #' Numeric value, specifying the p-value threshold for plotting Manhattan plots.
 #'
-#' @returns 
+#' @returns
 #' A list object containing five dataframes. The first three dataframes, such as Mfixed, Mrandom and Mweighted contain results
-#' for fixed effect, random effect and weighted model. Each of these dataframes can have maximum 12 columns, such as: 
+#' for fixed effect, random effect and weighted model. Each of these dataframes can have maximum 12 columns, such as:
 #' * `CHR` (Chromosome code)
 #' * `BP` (Basepair position)
 #' * `SNP` (SNP identifier)
@@ -3818,15 +3813,15 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
 #' * `CI_L` (Lower limit of confidence interval)
 #' * `CI_U` (Uper limit of confidence interval)
 #'
-#' The fourth dataframe contains the same columns `CHR`, `BP`, `SNP`, `A1`, `A2`, `Q`, `I`", with column `N`' ( Number of 
-#' valid studies for this SNP), P (Fixed-effects meta-analysis p-value), and other columns as `Fx...` (Study x (0-based input file 
+#' The fourth dataframe contains the same columns `CHR`, `BP`, `SNP`, `A1`, `A2`, `Q`, `I`", with column `N`' ( Number of
+#' valid studies for this SNP), P (Fixed-effects meta-analysis p-value), and other columns as `Fx...` (Study x (0-based input file
 #' indices) effect estimate, Examples: F0, F1 etc.).
 #'
-#' The fifth dataframe, ProblemSNP has three columns, such as 
-#' * `File` (file name of input data), 
+#' The fifth dataframe, ProblemSNP has three columns, such as
+#' * `File` (file name of input data),
 #' * `SNP` (Problematic SNPs that are thrown)
 #' * `Problem` (Problem code)
-#' 
+#'
 #' Problem codes are:
 #' * BAD_CHR (Invalid chromosome code)
 #' * BAD_BP  (Invalid base-position code), BAD_ES (Invalid effect-size)
@@ -3835,13 +3830,13 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
 #' * ALLELE_MISMATCH (Mismatching allele codes across files)
 #'
 #' A .pdf file comprising the forest plots of the SNPs is produced in the ResultDir with Plotname as prefix.
-#' If `useSNPposition` is set `TRUE`, a .jpeg file with Manhattan Plot and Q-Q plot will be in the `ResultDir` with Plotname 
+#' If `useSNPposition` is set `TRUE`, a .jpeg file with Manhattan Plot and Q-Q plot will be in the `ResultDir` with Plotname
 #' as prefix.
 #'
-#' @references 
+#' @references
 #' \insertAllCited{}
 #' (2) Mägi, R., Morris, A.P. GWAMA: software for genome-wide association meta-analysis. BMC Bioinformatics 11, 288 (2010). https://doi.org/10.1186/1471-2105-11-288
-#' 
+#'
 #' @importFrom qqman manhattan qq
 #' @importFrom graphics par
 #' @importFrom grDevices jpeg pdf
@@ -3850,29 +3845,29 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
 #'
 #' @examples
 #' \dontrun{
-#' DataDir = system.file("extdata", package = "GXwasR")
-#' ResultDir = tempdir()
+#' DataDir <- system.file("extdata", package = "GXwasR")
+#' ResultDir <- tempdir()
 #' data("GXwasRData")
-#' SummData <- list(Summary_Stat_Ex1,Summary_Stat_Ex2)
-#' SNPfile = "UniqueLoci"
-#' useSNPposition = FALSE
-#' UseA1 = TRUE
-#' GCse = TRUE
-#' byCHR = FALSE
-#' pval_filter = "R"
-#' top_snp_pval = 1e-08
-#' max_top_snps = 10
-#' chosen_snps_file = NULL
-#' #chosen_snps_file = "MainSNP"
-#' pval_threshold_manplot = 1e-05
-#' plotname = "Meta_Analysis.plot"
-#' x <- MetaGWAS(DataDir = DataDir, SummData = SummData,ResultDir=ResultDir, 
-#'   SNPfile = NULL, useSNPposition = TRUE, UseA1 = UseA1,GCse = GCse, 
-#'   plotname = "Meta_Analysis.plot", pval_filter, top_snp_pval, max_top_snps, 
+#' SummData <- list(Summary_Stat_Ex1, Summary_Stat_Ex2)
+#' SNPfile <- "UniqueLoci"
+#' useSNPposition <- FALSE
+#' UseA1 <- TRUE
+#' GCse <- TRUE
+#' byCHR <- FALSE
+#' pval_filter <- "R"
+#' top_snp_pval <- 1e-08
+#' max_top_snps <- 10
+#' chosen_snps_file <- NULL
+#' # chosen_snps_file = "MainSNP"
+#' pval_threshold_manplot <- 1e-05
+#' plotname <- "Meta_Analysis.plot"
+#' x <- MetaGWAS(
+#'   DataDir = DataDir, SummData = SummData, ResultDir = ResultDir,
+#'   SNPfile = NULL, useSNPposition = TRUE, UseA1 = UseA1, GCse = GCse,
+#'   plotname = "Meta_Analysis.plot", pval_filter, top_snp_pval, max_top_snps,
 #'   chosen_snps_file = NULL, byCHR, pval_threshold_manplot
 #' )
 #' }
-
 MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile = NULL,
                      useSNPposition = TRUE,
                      UseA1 = FALSE, GCse = TRUE,
@@ -4075,79 +4070,79 @@ MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile =
 
 
 #' ClumpLD: Clumping SNPs using linkage disequilibrium between SNPs
-#' 
-#' @description  
-#' This function, which is based on empirical estimations of linkage disequilibrium between SNPs, groups the SNP-based results 
-#' across one or more datasets or analysis. This approach can be used in two basic scenarios: (i) To summarize the top X single 
-#' SNP findings from a genome-wide scan as fewer clusters of connected SNPs (i.e., to assess how many independent loci are 
-#' associated). (ii) To give researchers a simple approach to merge sets of data from multiple studies when those studies may 
+#'
+#' @description
+#' This function, which is based on empirical estimations of linkage disequilibrium between SNPs, groups the SNP-based results
+#' across one or more datasets or analysis. This approach can be used in two basic scenarios: (i) To summarize the top X single
+#' SNP findings from a genome-wide scan as fewer clusters of connected SNPs (i.e., to assess how many independent loci are
+#' associated). (ii) To give researchers a simple approach to merge sets of data from multiple studies when those studies may
 #' have used various marker sets for genotyping.
-#' 
-#' The clumping process begins with the index SNPs that are significant at threshold p1 and have not yet been clumped. It then 
-#' creates clumps of all additional SNPs that are within a specified kb of the index SNP and that are in linkage disequilibrium 
-#' with the index SNP based on an r-squared threshold. Following that, these SNPs are filtered based on the outcome for that SNP. 
-#' As this method is greedy \insertCite{Purcell2007}{GXwasR}, each SNP will, at most, only appear in one clump. The P value and 
-#' ALLELES would always, at random, be chosen from the first input file if the same SNP appeared in several input files in SNPdata 
-#' argument. Instead of the best p-value, the function refer to the SNP that has the strongest LD to the index as the best proxy. 
+#'
+#' The clumping process begins with the index SNPs that are significant at threshold p1 and have not yet been clumped. It then
+#' creates clumps of all additional SNPs that are within a specified kb of the index SNP and that are in linkage disequilibrium
+#' with the index SNP based on an r-squared threshold. Following that, these SNPs are filtered based on the outcome for that SNP.
+#' As this method is greedy \insertCite{Purcell2007}{GXwasR}, each SNP will, at most, only appear in one clump. The P value and
+#' ALLELES would always, at random, be chosen from the first input file if the same SNP appeared in several input files in SNPdata
+#' argument. Instead of the best p-value, the function refer to the SNP that has the strongest LD to the index as the best proxy.
 #' Based on the genotype data, the SNP with the highest LD will be the same for all input files.
-#' 
+#'
 #' @author Banabithi Bose
 #'
-#' @param DataDir 
+#' @param DataDir
 #' A character string for the file path of the input PLINK binary files.
-#' 
-#' @param finput 
-#' Character string, specifying the prefix of the input PLINK binary files which will be used to calculate linkage disequilibrium 
-#' between the SNPs. This actual genotype data may or may not be the same dataset that was used to generate the summary statistics. 
+#'
+#' @param finput
+#' Character string, specifying the prefix of the input PLINK binary files which will be used to calculate linkage disequilibrium
+#' between the SNPs. This actual genotype data may or may not be the same dataset that was used to generate the summary statistics.
 #' This file needs to be in `DataDir`.
-#' 
-#' @param SNPdata 
-#' A list of R dataframes containing a single or multiple summary statistics with SNP and P (i.e., p-values) in mandatory column 
+#'
+#' @param SNPdata
+#' A list of R dataframes containing a single or multiple summary statistics with SNP and P (i.e., p-values) in mandatory column
 #' headers. Other columns could be present.
-#' 
-#' @param ResultDir 
+#'
+#' @param ResultDir
 #' A character string for the file path where all output files will be stored. The default is `tempdir()`.
-#' 
-#' @param clump_p1 
+#'
+#' @param clump_p1
 #' Numeric value, specifying the significance threshold for index SNPs. The default is 0.0001.
-#' 
-#' @param clump_p2 
+#'
+#' @param clump_p2
 #' Numeric value, specifying the secondary significance threshold for clumped SNPs. The default is 0.01
-#' 
-#' @param clump_r2 
+#'
+#' @param clump_r2
 #' Numeric value, specifying the LD threshold for clumping. The default is 0.50.
-#' 
-#' @param clump_kb 
+#'
+#' @param clump_kb
 #' Integer value, specifying the physical distance threshold in base-pair for clumping. The default is 250.
-#' 
-#' @param clump_index_first 
-#' Boolean value, `TRUE` or `FALSE`, specifying whether to force the index SNP to appear first in each clump. This option should 
+#'
+#' @param clump_index_first
+#' Boolean value, `TRUE` or `FALSE`, specifying whether to force the index SNP to appear first in each clump. This option should
 #' typically be `TRUE` if clump_best is `TRUE.` Default is `TRUE`.
-#' 
-#' @param clump_best 
+#'
+#' @param clump_best
 #' Boolean value, `TRUE` or `FALSE`, specifying whether to select and output the best SNP from each clump. Default is `TRUE`.
-#' 
-#' @param byCHR 
+#'
+#' @param byCHR
 #' Boolean value, `TRUE` or `FALSE`, specifying whether to perform the clumping chromosome-wise.
 #'
-#' @return 
-#' A list with two dataframes. 
-#' 
-#' BestClump: a dataframe with eight columns showing the single best proxy SNP for each index SNP with 
-#' coulmns "INDEX"(Index SNP identifier), "PSNP"(Best proxy SNP), "RSQ LD"(r-squared) between index and proxy, 
-#' "KB"(Physical distance between index and proxy), P(p-value for proxy SNP), "ALLELES"(The associated haplotypes for the index and proxy SNP), 
+#' @return
+#' A list with two dataframes.
+#'
+#' BestClump: a dataframe with eight columns showing the single best proxy SNP for each index SNP with
+#' coulmns "INDEX"(Index SNP identifier), "PSNP"(Best proxy SNP), "RSQ LD"(r-squared) between index and proxy,
+#' "KB"(Physical distance between index and proxy), P(p-value for proxy SNP), "ALLELES"(The associated haplotypes for the index and proxy SNP),
 #' and "F"(Which file used for clumping from which this result came from).
-#' 
-#' AllClump: a dataframe with eight columns providing a detailed summary 
-#' of each clump identified by PLINK. It includes "INDEX_SNP" (the identifier for the index SNP that represents the clump), "SNP" 
-#' (the SNP being reported, which for the index SNP is the same as INDEX_SNP), "DISTANCE" (the physical distance in base pairs between the index 
-#' SNP and the reported SNP, with 0.0 indicating the index itself), "RSQ" (the r-squared value showing the degree of linkage disequilibrium between 
-#' the index SNP and the SNP in the clump), "ALLELES" (the allele information, which in some cases may appear misaligned if the data isn’t formatted 
-#' as expected), "F" (a statistic or indicator related to the association test, which may be NA when not applicable), "P" (the p-value for the 
+#'
+#' AllClump: a dataframe with eight columns providing a detailed summary
+#' of each clump identified by PLINK. It includes "INDEX_SNP" (the identifier for the index SNP that represents the clump), "SNP"
+#' (the SNP being reported, which for the index SNP is the same as INDEX_SNP), "DISTANCE" (the physical distance in base pairs between the index
+#' SNP and the reported SNP, with 0.0 indicating the index itself), "RSQ" (the r-squared value showing the degree of linkage disequilibrium between
+#' the index SNP and the SNP in the clump), "ALLELES" (the allele information, which in some cases may appear misaligned if the data isn’t formatted
+#' as expected), "F" (a statistic or indicator related to the association test, which may be NA when not applicable), "P" (the p-value for the
 #' association test of the SNP), and "CHR" (the chromosome on which the SNP is located).
 #' @export
 #'
-#' @references 
+#' @references
 #' \insertAllCited{}
 
 #' @examples
@@ -4161,10 +4156,10 @@ MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile =
 #' clump_r2 <- 0.5
 #' clump_kb <- 250
 #' byCHR <- TRUE
-#' clumpedResult <- ClumpLD(DataDir, finput, SNPdata, ResultDir, clump_p1, 
+#' clumpedResult <- ClumpLD(
+#'   DataDir, finput, SNPdata, ResultDir, clump_p1,
 #'   clump_p2, clump_r2, clump_kb, byCHR
 #' )
-
 ClumpLD <- function(DataDir, finput, SNPdata, ResultDir = tempdir(),
                     clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE,
                     clump_best = TRUE, clump_index_first = TRUE) {
@@ -4358,31 +4353,31 @@ ClumpLD <- function(DataDir, finput, SNPdata, ResultDir = tempdir(),
 
 #' DiffZeroOne: Assessing the Z-score for deviation from one and zero.
 #'
-#' @description 
-#' This function tests the null hypothesis that a measured statistics (example: genetic correlation, 
+#' @description
+#' This function tests the null hypothesis that a measured statistics (example: genetic correlation,
 #' rg for a trait) < 1 using a 1-tailed test compared with a normal distribution (z = (1 − measure statistics)/Standard error).
 #' For multiple tests, users are encouraged to apply a Bonferroni multiple-testing correction.
 #'
-#' @param inputdata 
-#' A dataframe object, contaning three columns: 
+#' @param inputdata
+#' A dataframe object, contaning three columns:
 #' * `Trait` (i.e., the phenotype of interest)
 #' * `Stat` (i.e., the measured statistics)
 #' * `SE` (i.e., the standard error of the measured statistics)
-#' 
-#' @param diffzero 
+#'
+#' @param diffzero
 #' Boolean value, `TRUE` or `FALSE`, specifying to perform diviation from 0 test.
-#' 
-#' @param diffone 
+#'
+#' @param diffone
 #' Boolean value, `TRUE` or `FALSE`, specifying to perform diviation from 1 test.
 #'
-#' @return 
+#' @return
 #' A dataframe with columns:
 #' * `Trait`
 #' * `Stat`
 #' * `SE`
-#' * `P0` (i.e, p-value for deviation from zero test) 
+#' * `P0` (i.e, p-value for deviation from zero test)
 #' * `P1` (i.e., p-value for deviation from 1 test)
-#' 
+#'
 #' @export
 #'
 #' @examples
@@ -4438,18 +4433,18 @@ DiffZeroOne <- function(inputdata, diffzero = TRUE, diffone = TRUE) {
 
 #' SexDiffZscore: Z-score-based sex difference test.
 #'
-#' @description 
-#' This function calculates the difference in any kind of measured entities,(example: including SNP heritability estimate, 
+#' @description
+#' This function calculates the difference in any kind of measured entities,(example: including SNP heritability estimate,
 #' genetic correlation, and GWAS β values) between sexes using a Z-score and its associated p-value statistic.
-#' When STAT/SE is normally distributed and the test statistics are independent in sex, the test is well calibrated. If 
+#' When STAT/SE is normally distributed and the test statistics are independent in sex, the test is well calibrated. If
 #' the statistics are positively correlated, this test is conservative (1).
-#' 
+#'
 #' We could define SNPs with SDEs as those variants at the extreme ends of the distribution with an absolute value of the
 #' Z-score greater than 3(|Z-score| > 3), which is roughly equivalent to p <10−3, and represents 0.3% of all tested SNPs.
-#' The input dataframes should only include X-chromosome in order to obtain results for sex differences based solely on 
+#' The input dataframes should only include X-chromosome in order to obtain results for sex differences based solely on
 #' X-linked loci.
 #'
-#' @param inputdata 
+#' @param inputdata
 #' A dataframe with five columns:
 #' * `ID` (i.e., SNP ID or the phenotype of interest, etc.)
 #' * `Fstat` (i.e., the measured statistics in females)
@@ -4458,11 +4453,11 @@ DiffZeroOne <- function(inputdata, diffzero = TRUE, diffone = TRUE) {
 #' * `Mse` (i.e., the standard error of the measured statistics in males)
 #'
 #'
-#' @return 
-#' Original input dataframe with: 
-#' * `Zscore` (i.e., Z-score), 
-#' * `p` (i.e., p-value) and 
-#' * `adjP` (i.e., Bonferroni corrected p-value) 
+#' @return
+#' Original input dataframe with:
+#' * `Zscore` (i.e., Z-score),
+#' * `p` (i.e., p-value) and
+#' * `adjP` (i.e., Bonferroni corrected p-value)
 #' columns added.
 #'
 #' @export
@@ -4503,93 +4498,93 @@ SexDiffZscore <- function(inputdata) {
 
 #' GeneticCorrBT: Computing genetic correlation between two traits.
 #'
-#' @description 
-#' This function computes genetic correlation, a quantitative genetic measure that describes the genetic link between two 
-#' traits and has been predicted to indicate pleiotropic gene activity or correlation between causative loci in two traits. 
-#' For example, it does a bivariate GREML analysis to determine the genetic association between two quantitative traits, 
-#' two binary disease traits from case-control studies, and between a quantitative trait and a binary disease trait 
-#' following \insertCite{Yang2011,Lee2012}{GXwasR}. If users want, this function gives the flexibility to compute the genetic 
+#' @description
+#' This function computes genetic correlation, a quantitative genetic measure that describes the genetic link between two
+#' traits and has been predicted to indicate pleiotropic gene activity or correlation between causative loci in two traits.
+#' For example, it does a bivariate GREML analysis to determine the genetic association between two quantitative traits,
+#' two binary disease traits from case-control studies, and between a quantitative trait and a binary disease trait
+#' following \insertCite{Yang2011,Lee2012}{GXwasR}. If users want, this function gives the flexibility to compute the genetic
 #' correlation chromosome-wise.
 #'
-#' @param DataDir 
+#' @param DataDir
 #' A character string for the file path of the all the input files.
-#' 
-#' @param ResultDir 
+#'
+#' @param ResultDir
 #' A character string for the file path where all output files will be stored. The default is `tempdir()`.
-#' 
-#' @param finput 
+#'
+#' @param finput
 #' Character string, specifying the prefix of the input PLINK binary files for the genotype data. This file needs to be in `DataDir`.
-#' 
-#' @param byCHR 
+#'
+#' @param byCHR
 #' Boolean value, `TRUE` or `FALSE`, specifying whether the analysis will be performed chromosome wise or not. The default is `FALSE`.
-#' 
-#' @param REMLalgo 
-#' Integer value of 0, 1 or 2, specifying the algorithm to run REML iterations, 0 for average information (AI), 1 for Fisher-scoring and 
+#'
+#' @param REMLalgo
+#' Integer value of 0, 1 or 2, specifying the algorithm to run REML iterations, 0 for average information (AI), 1 for Fisher-scoring and
 #' 2 for EM. The default option is 0, i.e. AI-REML (1).
-#' 
-#' @param nitr 
+#'
+#' @param nitr
 #' Integer value, specifying the number of iterations for performing the REML. The default is 100.
-#' 
-#' @param phenofile 
-#' A dataframe for Bivar RELM has four columns `family ID`, `individual ID` and two trait columns. For binary trait, the phenotypic value 
-#' should be coded as 0 or 1, then it will be recognized as a case-control study (0 for controls and 1 for cases). Missing value should 
+#'
+#' @param phenofile
+#' A dataframe for Bivar RELM has four columns `family ID`, `individual ID` and two trait columns. For binary trait, the phenotypic value
+#' should be coded as 0 or 1, then it will be recognized as a case-control study (0 for controls and 1 for cases). Missing value should
 #' be represented by "-9" or "NA".
-#' 
-#' @param cat_covarfile 
-#' A character string, specifying the name of the categorical covariate file which is a plain text file with no header line; columns are 
+#'
+#' @param cat_covarfile
+#' A character string, specifying the name of the categorical covariate file which is a plain text file with no header line; columns are
 #' `family ID`, `individual ID` and discrete covariates. The default is `NULL`. This file needs to be in `DataDir`.
-#' 
-#' @param quant_covarfile 
-#' A character string, specifying the name of the quantitative covariate file which is a plain text file with no header line; columns 
+#'
+#' @param quant_covarfile
+#' A character string, specifying the name of the quantitative covariate file which is a plain text file with no header line; columns
 #' are `family ID`, `individual ID` and continuous covariates. The default is `NULL`. This file needs to be in `DataDir`.
-#' 
-#' @param computeGRM 
+#'
+#' @param computeGRM
 #' Boolean value, `TRUE` or `FALSE`, specifying whether to compute GRM matrices or not. The default is `TRUE`.
-#' 
-#' @param grmfile_name 
-#' A string of characters specifying the prefix of autosomal .grm.bin file. Users need to provide separate GRM files for autosomes 
+#'
+#' @param grmfile_name
+#' A string of characters specifying the prefix of autosomal .grm.bin file. Users need to provide separate GRM files for autosomes
 #' and X chromosome in `ResultDir`. The X chromosomal GRM file should have "x" added in the autosomal prefix as file name.
 #'
-#' For instance, if autosomal file is "ABC.grm.bin", then X chromosomal file should be "xABC.grm.bim". If you are providing 
-#' chromosome-wise GRMs, then the prefix should add "ChrNumber_" at the starting of the prefix like, "Chr1_ABC.grm.bin". 
+#' For instance, if autosomal file is "ABC.grm.bin", then X chromosomal file should be "xABC.grm.bim". If you are providing
+#' chromosome-wise GRMs, then the prefix should add "ChrNumber_" at the starting of the prefix like, "Chr1_ABC.grm.bin".
 #' The default is `NULL`.
-#' 
-#' @param partGRM 
+#'
+#' @param partGRM
 #' Boolean value, `TRUE` or `FALSE`, specifying whether the GRM will be partitioned into n parts (by row) in GREML model. The default is `FALSE`.
-#' 
-#' @param autosome 
+#'
+#' @param autosome
 #' Boolean value, `TRUE` or `FALSE`, specifying whether estimate of heritability will be done for autosomes or not. The default is `TRUE`.
-#' 
-#' @param Xsome 
+#'
+#' @param Xsome
 #' Boolean value, `TRUE` or `FALSE`, specifying whether estimate of heritability will be done for X chromosome or not. The default is `TRUE`.
-#' 
-#' @param nGRM 
+#'
+#' @param nGRM
 #' Integer value, specifying the number of the partition of the GRM in GREML model. The default is 3.
-#' 
-#' @param cripticut 
-#' Numeric value, specifying the threshold to create a new GRM of "unrelated" individuals in GREML model. The default is arbitrary 
+#'
+#' @param cripticut
+#' Numeric value, specifying the threshold to create a new GRM of "unrelated" individuals in GREML model. The default is arbitrary
 #' chosen as 0.025 following \insertCite{Yang2011}{GXwasR}.
-#' 
-#' @param minMAF 
+#'
+#' @param minMAF
 #' Positive numeric value (< maxMAF), specifying the minimum threshold for the MAF filter of the SNPs in the Bivariate GREML model.
-#' 
-#' @param maxMAF 
+#'
+#' @param maxMAF
 #' Positive numeric value (minMAF,1), specifying the maximum threshold for the MAF filter of the SNPs in the Bivariate GREML model.
-#' 
-#' @param excludeResidual 
-#' Boolean value, `TRUE` or `FALSE`, specifying whether to drop the residual covariance from the model. Recommended to set this `TRUE` 
+#'
+#' @param excludeResidual
+#' Boolean value, `TRUE` or `FALSE`, specifying whether to drop the residual covariance from the model. Recommended to set this `TRUE`
 #' if the traits were measured on different individuals. The default is `FALSE`.
-#' 
-#' @param ncores 
+#'
+#' @param ncores
 #' Integer value, specifying the number of cores to be used.
 #'
-#' @return 
+#' @return
 #' A dataframe with minimum three columns:
-#' 
+#'
 #' * Source" (i.e., source of heritability)
 #' * Variance" (i.e. estimated heritability)
 #' * SE" (i.e., standard error of the estimated heritability)
-#' 
+#'
 #' Source column will have rows, such as V(G)_tr1 (genetic variance for trait 1), V(G)_tr2 (genetic variance for trait 2),
 #' C(G)_tr12 (genetic covariance between traits 1 and 2),V(e)_tr1 (residual variance for trait 1), V(e)_tr2 (residual variance for trait 2),
 #' C(e)_tr12 (residual covariance between traits 1 and 2), Vp_tr1 (proportion of variance explained by all SNPs for trait 1),
@@ -4607,30 +4602,30 @@ SexDiffZscore <- function(inputdata) {
 #' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
-#' byCHR = FALSE
-#' REMLalgo = 0
+#' byCHR <- FALSE
+#' REMLalgo <- 0
 #' nitr <- 3
 #' ncores <- 3
 #' data("GXwasRData")
-#' phenofile <- Example_phenofile #Cannot be NULL, the interested phenotype column should be labeled as
+#' phenofile <- Example_phenofile # Cannot be NULL, the interested phenotype column should be labeled as
 #' #
 #' cat_covarfile <- NULL
 #' quant_covarfile <- NULL
-#' partGRM <- FALSE #Partition the GRM into m parts (by row),
-#' autosome = TRUE
+#' partGRM <- FALSE # Partition the GRM into m parts (by row),
+#' autosome <- TRUE
 #' Xsome <- TRUE
-#' cripticut = 0.025
+#' cripticut <- 0.025
 #' minMAF <- 0.01 # if MAF filter apply
 #' maxMAF <- 0.04
-#' excludeResidual = "TRUE"
+#' excludeResidual <- "TRUE"
 #' #
-#' GC <- GeneticCorrBT(DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = TRUE,
+#' GC <- GeneticCorrBT(
+#'   DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = TRUE,
 #'   REMLalgo = 0, nitr = 10, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL,
 #'   partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
-#'   cripticut = 0.025, minMAF = NULL, maxMAF = NULL,excludeResidual = TRUE, ncores = ncores
+#'   cripticut = 0.025, minMAF = NULL, maxMAF = NULL, excludeResidual = TRUE, ncores = ncores
 #' )
 #' }
-
 GeneticCorrBT <- function(DataDir, ResultDir, finput, byCHR = FALSE,
                           REMLalgo = c(0, 1, 2), nitr = 100, phenofile, cat_covarfile = NULL, quant_covarfile = NULL,
                           computeGRM = TRUE, grmfile_name = NULL,
@@ -4805,20 +4800,20 @@ GeneticCorrBT <- function(DataDir, ResultDir, finput, byCHR = FALSE,
 
 #' SexRegress: Performing linear regression analysis with quantitative response variable.
 #'
-#' @description 
+#' @description
 #' This function could be used to check association of two variables. For instance, PRS with sex.
 #'
-#' @param fdata 
+#' @param fdata
 #' R dataframe object. The column with header `response` should contain the response variable. All other column are the regressor.
-#' 
-#' @param regressor_index 
+#'
+#' @param regressor_index
 #' Integer value, specifying the column number of the main regressor variable.
-#' 
-#' @param response_index 
+#'
+#' @param response_index
 #' Integer value, specifying the column number of the response variable.
 #'
 #' @return
-#' Numeric value containing the regression estimate ("Estimate"), standard error ("Std. Error"), statistics ("t value") and 
+#' Numeric value containing the regression estimate ("Estimate"), standard error ("Std. Error"), statistics ("t value") and
 #' p-value (\eqn{Pr(>|t|)})
 #'
 #' @importFrom stats lm
@@ -4834,7 +4829,6 @@ GeneticCorrBT <- function(DataDir, ResultDir, finput, byCHR = FALSE,
 #' regressor_index <- 2
 #'
 #' x <- SexRegress(fdata, regressor_index, response_index)
-
 SexRegress <- function(fdata, regressor_index, response_index) {
   # Validate input parameters
   validateInputForSexRegress(fdata, regressor_index, response_index)
@@ -4869,69 +4863,69 @@ SexRegress <- function(fdata, regressor_index, response_index) {
 #'
 #' @author Banabithi Bose
 #'
-#' @description 
-#' Filtering Pseudo-Autosomal Region (PAR), X-transposed region (XTR), Ampliconic, filter based on chromosome code or 
-#' user-defined regions from input plink files. Only one type of filtering can be done from three types, either by region 
-#' (using `regionfile` = `TRUE`), by chromosome (`filterCHR`) or by any combination of these three, `filterPAR`, 
+#' @description
+#' Filtering Pseudo-Autosomal Region (PAR), X-transposed region (XTR), Ampliconic, filter based on chromosome code or
+#' user-defined regions from input plink files. Only one type of filtering can be done from three types, either by region
+#' (using `regionfile` = `TRUE`), by chromosome (`filterCHR`) or by any combination of these three, `filterPAR`,
 #' `filterXTR` and `filterAmpliconic.`
 
 #'
-#' @param DataDir 
+#' @param DataDir
 #' A character string for the file path of the input PLINK binary files.
-#' 
-#' @param ResultDir 
+#'
+#' @param ResultDir
 #' A character string for the file path where all output files will be stored. The default is `tempdir()`.
-#' 
-#' @param finput 
+#'
+#' @param finput
 #' Character string, specifying the prefix of the input PLINK binary files.
-#' 
-#' @param foutput 
-#' Character string, specifying the prefix of the output PLINK binary files if the filtering option for the SNPs is chosen. 
+#'
+#' @param foutput
+#' Character string, specifying the prefix of the output PLINK binary files if the filtering option for the SNPs is chosen.
 #' The default is "FALSE".
-#' 
-#' @param CHRX 
-#' Boolean value, `TRUE` or `FALSE` to filter/flag regions from chromosome X. The default is `TRUE`. Note: `CHRX` only in effect if 
+#'
+#' @param CHRX
+#' Boolean value, `TRUE` or `FALSE` to filter/flag regions from chromosome X. The default is `TRUE`. Note: `CHRX` only in effect if
 #' one of `filterPAR`, `filterXTR` or `filterAmpliconic` filter is in effect.
-#' 
-#' @param CHRY 
-#' Boolean value, `TRUE` or `FALSE` to filter/flag regions from chromosome X. The default is `FALSE`. Note: CHRY only in effect 
+#'
+#' @param CHRY
+#' Boolean value, `TRUE` or `FALSE` to filter/flag regions from chromosome X. The default is `FALSE`. Note: CHRY only in effect
 #' if one of `filterPAR`, `filterXTR` or `filterAmpliconic` filter is in effect.
-#' 
-#' @param filterPAR 
+#'
+#' @param filterPAR
 #' Boolean value, `TRUE` or `FALSE` to filter out PARs from input plink file. The default is `TRUE`.
-#' 
-#' @param filterXTR 
+#'
+#' @param filterXTR
 #' Boolean value, `TRUE` or `FALSE` to filter out XTRs from input plink file. The default is `TRUE`.
-#' 
-#' @param filterAmpliconic 
+#'
+#' @param filterAmpliconic
 #' Boolean value, `TRUE` or `FALSE` to filter out Ampliconic regions from input plink file. The default is `TRUE`.
-#' 
-#' @param regionfile 
-#' Character string, specifying the name of the .txt file containing the user-defined regions to be filtered out from input plink 
-#' file in bed format. The default is `FALSE`. If `regionfile` = `TRUE`, only this filtering will be in effect. Also, PAR, XTR and 
+#'
+#' @param regionfile
+#' Character string, specifying the name of the .txt file containing the user-defined regions to be filtered out from input plink
+#' file in bed format. The default is `FALSE`. If `regionfile` = `TRUE`, only this filtering will be in effect. Also, PAR, XTR and
 #' Ampliconic SNPs from X-chomosome will be flagged and returned.
-#' 
-#' @param filterCHR 
-#' Vector value with positive integer, specifying the chromosome code to filter/flag the SNPs. The default is 0, means no filtering 
-#' based on chromosome code. For non-zero values of this argument, the function will only consider the chromosome code to filter or 
-#' flag. All other filtering will not work. If filterCHR = TRUE, only this filtering will be in effect. Also, PAR, XTR and Ampliconic 
+#'
+#' @param filterCHR
+#' Vector value with positive integer, specifying the chromosome code to filter/flag the SNPs. The default is 0, means no filtering
+#' based on chromosome code. For non-zero values of this argument, the function will only consider the chromosome code to filter or
+#' flag. All other filtering will not work. If filterCHR = TRUE, only this filtering will be in effect. Also, PAR, XTR and Ampliconic
 #' SNPs from X-chomosome will be flagged and returned.
-#' 
-#' @param Hg 
+#'
+#' @param Hg
 #' Character value, '19', or '38', specifying which genome build to use for PAR, XTR and Ampliconic regions. The default is Hg = "19".
-#' 
-#' @param exclude 
+#'
+#' @param exclude
 #' Boolean value, `TRUE` or `FALSE` to filter and flag or only flag the SNPs. The default is `TRUE`.
 #'
-#' @return 
-#' A list of three dataframes: PAR containing SNPs from PAR regions; XTR containing SNPs from XTR region and Ampliconic containing 
+#' @return
+#' A list of three dataframes: PAR containing SNPs from PAR regions; XTR containing SNPs from XTR region and Ampliconic containing
 #' SNPs from Ampliconic region.
 #'
 #' For non-zero value of `filterCHR`, a dataframe containing the excluded/flagged SNPs will be returned.
 #'
-#' For `exclude` = `TRUE`, two sets of plink binary files will be produced in ResultDir. One set will have the remaining SNPs after 
+#' For `exclude` = `TRUE`, two sets of plink binary files will be produced in ResultDir. One set will have the remaining SNPs after
 #' filtering and other one will have the discarded SNPs.
-#' 
+#'
 #' @export
 #'
 #' @examples
@@ -4939,12 +4933,12 @@ SexRegress <- function(fdata, regressor_index, response_index) {
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "PostimputeEX_QC1"
-#' x <- FilterRegion(DataDir = DataDir, ResultDir = ResultDir, 
-#'   finput = finput, foutput = foutput, CHRX = TRUE, CHRY = FALSE, 
-#'   filterPAR = TRUE, filterXTR = TRUE, filterAmpliconic = TRUE, 
-#'   regionfile = FALSE, filterCHR = NULL, Hg = "38",exclude = TRUE
+#' x <- FilterRegion(
+#'   DataDir = DataDir, ResultDir = ResultDir,
+#'   finput = finput, foutput = foutput, CHRX = TRUE, CHRY = FALSE,
+#'   filterPAR = TRUE, filterXTR = TRUE, filterAmpliconic = TRUE,
+#'   regionfile = FALSE, filterCHR = NULL, Hg = "38", exclude = TRUE
 #' )
-
 FilterRegion <-
   function(DataDir,
            ResultDir,
@@ -5185,23 +5179,23 @@ PlinkSummary <- function(DataDir, ResultDir = tempdir(), finput) {
 #'
 #' @author Banabithi Bose
 #'
-#' @description 
+#' @description
 #' This function filters out the multi-allelic SNPs from the input dataset.
-#' 
-#' @param DataDir 
+#'
+#' @param DataDir
 #' A character string for the file path of the input PLINK binary files.
-#' 
-#' @param ResultDir 
+#'
+#' @param ResultDir
 #' A character string for the file path where all output files will be stored. The default is `tempdir()`.
-#' 
-#' @param finput 
+#'
+#' @param finput
 #' Character string, specifying the prefix of the input PLINK binary files.
-#' 
-#' @param foutput 
-#' Character string, specifying the prefix of the output PLINK binary files. If multi-allelic variants are present, 
+#'
+#' @param foutput
+#' Character string, specifying the prefix of the output PLINK binary files. If multi-allelic variants are present,
 #' this file will be produced after filtering out these variants.
 #'
-#' @return 
+#' @return
 #' `NULL`. After multi-allelic variant filtering, the filtered plink files with only biallelic SNPs will be saved in `ResultDir`.
 #' @export
 #'
@@ -5211,7 +5205,6 @@ PlinkSummary <- function(DataDir, ResultDir = tempdir(), finput) {
 #' finput <- "GXwasR_example"
 #' foutput <- "Filter_Test"
 #' x <- FilterAllele(DataDir, ResultDir, finput, foutput)
-
 FilterAllele <- function(DataDir, ResultDir, finput, foutput) {
   # Validate DataDir
   if (!is.character(DataDir) || !dir.exists(DataDir)) {
@@ -5283,91 +5276,91 @@ FilterAllele <- function(DataDir, ResultDir, finput, foutput) {
 }
 
 
-#' PvalComb 
-#' 
+#' PvalComb
+#'
 #' @description
-#' This function combines the p-values of two separate GWAS summary statistics (for instance male and female populations), 
-#' merges them, and then applies various statistical methods (like Stouffer's method, Fisher's method) to integrate the 
+#' This function combines the p-values of two separate GWAS summary statistics (for instance male and female populations),
+#' merges them, and then applies various statistical methods (like Stouffer's method, Fisher's method) to integrate the
 #' p-values. It also includes functionality for generating plots like Manhattan plots and Q-Q plots.
 #'
-#' 
-#' @param SumstatMale 
-#' R dataframe object of summary statistics of male GWAS with five mandatory columns: 
+#'
+#' @param SumstatMale
+#' R dataframe object of summary statistics of male GWAS with five mandatory columns:
 #' * `CHR` (numeric chromosome code)
 #' * `SNP` (variant id)
 #' * `A1` (allele)
 #' * `POS` (base-pair position)
-#' * `P` (p-value). 
-#' 
+#' * `P` (p-value).
+#'
 #' Other coulmns may present.
-#' 
-#' @param SumstatFemale 
-#' R dataframe object of summary statistics of female GWAS with five mandatory columns: 
+#'
+#' @param SumstatFemale
+#' R dataframe object of summary statistics of female GWAS with five mandatory columns:
 #' * `SNP`
 #' * `A1`
 #' * `TEST`
 #' * `POS`
 #' * `P`
-#' 
+#'
 #' Other coulmns may present.
-#' 
-#' @param combtest 
-#' Character vector specifying method for combining p-values for stratified GWAS models. Choices are “stouffer.method”, 
-#' "fisher.method" and "fisher.method.perm". For fisher.method the function for combining p-values uses a statistic, 
+#'
+#' @param combtest
+#' Character vector specifying method for combining p-values for stratified GWAS models. Choices are “stouffer.method”,
+#' "fisher.method" and "fisher.method.perm". For fisher.method the function for combining p-values uses a statistic,
 #' \eqn{S = -2 ∑^k /log p}, which follows a \eqn{χ^2} distribution with 2k degrees of freedom \insertCite{Fisher1925}{GXwasR}.
-#' For fisher.method.perm, using p-values from stratified tests, the summary statistic for combining p-values 
-#' is \eqn{S = -2 ∑ /log p}. A p-value for this statistic can be derived by randomly generating summary statistics \insertCite{Rhodes2002}{GXwasR}. 
-#' Therefore, a p-value is randomly sampled from each contributing study, and a random statistic is calculated. The 
+#' For fisher.method.perm, using p-values from stratified tests, the summary statistic for combining p-values
+#' is \eqn{S = -2 ∑ /log p}. A p-value for this statistic can be derived by randomly generating summary statistics \insertCite{Rhodes2002}{GXwasR}.
+#' Therefore, a p-value is randomly sampled from each contributing study, and a random statistic is calculated. The
 #' fraction of random statistics greater or equal to S then gives the final p-value.
 #'
-#' @param MF.p.corr 
-#' Character vector specifying method for correcting the summary p-values for FMfcomb and FMscomb models. Choices are 
+#' @param MF.p.corr
+#' Character vector specifying method for correcting the summary p-values for FMfcomb and FMscomb models. Choices are
 #' "bonferroni", "BH" and "none" for Bonferroni,  Benjamini-Hochberg and none, respectively. The default is "none".
-#' 
-#' @param MF.zero.sub 
-#' Small numeric value for substituting p-values of 0 in GWAS summary statistics. The default is 0.00001. As \eqn{log(0)} 
+#'
+#' @param MF.zero.sub
+#' Small numeric value for substituting p-values of 0 in GWAS summary statistics. The default is 0.00001. As \eqn{log(0)}
 #' results in Inf this replaces p-values of 0 by default with a small float.
-#' 
-#' @param MF.na.rm 
-#' Boolean value, `TRUE` or `FALSE` for removing p-values of NA in stratified GWAS summary satistics in case of using Fisher’s 
+#'
+#' @param MF.na.rm
+#' Boolean value, `TRUE` or `FALSE` for removing p-values of NA in stratified GWAS summary satistics in case of using Fisher’s
 #' and Stouffer’s methods. The default is `TRUE`.
-#' 
-#' @param MF.mc.cores 
+#'
+#' @param MF.mc.cores
 #' Number of cores used for fisher.method.perm for combining p-values. The default is 1.
-#' 
-#' @param B 
+#'
+#' @param B
 #' Integer value specifying the number of permutation in case of using fisher.method.perm method. The default is 10000.
-#' 
-#' @param plot.jpeg 
+#'
+#' @param plot.jpeg
 #' Boolean value, `TRUE` or `FALSE` for saving the plots in .jpeg file. The default is `TRUE`.
-#' 
-#' @param plotname 
-#' A character string specifying the prefix of the file for plots. This file will be saved in DataDir. 
+#'
+#' @param plotname
+#' A character string specifying the prefix of the file for plots. This file will be saved in DataDir.
 #' The default is "GXwas.plot".
-#' 
-#' @param PlotDir 
+#'
+#' @param PlotDir
 #' A character string specifying the path of the directory where the plots will be saved. The default is `tempdir()`.
-#' 
-#' @param snp_pval 
+#'
+#' @param snp_pval
 #' Numeric value as p-value threshold for annotation. SNPs below this p-value will be annotated on the plot. The default is 1e-08.
-#' 
-#' @param annotateTopSnp 
+#'
+#' @param annotateTopSnp
 #' Boolean value, `TRUE` or `FALSE.` If `TRUE`, it only annotates the top hit on each chromosome that is below the snp_pval threshold. The default is `FALSE`.
-#' 
-#' @param suggestiveline 
+#'
+#' @param suggestiveline
 #' Numeric value for suggestive cut-off line in GWAS manhattan plot. The default is 5 (for p-value 1e-05).
-#' 
-#' @param genomewideline 
+#'
+#' @param genomewideline
 #' Numeric value for genome-wide significant cut-off line in GWAS manhattan plot. The default is 7.3 (for p-value 5e-08).
-#' 
-#' @param ncores 
+#'
+#' @param ncores
 #' Integer value, specifying the number of cores for parallel processing. The default is 0 (no parallel computation).
 
-#' @return 
+#' @return
 #' A dataframe with GWAS summary statistics (with XWAS for X-chromosomal variants) along with Manhattan and Q-Q plots.
 #' @export
 #'
-#' @references 
+#' @references
 #' \insertAllCited{}
 #'
 #' @examples
@@ -5381,12 +5374,12 @@ FilterAllele <- function(DataDir, ResultDir, finput, foutput) {
 #' # colnames(SumstatMale)[3]<- "POS"
 #' # SumstatFemale <- Summary_Stat_Ex2
 #' # colnames(SumstatFemale)[3]<- "POS"
-#' PvalComb_Result <- PvalComb(SumstatMale = SumstatMale, SumstatFemale = SumstatFemale, 
-#'   combtest = "fisher.method", MF.mc.cores = 1, snp_pval = 0.001, plot.jpeg = FALSE, 
+#' PvalComb_Result <- PvalComb(
+#'   SumstatMale = SumstatMale, SumstatFemale = SumstatFemale,
+#'   combtest = "fisher.method", MF.mc.cores = 1, snp_pval = 0.001, plot.jpeg = FALSE,
 #'   suggestiveline = 3, genomewideline = 5.69897, ncores = 1
 #' )
 #'
-
 PvalComb <- function(SumstatMale, SumstatFemale,
                      combtest,
                      MF.p.corr = "none",
@@ -5506,23 +5499,23 @@ PvalComb <- function(SumstatMale, SumstatFemale,
 
 #' FilterSNP: Filter out SNPs.
 #'
-#' @param DataDir 
+#' @param DataDir
 #' A character string for the file path of the input PLINK binary files.
-#' 
-#' @param ResultDir 
+#'
+#' @param ResultDir
 #' A character string for the file path where all output files will be stored. The default is `tempdir()`.
-#' 
-#' @param finput 
+#'
+#' @param finput
 #' Character string, specifying the prefix of the input PLINK binary files.
-#' 
-#' @param foutput 
-#' Character string, specifying the prefix of the output PLINK binary files if the filtering option for the SNPs is chosen. 
+#'
+#' @param foutput
+#' Character string, specifying the prefix of the output PLINK binary files if the filtering option for the SNPs is chosen.
 #' The default is "FALSE".
-#' 
-#' @param SNPvec 
+#'
+#' @param SNPvec
 #' R dataframe with SNP names to be excluded.
-#' 
-#' @param extract 
+#'
+#' @param extract
 #' Boolean value, `TRUE` or `FALSE`, specifying whether to extract the snps or discard the snps. The default is `FALSE`.
 #'
 #' @return `NULL`. The filtered file will be saved in `ResultDir`.
@@ -5536,7 +5529,6 @@ PvalComb <- function(SumstatMale, SumstatFemale,
 #' finput <- "GXwasR_example"
 #' foutput <- "Filter_Test"
 #' FilterSNP(DataDir, ResultDir, finput, foutput, SNPvec = SNPvec, extract = TRUE)
-
 FilterSNP <- function(DataDir, ResultDir, finput, foutput, SNPvec, extract = FALSE) {
   # Validate inputs
   validation_result <- validateFilterSNPInputs(DataDir, finput, SNPvec, extract)
@@ -5602,15 +5594,15 @@ FilterSNP <- function(DataDir, ResultDir, finput, foutput, SNPvec, extract = FAL
 #' Downloads reference data sets from specified URLs based on the reference dataset name and working directory.
 #' Currently supports 'HapMapIII_NCBI36' and 'ThousandGenome'.
 #'
-#' @param refdata 
+#' @param refdata
 #' A character string specifying the reference dataset to download. Should be one of 'HapMapIII_NCBI36' or 'ThousandGenome'.
-#' 
-#' @param wdir 
+#'
+#' @param wdir
 #' A character string specifying the working directory where the reference data will be downloaded and extracted.
-#' 
-#' @return 
+#'
+#' @return
 #' Invisible. The function prints a message upon successful download and extraction of the reference data.
-#' 
+#'
 #' @export
 #' @examples
 #' \dontrun{
@@ -5703,27 +5695,27 @@ Download_reference <- function(refdata, wdir = tempdir()) {
 #' DummyCovar: Recode a categorical variable to a set of binary dummy variables.
 #'
 #' @description
-#' When dealing with categorical variables in genetic analysis using, a common approach is to convert these into dummy variables 
-#' for proper analysis \insertCite{Purcell2007}{GXwasR}. This function creates K-1 new dummy variables for a variable with K categories. 
-#' One level is automatically excluded from the dummy variables which serves as the reference category for subsequent analyses. This setup 
+#' When dealing with categorical variables in genetic analysis using, a common approach is to convert these into dummy variables
+#' for proper analysis \insertCite{Purcell2007}{GXwasR}. This function creates K-1 new dummy variables for a variable with K categories.
+#' One level is automatically excluded from the dummy variables which serves as the reference category for subsequent analyses. This setup
 #' implicitly sets the excluded that category as the baseline against which other categories are compared.
 #'
-#' @param DataDir 
+#' @param DataDir
 #' A character string for the file path of the input PLINK binary files.
-#' 
-#' @param bfile 
+#'
+#' @param bfile
 #' Character string, specifying the prefix of the input PLINK binary files for which covariate file will be generated.
-#' 
-#' @param incovar 
-#' Character string, specifying the prefix of the input covariate file. First two columns will be, FID (i.e., Family ID) and IID (i.e., 
+#'
+#' @param incovar
+#' Character string, specifying the prefix of the input covariate file. First two columns will be, FID (i.e., Family ID) and IID (i.e.,
 #' Sample ID) and rest of the columns are covariates.
-#' 
-#' @param outcovar 
+#'
+#' @param outcovar
 #' Character string, specifying the prefix of the Output covariate file
 #'
-#' @return 
+#' @return
 #' R dataframe object with covariates
-#' 
+#'
 #' @export
 #'
 #' @references
@@ -5737,7 +5729,6 @@ Download_reference <- function(refdata, wdir = tempdir()) {
 #' outcovar <- "dummycovarfile"
 #' DummyCovar(DataDir = DataDir, bfile = bfile, incovar = incovar, outcovar = outcovar)
 #' }
-
 DummyCovar <- function(DataDir, bfile, incovar, outcovar) {
   if (file.exists(paste0(DataDir, "/", bfile, ".bed")) &&
     file.exists(paste0(DataDir, "/", bfile, ".bim")) &&
@@ -5784,20 +5775,20 @@ DummyCovar <- function(DataDir, bfile, incovar, outcovar) {
 #' This function executes PLINK to calculate minor allele frequencies (MAF) for a given dataset. It sets up the necessary PLINK environment,
 #' runs the PLINK command, and returns the MAF results as a DataFrame. Intermediate files generated by PLINK are cleaned up after execution.
 #'
-#' @param DataDir 
+#' @param DataDir
 #' Character. Directory containing the input PLINK files (.bed, .bim, .fam).
-#' 
-#' @param ResultDir 
+#'
+#' @param ResultDir
 #' Character. Directory to store the output files generated by PLINK.
-#' 
-#' @param finput 
+#'
+#' @param finput
 #' Character. Base name of the PLINK input files (without extensions).
-#' 
-#' @return 
+#'
+#' @return
 #' DataFrame containing the minor allele frequency (MAF) results.
-#' 
+#'
 #' @export
-#' 
+#'
 #' @examples
 #' \dontrun{
 #' DataDir <- "path/to/data"
@@ -5805,7 +5796,6 @@ DummyCovar <- function(DataDir, bfile, incovar, outcovar) {
 #' finput <- "input_file_base_name"
 #' maf_data <- executePlinkMAF(DataDir, ResultDir, finput)
 #' }
-
 executePlinkMAF <- function(DataDir, ResultDir, finput) {
   if (!checkFiles(DataDir, finput)) {
     stop("Missing required Plink files in the specified DataDir.")
@@ -5858,26 +5848,26 @@ executePlinkMAF <- function(DataDir, ResultDir, finput) {
 
 ## Added in V7
 #' LDPrune: Performs LD pruning on SNP data using PLINK
-#' @description 
-#' This function utilizes PLINK to perform LD pruning on genetic data. It identifies and removes SNPs that are in high 
+#' @description
+#' This function utilizes PLINK to perform LD pruning on genetic data. It identifies and removes SNPs that are in high
 #' linkage disequilibrium with each other within specified windows.
 #'
-#' @param DataDir 
+#' @param DataDir
 #' Character string representing the file path of the input PLINK binary files.
-#' 
-#' @param finput 
+#'
+#' @param finput
 #' Character string specifying the prefix of the input PLINK binary files.
-#' 
-#' @param ResultDir 
+#'
+#' @param ResultDir
 #' Character string for the file path where all output files will be stored, defaulting to a temporary directory.
-#' 
-#' @param window_size 
+#'
+#' @param window_size
 #' Integer, specifying the number of SNPs to include in the sliding window.
-#' 
-#' @param step_size 
+#'
+#' @param step_size
 #' Integer, specifying the number of SNPs the window moves over in each step.
-#' 
-#' @param r2_threshold 
+#'
+#' @param r2_threshold
 #' Numeric, specifying the R^2 threshold for LD pruning.
 #'
 #' @return Returns a character vector of SNP identifiers that remain after LD pruning or NULL if an error occurs.
@@ -5890,7 +5880,6 @@ executePlinkMAF <- function(DataDir, ResultDir, finput) {
 #' finput <- "dataset_prefix"
 #' prunedSNPs <- LDPrune(DataDir, finput, ResultDir, 50, 5, 0.2)
 #' }
-
 LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, step_size = 5, r2_threshold = 0.2) {
   # Validate input parameters
   validateInputForLDPrune(DataDir, finput, ResultDir, window_size, step_size, r2_threshold)
@@ -5945,50 +5934,50 @@ LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, st
 #' This function calculates the genetic correlation between two summary statistics
 #' using a specified reference linkage disequilibrium (LD) matrix from the UK Biobank.
 #'
-#' @param ResultDir 
+#' @param ResultDir
 #' Directory where results should be saved.
-#' 
-#' @param referenceLD 
-#' Reference LD matrix identifier. These are the LD matrices and their eigen-decomposition from 335,265 genomic 
+#'
+#' @param referenceLD
+#' Reference LD matrix identifier. These are the LD matrices and their eigen-decomposition from 335,265 genomic
 #' British UK Biobank individuals. Two sets of reference panel are provided:
 #' 1) 307,519 QCed UK Biobank Axiom Array SNPs. The size is about 7.5 GB after unzipping.
-#' 2) 1,029,876 QCed UK Biobank imputed SNPs. The size is about 31 GB after unzipping. Although it takes more time, 
+#' 2) 1,029,876 QCed UK Biobank imputed SNPs. The size is about 31 GB after unzipping. Although it takes more time,
 #' using the imputed panel provides more accurate estimates of genetic correlations.
 #' Therefore if the GWAS includes most of the HapMap3 SNPs, then it is recommend using the imputed reference panel.
-#' 
-#' @param sumstat1 
+#'
+#' @param sumstat1
 #' Data frame for the first set of summary statistics.
 #' The input data frame should include following columns: SNP, SNP ID; A1, effect allele; A2, reference allele;
-#' N, sample size; Z, z-score; If Z is not given, alternatively, you may provide: b, estimate of marginal effect in GWAS; se, 
+#' N, sample size; Z, z-score; If Z is not given, alternatively, you may provide: b, estimate of marginal effect in GWAS; se,
 #' standard error of the estimates of marginal effects in GWAS.
-#' 
-#' @param sumstat2 
+#'
+#' @param sumstat2
 #' Data frame for the second set of summary statistics.
 #' The input data frame should include following columns: SNP, SNP ID; A1, effect allele; A2, reference allele;
-#' N, sample size; Z, z-score; If Z is not given, alternatively, you may provide: b, estimate of marginal effect in GWAS; se, 
+#' N, sample size; Z, z-score; If Z is not given, alternatively, you may provide: b, estimate of marginal effect in GWAS; se,
 #' standard error of the estimates of marginal effects in GWAS.
-#' 
-#' @param Nref 
+#'
+#' @param Nref
 #' Sample size of the reference sample where LD is computed. If the default UK Biobank reference sample is used, Nref = 335265
-#' 
-#' @param N0 
+#'
+#' @param N0
 #' Number of individuals included in both cohorts. The estimated genetic correlation is usually robust against misspecified N0.
 #' If not given, the default value is set to the minimum sample size across all SNPs in cohort 1 and cohort 2.
-#' 
-#' @param eigen.cut 
+#'
+#' @param eigen.cut
 #' Which eigenvalues and eigenvectors in each LD score matrix should be used for HDL.
-#' Users are allowed to specify a numeric value between 0 and 1 for eigen.cut. For example, eigen.cut = 0.99 means using the 
+#' Users are allowed to specify a numeric value between 0 and 1 for eigen.cut. For example, eigen.cut = 0.99 means using the
 #' leading eigenvalues explaining 99% of the variance
-#' and their correspondent eigenvectors. If the default 'automatic' is used, the eigen.cut gives the most stable heritability 
+#' and their correspondent eigenvectors. If the default 'automatic' is used, the eigen.cut gives the most stable heritability
 #' estimates will be used.
-#' 
-#' @param lim 
+#'
+#' @param lim
 #' Tolerance limitation, default lim = exp(-18).
-#' 
-#' @param parallel 
+#'
+#' @param parallel
 #' Boolean value, TRUE or FALSE for whether to perform parallel computation. The default is FALSE
-#' 
-#' @param numCores 
+#'
+#' @param numCores
 #' The number of cores to be used. The default is 2.
 #'
 #' @return A list is returned with:
@@ -5996,7 +5985,7 @@ LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, st
 #' \item{`rg`}: The estimated genetic correlation.
 #' \item{`rg.se`}: The standard error of the estimated genetic correlation.
 #' \item{`P`}: P-value based on Wald test.
-#' \item{`estimates.df`}: A detailed matrix includes the estimates and standard errors of heritabilities, genetic covariance 
+#' \item{`estimates.df`}: A detailed matrix includes the estimates and standard errors of heritabilities, genetic covariance
 #' and genetic correlation.
 #' \item{`eigen.use`}: The eigen.cut used in computation.
 #' }
@@ -6004,7 +5993,7 @@ LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, st
 #' @references
 #' Ning Z, Pawitan Y, Shen X (2020). High-definition likelihood inference of genetic correlations
 #' across human complex traits.
-#' 
+#'
 #' @examples
 #' # Not Run
 #' # ResultDir = tempdir()
@@ -6065,9 +6054,9 @@ SumstatGenCorr <- function(ResultDir = tempdir(), referenceLD, sumstat1, sumstat
 
 # New Function Addedin 10.0
 #' ComputeLD: Compute Linkage Disequilibrium (LD) for SNP Data
-#' 
+#'
 #' @description
-#' This function computes linkage disequilibrium (LD) statistics for SNP data using PLINK. It allows for computation across all 
+#' This function computes linkage disequilibrium (LD) statistics for SNP data using PLINK. It allows for computation across all
 #' SNPs or within specific chromosomes.
 #'
 #' @param DataDir Character string representing the file path of the input PLINK binary files.
@@ -6083,11 +6072,11 @@ SumstatGenCorr <- function(ResultDir = tempdir(), referenceLD, sumstat1, sumstat
 #'
 #' @examples
 #' \donttest{
-#' ComputeLD(DataDir = system.file("extdata", package = "GXwasR"), ResultDir = tempdir(), 
+#' ComputeLD(
+#'   DataDir = system.file("extdata", package = "GXwasR"), ResultDir = tempdir(),
 #'   finput = "GXwasR_example", ByCHR = TRUE, CHRnum = 1, r2_LD = 0.2
 #' )
 #' }
-
 ComputeLD <- function(DataDir, ResultDir, finput, ByCHR = FALSE, CHRnum = NULL, r2_LD) {
   if (ByCHR == FALSE) {
     chr <- NULL
