@@ -57,3 +57,4 @@ Imports:
      magrittr,
      poolr,
      progress
+biocViews: GenomeWideAssociation, LinkageDisequilibrium, VariantDetection, QualityControl, PrincipalComponent
