@@ -4607,8 +4607,7 @@ SexDiffZscore <- function(inputdata) {
 #' nitr <- 3
 #' ncores <- 3
 #' data("GXwasRData")
-#' phenofile <- Example_phenofile # Cannot be NULL, the interested phenotype column should be labeled as
-#' #
+#' phenofile <- Example_phenofile # Cannot be NULL
 #' cat_covarfile <- NULL
 #' quant_covarfile <- NULL
 #' partGRM <- FALSE # Partition the GRM into m parts (by row),
@@ -4618,7 +4617,7 @@ SexDiffZscore <- function(inputdata) {
 #' minMAF <- 0.01 # if MAF filter apply
 #' maxMAF <- 0.04
 #' excludeResidual <- "TRUE"
-#' #
+#' 
 #' GC <- GeneticCorrBT(
 #'   DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = TRUE,
 #'   REMLalgo = 0, nitr = 10, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL,
