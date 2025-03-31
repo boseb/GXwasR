@@ -30,12 +30,14 @@ LDPrune(
 Returns a character vector of SNP identifiers that remain after LD pruning or NULL if an error occurs.
 }
 \description{
-This function utilizes PLINK to perform LD pruning on genetic data. It identifies and removes SNPs that are in high linkage disequilibrium with each other within specified windows.
+This function utilizes PLINK to perform LD pruning on genetic data. It identifies and removes SNPs that are in high
+linkage disequilibrium with each other within specified windows.
 }
 \examples{
-# Not Run
-# DataDir <- "path/to/data"
-# ResultDir <- tempdir()
-# finput <- "dataset_prefix"
-# prunedSNPs <- LDPrune(DataDir, finput, ResultDir, 50, 5, 0.2)
+\dontrun{
+DataDir <- "path/to/data"
+ResultDir <- tempdir()
+finput <- "dataset_prefix"
+prunedSNPs <- LDPrune(DataDir, finput, ResultDir, 50, 5, 0.2)
+}
 }
