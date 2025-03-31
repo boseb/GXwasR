@@ -126,9 +126,9 @@ maxMAF <- 0.04
 excludeResidual = "TRUE"
 #
 GC <- GeneticCorrBT(DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = TRUE,
-                    REMLalgo = 0, nitr = 10, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL,
-                    partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
-                    cripticut = 0.025, minMAF = NULL, maxMAF = NULL,excludeResidual = TRUE, ncores = ncores
+  REMLalgo = 0, nitr = 10, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL,
+  partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
+  cripticut = 0.025, minMAF = NULL, maxMAF = NULL,excludeResidual = TRUE, ncores = ncores
 )
 }
 }
