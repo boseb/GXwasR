@@ -5504,16 +5504,28 @@ PvalComb <- function(SumstatMale, SumstatFemale,
 
 
 
-#' Title: Filter out SNPs.
+#' FilterSNP: Filter out SNPs.
 #'
-#' @param DataDir A character string for the file path of the input PLINK binary files.
-#' @param ResultDir A character string for the file path where all output files will be stored. The default is tempdir().
-#' @param finput Character string, specifying the prefix of the input PLINK binary files.
-#' @param foutput Character string, specifying the prefix of the output PLINK binary files if the filtering option for the SNPs is chosen. The default is "FALSE".
-#' @param SNPvec R dataframe with SNP names to be excluded.
-#' @param extract Boolean value, TRUE or FALSE, specifying whether to extract the snps or discard the snps. The default is FALSE.
+#' @param DataDir 
+#' A character string for the file path of the input PLINK binary files.
+#' 
+#' @param ResultDir 
+#' A character string for the file path where all output files will be stored. The default is `tempdir()`.
+#' 
+#' @param finput 
+#' Character string, specifying the prefix of the input PLINK binary files.
+#' 
+#' @param foutput 
+#' Character string, specifying the prefix of the output PLINK binary files if the filtering option for the SNPs is chosen. 
+#' The default is "FALSE".
+#' 
+#' @param SNPvec 
+#' R dataframe with SNP names to be excluded.
+#' 
+#' @param extract 
+#' Boolean value, `TRUE` or `FALSE`, specifying whether to extract the snps or discard the snps. The default is `FALSE`.
 #'
-#' @return NULL. The filtered file will be saved in ResultDir.
+#' @return `NULL`. The filtered file will be saved in `ResultDir`.
 #' @export
 #'
 #' @examples
@@ -5524,7 +5536,7 @@ PvalComb <- function(SumstatMale, SumstatFemale,
 #' finput <- "GXwasR_example"
 #' foutput <- "Filter_Test"
 #' FilterSNP(DataDir, ResultDir, finput, foutput, SNPvec = SNPvec, extract = TRUE)
-#'
+
 FilterSNP <- function(DataDir, ResultDir, finput, foutput, SNPvec, extract = FALSE) {
   # Validate inputs
   validation_result <- validateFilterSNPInputs(DataDir, finput, SNPvec, extract)

@@ -2,28 +2,29 @@
 % Please edit documentation in R/GXwasR_main_functions.R
 \name{FilterSNP}
 \alias{FilterSNP}
-\title{Title: Filter out SNPs.}
+\title{FilterSNP: Filter out SNPs.}
 \usage{
 FilterSNP(DataDir, ResultDir, finput, foutput, SNPvec, extract = FALSE)
 }
 \arguments{
 \item{DataDir}{A character string for the file path of the input PLINK binary files.}
 
-\item{ResultDir}{A character string for the file path where all output files will be stored. The default is tempdir().}
+\item{ResultDir}{A character string for the file path where all output files will be stored. The default is \code{tempdir()}.}
 
 \item{finput}{Character string, specifying the prefix of the input PLINK binary files.}
 
-\item{foutput}{Character string, specifying the prefix of the output PLINK binary files if the filtering option for the SNPs is chosen. The default is "FALSE".}
+\item{foutput}{Character string, specifying the prefix of the output PLINK binary files if the filtering option for the SNPs is chosen.
+The default is "FALSE".}
 
 \item{SNPvec}{R dataframe with SNP names to be excluded.}
 
-\item{extract}{Boolean value, TRUE or FALSE, specifying whether to extract the snps or discard the snps. The default is FALSE.}
+\item{extract}{Boolean value, \code{TRUE} or \code{FALSE}, specifying whether to extract the snps or discard the snps. The default is \code{FALSE}.}
 }
 \value{
-NULL. The filtered file will be saved in ResultDir.
+\code{NULL}. The filtered file will be saved in \code{ResultDir}.
 }
 \description{
-Title: Filter out SNPs.
+FilterSNP: Filter out SNPs.
 }
 \examples{
 
@@ -33,5 +34,4 @@ SNPvec <- c("rs6529954", "rs12858640", "rs5962098")
 finput <- "GXwasR_example"
 foutput <- "Filter_Test"
 FilterSNP(DataDir, ResultDir, finput, foutput, SNPvec = SNPvec, extract = TRUE)
-
 }
