@@ -5858,24 +5858,39 @@ executePlinkMAF <- function(DataDir, ResultDir, finput) {
 
 ## Added in V7
 #' LDPrune: Performs LD pruning on SNP data using PLINK
-#' @description This function utilizes PLINK to perform LD pruning on genetic data. It identifies and removes SNPs that are in high linkage disequilibrium with each other within specified windows.
+#' @description 
+#' This function utilizes PLINK to perform LD pruning on genetic data. It identifies and removes SNPs that are in high 
+#' linkage disequilibrium with each other within specified windows.
 #'
-#' @param DataDir Character string representing the file path of the input PLINK binary files.
-#' @param finput Character string specifying the prefix of the input PLINK binary files.
-#' @param ResultDir Character string for the file path where all output files will be stored, defaulting to a temporary directory.
-#' @param window_size Integer, specifying the number of SNPs to include in the sliding window.
-#' @param step_size Integer, specifying the number of SNPs the window moves over in each step.
-#' @param r2_threshold Numeric, specifying the R^2 threshold for LD pruning.
+#' @param DataDir 
+#' Character string representing the file path of the input PLINK binary files.
+#' 
+#' @param finput 
+#' Character string specifying the prefix of the input PLINK binary files.
+#' 
+#' @param ResultDir 
+#' Character string for the file path where all output files will be stored, defaulting to a temporary directory.
+#' 
+#' @param window_size 
+#' Integer, specifying the number of SNPs to include in the sliding window.
+#' 
+#' @param step_size 
+#' Integer, specifying the number of SNPs the window moves over in each step.
+#' 
+#' @param r2_threshold 
+#' Numeric, specifying the R^2 threshold for LD pruning.
 #'
 #' @return Returns a character vector of SNP identifiers that remain after LD pruning or NULL if an error occurs.
 #' @export
 #'
 #' @examples
-#' # Not Run
-#' # DataDir <- "path/to/data"
-#' # ResultDir <- tempdir()
-#' # finput <- "dataset_prefix"
-#' # prunedSNPs <- LDPrune(DataDir, finput, ResultDir, 50, 5, 0.2)
+#' \dontrun{
+#' DataDir <- "path/to/data"
+#' ResultDir <- tempdir()
+#' finput <- "dataset_prefix"
+#' prunedSNPs <- LDPrune(DataDir, finput, ResultDir, 50, 5, 0.2)
+#' }
+
 LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, step_size = 5, r2_threshold = 0.2) {
   # Validate input parameters
   validateInputForLDPrune(DataDir, finput, ResultDir, window_size, step_size, r2_threshold)
