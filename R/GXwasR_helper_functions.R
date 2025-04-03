@@ -5693,7 +5693,7 @@ loadAndProcessReferenceAncestry <- function(reference) {
 
   } else if (reference == "ThousandGenome") {
     ref_ancestry <-
-      read.table(file = paste0(system.file("extdata", package = "GXwasR"), "/","1000genomesampleinfo.txt"),
+      read.table(file = paste0(system.file("extdata", package = "GXwasR"), "/","1000genomesampleinfo.txt.gz"),
                  stringsAsFactors = FALSE,
                  header = TRUE)[, c("Sample", "superpop")]
     ref_ancestry_EUR_AFR_ASIAN <- ref_ancestry[ref_ancestry$superpop == "EUR" |
