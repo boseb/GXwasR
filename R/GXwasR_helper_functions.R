@@ -5652,7 +5652,7 @@ loadAndProcessReferenceAncestry <- function(reference) {
   if (reference == "HapMapIII_NCBI36") {
 
     ref_ancestry1 <-
-      read.table(file = paste0(system.file("extdata", package = "GXwasR"), "/","hapmap_relationships_w_pops_121708.txt"),
+      read.table(file = paste0(system.file("extdata", package = "GXwasR"), "/","hapmap_relationships_w_pops_121708.txt.gz"),
                  stringsAsFactors = FALSE,
                  header = TRUE)[, c("IID", "population")]
     colnames(ref_ancestry1) <- c("ID", "Ancestry")
