@@ -47,7 +47,8 @@ setupPlink <- function(wdir) {
   os_specific_files <- list(
     Linux = list(file = "plink_linux_x86_64_20220402.zip", exec = "plink", remove = c("LICENSE", "prettify", "toy.map", "toy.ped")),
     Windows = list(file = "plink_win64_20230116.zip", exec = "plink.exe", remove = c("LICENSE", "prettify.exe", "toy.map", "toy.ped")),
-    macOS = list(file = "plink_mac_20230116.zip", exec = "plink", remove = c("LICENSE", "prettify", "toy.map", "toy.ped"))
+    macOS = list(file = "plink_mac_20230116.zip", exec = "plink", remove = c("LICENSE", "prettify", "toy.map", "toy.ped")),
+    Darwin = list(file = "plink_mac_20230116.zip", exec = "plink", remove = c("LICENSE", "prettify", "toy.map", "toy.ped"))
   )
 
   if (!OS %in% names(os_specific_files)) {
@@ -154,7 +155,7 @@ checkFiles <- function(DataDir,finput) {
 
 ## Function 4
 ########## Added in 3.0
-executePlink <- function(args) {
+executePlink <- function(args, ResultDir) {
   #globalVariables("ResultDir")
   tryCatch({
     # Redirect stderr to null to suppress warning messages
@@ -230,7 +231,7 @@ plinkExcludeExtract <- function(DataDir, finput, ResultDir, foutput, region_file
     "--out", file.path(ResultDir, foutput),
     "--silent"
   )
-  executePlink(plinkArgsExclude)
+  executePlink(plinkArgsExclude, ResultDir)
 
   # Plink command for extracting SNPs
   plinkArgsExtract <- c(
@@ -241,7 +242,7 @@ plinkExcludeExtract <- function(DataDir, finput, ResultDir, foutput, region_file
     "--out", file.path(ResultDir, paste0(foutput, "_snps_extracted")),
     "--silent"
   )
-  executePlink(plinkArgsExtract)
+  executePlink(plinkArgsExtract, ResultDir)
 }
 
 ## Function 7
@@ -392,7 +393,7 @@ processAmbiguousSamples <- function(DataDir, ResultDir, finput, fam1) {
     "--out", paste0(ResultDir, "/", "FINPUT"),
     "--silent"
   )
-  executePlink(pruneArgs)
+  executePlink(pruneArgs, ResultDir)
 
   fam2 <- nrow(read.table(paste0(ResultDir,"/","FINPUT",".fam"),header = FALSE))
   print(paste0("No. of ambiguous samples filtered out: ", fam1 - fam2))
@@ -414,7 +415,7 @@ filterSamples <- function(DataDir, ResultDir, finput, failed_het_imiss, filterSa
       "--out", paste0(ResultDir, "/", "foutput"),
       "--silent"
     )
-    executePlink(excludeSamplesArgs)
+    executePlink(excludeSamplesArgs, ResultDir)
   }else if (filterSample == FALSE){
     excludeSamplesArgs <- c(
       "--bfile", paste0(DataDir, "/", finput),
@@ -422,7 +423,7 @@ filterSamples <- function(DataDir, ResultDir, finput, failed_het_imiss, filterSa
       "--out", paste0(ResultDir, "/", "foutput"),
       "--silent"
     )
-    executePlink(excludeSamplesArgs)
+    executePlink(excludeSamplesArgs, ResultDir)
     print("Samples are flagged for missingness and heterogygosity threshold.")
   }
 }
@@ -518,7 +519,7 @@ executePlinkForIBD <- function(ResultDir, IBD, outFileName) {
   if (!is.null(IBD)) {
     ibdArgs <- c(ibdArgs, "--min", IBD)
   }
-  executePlink(ibdArgs)
+  executePlink(ibdArgs, ResultDir)
 }
 
 ## Function 20
@@ -545,10 +546,10 @@ updatePlinkFilesWithIBDFilter <- function(ResultDir, foutput, failed_ibd) {
   if (!is.null(failed_ibd)) {
     write.table(failed_ibd, file = paste0(ResultDir, "/samples_failed_ibd"), quote = FALSE, row.names = FALSE, col.names = FALSE)
     removeSamplesArgs <- c("--bed", paste0(ResultDir, "/", "foutput", ".bed"), "--bim", paste0(ResultDir, "/", "foutput", ".bim"), "--fam", paste0(ResultDir, "/", "foutput", ".fam"), "--remove", paste0(ResultDir, "/samples_failed_ibd"), "--allow-no-sex", "--make-bed", "--out", paste0(ResultDir, "/", foutput), "--silent")
-    executePlink(removeSamplesArgs)
+    executePlink(removeSamplesArgs, ResultDir)
   }else{
     removeSamplesArgs <- c("--bed", paste0(ResultDir, "/", "foutput", ".bed"), "--bim", paste0(ResultDir, "/", "foutput", ".bim"), "--fam", paste0(ResultDir, "/", "foutput", ".fam"), "--make-bed", "--out", paste0(ResultDir, "/", foutput), "--silent")
-    executePlink(removeSamplesArgs)
+    executePlink(removeSamplesArgs, ResultDir)
 
   }
 
@@ -558,7 +559,7 @@ updatePlinkFilesWithIBDFilter <- function(ResultDir, foutput, failed_ibd) {
 ######### Added in 3.0
 executeMakeBed <- function(ResultDir, foutput) {
   makeBedArgs <- c("--bfile", paste0(ResultDir, "/", "foutput"), "--make-bed", "--out", paste0(ResultDir, "/", foutput), "--silent")
-  executePlink(makeBedArgs)
+  executePlink(makeBedArgs, ResultDir)
 }
 
 ## Function 24
@@ -962,7 +963,7 @@ applySNPmissCCFilter <- function(ResultDir, SNPmissCC, diffmissFilter, foutput) 
 }
 
 ## Function 36
-
+#' @importFrom ggplot2 element_rect expansion
 gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"),log10=TRUE,
                     yaxis, opacity=1, annotate_snp, annotate_p, toptitle=NULL,
                     bottomtitle=NULL, highlight_snp, highlight_p, highlighter="red",
@@ -1035,13 +1036,13 @@ gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"),log10=
   p1 <- ggplot2::ggplot() + eval(parse(text=backpanel1))
   #Add shape info if available
   if("Shape" %in% topn){
-    p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$Location=="Top",], ggplot2::aes(x=pos_index, y=pval, color=factor(Color), shape=factor(Shape)), alpha=opacity)
+    p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$Location=="Top",], ggplot2::aes(x=.data$pos_index, y=.data$pval, color=factor(.data$Color), shape=factor(.data$Shape)), alpha=opacity)
   } else {
-    p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$Location=="Top",], ggplot2::aes(x=pos_index, y=pval, color=factor(Color)), alpha=opacity)
+    p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$Location=="Top",], ggplot2::aes(x=.data$pos_index, y=.data$pval, color=factor(.data$Color)), alpha=opacity)
   }
   p1 <- p1 + ggplot2::scale_x_continuous(breaks=lims$av, labels=lims$Color, expand=c(0,0))
   if(chrblocks==TRUE){
-    p1 <- p1 + ggplot2::geom_rect(data = lims, ggplot2::aes(xmin = posmin-.5, xmax = posmax+.5, ymin = -Inf, ymax = min(d_order$pval), fill=as.factor(Color)), alpha = 1)
+    p1 <- p1 + ggplot2::geom_rect(data = lims, ggplot2::aes(xmin = .data$posmin-.5, xmax = .data$posmax+.5, ymin = -Inf, ymax = min(d_order$pval), fill=as.factor(.data$Color)), alpha = 1)
   }
   p1 <- p1 + ggplot2::scale_colour_manual(name = "Color", values = newcols) + ggplot2::scale_fill_manual(name = "Color", values = newcols)
   p1 <- p1 + ggplot2::theme(panel.grid.minor.x = ggplot2::element_blank(), panel.grid.major.x = ggplot2::element_blank(), axis.title.x=ggplot2::element_blank(), legend.position="top", legend.title = ggplot2::element_blank())
@@ -1050,13 +1051,13 @@ gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"),log10=
   p2 <- ggplot2::ggplot() + eval(parse(text=backpanel2))
   #Add shape info if available
   if("Shape" %in% bottomn){
-    p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$Location=="Bottom",], ggplot2::aes(x=pos_index, y=pval, color=factor(Color), shape=factor(Shape)), alpha=opacity)
+    p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$Location=="Bottom",], ggplot2::aes(x=.data$pos_index, y=.data$pval, color=factor(.data$Color), shape=factor(.data$Shape)), alpha=opacity)
   } else {
-    p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$Location=="Bottom",], ggplot2::aes(x=pos_index, y=pval, color=factor(Color)), alpha=opacity)
+    p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$Location=="Bottom",], ggplot2::aes(x=.data$pos_index, y=.data$pval, color=factor(.data$Color)), alpha=opacity)
   }
   p2 <- p2 + ggplot2::scale_x_continuous(breaks=lims$av, labels=lims$Color, expand=c(0,0))
   if(chrblocks==TRUE){
-    p2 <- p2 + ggplot2::geom_rect(data = lims, ggplot2::aes(xmin = posmin-.5, xmax = posmax+.5, ymin = -Inf, ymax = min(d_order$pval), fill=as.factor(Color)), alpha = 1)
+    p2 <- p2 + ggplot2::geom_rect(data = lims, ggplot2::aes(xmin = .data$posmin-.5, xmax = .data$posmax+.5, ymin = -Inf, ymax = min(d_order$pval), fill=as.factor(.data$Color)), alpha = 1)
   }
   p2 <- p2 + ggplot2::scale_colour_manual(name = "Color", values = newcols) + ggplot2::scale_fill_manual(name = "Color", values = newcols)
   p2 <- p2 + ggplot2::theme(axis.text.x = ggplot2::element_text(angle=90), panel.grid.minor.x = ggplot2::element_blank(), panel.grid.major.x = ggplot2::element_blank(), axis.title.x = ggplot2::element_blank(), legend.position="bottom", legend.title = ggplot2::element_blank())
@@ -1064,30 +1065,30 @@ gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"),log10=
   #Highlight if given
   if(!missing(highlight_snp)){
     if("Shape" %in% topn){
-      p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$SNP %in% highlight_snp & d_order$Location=="Top", ], ggplot2::aes(x=pos_index, y=pval, shape=Shape), colour=highlighter)
+      p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$SNP %in% highlight_snp & d_order$Location=="Top", ], ggplot2::aes(x=.data$pos_index, y=.data$pval, shape=.data$Shape), colour=highlighter)
       p1 <- p1 + ggplot2::guides(shape = ggplot2::guide_legend(override.aes = list(colour = "black")))
     } else {
-      p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$SNP %in% highlight_snp & d_order$Location=="Top", ], ggplot2::aes(x=pos_index, y=pval), colour=highlighter)
+      p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$SNP %in% highlight_snp & d_order$Location=="Top", ], ggplot2::aes(x=.data$pos_index, y=.data$pval), colour=highlighter)
     }
     if("Shape" %in% bottomn){
-      p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$SNP %in% highlight_snp & d_order$Location=="Bottom", ], ggplot2::aes(x=pos_index, y=pval, shape=Shape), colour=highlighter)
+      p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$SNP %in% highlight_snp & d_order$Location=="Bottom", ], ggplot2::aes(x=.data$pos_index, y=.data$pval, shape=.data$Shape), colour=highlighter)
       p2 <- p2 + ggplot2::guides(shape = ggplot2::guide_legend(override.aes = list(colour = "black")))
     } else {
-      p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$SNP %in% highlight_snp & d_order$Location=="Bottom", ], ggplot2::aes(x=pos_index, y=pval), colour=highlighter)
+      p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$SNP %in% highlight_snp & d_order$Location=="Bottom", ], ggplot2::aes(x=.data$pos_index, y=.data$pval), colour=highlighter)
     }
   }
   if(!missing(highlight_p)){
     if("Shape" %in% topn){
-      p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$pvalue < highlight_p[1] & d_order$Location=="Top", ], ggplot2::aes(x=pos_index, y=pval, shape=Shape), colour=highlighter)
+      p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$pvalue < highlight_p[1] & d_order$Location=="Top", ], ggplot2::aes(x=.data$pos_index, y=.data$pval, shape=.data$Shape), colour=highlighter)
       p1 <- p1 + ggplot2::guides(shape = ggplot2::guide_legend(override.aes = list(colour = "black")))
     } else {
-      p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$pvalue < highlight_p[1] & d_order$Location=="Top", ], ggplot2::aes(x=pos_index, y=pval), colour=highlighter)
+      p1 <- p1 + ggplot2::geom_point(data=d_order[d_order$pvalue < highlight_p[1] & d_order$Location=="Top", ], ggplot2::aes(x=.data$pos_index, y=.data$pval), colour=highlighter)
     }
     if("Shape" %in% bottomn){
-      p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$pvalue < highlight_p[2] & d_order$Location=="Bottom", ], ggplot2::aes(x=pos_index, y=pval, shape=Shape), colour=highlighter)
+      p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$pvalue < highlight_p[2] & d_order$Location=="Bottom", ], ggplot2::aes(x=.data$pos_index, y=.data$pval, shape=.data$Shape), colour=highlighter)
       p2 <- p2 + ggplot2::guides(shape = ggplot2::guide_legend(override.aes = list(colour = "black")))
     } else {
-      p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$pvalue < highlight_p[2] & d_order$Location=="Bottom", ], ggplot2::aes(x=pos_index, y=pval), colour=highlighter)
+      p2 <- p2 + ggplot2::geom_point(data=d_order[d_order$pvalue < highlight_p[2] & d_order$Location=="Bottom", ], ggplot2::aes(x=.data$pos_index, y=.data$pval), colour=highlighter)
     }
   }
   #Add pvalue threshold line
@@ -1105,21 +1106,21 @@ gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"),log10=
   if(!missing(annotate_p)){
     if (!requireNamespace(c("ggrepel"), quietly = TRUE)==TRUE) {
       print("Consider installing 'ggrepel' for improved text annotation")
-      p1 <- p1 + ggplot2::geom_text(data=d_order[d_order$pvalue < annotate_p[1] & d_order$Location=="Top",], ggplot2::aes(pos_index,pval,label=SNP))
-      p2 <- p2 + ggplot2::geom_text(data=d_order[d_order$pvalue < annotate_p[2] & d_order$Location=="Bottom",], ggplot2::aes(pos_index,pval,label=SNP))
+      p1 <- p1 + ggplot2::geom_text(data=d_order[d_order$pvalue < annotate_p[1] & d_order$Location=="Top",], ggplot2::aes(.data$pos_index,.data$pval,label=.data$SNP))
+      p2 <- p2 + ggplot2::geom_text(data=d_order[d_order$pvalue < annotate_p[2] & d_order$Location=="Bottom",], ggplot2::aes(.data$pos_index,.data$pval,label=.data$SNP))
     } else {
-      p1 <- p1 + ggrepel::geom_text_repel(data=d_order[d_order$pvalue < annotate_p[1] & d_order$Location=="Top",], ggplot2::aes(pos_index,pval,label=SNP))
-      p2 <- p2 + ggrepel::geom_text_repel(data=d_order[d_order$pvalue < annotate_p[2] & d_order$Location=="Bottom",], ggplot2::aes(pos_index,pval,label=SNP))
+      p1 <- p1 + ggrepel::geom_text_repel(data=d_order[d_order$pvalue < annotate_p[1] & d_order$Location=="Top",], ggplot2::aes(.data$pos_index,.data$pval,label=.data$SNP))
+      p2 <- p2 + ggrepel::geom_text_repel(data=d_order[d_order$pvalue < annotate_p[2] & d_order$Location=="Bottom",], ggplot2::aes(.data$pos_index,.data$pval,label=.data$SNP))
     }
   }
   if(!missing(annotate_snp)){
     if (!requireNamespace(c("ggrepel"), quietly = TRUE)==TRUE){
       print("Consider installing 'ggrepel' for improved text annotation")
-      p1 <- p1 + ggplot2::geom_text(data=d_order[d_order$SNP %in% annotate_snp & d_order$Location=="Top",], ggplot2::aes(pos_index,pval,label=SNP))
-      p2 <- p2 + ggplot2::geom_text(data=d_order[d_order$SNP %in% annotate_snp & d_order$Location=="Bottom",], ggplot2::aes(pos_index,pval,label=SNP))
+      p1 <- p1 + ggplot2::geom_text(data=d_order[d_order$SNP %in% annotate_snp & d_order$Location=="Top",], ggplot2::aes(.data$pos_index,.data$pval,label=.data$SNP))
+      p2 <- p2 + ggplot2::geom_text(data=d_order[d_order$SNP %in% annotate_snp & d_order$Location=="Bottom",], ggplot2::aes(.data$pos_index,.data$pval,label=.data$SNP))
     } else {
-      p1 <- p1 + ggrepel::geom_text_repel(data=d_order[d_order$SNP %in% annotate_snp & d_order$Location=="Top",], ggplot2::aes(pos_index,pval,label=SNP))
-      p2 <- p2 + ggrepel::geom_text_repel(data=d_order[d_order$SNP %in% annotate_snp & d_order$Location=="Bottom",], ggplot2::aes(pos_index,pval,label=SNP))
+      p1 <- p1 + ggrepel::geom_text_repel(data=d_order[d_order$SNP %in% annotate_snp & d_order$Location=="Top",], ggplot2::aes(.data$pos_index,.data$pval,label=.data$SNP))
+      p2 <- p2 + ggrepel::geom_text_repel(data=d_order[d_order$SNP %in% annotate_snp & d_order$Location=="Bottom",], ggplot2::aes(.data$pos_index,.data$pval,label=.data$SNP))
     }
   }
   #Add title and y axis title
@@ -1307,7 +1308,7 @@ createSexDistributionPlot <- function(dat) {
   }
 
   # Create the plot
-  p2 <- ggplot2::ggplot(dat, ggplot2::aes(x = SCORE, color = SEX)) +
+  p2 <- ggplot2::ggplot(dat, ggplot2::aes(x = .data$SCORE, color = .data$SEX)) +
     ggplot2::geom_density() +
     ggplot2::ggtitle(title) +
     ggplot2::xlab("PRS") +
@@ -1326,7 +1327,7 @@ createBinaryPhenotypePlots <- function(dat, p1, p2) {
   dat$Pheno1 <- factor(ifelse(dat$Pheno1 == 1, "control", "cases"))
 
   # Generate density plot for overall distribution
-  p3 <- ggplot2::ggplot(dat, ggplot2::aes(x = `SCORE`, color = Pheno1)) +
+  p3 <- ggplot2::ggplot(dat, ggplot2::aes(x = .data$`SCORE`, color = .data$Pheno1)) +
     ggplot2::geom_density() +
     ggplot2::ggtitle("Best PRS distribution\n(cases vs controls)") +
     ggplot2::xlab("PRS") +
@@ -1337,14 +1338,14 @@ createBinaryPhenotypePlots <- function(dat, p1, p2) {
   mdat <- dat[dat$SEX == "Male", ]
   fdat <- dat[dat$SEX == "Female", ]
 
-  p4 <- ggplot2::ggplot(mdat, ggplot2::aes(x = SCORE, color = Pheno1)) +
+  p4 <- ggplot2::ggplot(mdat, ggplot2::aes(x = .data$SCORE, color = .data$Pheno1)) +
     ggplot2::geom_density() +
     ggplot2::ggtitle("Best PRS distribution in males\n(cases vs controls)") +
     ggplot2::xlab("PRS") +
     ggplot2::theme(plot.title = ggplot2::element_text(size = 10, face = "bold")) +
     ggplot2::theme(axis.title.x = ggplot2::element_text(size = 8))
 
-  p5 <- ggplot2::ggplot(fdat, ggplot2::aes(x = SCORE, color = Pheno1)) +
+  p5 <- ggplot2::ggplot(fdat, ggplot2::aes(x = .data$SCORE, color = .data$Pheno1)) +
     ggplot2::geom_density() +
     ggplot2::ggtitle("Best PRS distribution in females\n(cases vs controls)") +
     ggplot2::xlab("PRS") +
@@ -1390,8 +1391,8 @@ FMsub <- function(ResultDir, plot.jpeg, plotname, snp_pval, annotateTopSnp, sugg
 
   if (file.exists(paste0(ResultDir,"/allsnpsresults.rda"))[1] == TRUE) {
 
+    allsnpsresults <- NULL
     load(paste0(ResultDir,"/allsnpsresults.rda"))
-    #globalVariables("allsnpsresults")
     XWAS <- data.table::as.data.table(allsnpsresults)
     gc(reset=TRUE)
     XWAS <- na.omit(XWAS)
@@ -2406,7 +2407,7 @@ FMcomb <-
 
 ## Function 58
 ## Added in 3.0
-paraGwasAuto <- function(chunks,chunk,ResultDir,finput,regress,sexv,interactionv, standard_b,parameterv,Inphenocovv,covar,covarv,
+paraGwasAuto <- function(chunks,chunk,ResultDir,finput,regress,sexv,noxsexv, interactionv, standard_b,parameterv,Inphenocovv,covar,covarv,
                          snpfile){
 
   ## Chunkfile create
@@ -2453,7 +2454,7 @@ paraGwasAuto <- function(chunks,chunk,ResultDir,finput,regress,sexv,interactionv
 
 ## Function 59
 ## Added in 3.0
-autoFun <- function(DataDir, ResultDir, finput, sex, standard_beta, covarfile, interaction, covartest, Inphenocov, ncores){
+autoFun <- function(DataDir, ResultDir, finput, sex, standard_beta, covarfile, interaction, covartest, Inphenocov, ncores, noxsexv){
 
   regress <- "--logistic"
   standard_b <- "beta"
@@ -3158,7 +3159,7 @@ ComputeLDSC2 <- function(snpld, test.df_beta, ncores, LDSC_blocks){
   test.df_beta <- data.table::as.data.table(test.df_beta)
   test.df_beta <- unique(merge(test.df_beta,finalsnp,by.x = "rsid",by.y = "SNP"))
 
-  snpld1 = transform(snpld1, SNP_A= factor(SNP_A),SNP_B = factor(SNP_B))
+  snpld1 = transform(snpld1, SNP_A= factor(snpld1$SNP_A),SNP_B = factor(snpld1$SNP_B))
   test.corr0 = Matrix::sparseMatrix(as.integer(snpld1$SNP_A), as.integer(snpld1$SNP_B), x = snpld1$R2)
   colnames(test.corr0) = levels(snpld1$SNP_B)
   rownames(test.corr0) = levels(snpld1$SNP_A)
@@ -3900,7 +3901,7 @@ GeneProtein <- function(ResultDir,hg,chromosome){ ## Automatically using HG data
 }
 
 ## Function 81
-PlotHeritability <- function(Hdata,miMAF,maMAF,plotjpeg,plotname){
+PlotHeritability <- function(Hdata,miMAF,maMAF,plotjpeg,plotname, ResultDir){
   #create plot with regression line, regression equation, Pearson correlation and p-value.
   Hdata <- na.omit(Hdata)
   p1<- ggplot2::ggplot(data=Hdata, ggplot2::aes(x=Hdata$size_mb, y=Hdata$Variance)) +
@@ -5648,7 +5649,7 @@ mergeDatasetsAndPerformPCA <- function(ResultDir) {
 
 ## Function 111
 ## Added in 3.0
-loadAndProcessReferenceAncestry <- function(reference) {
+loadAndProcessReferenceAncestry <- function(ResultDir, reference) {
   if (reference == "HapMapIII_NCBI36") {
 
     ref_ancestry1 <-
@@ -5764,9 +5765,9 @@ plotPCA <- function(tab, pop_type) {
   ## Added in 5.0
   # Sorting based on whether 'pop' starts with "Study_" or "Ref_"
   tab1 <- tab %>%
-    dplyr::mutate(Sort_Order = ifelse(grepl("^Ref_", pop), 0, 1)) %>%
-    dplyr::arrange(Sort_Order) %>%
-    dplyr::select(-Sort_Order) # Removing the temporary Sort_Order column
+    dplyr::mutate(Sort_Order = ifelse(grepl("^Ref_", .data$pop), 0, 1)) %>%
+    dplyr::arrange(.data$Sort_Order) %>%
+    dplyr::select(-.data$Sort_Order) # Removing the temporary Sort_Order column
 
   p <- ggplot2::ggplot(data = tab1, ggplot2::aes(
     x = tab1$PC1, y = tab1$PC2, color = tab1$pop, shape = tab1$pop
@@ -5799,7 +5800,7 @@ reportAlleleFlips <- function(snp_allele_flips, ResultDir) {
 
 ## Function 117
 ## Added in 3.0
-detectOutliers <- function(tab, ResultDir, outlier, outlierOf, outlier_threshold) {
+detectOutliers <- function(tab, ResultDir, DataDir, finput, outlier, outlierOf, outlier_threshold) {
   if (!outlier) {
     return(data.frame())  # Return an empty data frame if outlier detection is not required
   }
@@ -5922,7 +5923,7 @@ detectOutliers <- function(tab, ResultDir, outlier, outlierOf, outlier_threshold
       abs(z_score_PC1_EAS) < outlier_threshold & abs(z_score_PC2_EAS) < outlier_threshold ~ "EAS",
       abs(z_score_PC1_EUR) < outlier_threshold & abs(z_score_PC2_EUR) < outlier_threshold ~ "EUR",
       abs(z_score_PC1_SAS) < outlier_threshold & abs(z_score_PC2_SAS) < outlier_threshold ~ "SAS",
-      TRUE ~ Assigned_Pop_ZScore  # This keeps the current value for rows not meeting any conditions above
+      TRUE ~ .data$Assigned_Pop_ZScore  # This keeps the current value for rows not meeting any conditions above
     ))
 
   #Non_Ref_Pop <- study_pop[study_pop$dis > ref_mean_dis * outlier_threshold, ]
@@ -5931,7 +5932,7 @@ detectOutliers <- function(tab, ResultDir, outlier, outlierOf, outlier_threshold
 
   ## Added in 5.0 by BB
   Outlier_samples <- study_pop %>%
-    dplyr::filter(is.na(Assigned_Pop_ZScore) | Assigned_Pop_ZScore != outlierOf) %>%
+    dplyr::filter(is.na(.data$Assigned_Pop_ZScore) | .data$Assigned_Pop_ZScore != outlierOf) %>%
     dplyr::select(sample)
 
   Samples_with_predicted_ancestry <- study_pop[,c(1,13)]
@@ -5976,7 +5977,28 @@ detectOutliers <- function(tab, ResultDir, outlier, outlierOf, outlier_threshold
 }
 
 
-
+runSKAT <- function(score.file, gene.file, genes, cor.path, gene_approximation, anno.type, beta.par, weights.function, user.weights, geno_variance_weights, kernel_p_method, acc_devies, lim_devies, rho, skato_p_threshold, write.file, quiet) { 
+  sumFREGAT::SKAT( 
+    score.file = score.file, 
+    gene.file = gene.file,
+    genes = genes, 
+    cor.path = cor.path, 
+    approximation = gene_approximation, 
+    anno.type = anno.type, 
+    beta.par = beta.par, 
+    weights.function = weights.function, 
+    user.weights = FALSE, 
+    gen.var.weights = geno_variance_weights, 
+    method = kernel_p_method, 
+    acc = acc_devies, 
+    lim = lim_devies, 
+    rho = rho, 
+    p.threshold = skato_p_threshold, 
+    write.file = FALSE, 
+    quiet = FALSE) 
+} 
+# Please update the parameter description: @param skato_p_threshold Positive numeric value, specifying the largest P value that will be considered as important when performing computational optimization 
+# in SKAT0 or SKAT. All P values larger than skato_p_threshold will be processed via burden test. The default is 0.8
 
 
 
@@ -7440,17 +7462,6 @@ filterGenomicFeatures <- function(x, filterPAR, filterXTR, filterAmpliconic) {
 ## Added in 3.0
 executePlinkExcludeExtract <- function(ResultDir, DataDir, finput, rangefile, foutput) {
 
-  executePlink <- function(DataDir, ResultDir, args) {
-
-    tryCatch({
-      stderr_dest <- ifelse(.Platform$OS.type == "windows", "NUL", "/dev/null")
-      invisible(sys::exec_wait(file.path(ResultDir, "./plink"), args = args, std_err = stderr_dest))
-    }, error = function(e) {
-      stop("An error occurred while executing Plink: ", e$message)
-    })
-  }
-  #globalVariables("DataDir","ResultDir")
-
   # Exclude region
   exclude_args <- c(
     "--bfile",
@@ -7465,7 +7476,7 @@ executePlinkExcludeExtract <- function(ResultDir, DataDir, finput, rangefile, fo
     "--silent"
   )
 
-  executePlink(DataDir, ResultDir, exclude_args)
+  executePlink(exclude_args, ResultDir)
 
   # Extract region
   extract_args <- c(
@@ -7481,22 +7492,12 @@ executePlinkExcludeExtract <- function(ResultDir, DataDir, finput, rangefile, fo
     "--silent"
   )
 
-  executePlink(DataDir, ResultDir, extract_args)
+  executePlink(extract_args, ResultDir)
 }
 
 ## Function 154
 ## Added in 3.0
 executePlinkChrFilter <- function(ResultDir, DataDir, finput, filterCHR, foutput) {
-
-  executePlink <- function(ResultDir, DataDir, args) {
-    # globalVariables("ResultDir")
-    tryCatch({
-      stderr_dest <- ifelse(.Platform$OS.type == "windows", "NUL", "/dev/null")
-      invisible(sys::exec_wait(file.path(ResultDir, "./plink"), args = args, std_err = stderr_dest))
-    }, error = function(e) {
-      stop("An error occurred while executing Plink: ", e$message)
-    })
-  }
 
   # Filter SNPs not on specified chromosomes
   not_chr_args <- c(
@@ -7510,7 +7511,7 @@ executePlinkChrFilter <- function(ResultDir, DataDir, finput, filterCHR, foutput
     "--silent"
   )
 
-  executePlink(ResultDir, DataDir, not_chr_args)
+  executePlink(not_chr_args, ResultDir)
 
   # Filter SNPs on specified chromosomes
   chr_args <- c(
@@ -7524,7 +7525,7 @@ executePlinkChrFilter <- function(ResultDir, DataDir, finput, filterCHR, foutput
     "--silent"
   )
 
-  executePlink(ResultDir, DataDir, chr_args)
+  executePlink(chr_args, ResultDir)
 }
 
 ## Function 155
@@ -7640,9 +7641,13 @@ read_plink_clumped_clean <- function(resultDir, filename) {
 
 
 ## Helper function from HDL R package ##
+#' @importFrom dplyr n
 HDL.rg <-
   function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min(gwas1.df$N, gwas2.df$N), output.file = "", eigen.cut = "automatic",
            jackknife.df = FALSE, intercept.output = FALSE, fill.missing.N = NULL, lim = exp(-18)){
+    ## Initialize vars used later
+    snps.list.imputed.vector <- NULL
+    nsnps.list.imputed <- NULL
 
     if(output.file != ""){
       if(file.exists(output.file) == T){
@@ -7683,8 +7688,8 @@ HDL.rg <-
       stop(error.message)
     }
 
-    gwas1.df <- dplyr::filter(gwas1.df, SNP %in% snps.name.list)
-    gwas2.df <- dplyr::filter(gwas2.df, SNP %in% snps.name.list)
+    gwas1.df <- dplyr::filter(gwas1.df, .data$SNP %in% snps.name.list)
+    gwas2.df <- dplyr::filter(gwas2.df, .data$SNP %in% snps.name.list)
 
     gwas1.df$A1 <- toupper(as.character(gwas1.df$A1))
     gwas1.df$A2 <- toupper(as.character(gwas1.df$A2))
@@ -7735,25 +7740,25 @@ HDL.rg <-
     k2.0 <- length(unique(gwas2.df$SNP))
 
     if(is.null(fill.missing.N)){
-      gwas1.df <- dplyr::filter(gwas1.df, !is.na(Z), !is.na(N))
-      gwas2.df <- dplyr::filter(gwas2.df, !is.na(Z), !is.na(N))
+      gwas1.df <- dplyr::filter(gwas1.df, !is.na(.data$Z), !is.na(.data$N))
+      gwas2.df <- dplyr::filter(gwas2.df, !is.na(.data$Z), !is.na(.data$N))
     } else if(fill.missing.N == "min"){
-      gwas1.df <- dplyr::filter(gwas1.df, !is.na(Z))
+      gwas1.df <- dplyr::filter(gwas1.df, !is.na(.data$Z))
       gwas1.df$N[is.na(gwas1.df$N)] <- min(gwas1.df$N, na.rm = T)
 
-      gwas2.df <- dplyr::filter(gwas2.df, !is.na(Z))
+      gwas2.df <- dplyr::filter(gwas2.df, !is.na(.data$Z))
       gwas2.df$N[is.na(gwas2.df$N)] <- min(gwas2.df$N, na.rm = T)
     } else if(fill.missing.N == "max"){
-      gwas1.df <- dplyr::filter(gwas1.df, !is.na(Z))
+      gwas1.df <- dplyr::filter(gwas1.df, !is.na(.data$Z))
       gwas1.df$N[is.na(gwas1.df$N)] <- max(gwas1.df$N, na.rm = T)
 
-      gwas2.df <- dplyr::filter(gwas2.df, !is.na(Z))
+      gwas2.df <- dplyr::filter(gwas2.df, !is.na(.data$Z))
       gwas2.df$N[is.na(gwas2.df$N)] <- max(gwas2.df$N, na.rm = T)
     } else if(fill.missing.N == "median"){
-      gwas1.df <- dplyr::filter(gwas1.df, !is.na(Z))
+      gwas1.df <- dplyr::filter(gwas1.df, !is.na(.data$Z))
       gwas1.df$N[is.na(gwas1.df$N)] <- median(gwas1.df$N, na.rm = T)
 
-      gwas2.df <- dplyr::filter(gwas2.df, !is.na(Z))
+      gwas2.df <- dplyr::filter(gwas2.df, !is.na(.data$Z))
       gwas2.df$N[is.na(gwas2.df$N)] <- median(gwas2.df$N, na.rm = T)
     } else{
       error.message <- "If given, the argument fill.missing.N can only be one of below: 'min', 'max', 'median'."
@@ -7805,8 +7810,8 @@ HDL.rg <-
     p1 <- N0 / N1
     p2 <- N0 / N2
 
-    rho12 <- suppressWarnings(dplyr::inner_join(gwas1.df %>% dplyr::select(SNP, Z), gwas2.df %>% dplyr::select(SNP, Z), by = "SNP") %>%
-                                dplyr::summarise(x = cor(Z.x, Z.y, use = "complete.obs")) %>% unlist)
+    rho12 <- suppressWarnings(dplyr::inner_join(gwas1.df %>% dplyr::select(.data$SNP, .data$Z), gwas2.df %>% dplyr::select(.data$SNP, .data$Z), by = "SNP") %>%
+                                dplyr::summarise(x = cor(.data$Z.x, .data$Z.y, use = "complete.obs")) %>% unlist)
 
     bstar1.v <- bstar2.v <- lam.v <- list()
     HDL11.df <- HDL12.df <- HDL22.df <- names.row <- NULL
@@ -7829,18 +7834,18 @@ HDL.rg <-
         A2.ref <- snps.ref.df$A2
         names(A2.ref) <- snps.ref
 
-        gwas1.df.subset <- dplyr::filter(gwas1.df, SNP %in% snps.ref) %>% dplyr::distinct(SNP, A1, A2, .keep_all = TRUE)
+        gwas1.df.subset <- dplyr::filter(gwas1.df, .data$SNP %in% snps.ref) %>% dplyr::distinct(.data$SNP, .data$A1, .data$A2, .keep_all = TRUE)
 
         ## Check if there are multiallelic or duplicated SNPs
         if(any(duplicated(gwas1.df.subset$SNP)) == TRUE){
           gwas1.df.subset.duplicated <- gwas1.df.subset %>%
             dplyr::mutate(row.num = 1:n()) %>%
-            dplyr::filter(SNP == SNP[duplicated(SNP)]) %>%
-            dplyr::mutate(SNP_A1_A2 = paste(SNP, A1, A2, sep = "_"))
-          snps.ref.df.duplicated <- dplyr::filter(snps.ref.df, id %in% gwas1.df.subset.duplicated$SNP)
+            dplyr::filter(.data$SNP == .data$SNP[duplicated(.data$SNP)]) %>%
+            dplyr::mutate(SNP_A1_A2 = paste(.data$SNP, .data$A1, .data$A2, sep = "_"))
+          snps.ref.df.duplicated <- dplyr::filter(snps.ref.df, .data$id %in% gwas1.df.subset.duplicated$SNP)
           SNP_A1_A2.valid <- c(paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A1, snps.ref.df.duplicated$A2, sep = "_"),
                                paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A2, snps.ref.df.duplicated$A1, sep = "_"))
-          row.remove <- dplyr::filter(gwas1.df.subset.duplicated, !(SNP_A1_A2 %in% SNP_A1_A2.valid)) %>% dplyr::select(row.num) %>% unlist()
+          row.remove <- dplyr::filter(gwas1.df.subset.duplicated, !(.data$SNP_A1_A2 %in% SNP_A1_A2.valid)) %>% dplyr::select(.data$row.num) %>% unlist()
           gwas1.df.subset <- gwas1.df.subset[-row.remove,]
         }
 
@@ -7850,18 +7855,18 @@ HDL.rg <-
         idx.sign1 <- A2.gwas1 == A2.ref[names(A2.gwas1)]
         bhat1.raw <- bhat1.raw * (2 * as.numeric(idx.sign1) - 1)
 
-        gwas2.df.subset <- dplyr::filter(gwas2.df, SNP %in% snps.ref) %>% dplyr::distinct(SNP, A1, A2, .keep_all = TRUE)
+        gwas2.df.subset <- dplyr::filter(gwas2.df, .data$SNP %in% snps.ref) %>% dplyr::distinct(.data$SNP, .data$A1, .data$A2, .keep_all = TRUE)
 
         ## Check if there are multiallelic or duplicated SNPs
         if(any(duplicated(gwas2.df.subset$SNP)) == TRUE){
           gwas2.df.subset.duplicated <- gwas2.df.subset %>%
             dplyr::mutate(row.num = 1:n()) %>%
-            dplyr::filter(SNP == SNP[duplicated(SNP)]) %>%
-            dplyr::mutate(SNP_A1_A2 = paste(SNP, A1, A2, sep = "_"))
-          snps.ref.df.duplicated <- dplyr::filter(snps.ref.df, id %in% gwas2.df.subset.duplicated$SNP)
+            dplyr::filter(.data$SNP == .data$SNP[duplicated(.data$SNP)]) %>%
+            dplyr::mutate(SNP_A1_A2 = paste(.data$SNP, .data$A1, .data$A2, sep = "_"))
+          snps.ref.df.duplicated <- dplyr::filter(snps.ref.df, .data$id %in% gwas2.df.subset.duplicated$SNP)
           SNP_A1_A2.valid <- c(paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A1, snps.ref.df.duplicated$A2, sep = "_"),
                                paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A2, snps.ref.df.duplicated$A1, sep = "_"))
-          row.remove <- dplyr::filter(gwas2.df.subset.duplicated, !(SNP_A1_A2 %in% SNP_A1_A2.valid)) %>% dplyr::select(row.num) %>% unlist()
+          row.remove <- dplyr::filter(gwas2.df.subset.duplicated, !(.data$SNP_A1_A2 %in% SNP_A1_A2.valid)) %>% dplyr::select(.data$row.num) %>% unlist()
           gwas2.df.subset <- gwas2.df.subset[-row.remove,]
         }
         bhat2.raw <- gwas2.df.subset[, "Z"] / sqrt(gwas2.df.subset[, "N"])
@@ -8462,13 +8467,17 @@ HDL.rg <-
   )
 
 
-
+#' @importFrom foreach %dopar%
 HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min(gwas1.df$N, gwas2.df$N), output.file = "", numCores = 2,
                             eigen.cut = "automatic", jackknife.df = FALSE, intercept.output = FALSE, fill.missing.N = NULL, lim = exp(-18)){
+  
+  ## Initialize vars used later
+  snps.list.imputed.vector <- NULL
+  nsnps.list.imputed <- NULL
 
   #library(dplyr)
-  if(!require("doSNOW",character.only = TRUE)){
-    stop("Package doSNOW was not found. Please install it firstly.")
+  if(!requireNamespace("doSNOW",quietly = TRUE)){
+    stop("Package doSNOW was not found. Please install it first.")
   }
 
   if(output.file != ""){
@@ -8511,8 +8520,8 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     stop(error.message)
   }
 
-  gwas1.df <- gwas1.df %>% dplyr::filter(SNP %in% snps.name.list)
-  gwas2.df <- gwas2.df %>% dplyr::filter(SNP %in% snps.name.list)
+  gwas1.df <- gwas1.df %>% dplyr::filter(.data$SNP %in% snps.name.list)
+  gwas2.df <- gwas2.df %>% dplyr::filter(.data$SNP %in% snps.name.list)
 
   gwas1.df$A1 <- toupper(as.character(gwas1.df$A1))
   gwas1.df$A2 <- toupper(as.character(gwas1.df$A2))
@@ -8563,25 +8572,25 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
   k2.0 <- length(unique(gwas2.df$SNP))
 
   if(is.null(fill.missing.N)){
-    gwas1.df <- gwas1.df %>% dplyr::filter(!is.na(Z), !is.na(N))
-    gwas2.df <- gwas2.df %>% dplyr::filter(!is.na(Z), !is.na(N))
+    gwas1.df <- gwas1.df %>% dplyr::filter(!is.na(.data$Z), !is.na(.data$N))
+    gwas2.df <- gwas2.df %>% dplyr::filter(!is.na(.data$Z), !is.na(.data$N))
   } else if(fill.missing.N == "min"){
-    gwas1.df <- gwas1.df %>% dplyr::filter(!is.na(Z))
+    gwas1.df <- gwas1.df %>% dplyr::filter(!is.na(.data$Z))
     gwas1.df$N[is.na(gwas1.df$N)] <- min(gwas1.df$N, na.rm = TRUE)
 
-    gwas2.df <- gwas2.df %>% dplyr::filter(!is.na(Z))
+    gwas2.df <- gwas2.df %>% dplyr::filter(!is.na(.data$Z))
     gwas2.df$N[is.na(gwas2.df$N)] <- min(gwas2.df$N, na.rm = TRUE)
   } else if(fill.missing.N == "max"){
-    gwas1.df <- gwas1.df %>% dplyr::filter(!is.na(Z))
+    gwas1.df <- gwas1.df %>% dplyr::filter(!is.na(.data$Z))
     gwas1.df$N[is.na(gwas1.df$N)] <- max(gwas1.df$N, na.rm = TRUE)
 
-    gwas2.df <- gwas2.df %>% dplyr::filter(!is.na(Z))
+    gwas2.df <- gwas2.df %>% dplyr::filter(!is.na(.data$Z))
     gwas2.df$N[is.na(gwas2.df$N)] <- max(gwas2.df$N, na.rm = TRUE)
   } else if(fill.missing.N == "median"){
-    gwas1.df <- gwas1.df %>% dplyr::filter(!is.na(Z))
+    gwas1.df <- gwas1.df %>% dplyr::filter(!is.na(.data$Z))
     gwas1.df$N[is.na(gwas1.df$N)] <- median(gwas1.df$N, na.rm = TRUE)
 
-    gwas2.df <- gwas2.df %>% dplyr::filter(!is.na(Z))
+    gwas2.df <- gwas2.df %>% dplyr::filter(!is.na(.data$Z))
     gwas2.df$N[is.na(gwas2.df$N)] <- median(gwas2.df$N, na.rm = TRUE)
   } else{
     error.message <- "If given, the argument fill.missing.N can only be one of below: 'min', 'max', 'median'."
@@ -8626,8 +8635,8 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
   p1 <- N0/N1
   p2 <- N0/N2
 
-  rho12 <- suppressWarnings(dplyr::inner_join(gwas1.df %>% dplyr::select(SNP, Z), gwas2.df %>% dplyr::select(SNP, Z), by = "SNP") %>%
-                              dplyr::summarise(x=cor(Z.x, Z.y, use = "complete.obs")) %>% unlist)
+  rho12 <- suppressWarnings(dplyr::inner_join(gwas1.df %>% dplyr::select(.data$SNP, .data$Z), gwas2.df %>% dplyr::select(.data$SNP, .data$Z), by = "SNP") %>%
+                              dplyr::summarise(x=cor(.data$Z.x, .data$Z.y, use = "complete.obs")) %>% unlist)
   # counter <- 0
   # message <- ""
   num.pieces <- length(unlist(nsnps.list))
@@ -8656,19 +8665,19 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     A2.ref <- snps.ref.df$A2
     names(A2.ref) <- snps.ref
 
-    gwas1.df.subset <- gwas1.df %>% dplyr::filter(SNP %in% snps.ref) %>% dplyr::distinct(SNP, A1, A2, .keep_all = TRUE)
+    gwas1.df.subset <- gwas1.df %>% dplyr::filter(.data$SNP %in% snps.ref) %>% dplyr::distinct(.data$SNP, .data$A1, .data$A2, .keep_all = TRUE)
 
     ## Check if there are multiallelic or duplicated SNPs
     if(any(duplicated(gwas1.df.subset$SNP)) == TRUE){
       gwas1.df.subset.duplicated <- gwas1.df.subset %>%
         dplyr::mutate(row.num = 1:n()) %>%
-        dplyr::filter(SNP == SNP[duplicated(SNP)]) %>%
-        dplyr::mutate(SNP_A1_A2 = paste(SNP, A1, A2, sep = "_"))
+        dplyr::filter(.data$SNP == .data$SNP[duplicated(.data$SNP)]) %>%
+        dplyr::mutate(SNP_A1_A2 = paste(.data$SNP, .data$A1, .data$A2, sep = "_"))
       snps.ref.df.duplicated <- snps.ref.df %>%
-        dplyr::filter(id %in% gwas1.df.subset.duplicated$SNP)
+        dplyr::filter(.data$id %in% gwas1.df.subset.duplicated$SNP)
       SNP_A1_A2.valid <- c(paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A1, snps.ref.df.duplicated$A2, sep = "_"),
                            paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A2, snps.ref.df.duplicated$A1, sep = "_"))
-      row.remove <- gwas1.df.subset.duplicated %>% dplyr::filter(!(SNP_A1_A2 %in% SNP_A1_A2.valid)) %>% dplyr::select(row.num) %>% unlist()
+      row.remove <- gwas1.df.subset.duplicated %>% dplyr::filter(!(.data$SNP_A1_A2 %in% SNP_A1_A2.valid)) %>% dplyr::select(.data$row.num) %>% unlist()
       gwas1.df.subset <- gwas1.df.subset[-row.remove,]
     }
 
@@ -8678,19 +8687,19 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     idx.sign1 <- A2.gwas1 == A2.ref[names(A2.gwas1)]
     bhat1.raw <- bhat1.raw*(2*as.numeric(idx.sign1)-1)
 
-    gwas2.df.subset <- gwas2.df %>% dplyr::filter(SNP %in% snps.ref) %>% dplyr::distinct(SNP, A1, A2, .keep_all = TRUE)
+    gwas2.df.subset <- gwas2.df %>% dplyr::filter(.data$SNP %in% snps.ref) %>% dplyr::distinct(.data$SNP, .data$A1, .data$A2, .keep_all = TRUE)
 
     ## Check if there are multiallelic or duplicated SNPs
     if(any(duplicated(gwas2.df.subset$SNP)) == TRUE){
       gwas2.df.subset.duplicated <- gwas2.df.subset %>%
         dplyr::mutate(row.num = 1:n()) %>%
-        dplyr::filter(SNP == SNP[duplicated(SNP)]) %>%
-        dplyr::mutate(SNP_A1_A2 = paste(SNP, A1, A2, sep = "_"))
+        dplyr::filter(.data$SNP == .data$SNP[duplicated(.data$SNP)]) %>%
+        dplyr::mutate(SNP_A1_A2 = paste(.data$SNP, .data$A1, .data$A2, sep = "_"))
       snps.ref.df.duplicated <- snps.ref.df %>%
-        dplyr::filter(id %in% gwas2.df.subset.duplicated$SNP)
+        dplyr::filter(.data$id %in% gwas2.df.subset.duplicated$SNP)
       SNP_A1_A2.valid <- c(paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A1, snps.ref.df.duplicated$A2, sep = "_"),
                            paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A2, snps.ref.df.duplicated$A1, sep = "_"))
-      row.remove <- gwas2.df.subset.duplicated %>% dplyr::filter(!(SNP_A1_A2 %in% SNP_A1_A2.valid)) %>% dplyr::select(row.num) %>% unlist()
+      row.remove <- gwas2.df.subset.duplicated %>% dplyr::filter(!(.data$SNP_A1_A2 %in% SNP_A1_A2.valid)) %>% dplyr::select(.data$row.num) %>% unlist()
       gwas2.df.subset <- gwas2.df.subset[-row.remove,]
     }
     bhat2.raw <- gwas2.df.subset[, "Z"] / sqrt(gwas2.df.subset[, "N"])

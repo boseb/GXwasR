@@ -6,7 +6,7 @@
 	pkgDate <- pkgDescription$Date
 	pkgName <- pkgDescription$Package
 	pkgTitle <- pkgDescription$Title
-	pkgAuthor <- pkgDescription$Author
+	pkgAuthor <- pkgDescription$`Authors@R`
 	pkgMaintainer <- pkgDescription$Maintainer
 	packageStartupMessage(paste("\n", pkgName, ": ", pkgTitle, sep = ""))
 	packageStartupMessage(paste("Version ", pkgVersion, " (", pkgDate, ") installed", sep = ""))
