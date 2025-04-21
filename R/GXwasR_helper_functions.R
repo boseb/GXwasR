@@ -5977,7 +5977,28 @@ detectOutliers <- function(tab, ResultDir, DataDir, finput, outlier, outlierOf, 
 }
 
 
-
+runSKAT <- function(score.file, gene.file, genes, cor.path, gene_approximation, anno.type, beta.par, weights.function, user.weights, geno_variance_weights, kernel_p_method, acc_devies, lim_devies, rho, skato_p_threshold, write.file, quiet) { 
+  sumFREGAT::SKAT( 
+    score.file = score.file, 
+    gene.file = gene.file,
+    genes = genes, 
+    cor.path = cor.path, 
+    approximation = gene_approximation, 
+    anno.type = anno.type, 
+    beta.par = beta.par, 
+    weights.function = weights.function, 
+    user.weights = FALSE, 
+    gen.var.weights = geno_variance_weights, 
+    method = kernel_p_method, 
+    acc = acc_devies, 
+    lim = lim_devies, 
+    rho = rho, 
+    p.threshold = skato_p_threshold, 
+    write.file = FALSE, 
+    quiet = FALSE) 
+} 
+# Please update the parameter description: @param skato_p_threshold Positive numeric value, specifying the largest P value that will be considered as important when performing computational optimization 
+# in SKAT0 or SKAT. All P values larger than skato_p_threshold will be processed via burden test. The default is 0.8
 
 
 
