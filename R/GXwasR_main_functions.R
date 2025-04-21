@@ -1038,6 +1038,7 @@ EstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL, 
 #'
 #' @importFrom ggplot2 ggplot geom_bar ylab xlab theme_classic geom_point theme_light coord_equal aes_string
 #' @importFrom ggpubr ggarrange
+#' @importFrom rlang .data
 #'
 #' @export
 #'
@@ -1162,12 +1163,12 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 
     # Plot PCA results
     if (plotPC) {
-      p1 <- ggplot2::ggplot(data = Percent.var, ggplot2::aes(x = PC, y = Percent.var)) +
+      p1 <- ggplot2::ggplot(data = Percent.var, ggplot2::aes(x = .data$PC, y = .data$Percent.var)) +
         ggplot2::geom_bar(stat = "identity") +
         ggplot2::ylab("Percent Variance Explained") +
         ggplot2::theme_classic()
 
-      p2 <- ggplot2::ggplot(data = PCs, ggplot2::aes(x = .data[[ "PC1" ]], y = .data[[ "PC2" ]])) +
+      p2 <- ggplot2::ggplot(data = PCs, ggplot2::aes(x = .data$PC1, y = .data$PC2)) +
         ggplot2::geom_point() +
         ggplot2::xlab(paste0("PC1 (", signif(Percent.var$Percent.var[1]), "%)")) +
         ggplot2::ylab(paste0("PC2 (", signif(Percent.var$Percent.var[2]), "%)")) +
@@ -1288,7 +1289,7 @@ ComputePRS <- function(DataDir,ResultDir = tempdir(),finput,summarystat,phenofil
       summarystat$OR <- log(summarystat$OR)
     }
 
-    summarystat <- as.data.frame(dplyr::distinct(summarystat,SNP,.keep_all=TRUE))
+    summarystat <- as.data.frame(dplyr::distinct(summarystat,summarystat$SNP,.keep_all=TRUE))
 
     write.table(summarystat, file=paste0(ResultDir,"/","prssummarystat"), quote=FALSE, row.names=FALSE)
     SNP.pvalue <- unique(summarystat[,c("SNP","P")])
@@ -1706,8 +1707,8 @@ SexCheck <-
 
       # Read BIM file to check for X and Y chromosomes
       bim_file <- read.table(file.path(DataDir, paste0(finput, ".bim")))
-      xChr <- nrow(subset(bim_file, V1 == 23 | V1 == "X"))
-      yChr <- nrow(subset(bim_file, V1 == 24 | V1 == "Y"))
+      xChr <- nrow(subset(bim_file, bim_file$V1 == 23 | bim_file$V1 == "X"))
+      yChr <- nrow(subset(bim_file, bim_file$V1 == 24 | bim_file$V1 == "Y"))
 
       if (xChr == 0) {
         stop("There are no X chromosomes in the input PLINK files.")
