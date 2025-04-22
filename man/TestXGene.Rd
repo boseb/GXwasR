@@ -104,7 +104,8 @@ in a sum chi-square test); "se.beta" (i.e., scores weighted by variance of genot
 (i.e., scores weighted by variance of genotypes calculated as \eqn{AF * (1 - AF)}, where AF is allele frequency.}
 
 \item{kernel_p_method}{Character string, specifying the method for computing P value in kernel-based tests, such as SKAT, SKATO and sumchi. Available methods
-are "kuonen" (9), "davies" (10) and "hybrid" (11). The default is "kuonen".}
+are "kuonen" \insertCite{Belonogova2022}{GXwasR} "davies" \insertCite{Belonogova2022}{GXwasR} and "hybrid" \insertCite{Belonogova2022}{GXwasR}.
+The default is "kuonen".}
 
 \item{acc_devies}{Positive numeric value, specifying the accuracy parameter for "davies" method. The default is 1e-8.}
 

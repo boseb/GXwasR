@@ -78,6 +78,5 @@ using a specified reference linkage disequilibrium (LD) matrix from the UK Bioba
 #                      "sumstat1", "sumstat2")
 }
 \references{
-Ning Z, Pawitan Y, Shen X (2020). High-definition likelihood inference of genetic correlations
-across human complex traits.
+\insertRef{Ning2020}{GXwasR}
 }
