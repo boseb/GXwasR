@@ -153,7 +153,7 @@ checkFiles <- function(DataDir, finput) {
 
 ## Function 4
 ########## Added in 3.0
-executePlink <- function(args) {
+executePlink <- function(args, ResultDir) {
   # globalVariables("ResultDir")
   tryCatch(
     {
@@ -231,7 +231,7 @@ plinkExcludeExtract <- function(DataDir, finput, ResultDir, foutput, region_file
     "--out", file.path(ResultDir, foutput),
     "--silent"
   )
-  executePlink(plinkArgsExclude)
+  executePlink(plinkArgsExclude, ResultDir)
 
   # Plink command for extracting SNPs
   plinkArgsExtract <- c(
@@ -242,7 +242,7 @@ plinkExcludeExtract <- function(DataDir, finput, ResultDir, foutput, region_file
     "--out", file.path(ResultDir, paste0(foutput, "_snps_extracted")),
     "--silent"
   )
-  executePlink(plinkArgsExtract)
+  executePlink(plinkArgsExtract, ResultDir)
 }
 
 ## Function 7
@@ -391,7 +391,7 @@ processAmbiguousSamples <- function(DataDir, ResultDir, finput, fam1) {
     "--out", paste0(ResultDir, "/", "FINPUT"),
     "--silent"
   )
-  executePlink(pruneArgs)
+  executePlink(pruneArgs, ResultDir)
 
   fam2 <- nrow(read.table(paste0(ResultDir, "/", "FINPUT", ".fam"), header = FALSE))
   print(paste0("No. of ambiguous samples filtered out: ", fam1 - fam2))
@@ -412,7 +412,7 @@ filterSamples <- function(DataDir, ResultDir, finput, failed_het_imiss, filterSa
       "--out", paste0(ResultDir, "/", "foutput"),
       "--silent"
     )
-    executePlink(excludeSamplesArgs)
+    executePlink(excludeSamplesArgs, ResultDir)
   } else if (filterSample == FALSE) {
     excludeSamplesArgs <- c(
       "--bfile", paste0(DataDir, "/", finput),
@@ -420,7 +420,7 @@ filterSamples <- function(DataDir, ResultDir, finput, failed_het_imiss, filterSa
       "--out", paste0(ResultDir, "/", "foutput"),
       "--silent"
     )
-    executePlink(excludeSamplesArgs)
+    executePlink(excludeSamplesArgs, ResultDir)
     print("Samples are flagged for missingness and heterogygosity threshold.")
   }
 }
@@ -513,7 +513,7 @@ executePlinkForIBD <- function(ResultDir, IBD, outFileName) {
   if (!is.null(IBD)) {
     ibdArgs <- c(ibdArgs, "--min", IBD)
   }
-  executePlink(ibdArgs)
+  executePlink(ibdArgs, ResultDir)
 }
 
 ## Function 20
@@ -540,10 +540,10 @@ updatePlinkFilesWithIBDFilter <- function(ResultDir, foutput, failed_ibd) {
   if (!is.null(failed_ibd)) {
     write.table(failed_ibd, file = paste0(ResultDir, "/samples_failed_ibd"), quote = FALSE, row.names = FALSE, col.names = FALSE)
     removeSamplesArgs <- c("--bed", paste0(ResultDir, "/", "foutput", ".bed"), "--bim", paste0(ResultDir, "/", "foutput", ".bim"), "--fam", paste0(ResultDir, "/", "foutput", ".fam"), "--remove", paste0(ResultDir, "/samples_failed_ibd"), "--allow-no-sex", "--make-bed", "--out", paste0(ResultDir, "/", foutput), "--silent")
-    executePlink(removeSamplesArgs)
+    executePlink(removeSamplesArgs, ResultDir)
   } else {
     removeSamplesArgs <- c("--bed", paste0(ResultDir, "/", "foutput", ".bed"), "--bim", paste0(ResultDir, "/", "foutput", ".bim"), "--fam", paste0(ResultDir, "/", "foutput", ".fam"), "--make-bed", "--out", paste0(ResultDir, "/", foutput), "--silent")
-    executePlink(removeSamplesArgs)
+    executePlink(removeSamplesArgs, ResultDir)
   }
 }
 
@@ -551,7 +551,7 @@ updatePlinkFilesWithIBDFilter <- function(ResultDir, foutput, failed_ibd) {
 ######### Added in 3.0
 executeMakeBed <- function(ResultDir, foutput) {
   makeBedArgs <- c("--bfile", paste0(ResultDir, "/", "foutput"), "--make-bed", "--out", paste0(ResultDir, "/", foutput), "--silent")
-  executePlink(makeBedArgs)
+  executePlink(makeBedArgs, ResultDir)
 }
 
 ## Function 24
@@ -5939,7 +5939,28 @@ detectOutliers <- function(tab, ResultDir, DataDir, finput, outlier, outlierOf, 
 }
 
 
-
+runSKAT <- function(score.file, gene.file, genes, cor.path, gene_approximation, anno.type, beta.par, weights.function, user.weights, geno_variance_weights, kernel_p_method, acc_devies, lim_devies, rho, skato_p_threshold, write.file, quiet) { 
+  sumFREGAT::SKAT( 
+    score.file = score.file, 
+    gene.file = gene.file,
+    genes = genes, 
+    cor.path = cor.path, 
+    approximation = gene_approximation, 
+    anno.type = anno.type, 
+    beta.par = beta.par, 
+    weights.function = weights.function, 
+    user.weights = FALSE, 
+    gen.var.weights = geno_variance_weights, 
+    method = kernel_p_method, 
+    acc = acc_devies, 
+    lim = lim_devies, 
+    rho = rho, 
+    p.threshold = skato_p_threshold, 
+    write.file = FALSE, 
+    quiet = FALSE) 
+} 
+# Please update the parameter description: @param skato_p_threshold Positive numeric value, specifying the largest P value that will be considered as important when performing computational optimization 
+# in SKAT0 or SKAT. All P values larger than skato_p_threshold will be processed via burden test. The default is 0.8
 
 
 
@@ -7376,18 +7397,6 @@ filterGenomicFeatures <- function(x, filterPAR, filterXTR, filterAmpliconic) {
 ## Function 153
 ## Added in 3.0
 executePlinkExcludeExtract <- function(ResultDir, DataDir, finput, rangefile, foutput) {
-  executePlink <- function(DataDir, ResultDir, args) {
-    tryCatch(
-      {
-        stderr_dest <- ifelse(.Platform$OS.type == "windows", "NUL", "/dev/null")
-        invisible(sys::exec_wait(file.path(ResultDir, "./plink"), args = args, std_err = stderr_dest))
-      },
-      error = function(e) {
-        stop("An error occurred while executing Plink: ", e$message)
-      }
-    )
-  }
-  # globalVariables("DataDir","ResultDir")
 
   # Exclude region
   exclude_args <- c(
@@ -7403,7 +7412,7 @@ executePlinkExcludeExtract <- function(ResultDir, DataDir, finput, rangefile, fo
     "--silent"
   )
 
-  executePlink(DataDir, ResultDir, exclude_args)
+  executePlink(exclude_args, ResultDir)
 
   # Extract region
   extract_args <- c(
@@ -7419,24 +7428,12 @@ executePlinkExcludeExtract <- function(ResultDir, DataDir, finput, rangefile, fo
     "--silent"
   )
 
-  executePlink(DataDir, ResultDir, extract_args)
+  executePlink(extract_args, ResultDir)
 }
 
 ## Function 154
 ## Added in 3.0
 executePlinkChrFilter <- function(ResultDir, DataDir, finput, filterCHR, foutput) {
-  executePlink <- function(ResultDir, DataDir, args) {
-    # globalVariables("ResultDir")
-    tryCatch(
-      {
-        stderr_dest <- ifelse(.Platform$OS.type == "windows", "NUL", "/dev/null")
-        invisible(sys::exec_wait(file.path(ResultDir, "./plink"), args = args, std_err = stderr_dest))
-      },
-      error = function(e) {
-        stop("An error occurred while executing Plink: ", e$message)
-      }
-    )
-  }
 
   # Filter SNPs not on specified chromosomes
   not_chr_args <- c(
@@ -7450,7 +7447,7 @@ executePlinkChrFilter <- function(ResultDir, DataDir, finput, filterCHR, foutput
     "--silent"
   )
 
-  executePlink(ResultDir, DataDir, not_chr_args)
+  executePlink(not_chr_args, ResultDir)
 
   # Filter SNPs on specified chromosomes
   chr_args <- c(
@@ -7464,7 +7461,7 @@ executePlinkChrFilter <- function(ResultDir, DataDir, finput, filterCHR, foutput
     "--silent"
   )
 
-  executePlink(ResultDir, DataDir, chr_args)
+  executePlink(chr_args, ResultDir)
 }
 
 ## Function 155
