@@ -147,5 +147,4 @@ x <- MetaGWAS(
 }
 \references{
 \insertAllCited{}
-(2) Mägi, R., Morris, A.P. GWAMA: software for genome-wide association meta-analysis. BMC Bioinformatics 11, 288 (2010). https://doi.org/10.1186/1471-2105-11-288
 }

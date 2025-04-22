@@ -77,7 +77,7 @@ autosomal genotype observations and, Method-of-moments F coefficient estimate, r
 \description{
 This function identifies outlier individuals for heterozygosity and/or missing genotype rates, which aids in the
 detection of samples with subpar DNA quality and/or concentration that should be removed from the study. Individuals
-missing more than 3-7\% of their genotype calls are often excluded (1)from the analysis.
+missing more than 3-7\% of their genotype calls are often excluded from the analysis.
 
 Having the correct designation of sex is important to obtain accurate genotype rate estimates, or avoid incorrectly
 removing samples, etc. Details can be accessed from the paper.

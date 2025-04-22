@@ -411,7 +411,8 @@ AncestryCheck <-
 #'
 #' @param kernel_p_method
 #' Character string, specifying the method for computing P value in kernel-based tests, such as SKAT, SKATO and sumchi. Available methods
-#' are "kuonen" (9), "davies" (10) and "hybrid" (11). The default is "kuonen".
+#' are "kuonen" \insertCite{Belonogova2022}{GXwasR} "davies" \insertCite{Belonogova2022}{GXwasR} and "hybrid" \insertCite{Belonogova2022}{GXwasR}. 
+#' The default is "kuonen".
 #'
 #' @param acc_devies
 #' Positive numeric value, specifying the accuracy parameter for "davies" method. The default is 1e-8.
@@ -1307,7 +1308,7 @@ EstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL, 
       }
 
       if (model == "LDSC") {
-        heritability_results <- processLDSCModel(DataDir, ResultDir, finput, precomputedLD, IndepSNPs, summarystat, byCHR, r2_LD, LDSC_blocks, chi2_thr1, chi2_thr2, intercept, ncores, prevalence, PlotIndepSNP, highLD_regions, IndepSNP_window_size, IndepSNP_step_size, IndepSNP_r2_threshold, hg, miMAF, maMAF, plotjpeg = plotjpeg, plotname = plotname)
+        heritability_results <- processLDSCModel(DataDir, ResultDir, finput, precomputedLD, IndepSNPs = indepSNPs, summarystat, byCHR, r2_LD, LDSC_blocks, chi2_thr1, chi2_thr2, intercept, ncores, prevalence, PlotIndepSNP, highLD_regions, IndepSNP_window_size, IndepSNP_step_size, IndepSNP_r2_threshold, hg, miMAF, maMAF, plotjpeg = plotjpeg, plotname = plotname)
 
         return(heritability_results)
       } else if (model == "GREML") {
@@ -3024,7 +3025,7 @@ MAFdiffSexControl <- function(DataDir,
 #' @description
 #' This function identifies outlier individuals for heterozygosity and/or missing genotype rates, which aids in the
 #' detection of samples with subpar DNA quality and/or concentration that should be removed from the study. Individuals
-#' missing more than 3-7% of their genotype calls are often excluded (1)from the analysis.
+#' missing more than 3-7% of their genotype calls are often excluded from the analysis.
 #'
 #' Having the correct designation of sex is important to obtain accurate genotype rate estimates, or avoid incorrectly
 #' removing samples, etc. Details can be accessed from the paper.
@@ -3835,7 +3836,6 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
 #'
 #' @references
 #' \insertAllCited{}
-#' (2) Mägi, R., Morris, A.P. GWAMA: software for genome-wide association meta-analysis. BMC Bioinformatics 11, 288 (2010). https://doi.org/10.1186/1471-2105-11-288
 #'
 #' @importFrom qqman manhattan qq
 #' @importFrom graphics par
@@ -5990,8 +5990,7 @@ LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, st
 #' }
 #'
 #' @references
-#' Ning Z, Pawitan Y, Shen X (2020). High-definition likelihood inference of genetic correlations
-#' across human complex traits.
+#' \insertRef{Ning2020}{GXwasR}
 #'
 #' @examples
 #' # Not Run
