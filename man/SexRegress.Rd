@@ -7,14 +7,15 @@
 SexRegress(fdata, regressor_index, response_index)
 }
 \arguments{
-\item{fdata}{R dataframe object. The column with header "response" should contain the response variable. All other column are the regressor.}
+\item{fdata}{R dataframe object. The column with header \code{response} should contain the response variable. All other column are the regressor.}
 
 \item{regressor_index}{Integer value, specifying the column number of the main regressor variable.}
 
 \item{response_index}{Integer value, specifying the column number of the response variable.}
 }
 \value{
-Numeric value containing the regression estimate ("Estimate"), standard error ("Std. Error"), statistics ("t value") and p-value ("Pr(>|t|)")
+Numeric value containing the regression estimate ("Estimate"), standard error ("Std. Error"), statistics ("t value") and
+p-value (\eqn{Pr(>|t|)})
 }
 \description{
 This function could be used to check association of two variables. For instance, PRS with sex.
@@ -22,11 +23,10 @@ This function could be used to check association of two variables. For instance,
 \examples{
 
 data("GXwasRData")
-fdata = Regression_Ex
+fdata <- Regression_Ex
 fdata$SEX <- as.factor(as.character(fdata$SEX))
 response_index <- 1
 regressor_index <- 2
 
 x <- SexRegress(fdata, regressor_index, response_index)
-
 }

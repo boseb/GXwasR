@@ -24,25 +24,29 @@ QCsample(
 )
 }
 \arguments{
-\item{DataDir}{Character string, specifying the file path of the input PLINK binary files. The default is NULL.}
+\item{DataDir}{Character string, specifying the file path of the input PLINK binary files. The default is \code{NULL}.}
 
-\item{ResultDir}{A character string for the file path where all output files will be stored. The default is tempdir().}
+\item{ResultDir}{A character string for the file path where all output files will be stored. The default is \code{tempdir()}.}
 
-\item{finput}{Character string, specifying the prefix of the input PLINK binary files with both male and female samples. This file needs to be in DataDir.}
+\item{finput}{Character string, specifying the prefix of the input PLINK binary files with both male and female samples.
+This file needs to be in \code{DataDir}.}
 
 \item{foutput}{Character string, specifying the prefix of the output PLINK binary files if filtering option for the samples is chosen.}
 
 \item{imiss}{Numeric value between 0 to 1 for removing samples that have more than the specified missingness. The default is 0.03.}
 
-\item{het}{Positive numeric value, specifying the standard deviation from the mean heterozygosity rate. The samples whose rates are more than the specified sd from the mean heterozygosity rate are removed. The default is 3. With this default value, outlying heterozygosity rates would remove individuals who are three sd away from the mean rate (1).}
+\item{het}{Positive numeric value, specifying the standard deviation from the mean heterozygosity rate. The samples whose rates are more
+than the specified sd from the mean heterozygosity rate are removed. The default is 3. With this default value, outlying
+heterozygosity rates would remove individuals who are three sd away from the mean rate (1).}
 
-\item{small_sample_mod}{Boolean value indicating whether to apply modifications for small sample sizes. Default is FALSE.}
+\item{small_sample_mod}{Boolean value indicating whether to apply modifications for small sample sizes. Default is \code{FALSE}.}
 
-\item{IBD}{Numeric value for setting the threshold for Identity by Descent (IBD) analysis. Default is NULL.}
+\item{IBD}{Numeric value for setting the threshold for Identity by Descent (IBD) analysis. Default is \code{NULL}.}
 
-\item{IBDmatrix}{Boolean value indicating whether to generate an entire IBD matrix. Default is FALSE. In this case filtered IBD matrix will be stored.}
+\item{IBDmatrix}{Boolean value indicating whether to generate an entire IBD matrix. Default is \code{FALSE}. In this case filtered IBD
+matrix will be stored.}
 
-\item{ambi_out}{Boolean value indicating whether to process ambiguous samples. Default}
+\item{ambi_out}{Boolean value indicating whether to process ambiguous samples.}
 
 \item{legend_text_size}{Integer, specifying the size for legend text in the plot.}
 
@@ -54,30 +58,47 @@ QCsample(
 
 \item{title_size}{Integer, specifying the size of the title of the plot heterozygosity estimate vs missingness across samples.}
 
-\item{filterSample}{Boolean value, 'TRUE' or 'FALSE' for filtering out the samples or not (i.e., only flagged). The default is "TRUE".}
+\item{filterSample}{Boolean value, \code{TRUE} or \code{FALSE} for filtering out the samples or not (i.e., only flagged). The default is \code{TRUE}.}
 }
 \value{
-A plot of heterogysity estimate vs missingness accross sample and a list containing five R dataframe objects, namely, HM (samples with outlying heterozygosity and/or missing genotype rates), Failed_Missingness (samples with missing genotype rates), Failed_heterozygosity (samples with outlying heterozygosity), Missingness_results (missingness results) and Heterozygosity_results (heterozygosity results) with output plink files in ResultDir if filtering out the samples option is chosen.
-Missingness_results contains missingness results for each individual, with six columns as FID, IID, MISS_PHENO, N_MISS, N_GENO and F_MISS for Family ID, Within-family ID, Phenotype missing? (Y/N), Number of missing genotype call(s), not including obligatory missings or heterozygous haploids, number of potentially valid call(s), and missing call rate, respectively.
-Heterozygosity_results contains heterozygosity results for each individual, with six columns as FID, IID, O(HOM), E(HOM), N(NM), and F for Family ID, Within-family ID, Observed number of homozygotes, Expected number of homozygotes, Number of (non-missing, non-monomorphic) autosomal genotype observations and, Method-of-moments F coefficient estimate, respectively.
+A plot of heterogysity estimate vs missingness accross sample and a list containing five R dataframe objects, namely,
+\code{HM} (samples with outlying heterozygosity and/or missing genotype rates), \code{Failed_Missingness} (samples with missing genotype rates),
+\code{Failed_heterozygosity} (samples with outlying heterozygosity), \code{Missingness_results} (missingness results) and \code{Heterozygosity_results}
+(heterozygosity results) with output plink files in ResultDir if filtering out the samples option is chosen.
+
+\code{Missingness_results} contains missingness results for each individual, with six columns as \code{FID}, \code{IID}, \code{MISS_PHENO}, \code{N_MISS}, \code{N_GENO} and
+\code{F_MISS} for Family ID, Within-family ID, Phenotype missing? (Y/N), Number of missing genotype call(s), not including obligatory missings
+or heterozygous haploids, number of potentially valid call(s), and missing call rate, respectively.
+
+\code{Heterozygosity_results} contains heterozygosity results for each individual, with six columns as \code{FID}, \code{IID}, \code{O(HOM)}, \code{E(HOM)}, \code{N(NM)},
+and \code{F} for Family ID, Within-family ID, Observed number of homozygotes, Expected number of homozygotes, Number of (non-missing, non-monomorphic)
+autosomal genotype observations and, Method-of-moments F coefficient estimate, respectively.
 }
 \description{
-This function identifies outlier individuals for heterozygosity and/or missing genotype rates, which aids in the detection of samples with subpar DNA quality and/or concentration that should be removed from the study. Individuals missing more than 3-7\% of their genotype calls are often excluded (1)from the analysis.
-Having the correct designation of sex is important to obtain accurate genotype rate estimates, or avoid incorrectly removing samples, etc. Details can be accessed from the paper.
+This function identifies outlier individuals for heterozygosity and/or missing genotype rates, which aids in the
+detection of samples with subpar DNA quality and/or concentration that should be removed from the study. Individuals
+missing more than 3-7\% of their genotype calls are often excluded from the analysis.
+
+Having the correct designation of sex is important to obtain accurate genotype rate estimates, or avoid incorrectly
+removing samples, etc. Details can be accessed from the paper.
 }
 \examples{
 DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 foutput <- "Test_output"
-imiss = 0.01
-het = 2
-small_sample_mod = FALSE
-IBD = 0.2
-IBDmatrix = FALSE
-ambi_out = TRUE
+imiss <- 0.01
+het <- 2
+small_sample_mod <- FALSE
+IBD <- 0.2
+IBDmatrix <- FALSE
+ambi_out <- TRUE
 
-x = QCsample(DataDir = DataDir,ResultDir = ResultDir, finput = finput,foutput = foutput, imiss = imiss,het = het, IBD = IBD,ambi_out = ambi_out)
+x <- QCsample(
+  DataDir = DataDir, ResultDir = ResultDir, finput = finput,
+  foutput = foutput, imiss = imiss, het = het, IBD = IBD,
+  ambi_out = ambi_out
+)
 }
 \author{
 Banabithi Bose

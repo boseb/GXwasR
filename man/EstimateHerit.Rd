@@ -44,138 +44,177 @@ EstimateHerit(
 )
 }
 \arguments{
-\item{DataDir}{A character string for the file path of the all the input files. The default is NULL.}
+\item{DataDir}{A character string for the file path of the all the input files. The default is \code{NULL}.}
 
-\item{ResultDir}{A character string for the file path where all output files will be stored. The default is tempdir().}
+\item{ResultDir}{A character string for the file path where all output files will be stored. The default is \code{tempdir()}.}
 
-\item{finput}{Character string, specifying the prefix of the input PLINK binary files for the genotype data. This file needs to be in DataDir. For LDSC model, if the original genotype data is not available, Hapmap 3 or 1000Genome data can be used. If use NULL, then you need to provide 'precomputedLD' argument. See below.}
+\item{finput}{Character string, specifying the prefix of the input PLINK binary files for the genotype data. This file needs to be in \code{DataDir}.
+For LDSC model, if the original genotype data is not available, Hapmap 3 or 1000Genome data can be used. If use NULL, then you need
+to provide \code{precomputedLD} argument. See below.}
 
-\item{precomputedLD}{A dataframe object as LD matrix with columns: "CHR", "SNP", "BP", "ld_size", "MAF", "ld_score". . The default is NULL.}
+\item{precomputedLD}{A dataframe object as LD matrix with columns: \code{CHR}, \code{SNP}, \code{BP}, \code{ld_size}, \code{MAF}, \code{ld_score}. . The default is \code{NULL}.}
 
-\item{indepSNPs}{A dataframe with independent SNP ids with column name "rsid". The default is NULL.}
+\item{indepSNPs}{A dataframe with independent SNP ids with column name "rsid". The default is \code{NULL}.}
 
-\item{summarystat}{A dataframe object with GWAS summary statistics. The mandatory column headers in this dataframe are 'chr'(Chromosome code), 'pos'(Basepair position), 'a1' (First allele code), ‘rsid’ (i.e., SNP idenitifier), ‘beta’ (i.e., effect-size or logarithm of odds ratio), ‘beta_se’ (i.e., standard error of beta), ‘P’ (i.e., p-values) and 'n_eff' (i.e., effective sample size).  For case-control study, effective sample size should be 4 / (1/<# of cases> + 1/<# of controls>). The default is NULL.}
+\item{summarystat}{A dataframe object with GWAS summary statistics. The mandatory column headers in this dataframe are
+\itemize{
+\item \code{chr} (Chromosome code),
+\item \code{pos} (Basepair position)
+\item \code{a1} (First allele code)
+\item \code{rsid} (i.e., SNP idenitifier)
+\item \code{beta} (i.e., effect-size or logarithm of odds ratio)
+\item \code{beta_se} (i.e., standard error of beta)
+\item \code{P} (i.e., p-values)
+\item \code{n_eff} (i.e., effective sample size)
+}
+
+For case-control study, effective sample size should be \eqn{4 / (1/<# of cases> + 1/<# of controls>)}. The default is \code{NULL}.}
 
 \item{ncores}{Integer value, specifying the number of cores to be used for running LDSC model. The default is 2.}
 
 \item{model}{Character string, specifying the heritability estimation model. There are two options, “GREML” or “LDSC”. The default is “GREML”.
-Note: argument For LDSC, DataDir and finput can be NULL.}
 
-\item{computeGRM}{Boolean value, 'TRUE' or 'FALSE', specifying whether to compute GRM matrices or not. The default is TRUE.}
+Note: argument For LDSC, DataDir and finput can be \code{NULL}.}
 
-\item{grmfile_name}{A string of characters specifying the prefix of autosomal .grm.bin file.
+\item{computeGRM}{Boolean value, \code{TRUE} or \code{FALSE}, specifying whether to compute GRM matrices or not. The default is \code{TRUE}.}
 
-Users need to provide separate GRM files for autosomes and X chromosome in ResultDir.
+\item{grmfile_name}{A string of characters specifying the prefix of autosomal .grm.bin file. Users need to provide separate GRM files
+for autosomes and X chromosome in \code{ResultDir}.
 
-The X chromosomal GRM file should have "x" added in the autosomal prefix as file name.
+The X chromosomal GRM file should have "x" added in the autosomal prefix as file name. For instance, if autosomal file
+is "ABC.grm.bin", then X chromosomal file should be "xABC.grm.bim".
 
-For instance, if autosomal file is "ABC.grm.bin", then X chromosomal file should be "xABC.grm.bim".
+If you are providing chromosome-wise GRMs, then the prefix should add "ChrNumber_" at the start of the prefix like,
+"Chr1_ABC.grm.bin". The default is NULL.}
 
-If you are providing chromosome-wise GRMs, then the prefix should add "ChrNumber_" at the starting
-
-of the prefix like, "Chr1_ABC.grm.bin". The default is NULL.}
-
-\item{byCHR}{Boolean value, 'TRUE' or 'FALSE', specifying whether the analysis will be performed chromosome wise or not. The default is FALSE.}
+\item{byCHR}{Boolean value, \code{TRUE} or \code{FALSE}, specifying whether the analysis will be performed chromosome wise or not. The default is \code{FALSE}.}
 
 \item{r2_LD}{Numeric value, specifying the LD threshold for clumping in LDSC model. The default is 0.}
 
-\item{LDSC_blocks}{Integer value, specifying the block size for performing jackknife variance estimator in LDSC model following (3). The default is 200.}
+\item{LDSC_blocks}{Integer value, specifying the block size for performing jackknife variance estimator in LDSC model following \insertCite{Prive2020}{GXwasR}.
+The default is 200.}
 
-\item{intercept}{Numeric value to constrain the intercept to some value (e.g. 1) in LDSC regression. Default is NULL}
+\item{intercept}{Numeric value to constrain the intercept to some value (e.g. 1) in LDSC regression. Default is \code{NULL}.}
 
 \item{chi2_thr1}{Numeric value for threshold on chi2 in step 1 of LDSC regression. Default is 30.}
 
-\item{chi2_thr2}{Numeric value for threshold on chi2 in step 2. Default is Inf (none).}
+\item{chi2_thr2}{Numeric value for threshold on chi2 in step 2. Default is \code{Inf} (none).}
 
-\item{REMLalgo}{Integer value of 0, 1 or 2, specifying the algorithm to run REML iterations, 0 for average information (AI), 1 for Fisher-scoring and 2 for EM. The default option is 0, i.e. AI-REML (1).}
+\item{REMLalgo}{Integer value of 0, 1 or 2, specifying the algorithm to run REML iterations, 0 for average information (AI), 1 for Fisher-scoring and
+2 for EM. The default option is 0, i.e. AI-REML \insertCite{Yang2011}{GXwasR}.}
 
 \item{nitr}{Integer value, specifying the number of iterations for performing the REML. The default is 100.}
 
-\item{cat_covarfile}{A character string, specifying the name of the categorical covariate file which is a plain text file with no header line; columns are family ID, individual ID and discrete covariates. The default is NULL. This file needs to be in DataDir.}
+\item{cat_covarfile}{A character string, specifying the name of the categorical covariate file which is a plain text file with no header line; columns
+are family ID, individual ID and discrete covariates. The default is \code{NULL}. This file needs to be in \code{DataDir}.}
 
-\item{quant_covarfile}{A character string, specifying the name of the quantitative covariate file which is a plain text file with no header line; columns are family ID, individual ID and continuous covariates. The default is NULL. This file needs to be in DataDir.}
+\item{quant_covarfile}{A character string, specifying the name of the quantitative covariate file which is a plain text file with no header line;
+columns are family ID, individual ID and continuous covariates. The default is \code{NULL}. This file needs to be in \code{DataDir}.}
 
-\item{prevalence}{Numeric value, specifying the disease prevalence. The default is NULL. Note: for the continuous trait value, users should use the default.}
+\item{prevalence}{Numeric value, specifying the disease prevalence. The default is \code{NULL}.
 
-\item{partGRM}{Boolean value, 'TRUE' or 'FALSE', specifying whether the GRM will be partitioned into n parts (by row) in GREML model. The default is FALSE.}
+Note: for the continuous trait value, users should use the default.}
 
-\item{autosome}{Boolean value, 'TRUE' or 'FALSE', specifying whether estimate of heritability will be done for autosomes or not. The default is ‘TRUE’.}
+\item{partGRM}{Boolean value, \code{TRUE} or \code{FALSE}, specifying whether the GRM will be partitioned into n parts (by row) in GREML model. The default is \code{FALSE}.}
 
-\item{Xsome}{Boolean value, 'TRUE' or 'FALSE', specifying whether estimate of heritability will be done for X chromosome or not. The default is ‘TRUE’.}
+\item{autosome}{Boolean value, \code{TRUE} or \code{FALSE}, specifying whether estimate of heritability will be done for autosomes or not. The default is \code{TRUE}.}
+
+\item{Xsome}{Boolean value, \code{TRUE} or \code{FALSE}, specifying whether estimate of heritability will be done for X chromosome or not. The default is \code{TRUE}.}
 
 \item{nGRM}{Integer value, specifying the number of the partision of the GRM in GREML model. The default is 3.}
 
-\item{cripticut}{Numeric value, specifying the threshold to create a new GRM of "unrelated" individuals in GREML model. The default is arbitrary chosen as 0.025 following (1).}
+\item{cripticut}{Numeric value, specifying the threshold to create a new GRM of "unrelated" individuals in GREML model. The default is arbitrary chosen
+as 0.025 following \insertCite{Yang2011}{GXwasR}.}
 
-\item{minMAF}{Positive numeric value (0,1), specifying the minimum threshold for the MAF filter of the SNPs in the GREML model. This value cannot be greater than 'maxMAF' parameter. The default is NULL. For NULL, maximum MAF value of the genotype data will be computed and printed on the plot.}
+\item{minMAF}{Positive numeric value (0,1), specifying the minimum threshold for the MAF filter of the SNPs in the GREML model. This value cannot be
+greater than \code{maxMAF} parameter. The default is \code{NULL}. For \code{NULL}, maximum MAF value of the genotype data will be computed and printed
+on the plot.}
 
-\item{maxMAF}{Positive numeric value (0,1), specifying the maximum threshold for the MAF filter of the SNPs in the GREML model. This value cannot be less than 'minMAF' parameter. The default is NULL. For NULL, minimum MAF value of the genotype data will be computed and printed on the plot.}
+\item{maxMAF}{Positive numeric value (0,1), specifying the maximum threshold for the MAF filter of the SNPs in the GREML model. This value cannot be less
+than \code{minMAF} parameter. The default is \code{NULL}. For \code{NULL}, minimum MAF value of the genotype data will be computed and printed on the plot.}
 
-\item{hg}{Boolean value, specifying the genome built, “hg19” or “hg38” to use chromosome length from UCSC genome browser and getting genes and proteins according to this built. The default is “hg19”.}
+\item{hg}{Boolean value, specifying the genome built, “hg19” or “hg38” to use chromosome length from UCSC genome browser and getting genes and proteins
+according to this built. The default is “hg19”.}
 
-\item{PlotIndepSNP}{Boolean value, 'TRUE' or 'FALSE', specifying whether to use independent SNPs i.e., chromosome-wise LD pruned SNPs in the plots or not. The default is TRUE.}
+\item{PlotIndepSNP}{Boolean value, \code{TRUE} or \code{FALSE}, specifying whether to use independent SNPs i.e., chromosome-wise LD pruned SNPs in the plots or not.
+The default is \code{TRUE}.}
 
 \item{IndepSNP_window_size}{Integer value, specifying a window size in variant count or kilobase for LD-based filtering. The default is 50.}
 
-\item{IndepSNP_step_size}{Integer value, specifying a variant count to shift the window at the end of each step for LD filtering for pruned SNPs in the plots. The default is 5.}
+\item{IndepSNP_step_size}{Integer value, specifying a variant count to shift the window at the end of each step for LD filtering for pruned SNPs in the plots.
+The default is 5.}
 
-\item{IndepSNP_r2_threshold}{Numeric value between 0 to 1 of pairwise r^2 threshold for LD-based filtering for pruned SNPs in the plots. The default is 0.02.}
+\item{IndepSNP_r2_threshold}{Numeric value between 0 to 1 of pairwise \eqn{r^2} threshold for LD-based filtering for pruned SNPs in the plots. The default is 0.02.}
 
-\item{highLD_regions}{Character string, specifying the .txt file name with genomic regions with high LD for using in finding pruned SNPs in the plots. This file needs to be in DataDir.}
+\item{highLD_regions}{Character string, specifying the .txt file name with genomic regions with high LD for using in finding pruned SNPs in the plots.
+This file needs to be in \code{DataDir}.}
 
-\item{plotjpeg}{Boolean value, 'TRUE' or 'FALSE', specifying whether to save the plots in jpeg file in ResultDir. The default is TRUE.}
+\item{plotjpeg}{Boolean value, \code{TRUE} or \code{FALSE}, specifying whether to save the plots in jpeg file in \code{ResultDir}. The default is \code{TRUE}.}
 
 \item{plotname}{String of character value specifying the name of the jpeg file with the plots. The deafult is "Heritability_Plots".}
 }
 \value{
-A dataframe with maximum eight columns for GREML (here, three columns if running genome-wide) and ten columns for LDSC model if byCHR is TRUE. The columns, such as, "chromosome"(i.e., chromosome code),"snp_proportion" (i.e.,chromosome-wise SNP propotion)", "no.of.genes" (i.e., number of genes per chromosome), "no.of.proteins" (i.e., number of genes per chromosome),"size_mb" (i.e., chromosome length), "Source" (i.e., source of heritability), "Variance" (i.e., estimated heritability), and "SE" (i.e., standard error of the estimated heritability) are common for both GREML and LDSC model. The column, "Intercept" (i.e., LDSC regression intercept) and "Int_SE" (i.e., standard error of the intercept) will be two extra columns for LDSC models. Source column will have rows, such as V(1) (i.e., name of genetic variance), V(e) (i.e., residual variance), V(p) (i.e., phenotypic variance), V(1)/Vp (i.e., ratio of genetic variance to phenotypic variance), and V(1)/Vp_L (i.e., ratio of genetic variance to phenotypic variance in liability scale for binary phenotypes). If byCHR is FALSE, then the first five columns will not be reported in the dataframe.
+A dataframe with maximum eight columns for GREML (here, three columns if running genome-wide) and ten columns for LDSC model if byCHR is \code{TRUE}.
+The columns, such as, "chromosome"(i.e., chromosome code),"snp_proportion" (i.e.,chromosome-wise SNP propotion)", "no.of.genes" (i.e., number of genes per chromosome),
+"no.of.proteins" (i.e., number of genes per chromosome),"size_mb" (i.e., chromosome length), "Source" (i.e., source of heritability),
+"Variance" (i.e., estimated heritability), and "SE" (i.e., standard error of the estimated heritability) are common for both GREML and LDSC model.
+The column, "Intercept" (i.e., LDSC regression intercept) and "Int_SE" (i.e., standard error of the intercept) will be two extra columns for LDSC models.
+Source column will have rows, such as \code{V(1)} (i.e., name of genetic variance), \code{V(e)} (i.e., residual variance), \code{V(p)} (i.e., phenotypic variance), \code{V(1)/Vp} (i.e.,
+ratio of genetic variance to phenotypic variance), and \code{V(1)/Vp_L} (i.e., ratio of genetic variance to phenotypic variance in liability scale for binary phenotypes).
+If \code{byCHR} is \code{FALSE}, then the first five columns will not be reported in the dataframe.
 }
 \description{
-This functions performs two types of heritability estimation, (i)GREML:Genomic relatedness matrix (GRM) restricted maximum likelihood-based method following GCTA (1) and (ii)LDSC: LD score regression-based method following (2,3). For the details, please follow the associated paper.
+This functions performs two types of heritability estimation, (i)GREML:Genomic relatedness matrix (GRM) restricted
+maximum likelihood-based method following GCTA \insertCite{Yang2011}{GXwasR} and (ii)LDSC: LD score regression-based method
+following \insertCite{Bulik-Sullivan2014,Prive2020}{GXwasR}. For the details, please follow the associated paper.
 
-Prior using this function, users are recommended to apply QCsnp and QCsample to ensure data quality control.
+Prior to using this function, it is recommended to apply QCsnp and QCsample to ensure data quality control.
 }
 \examples{
-#Not Run
-#DataDir = system.file("extdata", package = "GXwasR")
-#ResultDir = tempdir()
-#precomputedLD = NULL
-#finput <- "GXwasR_example"
-#load(paste0("/projects/b1137/BBose/GXwasR/data/Summary_Stat_Ex1.Rda"))
-#data("GXwasRData")
-#test.sumstats <- na.omit(Summary_Stat_Ex1[Summary_Stat_Ex1$TEST=="ADD",c(1:4,6:8)])
-#colnames(test.sumstats) <- c("chr","rsid","pos","a1","n_eff","beta","beta_se")
-#summarystat = test.sumstats
-#ncores = 3
-#model = "GREML"
-#byCHR = FALSE
-#r2_LD = 0
-#LDSC_blocks = 20
-#REMLalgo = 0
-#nitr = 3
-#cat_covarfile = NULL
-#quant_covarfile = NULL
-#prevalence = 0.01
-#partGRM = FALSE
-#autosome = TRUE
-#Xsome = TRUE
-#nGRM = 3
-#cripticut = 0.025
-#minMAF = NULL
-#maxMAF = NULL
-#hg = "hg19"
-#PlotIndepSNP = TRUE
-#IndepSNP_window_size = 50
-#IndepSNP_step_size = 5
-#IndepSNP_r2_threshold = 0.02
-#H2 <- EstimateHerit(DataDir = DataDir, ResultDir = ResultDir, finput = finput, summarystat = NULL, ncores, model = "GREML", byCHR = "TRUE", r2_LD = 0, LDSC_blocks = 20,REMLalgo = 0, nitr = 100, cat_covarfile = NULL, quant_covarfile = NULL,prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,cripticut = 0.025, minMAF = NULL, maxMAF = NULL,hg = "hg19",PlotIndepSNP = TRUE, IndepSNP_window_size = 50,IndepSNP_step_size = 5,IndepSNP_r2_threshold = 0.02,highLD_regions = highLD_hg19)
+\dontrun{
+DataDir <- system.file("extdata", package = "GXwasR")
+ResultDir <- tempdir()
+precomputedLD <- NULL
+finput <- "GXwasR_example"
+data("GXwasRData")
+test.sumstats <- na.omit(Summary_Stat_Ex1[Summary_Stat_Ex1$TEST == "ADD", c(1:4, 6:8)])
+colnames(test.sumstats) <- c("chr", "rsid", "pos", "a1", "n_eff", "beta", "beta_se")
+summarystat <- test.sumstats
+ncores <- 3
+model <- "GREML"
+byCHR <- FALSE
+r2_LD <- 0
+LDSC_blocks <- 20
+REMLalgo <- 0
+nitr <- 3
+cat_covarfile <- NULL
+quant_covarfile <- NULL
+prevalence <- 0.01
+partGRM <- FALSE
+autosome <- TRUE
+Xsome <- TRUE
+nGRM <- 3
+cripticut <- 0.025
+minMAF <- NULL
+maxMAF <- NULL
+hg <- "hg19"
+PlotIndepSNP <- TRUE
+IndepSNP_window_size <- 50
+IndepSNP_step_size <- 5
+IndepSNP_r2_threshold <- 0.02
+H2 <- EstimateHerit(
+  DataDir = DataDir, ResultDir = ResultDir, finput = finput,
+  summarystat = NULL, ncores, model = "GREML", byCHR = TRUE, r2_LD = 0,
+  LDSC_blocks = 20, REMLalgo = 0, nitr = 100, cat_covarfile = NULL, quant_covarfile = NULL,
+  prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
+  cripticut = 0.025, minMAF = NULL, maxMAF = NULL, hg = "hg19", PlotIndepSNP = TRUE,
+  IndepSNP_window_size = 50, IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02,
+  highLD_regions = highLD_hg19
+)
+}
 }
 \references{
-(1)	Yang et al. (2011) GCTA: a tool for Genome-wide Complex Trait Analysis. Am J Hum Genet. 88(1): 76-82.
-
-(2)	Bulik-Sullivan B, et al. LD score regression distinguishes confounding from polygenicity in genome-wide association studies. Nat Genet. 2014;47:291–295.
-
-(3)	Florian Privé, Julyan Arbel, Bjarni J Vilhjálmsson, LDpred2: better, faster, stronger, Bioinformatics, Volume 36, Issue 22-23, 1 December 2020, Pages 5424–5431, https://doi.org/10.1093/bioinformatics/btaa1029
+\insertAllCited{}
 }
 \author{
 Banabithi Bose

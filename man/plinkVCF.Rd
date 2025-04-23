@@ -18,42 +18,46 @@ plinkVCF(
 \arguments{
 \item{DataDir}{A character string for the file path of the input plink binary files and all other input files.}
 
-\item{ResultDir}{A character string for the file path where all output files will be stored. The default is tempdir().}
+\item{ResultDir}{A character string for the file path where all output files will be stored. The default is \code{tempdir()}.}
 
-\item{finput}{Character string, specifying the prefix of the input plink binary files or vcf files. This file needs to be in DataDir.}
+\item{finput}{Character string, specifying the prefix of the input plink binary files or vcf files. This file needs to be in \code{DataDir}.}
 
-\item{foutput}{Character string, specifying the prefix of the output plink binary files if filtering option for the SNPs is chosen. The default is "FALSE".}
+\item{foutput}{Character string, specifying the prefix of the output plink binary files if filtering option for the SNPs is chosen.
+The default is "FALSE".}
 
-\item{VtoP}{Boolean value, TRUE or FALSE, specifying the conversion of VCF files to plink binary files or not. The default is TRUE.}
+\item{VtoP}{Boolean value, \code{TRUE} or \code{FALSE}, specifying the conversion of VCF files to plink binary files or not. The default is \code{TRUE}.}
 
-\item{PtoV}{Boolean value, TRUE or FALSE, specifying the conversion of plink binary files to VCF  files or not. The default is TRUE.}
+\item{PtoV}{Boolean value, \code{TRUE} or \code{FALSE}, specifying the conversion of plink binary files to VCF  files or not. The default is \code{TRUE}.}
 
-\item{Famfile}{Character string, specifying the name of the original .fam file if VtoP was set to be TRUE. This file needs to be in DataDir. The default is NULL.}
+\item{Famfile}{Character string, specifying the name of the original .fam file if VtoP was set to be \code{TRUE}. This file needs to be in \code{DataDir}.
+The default is \code{NULL}.}
 
-\item{PVbyCHR}{Boolean value, TRUE or FALSE specifying to do the plink to vcf conversion chromosome-wise or not. The default is TRUE.}
+\item{PVbyCHR}{Boolean value, \code{TRUE} or \code{FALSE} specifying to do the plink to vcf conversion chromosome-wise or not. The default is \code{TRUE}.}
 }
 \value{
-NULL
+\code{NULL}
 
-The output files will be saved in ResultDir.
+The output files will be saved in \code{ResultDir}.
 }
 \description{
 This function performs the conversion between VCF files to plink binary formats.
 
-For VCF to plink files conversion, if you do not specify any FAM file when you are converting from VCF to plink format, then plink will just create a 'dummy' FAM file with the same name as your dataset with missing phenotypes and missing sex.
+For VCF to plink files conversion, if you do not specify any FAM file when you are converting from VCF to plink
+format, then plink will just create a 'dummy' FAM file with the same name as your dataset with missing phenotypes
+and missing sex.
 }
 \examples{
-# Not Run
-# finput <- "GXwasR_example" #Plink file
-# foutput <- "GXwasR_example1"
-# DataDir <- system.file("extdata", package = "GXwasR")
-# ResultDir <- tempdir()
-# PtoV = TRUE
-# VtoP = FALSE
-# Famfile = NULL
-# PVbyCHR = FALSE
-# x <- plinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)
-
+\dontrun{
+finput <- "GXwasR_example" # Plink file
+foutput <- "GXwasR_example1"
+DataDir <- system.file("extdata", package = "GXwasR")
+ResultDir <- tempdir()
+PtoV <- TRUE
+VtoP <- FALSE
+Famfile <- NULL
+PVbyCHR <- FALSE
+x <- plinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)
+}
 }
 \author{
 Banabithi Bose

@@ -20,48 +20,57 @@ ComputeGeneticPC(
 \arguments{
 \item{DataDir}{A character string for the file path of the input PLINK binary files.}
 
-\item{ResultDir}{A character string for the file path where all output files will be stored. The default is tempdir().}
+\item{ResultDir}{A character string for the file path where all output files will be stored. The default is \code{tempdir()}.}
 
-\item{finput}{Character string, specifying the prefix of the input PLINK binary files. This file needs to be in DataDir.}
+\item{finput}{Character string, specifying the prefix of the input PLINK binary files. This file needs to be in \code{DataDir.}}
 
 \item{countPC}{Integer value, specifying the number of principal components. The default is 10.}
 
-\item{plotPC}{Boolean value, 'TRUE' or 'FALSE', specifying whether to plot the first two PCs.}
+\item{plotPC}{Boolean value, \code{TRUE} or \code{FALSE}, specifying whether to plot the first two PCs.}
 
-\item{highLD_regions}{A R dataframe with genomic regions with high LD for using in finding pruned SNPs in the plots. The default is NULL.}
+\item{highLD_regions}{A R dataframe with genomic regions with high LD for using in finding pruned SNPs in the plots. The default is \code{NULL}.}
 
-\item{ld_prunning}{Numeric value between 0 to 1 of pairwise r^2 threshold for LD-based filtering for pruned SNPs in the plots. The default is 0.02.}
+\item{ld_prunning}{Numeric value between 0 to 1 of pairwise \eqn{r^2} threshold for LD-based filtering for pruned SNPs in the plots.
+The default is 0.02.}
 
 \item{window_size}{Integer value, specifying a window size in variant count or kilobase for LD-based filtering. The default is 50.}
 
-\item{step_size}{Integer value, specifying a variant count to shift the window at the end of each step for LD filtering for pruned SNPs in the plots. The default is 5.}
+\item{step_size}{Integer value, specifying a variant count to shift the window at the end of each step for LD filtering for pruned SNPs
+in the plots. The default is 5.}
 
-\item{r2_threshold}{Numeric value between 0 to 1 of pairwise r^2 threshold for LD-based filtering for pruned SNPs in the plots. The default is 0.02.}
+\item{r2_threshold}{Numeric value between 0 to 1 of pairwise \eqn{r^2} threshold for LD-based filtering for pruned SNPs in the plots.
+The default is 0.02.}
 }
 \value{
-A dataframe with genetic principal components. The first two columns are IID (i.e., Individual Id) and FID (i.e., Family ID). The other columns are PCs.
+A dataframe with genetic principal components. The first two columns are IID (i.e., Individual Id) and
+FID (i.e., Family ID). The other columns are PCs.
 }
 \description{
-This function performs principal components analysis (PCA) based on the variance-standardized relationship matrix (1).
-Top principal components are generally used as covariates in association analysis regressions to help correct for population stratification
+This function performs principal components analysis (PCA) based on the variance-standardized relationship
+matrix \insertCite{Purcell2007}{GXwasR}.
+
+Top principal components are generally used as covariates in association analysis regressions to help correct for
+population stratification
 }
 \examples{
-#' # Not Run
 DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 data("GXwasRData")
-#highLD_regions <- "high-LD-regions-hg19-GRCh37.txt"
 highLD_regions <- highLD_hg19
 ld_prunning <- "TRUE"
 window_size <- 50
 step_size <- 5
 r2_threshold <- 0.02
 countPC <- 20
-# GP <- ComputeGeneticPC(DataDir = DataDir,ResultDir=ResultDir,finput=finput,highLD_regions = highLD_hg19, countPC = 20)
+## Genetic PC
+GP <- ComputeGeneticPC(
+  DataDir = DataDir, ResultDir = ResultDir,
+  finput = finput, highLD_regions = highLD_hg19, countPC = 20
+)
 }
 \references{
-(1) Purcell et. al.,(2007). PLINK: A Tool Set for Whole-Genome Association and Population-Based Linkage Analyses. The American Journal of Human Genetics, 81(3), 559-575. https://doi.org/10.1086/519795.
+\insertAllCited{}
 }
 \author{
 Banabithi Bose
