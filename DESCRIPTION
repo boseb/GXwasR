@@ -61,3 +61,4 @@ Imports:
     foreach,
     Rdpack
 RdMacros: Rdpack
+biocViews: GenomeWideAssociation, LinkageDisequilibrium, VariantDetection, QualityControl, PrincipalComponent
