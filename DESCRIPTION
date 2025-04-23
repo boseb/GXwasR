@@ -1,12 +1,13 @@
 Package: GXwasR
 Title: Genome-wide and x-chromosome wide association analyses applying best practices of quality control over genetic data 
-Version: 0.02.02
-Authors@R: 
+Version: 0.99.0
+Authors@R: c(
     person(given = "Banabithi",
            family = "Bose",
-           role = c("aut","cre"),
+           role = c("cre", "aut"),
            email = "banabithi.bose@gmail.com",
            comment = c(ORCID = "0000-0003-0842-8768"))
+           )
 Description: This package performs various models of genome-wide and x-chromosome wide association analyses applying best practices of quality control over genetic data.
 License: file LICENSE
 Encoding: UTF-8
@@ -14,7 +15,7 @@ LazyData: true
 Depends: R (>= 4.1)
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Suggests: 
     stats,
     grDevices,
@@ -24,37 +25,40 @@ Suggests:
     grid,
     ggplotify,
     GenomicFeatures,
-    graphics, 
-    knitr, 
-    rmarkdown, 
-    tools, 
+    graphics,
+    knitr,
+    rmarkdown,
+    tools,
     qpdf,
     printr,
-    doSNOW,
-    foreach
+    doSNOW
 Imports:
-     utils,
-     ggpubr,
-     ggrepel,
-     BiocStyle,
-     GenomeInfoDb,
-     GenomicRanges,
-     Matrix,
-     SNPRelate,
-     bigparallelr,
-     bigsnpr,
-     data.table,
-     dplyr,
-     gdsfmt,
-     ggplot2,
-     gridExtra,
-     plyranges,
-     qqman,
-     regioneR,
-     stringr,
-     sumFREGAT,
-     sys,
-     magrittr,
-     poolr,
-     progress
+    utils,
+    ggpubr,
+    ggrepel,
+    BiocStyle,
+    GenomeInfoDb,
+    GenomicRanges,
+    Matrix,
+    SNPRelate,
+    bigparallelr,
+    bigsnpr,
+    data.table,
+    dplyr,
+    gdsfmt,
+    ggplot2,
+    gridExtra,
+    plyranges,
+    qqman,
+    regioneR,
+    stringr,
+    sumFREGAT,
+    sys,
+    magrittr,
+    poolr,
+    progress,
+    rlang,
+    foreach,
+    Rdpack
+RdMacros: Rdpack
 biocViews: GenomeWideAssociation, LinkageDisequilibrium, VariantDetection, QualityControl, PrincipalComponent

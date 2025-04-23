@@ -7,24 +7,40 @@
 Xhwe(DataDir, ResultDir = tempdir(), finput, filterSNP = TRUE, foutput)
 }
 \arguments{
-\item{DataDir}{A character string for the file path of the input PLINK binary files.}
+\item{DataDir}{Character string for the file path of the input PLINK binary files.}
 
-\item{ResultDir}{A character string for the file path where all output files will be stored. The default is tempdir().}
+\item{ResultDir}{Character string for the file path where all output files will be stored. The default is \code{tempdir()}.}
 
 \item{finput}{Character string, specifying the prefix of the input PLINK binary files.}
 
-\item{filterSNP}{Boolean value, 'TRUE' or 'FALSE' for filtering out the X-chromosome variants i.e., SNPs from the input file or not (i.e., only flagged). The default is "FALSE".}
+\item{filterSNP}{Boolean value, \code{TRUE} or \code{FALSE} for filtering out the X-chromosome variants i.e., SNPs from the input file or not
+(i.e., only flagged). The default is \code{FALSE}.}
 
-\item{foutput}{Character string, specifying the prefix of the output PLINK binary files if filtering option for the SNPs is chosen. The default is "FALSE".}
+\item{foutput}{Character string, specifying the prefix of the output PLINK binary files if filtering option for the SNPs is chosen.
+The default is "FALSE".}
 }
 \value{
-A list object containing SNPs. If filterSNP = TRUE, the output filtered PLINK binary files will be produced inside DataDir.
+A list object containing SNPs. If \code{filterSNP} = \code{TRUE}, the output filtered PLINK binary files will be
+produced inside \code{DataDir}.
 }
 \description{
-This function is a part of the post-imputation quality control process prior to GWAS. This tests for Hardy-Weinberg Equilibrium (HWE) for X-chromosome variants in females. Males' hemizygous X chromosome prevents testing for HWE on their haploid X calls, and testing for HWE across all samples would have a high failure rate. This function will check for HWE across the X in females (cases and controls combined), following the recommendation in Khramtsova et al., 2023, and can remove these regions from analysis in all samples. The p-value threshold for filtering out SNPs is 0.05/no.of. X-chromosome variants.
+This function is a part of the post-imputation quality control process prior to GWAS. This tests for Hardy-Weinberg
+Equilibrium (HWE) for X-chromosome variants in females. Males' hemizygous X chromosome prevents testing for HWE on
+their haploid X calls, and testing for HWE across all samples would have a high failure rate. This function will check
+for HWE across the X in females (cases and controls combined), following the recommendation in Khramtsova et al., 2023,
+and can remove these regions from analysis in all samples. The p-value threshold for filtering out SNPs is 0.05/no.of.
+X-chromosome variants.
 }
 \examples{
-# Not Run
+DataDir <- system.file("extdata", package = "GXwasR")
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+foutput <- "Test_output"
+x <- Xhwe(
+  DataDir = DataDir, ResultDir = ResultDir,
+  finput = finput, foutput = foutput, filterSNP = TRUE
+)
+x
 }
 \author{
 Banabithi Bose

@@ -4,6 +4,16 @@
 \name{highLD_hg19}
 \alias{highLD_hg19}
 \title{Example dataset for high LD regions in hg19 built}
+\format{
+A data frame with 20 rows and 4 variables
+\describe{
+\item{chr}{}
+\item{start}{}
+\item{end}{}
+\item{index}{}
+...
+}
+}
 \description{
 Example dataset for high LD regions in hg19 built
 }

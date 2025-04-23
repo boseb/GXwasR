@@ -2,7 +2,7 @@
 % Please edit documentation in R/GXwasR_main_functions.R
 \name{DummyCovar}
 \alias{DummyCovar}
-\title{Function to recode a categorical variable to a set of binary dummy variables.}
+\title{DummyCovar: Recode a categorical variable to a set of binary dummy variables.}
 \usage{
 DummyCovar(DataDir, bfile, incovar, outcovar)
 }
@@ -11,7 +11,8 @@ DummyCovar(DataDir, bfile, incovar, outcovar)
 
 \item{bfile}{Character string, specifying the prefix of the input PLINK binary files for which covariate file will be generated.}
 
-\item{incovar}{Character string, specifying the prefix of the input covariate file. First two columns will be, FID (i.e., Family ID) and IID (i.e., Sample ID) and rest of the columns are covariates.}
+\item{incovar}{Character string, specifying the prefix of the input covariate file. First two columns will be, FID (i.e., Family ID) and IID (i.e.,
+Sample ID) and rest of the columns are covariates.}
 
 \item{outcovar}{Character string, specifying the prefix of the Output covariate file}
 }
@@ -19,14 +20,20 @@ DummyCovar(DataDir, bfile, incovar, outcovar)
 R dataframe object with covariates
 }
 \description{
-When dealing with categorical variables in genetic analysis using, a common approach is to convert these into dummy variables for proper analysis (1). This function creates K-1 new dummy variables for a variable with K categories. One level is automatically excluded from the dummy variables which serves as the reference category for subsequent analyses. This setup implicitly sets the excluded that category as the baseline against which other categories are compared.
+When dealing with categorical variables in genetic analysis using, a common approach is to convert these into dummy variables
+for proper analysis \insertCite{Purcell2007}{GXwasR}. This function creates K-1 new dummy variables for a variable with K categories.
+One level is automatically excluded from the dummy variables which serves as the reference category for subsequent analyses. This setup
+implicitly sets the excluded that category as the baseline against which other categories are compared.
 }
 \examples{
-# bfile <- Example_GXwasR
-# incovar <- "covarfile_w_pc_age.txt"
-# outcovar <- "dummycovarfile"
-
+\dontrun{
+DataDir <- system.file("extdata", package = "GXwasR")
+bfile <- Example_GXwasR
+incovar <- "covarfile_w_pc_age.txt"
+outcovar <- "dummycovarfile"
+DummyCovar(DataDir = DataDir, bfile = bfile, incovar = incovar, outcovar = outcovar)
+}
 }
 \references{
-(1) Purcell et. al.,(2007). PLINK: A Tool Set for Whole-Genome Association and Population-Based Linkage Analyses. The American Journal of Human Genetics, 81(3), 559-575. https://doi.org/10.1086/519795.
+\insertAllCited{}
 }

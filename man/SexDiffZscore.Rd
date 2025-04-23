@@ -7,22 +7,38 @@
 SexDiffZscore(inputdata)
 }
 \arguments{
-\item{inputdata}{A dataframe with five columns, such as, 'ID' (i.e., SNP ID or the phenotype of interest, etc.),
-'Fstat' (i.e., the measured statistics in females), 'Fse' (i.e., the standard error of the measured statistics in females),
-'Mstat' (i.e., the measured statistics in males), 'Mse' (i.e., the standard error of the measured statistics in males).}
+\item{inputdata}{A dataframe with five columns:
+\itemize{
+\item \code{ID} (i.e., SNP ID or the phenotype of interest, etc.)
+\item \code{Fstat} (i.e., the measured statistics in females)
+\item \code{Fse} (i.e., the standard error of the measured statistics in females)
+\item \code{Mstat} (i.e., the measured statistics in males)
+\item \code{Mse} (i.e., the standard error of the measured statistics in males)
+}}
 }
 \value{
-A dataframe with Zscore (i.e., Z-score), p (i.e., p-value) and adjP (i.e., Bonferroni corrected p-value) columns including other columns of the input dataframe.
+Original input dataframe with:
+\itemize{
+\item \code{Zscore} (i.e., Z-score),
+\item \code{p} (i.e., p-value) and
+\item \code{adjP} (i.e., Bonferroni corrected p-value)
+columns added.
+}
 }
 \description{
-This function calculates the difference in any kind of measured entities,(example: including SNP heritability estimate, genetic correlation, and GWAS β values) between sexes using a Z-score and its associated p-value statistic.
-When STAT/SE is normally distributed and the test statistics are independent in sex, the test is well calibrated. If the statistics are positively correlated, this test is conservative (1).
-We could define SNPs with SDEs as those variants at the extreme ends of the distribution with an absolute value of the Z-score greater than 3(|Z-score| > 3), which is roughly equivalent to p <10−3, and represents 0.3\% of all tested SNPs.
-The input dataframes should only include X-chromosome in order to obtain results for sex differences based solely on X-linked loci.
+This function calculates the difference in any kind of measured entities,(example: including SNP heritability estimate,
+genetic correlation, and GWAS β values) between sexes using a Z-score and its associated p-value statistic.
+When STAT/SE is normally distributed and the test statistics are independent in sex, the test is well calibrated. If
+the statistics are positively correlated, this test is conservative (1).
+
+We could define SNPs with SDEs as those variants at the extreme ends of the distribution with an absolute value of the
+Z-score greater than 3(|Z-score| > 3), which is roughly equivalent to p <10−3, and represents 0.3\% of all tested SNPs.
+The input dataframes should only include X-chromosome in order to obtain results for sex differences based solely on
+X-linked loci.
 }
 \examples{
 data("GXwasRData")
-inputdata = Example_h2data
+inputdata <- Example_h2data
 x <- SexDiffZscore(inputdata)
 
 }
