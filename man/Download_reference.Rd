@@ -19,9 +19,8 @@ Downloads reference data sets from specified URLs based on the reference dataset
 Currently supports 'HapMapIII_NCBI36' and 'ThousandGenome'.
 }
 \examples{
-
-# Not run
-#Download_reference("ThousandGenome", "path/to/your/directory")
-#Download_reference("HapMapIII_NCBI36", tempdir())
-
+\dontrun{
+Download_reference("ThousandGenome", "path/to/your/directory")
+Download_reference("HapMapIII_NCBI36", tempdir())
+}
 }

@@ -100,4 +100,12 @@ NULL
 #' @docType data
 #' @author Banabithi Bose
 #' @keywords data
+#' @format A data frame with 20 rows and 4 variables
+#' \describe{
+#'   \item{chr}{}
+#'   \item{start}{}
+#'   \item{end}{}
+#'   \item{index}{}
+#'   ...
+#' }
 NULL

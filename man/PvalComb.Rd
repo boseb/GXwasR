@@ -2,7 +2,7 @@
 % Please edit documentation in R/GXwasR_main_functions.R
 \name{PvalComb}
 \alias{PvalComb}
-\title{Title: This function combines the p-values of two separate GWAS summary statistics (for instance male and female populations), merges them, and then applies various statistical methods (like Stouffer's method, Fisher's method) to integrate the p-values. It also includes functionality for generating plots like Manhattan plots and Q-Q plots.}
+\title{PvalComb}
 \usage{
 PvalComb(
   SumstatMale,
@@ -24,32 +24,59 @@ PvalComb(
 )
 }
 \arguments{
-\item{SumstatMale}{R dataframe object of summary statistics of male GWAS with five mandatory columns: "CHR" (numeric chromosome code),"SNP" (variant id), "A1" (allele) ,"POS" (base-pair position) and "P" (p-value). Other coulmns may present.}
+\item{SumstatMale}{R dataframe object of summary statistics of male GWAS with five mandatory columns:
+\itemize{
+\item \code{CHR} (numeric chromosome code)
+\item \code{SNP} (variant id)
+\item \code{A1} (allele)
+\item \code{POS} (base-pair position)
+\item \code{P} (p-value).
+}
 
-\item{SumstatFemale}{R dataframe object of summary statistics of female GWAS with five mandatory columns: "SNP", "A1", "TEST" , "POS" and "P". Other coulmns may present.}
+Other coulmns may present.}
 
-\item{combtest}{Character vector specifying method for combining p-values for stratified GWAS models. Choices are “stouffer.method”, "fisher.method" and "fisher.method.perm". For fisher.method the function for combining p-values uses a statistic, S = -2 ∑^k /log p, which follows a χ^2 distribution with 2k degrees of freedom (3).
-For fisher.method.perm, using p-values from stratified tests, the summary statistic for combining p-values is S = -2 ∑ /log p. A p-value for this statistic can be derived by randomly generating summary statistics (4). Therefore, a p-value is randomly sampled from each contributing study, and a random statistic is calculated. The fraction of random statistics greater or equal to S then gives the final p-value.}
+\item{SumstatFemale}{R dataframe object of summary statistics of female GWAS with five mandatory columns:
+\itemize{
+\item \code{SNP}
+\item \code{A1}
+\item \code{TEST}
+\item \code{POS}
+\item \code{P}
+}
 
-\item{MF.p.corr}{Character vector specifying method for correcting the summary p-values for FMfcomb and FMscomb models. Choices are "bonferroni", "BH" and "none" for Bonferroni,  Benjamini-Hochberg and none, respectively. The default is "none".}
+Other coulmns may present.}
 
-\item{MF.zero.sub}{Small numeric value for substituting p-values of 0 in GWAS summary statistics. The default is 0.00001. As log(0) results in Inf this replaces p-values of 0 by default with a small float.}
+\item{combtest}{Character vector specifying method for combining p-values for stratified GWAS models. Choices are “stouffer.method”,
+"fisher.method" and "fisher.method.perm". For fisher.method the function for combining p-values uses a statistic,
+\eqn{S = -2 ∑^k /log p}, which follows a \eqn{χ^2} distribution with 2k degrees of freedom \insertCite{Fisher1925}{GXwasR}.
+For fisher.method.perm, using p-values from stratified tests, the summary statistic for combining p-values
+is \eqn{S = -2 ∑ /log p}. A p-value for this statistic can be derived by randomly generating summary statistics \insertCite{Rhodes2002}{GXwasR}.
+Therefore, a p-value is randomly sampled from each contributing study, and a random statistic is calculated. The
+fraction of random statistics greater or equal to S then gives the final p-value.}
 
-\item{MF.na.rm}{Boolean value, 'TRUE' or 'FALSE' for removing p-values of NA in stratified GWAS summary satistics in case of using Fisher’s and Stouffer’s methods. The default is TRUE.}
+\item{MF.p.corr}{Character vector specifying method for correcting the summary p-values for FMfcomb and FMscomb models. Choices are
+"bonferroni", "BH" and "none" for Bonferroni,  Benjamini-Hochberg and none, respectively. The default is "none".}
+
+\item{MF.zero.sub}{Small numeric value for substituting p-values of 0 in GWAS summary statistics. The default is 0.00001. As \eqn{log(0)}
+results in Inf this replaces p-values of 0 by default with a small float.}
+
+\item{MF.na.rm}{Boolean value, \code{TRUE} or \code{FALSE} for removing p-values of NA in stratified GWAS summary satistics in case of using Fisher’s
+and Stouffer’s methods. The default is \code{TRUE}.}
 
 \item{MF.mc.cores}{Number of cores used for fisher.method.perm for combining p-values. The default is 1.}
 
 \item{B}{Integer value specifying the number of permutation in case of using fisher.method.perm method. The default is 10000.}
 
-\item{plot.jpeg}{Boolean value, 'TRUE' or 'FALSE' for saving the plots in .jpeg file. The default is TRUE.}
+\item{plot.jpeg}{Boolean value, \code{TRUE} or \code{FALSE} for saving the plots in .jpeg file. The default is \code{TRUE}.}
 
-\item{plotname}{A character string specifying the prefix of the file for plots. This file will be saved in DataDir. The default is "GXwas.plot".}
+\item{plotname}{A character string specifying the prefix of the file for plots. This file will be saved in DataDir.
+The default is "GXwas.plot".}
 
-\item{PlotDir}{A character string specifying the path of the directory where the plots will be saved. The default is tempdir().}
+\item{PlotDir}{A character string specifying the path of the directory where the plots will be saved. The default is \code{tempdir()}.}
 
 \item{snp_pval}{Numeric value as p-value threshold for annotation. SNPs below this p-value will be annotated on the plot. The default is 1e-08.}
 
-\item{annotateTopSnp}{Boolean value, 'TRUE' or 'FALSE. If TRUE, it only annotates the top hit on each chromosome that is below the snp_pval threshold. The default is FALSE.}
+\item{annotateTopSnp}{Boolean value, \code{TRUE} or \code{FALSE.} If \code{TRUE}, it only annotates the top hit on each chromosome that is below the snp_pval threshold. The default is \code{FALSE}.}
 
 \item{suggestiveline}{Numeric value for suggestive cut-off line in GWAS manhattan plot. The default is 5 (for p-value 1e-05).}
 
@@ -58,31 +85,31 @@ For fisher.method.perm, using p-values from stratified tests, the summary statis
 \item{ncores}{Integer value, specifying the number of cores for parallel processing. The default is 0 (no parallel computation).}
 }
 \value{
-dataframe with GWAS summary statistics (with XWAS for X-chromosomal variants) along with Manhattan and Q-Q plots.
+A dataframe with GWAS summary statistics (with XWAS for X-chromosomal variants) along with Manhattan and Q-Q plots.
 }
 \description{
-Title: This function combines the p-values of two separate GWAS summary statistics (for instance male and female populations), merges them, and then applies various statistical methods (like Stouffer's method, Fisher's method) to integrate the p-values. It also includes functionality for generating plots like Manhattan plots and Q-Q plots.
+This function combines the p-values of two separate GWAS summary statistics (for instance male and female populations),
+merges them, and then applies various statistical methods (like Stouffer's method, Fisher's method) to integrate the
+p-values. It also includes functionality for generating plots like Manhattan plots and Q-Q plots.
 }
 \examples{
 data("GXwasRData")
 SumstatMale <- Mfile
-colnames(SumstatMale)[3]<- "POS"
+colnames(SumstatMale)[3] <- "POS"
 SumstatFemale <- Ffile
-colnames(SumstatFemale)[3]<- "POS"
+colnames(SumstatFemale)[3] <- "POS"
 # Use the below datasets for tutorial document
 # SumstatMale <- Summary_Stat_Ex1
 # colnames(SumstatMale)[3]<- "POS"
 # SumstatFemale <- Summary_Stat_Ex2
 # colnames(SumstatFemale)[3]<- "POS"
-PvalComb_Result <- PvalComb(SumstatMale = SumstatMale, SumstatFemale = SumstatFemale, combtest = "fisher.method", MF.mc.cores = 1, snp_pval = 0.001, plot.jpeg = FALSE, suggestiveline = 3, genomewideline = 5.69897, ncores = 1)
+PvalComb_Result <- PvalComb(
+  SumstatMale = SumstatMale, SumstatFemale = SumstatFemale,
+  combtest = "fisher.method", MF.mc.cores = 1, snp_pval = 0.001, plot.jpeg = FALSE,
+  suggestiveline = 3, genomewideline = 5.69897, ncores = 1
+)
 
 }
 \references{
-(1) Purcell et. al.,(2007). PLINK: A Tool Set for Whole-Genome Association and Population-Based Linkage Analyses. The American Journal of Human Genetics, 81(3), 559-575. https://doi.org/10.1086/519795.
-(2) Su Y, Hu J, Yin P, Jiang H, Chen S, Dai M, Chen Z, Wang P. XCMAX4: A Robust X Chromosomal Genetic Association Test Accounting for Covariates. Genes (Basel). 2022 May 9;13(5):847. doi: 10.3390/genes13050847. PMID: 35627231; PMCID: PMC9141238.
-(3) Fisher, R.A. (1925). Statistical Methods for Research Workers. Oliver and Boyd (Edinburgh);
-(4) Rhodes, D. R., (2002). Meta-analysis of microarrays: interstudy validation of gene expression profiles reveals pathway dysregulation in prostate cancer. Cancer research, 62(15), 4427-33;
-(5) Moreau, Y.et al. (2003). Comparison and meta-analysis of microarray data: from the bench to the computer desk. Trends in Genetics, 19(10), 570-577.
-(6) Stouffer, S. A., Suchman, E. A., DeVinney, L. C., Star, S. A., & Williams, R. M., Jr. (1949). The American Soldier: Adjustment During Army Life (Vol. 1). Princeton, NJ: Princeton University Press.
-(7) Cinar, O. & Viechtbauer, W. (2022). The poolr package for combining independent and dependent p values. Journal of Statistical Software, 101(1), 1–42. https://doi.org/10.18637/jss.v101.i01
+\insertAllCited{}
 }
