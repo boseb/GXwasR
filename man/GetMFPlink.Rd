@@ -17,7 +17,7 @@ GetMFPlink(
 \arguments{
 \item{DataDir}{Character string for the file path of the input PLINK binary files.}
 
-\item{ResultDir}{A character string for the file path where all output files will be stored. The default is tempdir().}
+\item{ResultDir}{Character string for the file path where all output files will be stored. The default is \code{tempdir()}.}
 
 \item{finput}{Character string, specifying the prefix of the input PLINK binary files.}
 
@@ -25,9 +25,9 @@ GetMFPlink(
 
 \item{sex}{Boolean value, 'males' or 'females', specifying output plink binary files with male or female samples.}
 
-\item{xplink}{Boolean value, 'TRUE' or 'FALSE', specifying output plink binary files with only X chromosome or not. Default is FALSE.}
+\item{xplink}{Boolean value, \code{TRUE} or \code{FALSE}, specifying output plink binary files with only X chromosome or not. Default is \code{FALSE.}}
 
-\item{autoplink}{Boolean value, 'TRUE' or 'FALSE', specifying output plink binary files with only autosome or not. Default is FALSE.}
+\item{autoplink}{Boolean value, \code{TRUE} or \code{FALSE}, specifying output plink binary files with only autosome or not. Default is \code{FALSE.}}
 }
 \value{
 None
@@ -36,7 +36,16 @@ None
 This function prepares separate male and female PLINK binary files from combined PLINK files.
 }
 \examples{
-# Not Run
+DataDir <- system.file("extdata", package = "GXwasR")
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+foutput <- "Test_output"
+sex <- "females"
+x <- GetMFPlink(
+  DataDir = DataDir, ResultDir = ResultDir,
+  finput = finput, foutput = foutput, sex = sex,
+  xplink = FALSE, autoplink = FALSE
+)
 }
 \author{
 Banabithi Bose

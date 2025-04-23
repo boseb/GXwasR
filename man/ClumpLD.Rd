@@ -21,11 +21,14 @@ ClumpLD(
 \arguments{
 \item{DataDir}{A character string for the file path of the input PLINK binary files.}
 
-\item{finput}{Character string, specifying the prefix of the input PLINK binary files which will be used to calculate linkage disequilibrium between the SNPs. This actual genotype data may or may not be the same dataset that was used to generate the summary statistics. This file needs to be in DataDir.}
+\item{finput}{Character string, specifying the prefix of the input PLINK binary files which will be used to calculate linkage disequilibrium
+between the SNPs. This actual genotype data may or may not be the same dataset that was used to generate the summary statistics.
+This file needs to be in \code{DataDir}.}
 
-\item{SNPdata}{a list of R dataframes containing a single or multiple summary statistics with SNP and P (i.e., p-values) in mandatory column headers. Other columns could be present.}
+\item{SNPdata}{A list of R dataframes containing a single or multiple summary statistics with SNP and P (i.e., p-values) in mandatory column
+headers. Other columns could be present.}
 
-\item{ResultDir}{A character string for the file path where all output files will be stored. The default is tempdir().}
+\item{ResultDir}{A character string for the file path where all output files will be stored. The default is \code{tempdir()}.}
 
 \item{clump_p1}{Numeric value, specifying the significance threshold for index SNPs. The default is 0.0001.}
 
@@ -35,36 +38,62 @@ ClumpLD(
 
 \item{clump_kb}{Integer value, specifying the physical distance threshold in base-pair for clumping. The default is 250.}
 
-\item{byCHR}{Boolean value, 'TRUE' or 'FALSE', specifying whether to perform the clumping chromosome-wise.}
+\item{byCHR}{Boolean value, \code{TRUE} or \code{FALSE}, specifying whether to perform the clumping chromosome-wise.}
 
-\item{clump_best}{Boolean value, 'TRUE' or 'FALSE', specifying whether to select and output the best SNP from each clump. Default is TRUE.}
+\item{clump_best}{Boolean value, \code{TRUE} or \code{FALSE}, specifying whether to select and output the best SNP from each clump. Default is \code{TRUE}.}
 
-\item{clump_index_first}{Boolean value, 'TRUE' or 'FALSE', specifying whether to force the index SNP to appear first in each clump. This option should typically be TRUE if clump_best is TRUE. Default is TRUE.}
+\item{clump_index_first}{Boolean value, \code{TRUE} or \code{FALSE}, specifying whether to force the index SNP to appear first in each clump. This option should
+typically be \code{TRUE} if clump_best is \code{TRUE.} Default is \code{TRUE}.}
 }
 \value{
-A list with two dataframes. BestClump: a dataframe with eight columns showing the single best proxy SNP for each index SNP with coulmns "INDEX"(Index SNP identifier), "PSNP"(Best proxy SNP), "RSQ LD"(r-squared) between index and proxy, "KB"(Physical distance between index and proxy), P(p-value for proxy SNP), "ALLELES"(The associated haplotypes for the index and proxy SNP), and "F"(Which file used for clumping from which this result came from).AllClump: a dataframe with eight columns providing a detailed summary of each clump identified by PLINK. It includes "INDEX_SNP" (the identifier for the index SNP that represents the clump), "SNP" (the SNP being reported, which for the index SNP is the same as INDEX_SNP), "DISTANCE" (the physical distance in base pairs between the index SNP and the reported SNP, with 0.0 indicating the index itself), "RSQ" (the r-squared value showing the degree of linkage disequilibrium between the index SNP and the SNP in the clump), "ALLELES" (the allele information, which in some cases may appear misaligned if the data isn’t formatted as expected), "F" (a statistic or indicator related to the association test, which may be NA when not applicable), "P" (the p-value for the association test of the SNP), and "CHR" (the chromosome on which the SNP is located).
+A list with two dataframes.
+
+BestClump: a dataframe with eight columns showing the single best proxy SNP for each index SNP with
+coulmns "INDEX"(Index SNP identifier), "PSNP"(Best proxy SNP), "RSQ LD"(r-squared) between index and proxy,
+"KB"(Physical distance between index and proxy), P(p-value for proxy SNP), "ALLELES"(The associated haplotypes for the index and proxy SNP),
+and "F"(Which file used for clumping from which this result came from).
+
+AllClump: a dataframe with eight columns providing a detailed summary
+of each clump identified by PLINK. It includes "INDEX_SNP" (the identifier for the index SNP that represents the clump), "SNP"
+(the SNP being reported, which for the index SNP is the same as INDEX_SNP), "DISTANCE" (the physical distance in base pairs between the index
+SNP and the reported SNP, with 0.0 indicating the index itself), "RSQ" (the r-squared value showing the degree of linkage disequilibrium between
+the index SNP and the SNP in the clump), "ALLELES" (the allele information, which in some cases may appear misaligned if the data isn’t formatted
+as expected), "F" (a statistic or indicator related to the association test, which may be NA when not applicable), "P" (the p-value for the
+association test of the SNP), and "CHR" (the chromosome on which the SNP is located).
 }
 \description{
-This function, which is based on empirical estimations of linkage disequilibrium between SNPs, groups the SNP-based results across one or more datasets or analysis. This approach can be used in two basic scenarios: (i) To summarize the top X single SNP findings from a genome-wide scan as fewer clusters of connected SNPs (i.e., to assess how many independent loci are associated). (ii) To give researchers a simple approach to merge sets of data from multiple studies when those studies may have used various marker sets for genotyping.
-The clumping process begins with the index SNPs that are significant at threshold p1 and have not yet been clumped. It then creates clumps of all additional SNPs that are within a specified kb of the index SNP and that are in linkage disequilibrium with the index SNP based on an r-squared threshold. Following that, these SNPs are filtered based on the outcome for that SNP. As this method is greedy (1), each SNP will, at most, only appear in one clump. The P value and ALLELES would always, at random, be chosen from the first input file if the same SNP appeared in several input files in SNPdata argument. Instead of the best p-value, the function refer to the SNP that has the strongest LD to the index as the best proxy. Based on the genotype data, the SNP with the highest LD will be the same for all input files.
+This function, which is based on empirical estimations of linkage disequilibrium between SNPs, groups the SNP-based results
+across one or more datasets or analysis. This approach can be used in two basic scenarios: (i) To summarize the top X single
+SNP findings from a genome-wide scan as fewer clusters of connected SNPs (i.e., to assess how many independent loci are
+associated). (ii) To give researchers a simple approach to merge sets of data from multiple studies when those studies may
+have used various marker sets for genotyping.
+
+The clumping process begins with the index SNPs that are significant at threshold p1 and have not yet been clumped. It then
+creates clumps of all additional SNPs that are within a specified kb of the index SNP and that are in linkage disequilibrium
+with the index SNP based on an r-squared threshold. Following that, these SNPs are filtered based on the outcome for that SNP.
+As this method is greedy \insertCite{Purcell2007}{GXwasR}, each SNP will, at most, only appear in one clump. The P value and
+ALLELES would always, at random, be chosen from the first input file if the same SNP appeared in several input files in SNPdata
+argument. Instead of the best p-value, the function refer to the SNP that has the strongest LD to the index as the best proxy.
+Based on the genotype data, the SNP with the highest LD will be the same for all input files.
 }
 \examples{
 DataDir <- system.file("extdata", package = "GXwasR")
-ResultDir = tempdir()
+ResultDir <- tempdir()
 finput <- "GXwasR_example"
 data("GXwasRData")
-#load(paste0("/projects/b1137/BBose/GXwasR/data/Summary_Stat_Ex1.Rda"))
-#load(paste0("/projects/b1137/BBose/GXwasR/data/Summary_Stat_Ex2.Rda"))
-SNPdata <- list(Summary_Stat_Ex1,Summary_Stat_Ex2)
-clump_p1 = 0.0001
-clump_p2 = 0.001
-clump_r2 = 0.5
-clump_kb = 250
-byCHR = TRUE
-clumpedResult <- ClumpLD(DataDir,finput,SNPdata,ResultDir,clump_p1,clump_p2,clump_r2,clump_kb, byCHR)
+SNPdata <- list(Summary_Stat_Ex1, Summary_Stat_Ex2)
+clump_p1 <- 0.0001
+clump_p2 <- 0.001
+clump_r2 <- 0.5
+clump_kb <- 250
+byCHR <- TRUE
+clumpedResult <- ClumpLD(
+  DataDir, finput, SNPdata, ResultDir, clump_p1,
+  clump_p2, clump_r2, clump_kb, byCHR
+)
 }
 \references{
-(1) Purcell et. al.,(2007). PLINK: A Tool Set for Whole-Genome Association and Population-Based Linkage Analyses. The American Journal of Human Genetics, 81(3), 559-575. https://doi.org/10.1086/519795.
+\insertAllCited{}
 }
 \author{
 Banabithi Bose

@@ -23,42 +23,64 @@ FilterRegion(
 \arguments{
 \item{DataDir}{A character string for the file path of the input PLINK binary files.}
 
-\item{ResultDir}{A character string for the file path where all output files will be stored. The default is tempdir().}
+\item{ResultDir}{A character string for the file path where all output files will be stored. The default is \code{tempdir()}.}
 
 \item{finput}{Character string, specifying the prefix of the input PLINK binary files.}
 
-\item{foutput}{Character string, specifying the prefix of the output PLINK binary files if the filtering option for the SNPs is chosen. The default is "FALSE".}
+\item{foutput}{Character string, specifying the prefix of the output PLINK binary files if the filtering option for the SNPs is chosen.
+The default is "FALSE".}
 
-\item{CHRX}{Boolean value, 'TRUE' or 'FALSE' to filter/flag regions from chromosome X. The default is TRUE. Note: CHRX only in effect if one of PAR, XTR or Ampliconic filter is in effect.}
+\item{CHRX}{Boolean value, \code{TRUE} or \code{FALSE} to filter/flag regions from chromosome X. The default is \code{TRUE}. Note: \code{CHRX} only in effect if
+one of \code{filterPAR}, \code{filterXTR} or \code{filterAmpliconic} filter is in effect.}
 
-\item{CHRY}{Boolean value, 'TRUE' or 'FALSE' to filter/flag regions from chromosome X. The default is FALSE. Note: CHRY only in effect if one of PAR, XTR or Ampliconic filter is in effect.}
+\item{CHRY}{Boolean value, \code{TRUE} or \code{FALSE} to filter/flag regions from chromosome X. The default is \code{FALSE}. Note: CHRY only in effect
+if one of \code{filterPAR}, \code{filterXTR} or \code{filterAmpliconic} filter is in effect.}
 
-\item{filterPAR}{Boolean value, 'TRUE' or 'FALSE' to filter out PARs from input plink file. The default is TRUE.}
+\item{filterPAR}{Boolean value, \code{TRUE} or \code{FALSE} to filter out PARs from input plink file. The default is \code{TRUE}.}
 
-\item{filterXTR}{Boolean value, 'TRUE' or 'FALSE' to filter out XTRs from input plink file. The default is TRUE.}
+\item{filterXTR}{Boolean value, \code{TRUE} or \code{FALSE} to filter out XTRs from input plink file. The default is \code{TRUE}.}
 
-\item{filterAmpliconic}{Boolean value, 'TRUE' or 'FALSE' to filter out Ampliconic regions from input plink file. The default is TRUE.}
+\item{filterAmpliconic}{Boolean value, \code{TRUE} or \code{FALSE} to filter out Ampliconic regions from input plink file. The default is \code{TRUE}.}
 
-\item{regionfile}{Character string, specifying the name of the .txt file containing the user-defined regions to be filtered out from input plink file in bed format. The default is FALSE. If regionfile = TRUE, only this filtering will be in effect. Also, PAR, XTR and Ampliconic SNPs from X-chomosome will be flagged and returned.}
+\item{regionfile}{Character string, specifying the name of the .txt file containing the user-defined regions to be filtered out from input plink
+file in bed format. The default is \code{FALSE}. If \code{regionfile} = \code{TRUE}, only this filtering will be in effect. Also, PAR, XTR and
+Ampliconic SNPs from X-chomosome will be flagged and returned.}
 
-\item{filterCHR}{Vector value with positive integer, specifying the chromosome code to filter/flag the SNPs. The default is 0, means no filtering based on chromosome code. For non-zero values of this argument, the function will only consider the chromosome code to filter or flag. All other filtering will not work. If filterCHR = TRUE, only this filtering will be in effect. Also, PAR, XTR and Ampliconic SNPs from X-chomosome will be flagged and returned.}
+\item{filterCHR}{Vector value with positive integer, specifying the chromosome code to filter/flag the SNPs. The default is 0, means no filtering
+based on chromosome code. For non-zero values of this argument, the function will only consider the chromosome code to filter or
+flag. All other filtering will not work. If filterCHR = TRUE, only this filtering will be in effect. Also, PAR, XTR and Ampliconic
+SNPs from X-chomosome will be flagged and returned.}
 
 \item{Hg}{Character value, '19', or '38', specifying which genome build to use for PAR, XTR and Ampliconic regions. The default is Hg = "19".}
 
-\item{exclude}{Boolean value, 'TRUE' or 'FALSE' to filter and flag or only flag the SNPs. The default is TRUE.}
+\item{exclude}{Boolean value, \code{TRUE} or \code{FALSE} to filter and flag or only flag the SNPs. The default is \code{TRUE}.}
 }
 \value{
-A list of three dataframes: PAR containing SNPs from PAR regions; XTR containing SNPs from XTR region and Ampliconic containing SNPs from Ampliconic region.
+A list of three dataframes: PAR containing SNPs from PAR regions; XTR containing SNPs from XTR region and Ampliconic containing
+SNPs from Ampliconic region.
 
-For non-zero value of filterCHR, a dataframe containing the excluded/flagged SNPs will be returned.
+For non-zero value of \code{filterCHR}, a dataframe containing the excluded/flagged SNPs will be returned.
 
-For exclude = TRUE, two sets of plink binary files will be produced in ResultDir. One set will have the remaining SNPs after filtering and other one will have the discarded SNPs.
+For \code{exclude} = \code{TRUE}, two sets of plink binary files will be produced in ResultDir. One set will have the remaining SNPs after
+filtering and other one will have the discarded SNPs.
 }
 \description{
-Filtering Pseudo-Autosomal Region (PAR), X-transposed region (XTR), Ampliconic, filter based on chromosome code or user-defined regions from input plink files.Only one type of filtering can be done from three types, either by region (using regionfile = TRUE), by chromosome (filterCHR) or by any combination of these three, filterPAR, XTR and Ampliconic.
+Filtering Pseudo-Autosomal Region (PAR), X-transposed region (XTR), Ampliconic, filter based on chromosome code or
+user-defined regions from input plink files. Only one type of filtering can be done from three types, either by region
+(using \code{regionfile} = \code{TRUE}), by chromosome (\code{filterCHR}) or by any combination of these three, \code{filterPAR},
+\code{filterXTR} and \code{filterAmpliconic.}
 }
 \examples{
-# Not Run
+DataDir <- system.file("extdata", package = "GXwasR")
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+foutput <- "PostimputeEX_QC1"
+x <- FilterRegion(
+  DataDir = DataDir, ResultDir = ResultDir,
+  finput = finput, foutput = foutput, CHRX = TRUE, CHRY = FALSE,
+  filterPAR = TRUE, filterXTR = TRUE, filterAmpliconic = TRUE,
+  regionfile = FALSE, filterCHR = NULL, Hg = "38", exclude = TRUE
+)
 }
 \author{
 Banabithi Bose
