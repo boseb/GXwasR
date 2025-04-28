@@ -1642,8 +1642,19 @@ FMmain <- function(DataDir, ResultDir, finput, trait, standard_beta, xmodel,
     print("Parallel computation is in progress --------->")
     cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
 
-    invisible(parallel::clusterEvalQ(cl, library(data.table)))
-    invisible(parallel::clusterEvalQ(cl, library(parallel)))
+    invisible(parallel::clusterEvalQ(cl, {
+      if (!requireNamespace("data.table", quietly = TRUE)) {
+        stop("data.table package is required but not installed on this node.")
+      }
+      loadNamespace("data.table")
+    }))
+    invisible(parallel::clusterEvalQ(cl, {
+      if (!requireNamespace("parallel", quietly = TRUE)) {
+        stop("parallel package is required but not installed on this node.")
+      }
+      loadNamespace("parallel")
+    }))
+  
     parallel::clusterExport(cl = cl, NULL, envir = environment())
 
     allsnpsresults <- data.table::as.data.table(data.table::rbindlist(parallel::parLapply(cl, chunks, paraGwas,
@@ -1937,8 +1948,18 @@ applyStoufferMethod <- function(pvals, MF.p.corr, MF.zero.sub, MF.na.rm, MF.mc.c
     print("cluster making started")
     cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
 
-    invisible(parallel::clusterEvalQ(cl, library(data.table)))
-    invisible(parallel::clusterEvalQ(cl, library(parallel)))
+    invisible(parallel::clusterEvalQ(cl, {
+      if (!requireNamespace("data.table", quietly = TRUE)) {
+        stop("data.table package is required but not installed on this node.")
+      }
+      loadNamespace("data.table")
+    }))
+    invisible(parallel::clusterEvalQ(cl, {
+      if (!requireNamespace("parallel", quietly = TRUE)) {
+        stop("parallel package is required but not installed on this node.")
+      }
+      loadNamespace("parallel")
+    }))
     print("cluster export started")
     parallel::clusterExport(cl = cl, NULL, envir = environment())
 
@@ -2252,8 +2273,18 @@ FMcomb_sub <- function(ResultDir, combtest, MF.p.corr,
       print("Parallel computation is in progress --------->")
       cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
 
-      invisible(parallel::clusterEvalQ(cl, library(data.table)))
-      invisible(parallel::clusterEvalQ(cl, library(parallel)))
+      invisible(parallel::clusterEvalQ(cl, {
+        if (!requireNamespace("data.table", quietly = TRUE)) {
+          stop("data.table package is required but not installed on this node.")
+        }
+        loadNamespace("data.table")
+      }))
+      invisible(parallel::clusterEvalQ(cl, {
+        if (!requireNamespace("parallel", quietly = TRUE)) {
+          stop("parallel package is required but not installed on this node.")
+        }
+        loadNamespace("parallel")
+      }))
       parallel::clusterExport(cl = cl, NULL, envir = environment())
 
       Pnew <- data.table::as.data.table(data.table::rbindlist(parallel::parLapply(cl, chunks, paraStouffer, chunk = chunk, pvals = pvals, MF.p.corr = MF.p.corr, MF.zero.sub = MF.zero.sub, MF.na.rm = MF.na.rm)))
@@ -2531,8 +2562,18 @@ autoFun <- function(DataDir, ResultDir, finput, sex, standard_beta, covarfile, i
     print("Parallel computation is in progress --------->")
     cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
 
-    invisible(parallel::clusterEvalQ(cl, library(data.table)))
-    invisible(parallel::clusterEvalQ(cl, library(parallel)))
+    invisible(parallel::clusterEvalQ(cl, {
+      if (!requireNamespace("data.table", quietly = TRUE)) {
+        stop("data.table package is required but not installed on this node.")
+      }
+      loadNamespace("data.table")
+    }))
+    invisible(parallel::clusterEvalQ(cl, {
+      if (!requireNamespace("parallel", quietly = TRUE)) {
+        stop("parallel package is required but not installed on this node.")
+      }
+      loadNamespace("parallel")
+    }))
     parallel::clusterExport(cl = cl, NULL, envir = environment())
 
     all_snps_results <- data.table::as.data.table(data.table::rbindlist(parallel::parLapply(cl, chunks, paraGwasAuto,
@@ -2956,8 +2997,18 @@ XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
       print("Parallel computation is in progress --------->")
       cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
 
-      invisible(parallel::clusterEvalQ(cl, library(data.table)))
-      invisible(parallel::clusterEvalQ(cl, library(parallel)))
+      invisible(parallel::clusterEvalQ(cl, {
+        if (!requireNamespace("data.table", quietly = TRUE)) {
+          stop("data.table package is required but not installed on this node.")
+        }
+        loadNamespace("data.table")
+      }))
+      invisible(parallel::clusterEvalQ(cl, {
+        if (!requireNamespace("parallel", quietly = TRUE)) {
+          stop("parallel package is required but not installed on this node.")
+        }
+        loadNamespace("parallel")
+      }))
       parallel::clusterExport(cl = cl, NULL, envir = environment())
 
       Result_pval <- data.table::rbindlist(parallel::parLapply(cl, chunks, xcmaPara, chunk = chunk, Snp = Snp, genosnp = genosnp, P = P, Samp = Samp))
@@ -2986,9 +3037,24 @@ XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
       print("Parallel computation is in progress --------->")
       cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
 
-      invisible(parallel::clusterEvalQ(cl, library(data.table)))
-      invisible(parallel::clusterEvalQ(cl, library(parallel)))
-      invisible(parallel::clusterEvalQ(cl, library(SNPRelate)))
+      invisible(parallel::clusterEvalQ(cl, {
+        if (!requireNamespace("data.table", quietly = TRUE)) {
+          stop("data.table package is required but not installed on this node.")
+        }
+        loadNamespace("data.table")
+      }))
+      invisible(parallel::clusterEvalQ(cl, {
+        if (!requireNamespace("parallel", quietly = TRUE)) {
+          stop("parallel package is required but not installed on this node.")
+        }
+        loadNamespace("parallel")
+      }))
+      invisible(parallel::clusterEvalQ(cl, {
+        if (!requireNamespace("SNPRelate", quietly = TRUE)) {
+          stop("SNPRelate package is required but not installed on this node.")
+        }
+        loadNamespace("SNPRelate")
+      }))
       parallel::clusterExport(cl = cl, NULL, envir = environment())
 
       Result_pval <- data.table::rbindlist(parallel::parLapply(cl, chunks, xcmaParaCovar, chunk = chunk, Snp = Snp, DataDir = DataDir, genosnp = genosnp, P = P, covarfile = covarfile, Samp = Samp))
