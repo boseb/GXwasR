@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# GXwasR
+# GXwasR <img src="man/figures/logo.png" align="right" height="120" alt="" />
 
 A tool for conducting sex-aware quality control, association analysis,
 and testing various models of sex-dependent genetic effects in complex
