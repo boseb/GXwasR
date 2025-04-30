@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# GXwasR
+# GXwasR <img src="man/figures/logo.png" align="right" height="120" alt="" />
 
 A tool for conducting sex-aware quality control, association analysis,
 and testing various models of sex-dependent genetic effects in complex
@@ -62,8 +62,14 @@ association study (XWAS):
 library(GXwasR)
 #> 
 #> GXwasR: Genome-wide and x-chromosome wide association analyses applying best practices of quality control over genetic data
-#> Version 0.02.02 () installed
-#> Author: Banabithi Bose [aut, cre] (<https://orcid.org/0000-0003-0842-8768>)
+#> Version 0.99.0 () installed
+#> Author: c(
+#>     person(given = "Banabithi",
+#>            family = "Bose",
+#>            role = c("cre", "aut"),
+#>            email = "banabithi.bose@gmail.com",
+#>            comment = c(ORCID = "0000-0003-0842-8768"))
+#>            )
 #> Maintainer: Banabithi Bose <banabithi.bose@gmail.com>
 #> Tutorial: https://github.com
 #> Use citation("GXwasR") to know how to cite this work.
@@ -98,7 +104,7 @@ ResultGXwas <- GXwas(
 
 <img src="man/figures/README-example-1.png" width="100%" /><img src="man/figures/README-example-2.png" width="100%" /><img src="man/figures/README-example-3.png" width="100%" /><img src="man/figures/README-example-4.png" width="100%" /><img src="man/figures/README-example-5.png" width="100%" /><img src="man/figures/README-example-6.png" width="100%" />
 
-    #> [1] "Three dataframes such as, CombinedWAS, MaleWAS and FemaleWAS are produced in/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpKVUyp9"
+    #> [1] "Three dataframes such as, CombinedWAS, MaleWAS and FemaleWAS are produced in/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpKLFQsn"
     ResultGXwas
     #> $CombinedWAS
     #> Key: <SNP>
