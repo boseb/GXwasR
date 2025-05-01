@@ -44,6 +44,29 @@ jobs:
         with:
           extra-packages: any::rcmdcheck
           needs: check
+      
+       # Install PLINK binary
+      - name: Install PLINK
+        shell: bash
+        run: |
+          OS=$(uname -s)
+          mkdir -p ~/.local/bin
+          case "$OS" in
+            Linux)
+              wget -qO- https://s3.amazonaws.com/plink1-assets/plink_linux_x86_64_20220402.zip -O plink.zip
+              unzip -j plink.zip plink -d ~/.local/bin
+              ;;
+            Darwin)
+              wget -qO- https://s3.amazonaws.com/plink1-assets/plink_mac_20230116.zip -O plink.zip
+              unzip -j plink.zip plink -d ~/.local/bin
+              ;;
+            MINGW* | MSYS* | CYGWIN* | Windows_NT)
+              curl -LO https://s3.amazonaws.com/plink1-assets/plink_win64_20230116.zip
+              unzip -j plink_win64_20210606.zip plink.exe -d /c/Windows
+              ;;
+          esac
+          chmod +x ~/.local/bin/plink || true
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - uses: r-lib/actions/check-r-package@v2
         with:
