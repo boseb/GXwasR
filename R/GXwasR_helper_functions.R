@@ -28,17 +28,25 @@
 
 ## PLINK Dependency Check
 verifyPlink <- function(){
+  # First, try the PLINK_PATH from the environment variable
   env_path <- Sys.getenv("PLINK_PATH", unset = NA) 
   if (!is.na(env_path) && file.exists(env_path)) {
     return(normalizePath(env_path))
   }
+  # Check the system path (on Windows, may need .exe)
   sys_path <- Sys.which("plink")
+  # On Windows, ensure we check for the .exe extension
+  if (Sys.info()["sysname"] == "Windows" && !grepl("\\.exe$", sys_path)) {
+    sys_path <- paste0(sys_path, ".exe")
+  }
+  # If we found PLINK in the system path, return it
   if (nzchar(sys_path) && file.exists(sys_path)) {
-    return(sys_path)
+    return(normalizePath(sys_path))
   } else {
     stop("PLINK binary not found. Please install PLINK and/or set the PLINK_PATH environment variable.")
   }
 }
+
 
 ## PLINK Binary Location
 plink <- function(){
