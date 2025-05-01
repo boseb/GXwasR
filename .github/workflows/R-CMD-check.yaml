@@ -62,7 +62,7 @@ jobs:
               ;;
             MINGW* | MSYS* | CYGWIN* | Windows_NT)
               curl -LO https://s3.amazonaws.com/plink1-assets/plink_win64_20230116.zip
-              unzip -j plink_win64_20210606.zip plink.exe -d /c/Windows
+              unzip -j plink_win64_20230116.zip plink.exe -d /c/Windows
               ;;
           esac
           chmod +x ~/.local/bin/plink || true
