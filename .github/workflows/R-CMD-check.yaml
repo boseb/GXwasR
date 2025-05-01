@@ -60,13 +60,13 @@ jobs:
             curl -LO https://s3.amazonaws.com/plink1-assets/plink_win64_20230116.zip
             unzip -j plink_win64_20230116.zip plink.exe -d "$HOME/.local/bin"
           fi
-          chmod +x "$HOME/.local/bin/plink" || true
+          chmod +x "$HOME/.local/bin"/plink* || true
           echo "$HOME/.local/bin" >> $GITHUB_PATH
+          echo "PLINK_PATH=$HOME/.local/bin/plink.exe" >> $GITHUB_ENV
 
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
-          check_args: '--no-error'
-        env:
-          PATH: ${{ runner.os == 'Windows' && format('{0};{1}', env.HOME, '.local\\bin') || '' }}${{ env.PATH }}
+          args: '--no-error'
+        
