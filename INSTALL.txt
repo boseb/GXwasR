@@ -56,18 +56,17 @@ Testing your installation
 
 To check that PLINK is available in R:
 
-```R
+```r
 plink_path <- Sys.getenv("PLINK_PATH", unset = Sys.which("plink"))
 if (!file.exists(plink_path) || !nzchar(plink_path)) {
   stop("PLINK binary not found. Please install PLINK and/or set the PLINK_PATH environment variable.")
 }
 ```
+
 ─────────────────────────────────────────────── 
 Notes 
 ───────────────────────────────────────────────
 
 - PLINK is released under the GNU General Public License and is freely available.
-
 - This package does not modify the user system and assumes PLINK is installed separately by the user.
-
 - For reproducibility, you are encouraged to document the PLINK version used in your analyses.
