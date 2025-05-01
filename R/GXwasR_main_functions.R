@@ -159,7 +159,7 @@ AncestryCheck <-
         # Changing the input file
         finput <- paste0(finput, "_new")
 
-        setupPlink(ResultDir)
+        # setupPlink(ResultDir)
 
         Download_reference(refdata = reference, wdir = ResultDir)
 
@@ -586,7 +586,7 @@ TestXGene <- function(DataDir,
         stop("Missing required Plink files in the specified DataDir.")
       }
 
-      setupPlink(ResultDir)
+      # setupPlink(ResultDir)
 
       input.dat <- sumstat[, c("CHROM", "POS", "ID", "A1", "P", "BETA", "EAF")]
       colnames(input.dat) <- c("CHROM", "POS", "ID", "EA", "P", "BETA", "EAF")
@@ -653,7 +653,7 @@ TestXGene <- function(DataDir,
         )
 
         invisible(sys::exec_wait(
-          paste0(ResultDir, "/", "./plink"),
+          plink(),
           args = c(
             "--bfile",
             paste0(DataDir, "/", finput),
@@ -951,7 +951,7 @@ QCsnp <-
 
     tryCatch(
       {
-        setupPlink(ResultDir)
+        # setupPlink(ResultDir)
 
         fam <-
           as.data.frame(utils::read.table(file = paste0(DataDir, "/", finput, ".fam")))
@@ -1297,7 +1297,7 @@ EstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL, 
   tryCatch(
     {
       if (is.null(precomputedLD)) {
-        setupPlink(ResultDir)
+        # setupPlink(ResultDir)
 
         maf_range <- computeMAFRange(DataDir, ResultDir, finput, minMAF, maxMAF)
         miMAF <- maf_range$miMAF
@@ -1428,7 +1428,8 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 
   tryCatch(
     {
-      setupPlink(ResultDir)
+      # setupPlink(ResultDir)
+      
 
       ## Handle high LD regions exclusion
       processed_file <- paste0(DataDir, "/", finput)
@@ -1444,7 +1445,7 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 
         # Exclude high LD regions
         invisible(sys::exec_wait(
-          paste0(ResultDir, "/", "./plink"),
+          plink(),
           args = c(
             "--bfile",
             processed_file,
@@ -1467,7 +1468,7 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
       if (ld_prunning == TRUE) {
         # Perform LD pruning
         invisible(sys::exec_wait(
-          paste0(ResultDir, "/", "./plink"),
+          plink(),
           args = c(
             "--bfile",
             processed_file,
@@ -1486,7 +1487,7 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 
         # Extract pruned SNPs
         invisible(sys::exec_wait(
-          paste0(ResultDir, "/", "./plink"),
+          plink(),
           args = c(
             "--bfile",
             processed_file,
@@ -1507,7 +1508,7 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 
       ## PCA calculation
       invisible(sys::exec_wait(
-        paste0(ResultDir, "/", "./plink"),
+        plink(),
         args = c(
           "--bfile",
           processed_file,
@@ -1723,7 +1724,8 @@ ComputePRS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phen
 
   tryCatch(
     {
-      setupPlink(ResultDir)
+      # setupPlink(ResultDir)
+      
 
       if (effectsize == "OR") {
         summarystat$OR <- log(summarystat$OR)
@@ -1787,7 +1789,7 @@ ComputePRS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phen
       write.table(pt, file = paste0(ResultDir, "/range_list"), quote = FALSE, row.names = FALSE)
       # By default, if a genotype in the score is missing for a particular individual, then the expected value is imputed, i.e. based on the sample allele frequency. To change this behavior, add the flag --score-no-mean-imputation
       invisible(sys::exec_wait(
-        paste0(ResultDir, "/", "./plink"),
+        plink(),
         args = c(
           "--bfile", paste0(DataDir, "/", finput),
           "--score", paste0(ResultDir, "/", "prssummarystat"), 1, 2, 3, "header",
@@ -1899,7 +1901,8 @@ MergeRegion <- function(DataDir, ResultDir, finput1, finput2, foutput, use_commo
 
   tryCatch(
     {
-      setupPlink(ResultDir)
+      # setupPlink(ResultDir)
+      
 
 
       if (use_common_snps) {
@@ -2021,7 +2024,8 @@ plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput, VtoP = FAL
     {
       if (PtoV == TRUE) {
         if (checkFiles(DataDir, finput)) {
-          setupPlink(ResultDir)
+          # setupPlink(ResultDir)
+          
 
           if (PVbyCHR == FALSE) {
             executePlinkAd(ResultDir, c(
@@ -2077,7 +2081,8 @@ plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput, VtoP = FAL
         }
       } else if (VtoP == TRUE) {
         if (file.exists(paste0(DataDir, "/", finput, ".vcf"))) {
-          setupPlink(ResultDir)
+          # setupPlink(ResultDir)
+          
 
           executePlinkAd(ResultDir, c(
             "--vcf", paste0(DataDir, "/", finput, ".vcf"),
@@ -2226,7 +2231,8 @@ SexCheck <-
 
     tryCatch(
       {
-        setupPlink(ResultDir)
+        # setupPlink(ResultDir)
+        
 
         # Read BIM file to check for X and Y chromosomes
         bim_file <- read.table(file.path(DataDir, paste0(finput, ".bim")))
@@ -2432,11 +2438,12 @@ FilterPlinkSample <- function(DataDir, ResultDir,
 
   tryCatch(
     {
-      setupPlink(ResultDir)
+      # setupPlink(ResultDir)
+      
 
       if (is.null(keep_remove_sample_file)) {
         invisible(sys::exec_wait(
-          paste0(ResultDir, "/", "./plink"),
+          plink(),
           args = c(
             "--bed",
             paste0(DataDir, "/", finput, ".bed"),
@@ -2457,7 +2464,7 @@ FilterPlinkSample <- function(DataDir, ResultDir,
       } else {
         if (keep == TRUE) {
           invisible(sys::exec_wait(
-            paste0(ResultDir, "/", "./plink"),
+            plink(),
             args = c(
               "--bed",
               paste0(DataDir, "/", finput, ".bed"),
@@ -2477,7 +2484,7 @@ FilterPlinkSample <- function(DataDir, ResultDir,
           ))
         } else if (keep == FALSE) {
           invisible(sys::exec_wait(
-            paste0(ResultDir, "/", "./plink"),
+            plink(),
             args = c(
               "--bed",
               paste0(DataDir, "/", finput, ".bed"),
@@ -2566,7 +2573,8 @@ GetMFPlink <- function(DataDir,
   if (!checkFiles(DataDir, finput)) {
     stop("Missing required Plink files in the specified DataDir.")
   }
-  setupPlink(ResultDir)
+  # setupPlink(ResultDir)
+  
   # Validate inputs
   if (!validateInputForGetMFPlink(DataDir, ResultDir, finput, foutput, sex, xplink, autoplink)) {
     return(NULL)
@@ -2576,7 +2584,7 @@ GetMFPlink <- function(DataDir,
     {
       if (xplink == FALSE && autoplink == FALSE) {
         invisible(sys::exec_wait(
-          paste0(ResultDir, "/", "./plink"),
+          plink(),
           args = c(
             "--bed",
             paste0(DataDir, "/", finput, ".bed"),
@@ -2595,7 +2603,7 @@ GetMFPlink <- function(DataDir,
         ))
       } else if (xplink == TRUE && autoplink == FALSE) {
         invisible(sys::exec_wait(
-          paste0(ResultDir, "/", "./plink"),
+          plink(),
           args = c(
             "--bed",
             paste0(DataDir, "/", finput, ".bed"),
@@ -2616,7 +2624,7 @@ GetMFPlink <- function(DataDir,
         ))
       } else if (xplink == FALSE && autoplink == TRUE) {
         invisible(sys::exec_wait(
-          paste0(ResultDir, "/", "./plink"),
+          plink(),
           args = c(
             "--bed",
             paste0(DataDir, "/", finput, ".bed"),
@@ -2708,7 +2716,8 @@ Xhwe <- function(DataDir, ResultDir = tempdir(), finput, filterSNP = TRUE, foutp
 
   tryCatch(
     {
-      setupPlink(ResultDir)
+      # setupPlink(ResultDir)
+      
 
       ## Getting female Plink file
       invisible(GetMFPlink(DataDir = DataDir, ResultDir, finput = finput, foutput = "female", sex = "females", xplink = FALSE, autoplink = FALSE))
@@ -2734,7 +2743,7 @@ Xhwe <- function(DataDir, ResultDir = tempdir(), finput, filterSNP = TRUE, foutp
       }
       ######
       invisible(sys::exec_wait(
-        paste0(ResultDir, "/", "./plink"),
+        plink(),
         args = c(
           "--bfile",
           paste0(ResultDir, "/", "female"),
@@ -2781,7 +2790,7 @@ Xhwe <- function(DataDir, ResultDir = tempdir(), finput, filterSNP = TRUE, foutp
 
 
           invisible(sys::exec_wait(
-            paste0(ResultDir, "/", "./plink"),
+            plink(),
             args = c(
               "--bfile",
               paste0(DataDir, "/", finput),
@@ -2887,7 +2896,8 @@ MAFdiffSexControl <- function(DataDir,
 
   tryCatch(
     {
-      setupPlink(ResultDir)
+      # setupPlink(ResultDir)
+      
 
       fam <-
         as.data.frame(utils::read.table(file = paste0(DataDir, "/", finput, ".fam")))
@@ -2928,7 +2938,7 @@ MAFdiffSexControl <- function(DataDir,
       )
 
       invisible(sys::exec_wait(
-        paste0(ResultDir, "/", "./plink"),
+        plink(),
         args = c(
           "--bfile",
           paste0(DataDir, "/", finput),
@@ -2975,7 +2985,7 @@ MAFdiffSexControl <- function(DataDir,
 
 
         invisible(sys::exec_wait(
-          paste0(ResultDir, "/", "./plink"),
+          plink(),
           args = c(
             "--bfile",
             paste0(DataDir, "/", finput),
@@ -3143,7 +3153,8 @@ QCsample <- function(DataDir,
 
   tryCatch(
     {
-      setupPlink(ResultDir)
+      # setupPlink(ResultDir)
+      
 
       if (small_sample_mod == TRUE) {
         SSM <- "small-sample"
@@ -3651,7 +3662,8 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
     {
       pb$tick(5)
 
-      setupPlink(ResultDir)
+      # setupPlink(ResultDir)
+      
 
       pb$tick(6)
 
@@ -4181,7 +4193,8 @@ ClumpLD <- function(DataDir, finput, SNPdata, ResultDir = tempdir(),
 
   tryCatch(
     {
-      setupPlink(ResultDir)
+      # setupPlink(ResultDir)
+      
 
       for (i in 1:length(SNPdata)) {
         print(paste0("Processing summary statistics ", i))
@@ -4201,7 +4214,7 @@ ClumpLD <- function(DataDir, finput, SNPdata, ResultDir = tempdir(),
           chromosome <- unique(bimfile$V1)[chrnum]
           print(paste0("Running LD clumping for chromosome ", chromosome))
           # Ensure 'plink' is executable and in the correct directory
-          plink_executable <- paste0(ResultDir, "/plink")
+          # plink_executable <- paste0(ResultDir, "/plink")
 
           # Construct the PLINK command arguments with toggles
           plink_args <- c(
@@ -4230,7 +4243,7 @@ ClumpLD <- function(DataDir, finput, SNPdata, ResultDir = tempdir(),
 
           # Execute the PLINK command
           invisible(sys::exec_wait(
-            plink_executable,
+            plink(),
             args = plink_args,
             std_out = FALSE, # Do not capture standard output
             std_err = FALSE # Do not capture standard error
@@ -4277,7 +4290,7 @@ ClumpLD <- function(DataDir, finput, SNPdata, ResultDir = tempdir(),
         }
         All_ldc <- data.table::rbindlist(lapply(ldfiles, ldf), fill = TRUE)
       } else {
-        plink_executable <- paste0(ResultDir, "/plink")
+        # plink_executable <- paste0(ResultDir, "/plink")
 
         # Construct the PLINK command arguments with toggles
         plink_args <- c(
@@ -4305,7 +4318,7 @@ ClumpLD <- function(DataDir, finput, SNPdata, ResultDir = tempdir(),
 
         # Execute the PLINK command
         invisible(sys::exec_wait(
-          plink_executable,
+          plink(),
           args = plink_args,
           std_out = FALSE, # Do not capture standard output
           std_err = FALSE # Do not capture standard error
@@ -4961,7 +4974,8 @@ FilterRegion <-
 
     tryCatch(
       {
-        setupPlink(ResultDir)
+        # setupPlink(ResultDir)
+        
 
         DataDir1 <- system.file("extdata", package = "GXwasR")
 
@@ -5131,7 +5145,8 @@ PlinkSummary <- function(DataDir, ResultDir = tempdir(), finput) {
 
   tryCatch(
     {
-      setupPlink(ResultDir)
+      # setupPlink(ResultDir)
+      
 
       fam <- as.data.frame(utils::read.table(file.path(DataDir, paste0(finput, ".fam"))))
       if (ncol(fam) == 5) {
@@ -5226,7 +5241,8 @@ FilterAllele <- function(DataDir, ResultDir, finput, foutput) {
 
   tryCatch(
     {
-      setupPlink(ResultDir)
+      # setupPlink(ResultDir)
+      
 
 
       bimf <- read.table(paste0(DataDir, "/", finput, ".bim"))
@@ -5240,7 +5256,7 @@ FilterAllele <- function(DataDir, ResultDir, finput, foutput) {
       }
 
       invisible(sys::exec_wait(
-        paste0(ResultDir, "/", "./plink"),
+        plink(),
         args = c(
           "--bfile",
           paste0(DataDir, "/", finput),
@@ -5541,7 +5557,7 @@ FilterSNP <- function(DataDir, ResultDir, finput, foutput, SNPvec, extract = FAL
 
   tryCatch(
     {
-      setupPlink(ResultDir)
+      # setupPlink(ResultDir)
 
       if (extract == TRUE) {
         remov <- "--extract"
@@ -5552,7 +5568,7 @@ FilterSNP <- function(DataDir, ResultDir, finput, foutput, SNPvec, extract = FAL
 
       # Exclude SNPs
       invisible(sys::exec_wait(
-        paste0(ResultDir, "/", "./plink"),
+        plink(),
         args = c(
           "--bfile",
           paste0(DataDir, "/", finput),
@@ -5732,7 +5748,7 @@ DummyCovar <- function(DataDir, bfile, incovar, outcovar) {
   if (file.exists(paste0(DataDir, "/", bfile, ".bed")) &&
     file.exists(paste0(DataDir, "/", bfile, ".bim")) &&
     file.exists(paste0(DataDir, "/", bfile, ".fam"))) {
-    setupPlink(DataDir)
+    # setupPlink(DataDir)
   } else {
     writeLines(
       "There are no Plink files in DataDir.\nPlease specify correct directory path with input Plink files."
@@ -5741,7 +5757,7 @@ DummyCovar <- function(DataDir, bfile, incovar, outcovar) {
   }
 
   invisible(sys::exec_wait(
-    paste0(DataDir, "/", "./plink"),
+    plink(),
     args = c(
       "--bed",
       paste0(DataDir, "/", bfile, ".bed"),
@@ -5800,7 +5816,7 @@ executePlinkMAF <- function(DataDir, ResultDir, finput) {
     stop("Missing required Plink files in the specified DataDir.")
   }
 
-  setupPlink(ResultDir)
+  # setupPlink(ResultDir)
   # Compute MAF using PLINK and return the results as a DataFrame, and clean up intermediate files afterward.
 
   # Generate a unique output file prefix based on the timestamp to prevent any overwrite
@@ -5810,7 +5826,7 @@ executePlinkMAF <- function(DataDir, ResultDir, finput) {
   tryCatch(
     {
       invisible(sys::exec_wait(
-        paste0(ResultDir, "/", "./plink"), # Path to the PLINK executable
+        plink(), # Path to the PLINK executable
         args = c(
           "--bfile", paste0(DataDir, "/", finput), # Base filename for .bed, .bim, and .fam
           "--freq", # Command to calculate allele frequencies
@@ -5903,7 +5919,7 @@ LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, st
   # Execute the PLINK command using the helper function within tryCatch
   tryCatch(
     {
-      setupPlink(ResultDir)
+      # setupPlink(ResultDir)
       executePlinkAd(ResultDir, args)
 
       # Load the list of pruned SNPs if available
@@ -6084,7 +6100,7 @@ ComputeLD <- function(DataDir, ResultDir, finput, ByCHR = FALSE, CHRnum = NULL, 
     CHRnum <- CHRnum
   }
   invisible(sys::exec_wait(
-    paste0(ResultDir, "/", "./plink"),
+    plink(),
     args = c(
       "--bfile",
       paste0(DataDir, "/", finput),
