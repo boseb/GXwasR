@@ -3,4 +3,5 @@
 ^README\.Rmd$
 ^CODE_OF_CONDUCT\.md$
 ^INSTALL\.txt$
+^plink.*\.zip$
 ^\.github$
