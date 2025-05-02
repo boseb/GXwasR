@@ -86,7 +86,7 @@ jobs:
             mkdir -p "$BIN_DIR"
             curl -LO https://yanglab.westlake.edu.cn/software/gcta/bin/gcta-1.94.1-Win-x86_64.zip
             unzip gcta-1.94.1-Win-x86_64.zip -d gcta_extracted
-            cp gcta_extracted/exe/gcta64.exe "$BIN_DIR/gcta64.exe"
+            cp gcta_extracted/gcta-1.94.1-Win-x86_64/exe/gcta64.exe "$BIN_DIR/gcta64.exe"
             chmod +x "$BIN_DIR/gcta64.exe" || true
             echo "$BIN_DIR" >> $GITHUB_PATH
             echo "GCTA_PATH=$BIN_DIR/gcta64.exe" >> $GITHUB_ENV
