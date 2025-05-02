@@ -100,7 +100,7 @@ macOS (Apple Silicon or Intel)
 1. Visit: https://yanglab.westlake.edu.cn/software/gcta/
 2. Download the macOS binary archive (e.g., `gcta-1.94.4-macOS-arm64.zip` or `gcta-1.94.1-macOS-x86_64.zip`).
 3. Extract the archive contents.
-4. Move `gcta64` to a directory in your PATH, e.g., `/usr/local/bin/` or `/opt/homebrew/bin/`.
+4. Move `gcta64` binary (rename if necessary) to a directory in your PATH, e.g., `/usr/local/bin/` or `/opt/homebrew/bin/`.
 5. Ensure the binary is executable:
      chmod +x /usr/local/bin/gcta64
 6. Optionally, set the environment variable in R:
