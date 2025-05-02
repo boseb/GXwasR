@@ -27,24 +27,33 @@
 #' @importFrom dplyr filter mutate distinct arrange select case_when summarise
 
 ## PLINK Dependency Check
-verifyPlink <- function(){
-  # First, try the PLINK_PATH from the environment variable
-  env_path <- Sys.getenv("PLINK_PATH", unset = NA) 
-  if (!is.na(env_path) && file.exists(env_path)) {
-    return(normalizePath(env_path))
+verifyPlink <- function() {
+  os_type <- Sys.info()[["sysname"]]
+  # 1. Check PLINK_PATH environment variable
+  env_path <- Sys.getenv("PLINK_PATH", unset = NA)
+  if (!is.na(env_path)) {
+    resolved_env_path <- normalizePath(env_path, mustWork = FALSE)
+    if (file.exists(resolved_env_path)) {
+      return(resolved_env_path)
+    } else {
+      message("PLINK_PATH is set but file does not exist: ", resolved_env_path)
+    }
   }
-  # Check the system path (on Windows, may need .exe)
+
+  # 2. Check system path via Sys.which
   sys_path <- Sys.which("plink")
-  # On Windows, ensure we check for the .exe extension
-  if (Sys.info()["sysname"] == "Windows" && !grepl("\\.exe$", sys_path)) {
+  # On Windows, check for `.exe` if missing
+  if (os_type == "Windows" && !grepl("\\.exe$", sys_path, ignore.case = TRUE)) {
     sys_path <- paste0(sys_path, ".exe")
   }
-  # If we found PLINK in the system path, return it
-  if (nzchar(sys_path) && file.exists(sys_path)) {
-    return(normalizePath(sys_path))
-  } else {
-    stop("PLINK binary not found. Please install PLINK and/or set the PLINK_PATH environment variable.")
+  # Normalize and check existence
+  resolved_sys_path <- normalizePath(sys_path, mustWork = FALSE)
+  if (nzchar(resolved_sys_path) && file.exists(resolved_sys_path)) {
+    return(resolved_sys_path)
   }
+  
+  # 3. Failure message
+  stop("PLINK binary not found. Please install PLINK and/or set the PLINK_PATH environment variable.")
 }
 
 
