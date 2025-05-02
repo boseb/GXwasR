@@ -3222,7 +3222,7 @@ verifyGCTA <- function() {
   }
   
   # 3. Failure message
-  stop("PLINK binary not found. Please install PLINK and/or set the PLINK_PATH environment variable.")
+  stop("GCTA binary not found. Please install GCTA and/or set the GCTA_PATH environment variable.")
 }
 
 gcta <- function(){
