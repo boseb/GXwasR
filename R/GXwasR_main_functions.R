@@ -4653,7 +4653,7 @@ GeneticCorrBT <- function(DataDir, ResultDir, finput, byCHR = FALSE,
 
   tryCatch(
     {
-      setupGCTA(ResultDir)
+      # setupGCTA(ResultDir)
       ## ComputeBivarREMLone phenofile
       write.table(phenofile, file = paste0(ResultDir, "/", "GCphenofile"), row.names = FALSE, quote = FALSE)
 

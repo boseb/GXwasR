@@ -3195,83 +3195,45 @@ ComputeLDSC <- function(summarystat, precomputedLD, LDSC_blocks, chi2_thr1, chi2
 }
 
 ## Function 71
-# setupGCTA <- function(wdir) {
-#   # Helper function to download and unzip files
-#   downloadAndUnzip <- function(file_url, dest_file, wdir) {
-#     utils::download.file(destfile = dest_file, file_url, quiet = TRUE)
-#     utils::unzip(dest_file, exdir = wdir, junkpaths = TRUE)
-#   }
-setupGCTA <- function(wdir) {
-  # Helper function to download and unzip files
-  downloadAndUnzip <- function(file_url, dest_file, wdir) {
-    # Set timeout for download.file (in seconds)
-    options(timeout = 300) # Adjusting the timeout to 5 minutes
-
-    utils::download.file(url = file_url, destfile = dest_file, quiet = TRUE, mode = "wb")
-
-    # Unzip the downloaded file
-    utils::unzip(dest_file, exdir = wdir, junkpaths = TRUE)
-
-    # Reset timeout to default (change according to your default or leave it unset)
-    options(timeout = 60) # Resetting to the default 60 seconds or another preferred default
-  }
-
-
-  # Helper function to remove files
-  removeFiles <- function(files, wdir) {
-    full_paths <- file.path(wdir, files)
-    invisible(sapply(full_paths, file.remove))
-  }
-
-  # Get operating system information
-  OS <- Sys.info()["sysname"]
-  os_specific_data <- list(
-    Linux = list(
-      file_url = "https://github.com/boseb/bose_binaries/raw/main/gcta-1.94.1-linux-kernel-3-x86_64.zip",
-      file_name = "gcta-1.94.1-linux-kernel-3-x86_64.zip",
-      exec = "gcta-1.94.1",
-      remove = c("MIT_License.txt", "README.txt", "test.bed", "test.bim", "test.fam", "test.phen")
-    ),
-    Windows = list(
-      file_url = "https://figshare.com/ndownloader/files/42229122",
-      file_name = "gcta-1.94.1",
-      exec = "gcta-1.94.1",
-      remove = c()
-      # Add additional setup steps for Windows if needed
-    ),
-    macOS = list(
-      file_url = "https://github.com/boseb/bose_binaries/blob/main/gcta-1.94.1-macOS-x86_64.zip",
-      file_name = "gcta-1.94.1-macOS-x86_64.zip",
-      exec = "gcta-1.94.1",
-      remove = c("MIT_License.txt", "README.txt", "test.bed", "test.bim", "test.fam", "test.phen")
-    ),
-    Darwin = list(
-      file_url = "https://github.com/boseb/bose_binaries/blob/main/gcta-1.94.1-macOS-x86_64.zip",
-      file_name = "gcta-1.94.1-macOS-x86_64.zip",
-      exec = "gcta-1.94.1",
-      remove = c("MIT_License.txt", "README.txt", "test.bed", "test.bim", "test.fam", "test.phen")
-    )
-  )
-
-  if (!OS %in% names(os_specific_data)) {
-    stop("Unsupported operating system.")
-  }
-
-  # Perform the setup
-  os_data <- os_specific_data[[OS]]
-  dest_file <- file.path(wdir, os_data$file_name)
-
-  tryCatch(
-    {
-      downloadAndUnzip(os_data$file_url, dest_file, wdir)
-      Sys.chmod(file.path(wdir, os_data$exec), mode = "0777", use_umask = TRUE)
-      removeFiles(c(os_data$file_name, os_data$remove), wdir)
-      print("GCTA setup complete. This program is currently only supported in Linux.")
-    },
-    error = function(e) {
-      cat("An error occurred during GCTA setup:", e$message, "\n")
+## Verify GCTA
+verifyGCTA <- function() {
+  os_type <- Sys.info()[["sysname"]]
+  # 1. Check GCTA_PATH environment variable
+  env_path <- Sys.getenv("GCTA_PATH", unset = NA)
+  if (!is.na(env_path)) {
+    resolved_env_path <- normalizePath(env_path, mustWork = FALSE)
+    if (file.exists(resolved_env_path)) {
+      return(resolved_env_path)
+    } else {
+      message("GCTA_PATH is set but file does not exist: ", resolved_env_path)
     }
+  }
+
+  # 2. Check system path via Sys.which
+  sys_path <- Sys.which("gcta64")
+  # On Windows, check for `.exe` if missing
+  if (os_type == "Windows" && !grepl("\\.exe$", sys_path, ignore.case = TRUE)) {
+    sys_path <- paste0(sys_path, ".exe")
+  }
+  # Normalize and check existence
+  resolved_sys_path <- normalizePath(sys_path, mustWork = FALSE)
+  if (nzchar(resolved_sys_path) && file.exists(resolved_sys_path)) {
+    return(resolved_sys_path)
+  }
+  
+  # 3. Failure message
+  stop("PLINK binary not found. Please install PLINK and/or set the PLINK_PATH environment variable.")
+}
+
+gcta <- function(){
+  gcta_executable <- verifyGCTA()
+  gcta_info <- suppressWarnings(system2(gcta_executable, stdout = TRUE))
+  rlang::inform(
+    message = paste('Using GCTA', stringr::str_remove(gcta_info[[3]], '\\* ')), 
+    .frequency = 'regularly', 
+    .frequency_id = 'gcta_check'
   )
+  gcta_executable
 }
 
 ## Function 72
@@ -3296,7 +3258,7 @@ executeGCTA <- function(ResultDir, args) {
       # Execute GCTA command
 
       invisible(sys::exec_wait(
-        file.path(ResultDir, "gcta-1.94.1"), # Path to the GCTA executable
+        gcta(), # Path to the GCTA executable
         args = args, # Arguments for the GCTA command
         # std_out = stdout_dest,                # Standard output redirection
         # std_err = stderr_dest                 # Standard error redirection
@@ -3665,7 +3627,7 @@ ComputeREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 1
   }
 
   invisible(sys::exec_wait(
-    paste0(ResultDir, "/", "./gcta-1.94.1"),
+    gcta(),
     args = c(
       "--reml",
       "--reml-alg", REMLalgo,
@@ -4099,7 +4061,7 @@ processGREMLModel <- function(DataDir, ResultDir, finput, byCHR, autosome, Xsome
     stop("Missing required Plink files in the specified DataDir.")
   }
 
-  setupGCTA(ResultDir)
+  # setupGCTA(ResultDir)
 
   famfile <- read.table(paste0(DataDir, "/", finput, ".fam"))[, c(1, 2, 6)]
   write.table(famfile, file = paste0(ResultDir, "/phenofile.phen"), sep = " ", col.names = FALSE, row.names = FALSE, quote = FALSE)
@@ -4562,7 +4524,7 @@ ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr 
   }
 
   invisible(sys::exec_wait(
-    paste0(ResultDir, "/", "./gcta-1.94.1"),
+    gcta(),
     args = c(
       "--reml-bivar",
       "--reml-alg", REMLalgo,
