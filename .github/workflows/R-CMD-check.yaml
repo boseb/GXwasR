@@ -57,12 +57,14 @@ jobs:
             wget -q https://s3.amazonaws.com/plink1-assets/plink_mac_20230116.zip -O plink.zip
             unzip -j plink.zip plink -d "$HOME/.local/bin"
           elif [[ "${RUNNER_OS}" == "Windows" ]]; then
+            # Use a fixed path that works in GitHub's Git Bash
+            mkdir -p "/c/Users/runneradmin/.local/bin"
             curl -LO https://s3.amazonaws.com/plink1-assets/plink_win64_20230116.zip
-            unzip -j plink_win64_20230116.zip plink.exe -d "$HOME/.local/bin"
+            unzip -j plink_win64_20230116.zip plink.exe -d "/c/Users/runneradmin/.local/bin"
+            echo "/c/Users/runneradmin/.local/bin" >> $GITHUB_PATH
+            echo "PLINK_PATH=/c/Users/runneradmin/.local/bin/plink.exe" >> $GITHUB_ENV
           fi
           chmod +x "$HOME/.local/bin"/plink* || true
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-          echo "PLINK_PATH=$HOME/.local/bin/plink.exe" >> $GITHUB_ENV
 
       - uses: r-lib/actions/check-r-package@v2
         with:
