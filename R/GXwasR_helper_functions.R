@@ -28,6 +28,16 @@
 
 ## Function 1
 # Installing Plink
+#' setupPlink: Setup PLINK environment
+#'
+#' @description
+#' This function sets up the PLINK environment by downloading and unzipping the necessary files
+#' based on the operating system. It also sets the appropriate permissions for the PLINK executable.
+#'
+#' @param wdir Character string specifying the working directory where PLINK files will be downloaded and unzipped.
+#'
+#' @return None
+#' @noRd
 setupPlink <- function(wdir) {
   # Helper function to download and unzip files
   downloadAndUnzip <- function(file_url, dest_file, wdir) {
@@ -74,6 +84,25 @@ setupPlink <- function(wdir) {
 }
 
 ## Function 2
+#' MFsplitPlink: Split PLINK binary files by sex
+#'
+#' @description
+#' This function splits PLINK binary files into separate male and female files.
+#'
+#' @param DataDir Character string for the file path of the input PLINK binary files.
+#' @param ResultDir Character string for the file path where all output files will be stored.
+#' @param finput Character string specifying the prefix of the input PLINK binary files.
+#' @param foutput Character string specifying the prefix of the output PLINK binary files.
+#' @param sex Character string, either 'males' or 'females', indicating which sex to filter.
+#' @param xplink Boolean value, `TRUE` or `FALSE`, specifying output plink binary files with only X chromosome or not. Default is `FALSE.`
+#' @param autoplink Boolean value, `TRUE` or `FALSE`, specifying output plink binary files with only autosome or not. Default is `FALSE.`
+#'
+#' @return None
+#' @noRd
+#'
+#' @examples
+#' MFsplitPlink(DataDir = "path/to/data", ResultDir = "path/to/results", 
+#'              finput = "input_prefix", foutput = "output_prefix", sex = "females")
 MFsplitPlink <- function(DataDir, ResultDir, finput, foutput, sex, xplink = FALSE, autoplink = FALSE) {
   if (!checkFiles(DataDir, finput)) {
     stop("Missing required Plink files in the specified DataDir.")
@@ -147,12 +176,33 @@ MFsplitPlink <- function(DataDir, ResultDir, finput, foutput, sex, xplink = FALS
 
 ## Function 3
 ########## Added in 3.0
+#' Check Required PLINK Files
+#'
+#' This function checks for the existence of required PLINK files in the specified directory.
+#'
+#' @param DataDir A character string specifying the directory path where the PLINK files are expected to be located.
+#' @param finput A character string specifying the prefix of the PLINK binary files.
+#'
+#' @return A logical value indicating whether all required PLINK files (.bed, .bim, .fam) exist.
+#' @noRd
+#' 
+#' @examples
+#' checkFiles("path/to/data", "file_prefix")
 checkFiles <- function(DataDir, finput) {
   all(file.exists(file.path(DataDir, paste0(finput, c(".bed", ".bim", ".fam")))))
 }
 
 ## Function 4
 ########## Added in 3.0
+#' Execute Plink Command
+#'
+#' This function executes a Plink command using the \code{\link[sys]{exec_wait}} function from the \pkg{sys} package.
+#'
+#' @param args A character vector of arguments to be passed to Plink.
+#' @param ResultDir A character string specifying the directory where Plink should be executed.
+#'
+#' @return None
+#' @noRd
 executePlink <- function(args, ResultDir) {
   # globalVariables("ResultDir")
   tryCatch(
@@ -172,6 +222,17 @@ executePlink <- function(args, ResultDir) {
 
 ## Function 5
 ########## Added in 3.0
+#' Analyze Phenotype Data
+#'
+#' This function analyzes the phenotype data from a PLINK file and prints out the number of missing
+#' phenotypes, number of males and females, and the number of cases and controls.
+#'
+#' @param fam A data frame containing the FID, IID, father, mother, sex, and phenotype information.
+#' @param fam4 A data frame containing the FID, IID, father, mother, sex, and phenotype information
+#' for the subset of samples with non-missing phenotypes and non-missing sex information.
+#'
+#' @return None
+#' @noRd
 analyzePhenotypeData <- function(fam, fam4) {
   No.of.missing.pheno <- nrow(fam[fam$V6 == -9 | fam$V6 == 0, ])
   print(paste0("Number of missing phenotypes:", No.of.missing.pheno))
@@ -221,6 +282,15 @@ analyzePhenotypeData <- function(fam, fam4) {
 
 ## Function 6
 ########## Added in 3.0
+#' @title Exclude SNPs in a genomic region and extract SNPs not in this region
+#' @description This internal function takes the path to the PLINK files, the path to the output directory, the output file prefix and the path to the region file as input.
+#' It excludes SNPs in the specified genomic region and extracts SNPs that are not in this region using Plink.
+#' @param DataDir character string specifying the path to the directory containing the PLINK files.
+#' @param finput character string specifying the prefix of the PLINK files.
+#' @param ResultDir character string specifying the path to the directory where the output files will be saved.
+#' @param foutput character string specifying the prefix of the output PLINK files.
+#' @param region_file_path character string specifying the path to the file containing the genomic region information.
+#' @noRd
 plinkExcludeExtract <- function(DataDir, finput, ResultDir, foutput, region_file_path) {
   # Plink command for excluding SNPs
   plinkArgsExclude <- c(
@@ -287,6 +357,15 @@ plinkExcludeExtract <- function(DataDir, finput, ResultDir, foutput, region_file
 
 ## Function 10
 ######### Added in 3.0
+#' @title Find the outer section of two or more vectors
+#' @description
+#' This internal function takes two or more vectors and returns the outer section
+#' of the vectors, i.e., the elements that are not common to all the vectors.
+#' @param x vector
+#' @param y vector
+#' @param ... additional vectors
+#' @return vector
+#' @noRd
 outersect <- function(x, y, ...) {
   big.vec <- c(x, y, ...)
   duplicates <- big.vec[duplicated(big.vec)]
@@ -295,24 +374,32 @@ outersect <- function(x, y, ...) {
 
 ## Function 11
 ######### Added in 3.0
+#' Remove Temporary Files
+#'
+#' This internal function removes files matching a given pattern within a specified directory.
+#' It logs the operation to a file named "sink_file.txt" within the directory.
+#'
+#' @param directory A character string specifying the directory where files should be removed.
+#' @param pattern A character string specifying the pattern to match files for removal.
+#' @noRd
 removeTempFiles <- function(directory, pattern) {
   file_path <- paste0(directory, "/sink_file.txt")
-
+  
   # Create an empty file (if it doesn't exist)
   if (!file.exists(file_path)) {
     file.create(file_path)
   }
-
+  
   # Redirect output to the specified file
   sink(file_path)
-
+  
   tempFiles <- list.files(directory, pattern = pattern, full.names = TRUE)
   if (length(tempFiles) > 0) {
     suppressWarnings(file.remove(tempFiles))
   } else {
     print(paste("No files found with pattern:", pattern, "in directory:", directory))
   }
-
+  
   # Reset the sink to stop redirecting the output to the file
   if (sink.number() > 0) {
     sink() # This line resets the output redirection
@@ -321,6 +408,14 @@ removeTempFiles <- function(directory, pattern) {
 
 ## Function 12
 ######### Added in 3.0
+#' Copy files from one directory to another
+#'
+#' This internal function copies files matching a given pattern from source directory to target directory.
+#'
+#' @param sourceDir A character string specifying the directory where files should be copied from.
+#' @param targetDir A character string specifying the target directory where files should be copied to.
+#' @param pattern A character string specifying the pattern to match files for copying.
+#' @noRd
 copyTempFiles <- function(sourceDir, targetDir, pattern) {
   tempFiles <- list.files(sourceDir, pattern = pattern, full.names = TRUE)
   if (length(tempFiles) > 0) {
@@ -330,6 +425,13 @@ copyTempFiles <- function(sourceDir, targetDir, pattern) {
 
 ## Function 13
 ######### Added in 3.0
+#' Read data from a file
+#'
+#' This internal function reads data from a file and returns it as a data frame.
+#'
+#' @param filePath A character string specifying the path of the file to be read.
+#' @return A data frame containing the data read from the file.
+#' @noRd
 readDataFile <- function(filePath) {
   data <- read.table(filePath, sep = "", header = TRUE, as.is = TRUE, stringsAsFactors = FALSE)
   return(data)
@@ -337,6 +439,20 @@ readDataFile <- function(filePath) {
 
 ## Function 14
 ######### Added in 3.0
+#' @title createHeterozygosityPlot
+#' @description Creates a plot of sample heterozygosity against sample missingness.
+#' @param hetermiss A data frame with columns IID, F_MISS, and F.
+#' @param hetfail A data frame with columns IID.
+#' @param imissfail A data frame with columns IID.
+#' @param het The threshold for the heterozygosity test.
+#' @param imiss The threshold for the missingness test.
+#' @param legend_text_size The size of the text in the legend.
+#' @param legend_title_size The size of the title of the legend.
+#' @param axis_text_size The size of the text on the axes.
+#' @param axis_title_size The size of the titles of the axes.
+#' @param title_size The size of the title of the plot.
+#' @return A ggplot object of the created plot.
+#' @noRd
 createHeterozygosityPlot <- function(hetermiss, hetfail, imissfail, het, imiss, legend_text_size, legend_title_size, axis_text_size, axis_title_size, title_size) {
   # Data preparation
   hetermiss$logF_MISS <- log10(hetermiss$F_MISS)
@@ -382,6 +498,14 @@ createHeterozygosityPlot <- function(hetermiss, hetfail, imissfail, het, imiss, 
 
 ## Function 15
 ######### Added in 3.0
+#' Process ambiguous samples from a Plink file
+#'
+#' @param DataDir character string. Folder location of the input Plink file.
+#' @param ResultDir character string. Folder location where the processed output Plink file will be saved.
+#' @param finput character string. Name of the input Plink file.
+#' @param fam1 integer. Number of samples in the input Plink file.
+#' @return character string. Name of the output Plink file.
+#' @noRd
 processAmbiguousSamples <- function(DataDir, ResultDir, finput, fam1) {
   pruneArgs <- c(
     "--bfile", paste0(DataDir, "/", finput),
@@ -402,6 +526,16 @@ processAmbiguousSamples <- function(DataDir, ResultDir, finput, fam1) {
 
 ## Function 16
 ######### Added in 3.0
+#' Filter samples from a Plink file
+#'
+#' This internal function filters samples from a Plink file based on missingness and heterozygosity thresholds.
+#'
+#' @param DataDir A character string specifying the directory where the input Plink file is located.
+#' @param ResultDir A character string specifying the directory where the output Plink file should be saved.
+#' @param finput A character string specifying the name of the input Plink file.
+#' @param failed_het_imiss A data frame with columns IID containing the sample IDs to be filtered out.
+#' @param filterSample A logical value indicating whether to filter samples (TRUE) or not (FALSE).
+#' @noRd
 filterSamples <- function(DataDir, ResultDir, finput, failed_het_imiss, filterSample) {
   if (filterSample == TRUE) {
     excludeSamplesArgs <- c(
@@ -427,6 +561,12 @@ filterSamples <- function(DataDir, ResultDir, finput, failed_het_imiss, filterSa
 
 ## Function 17
 ######### Added in 3.0
+#' Print summary of sample filtering results
+#'
+#' @param imissfail Data frame with columns IID containing the sample IDs filtered/flagged for missingness.
+#' @param hetfail Data frame with columns IID containing the sample IDs filtered/flagged for heterozygosity.
+#' @param failed_het_imiss Data frame with columns IID containing the sample IDs filtered for missingness and heterozygosity.
+#' @noRd
 printSampleFilterResults <- function(imissfail, hetfail, failed_het_imiss) {
   if (nrow(imissfail) == 0) {
     print("No. of samples filtered/flagged for missingness: 0")
@@ -448,6 +588,17 @@ printSampleFilterResults <- function(imissfail, hetfail, failed_het_imiss) {
 
 ## Function 18
 ######### Added in 3.0
+#' Process IBD data
+#'
+#' @param IBD character string. Path to the Plink file for IBD analysis.
+#' @param IBDmatrix logical. Whether to save the entire IBD matrix.
+#' @param ResultDir character string. Folder location where the output Plink file will be saved.
+#' @param foutput character string. Name of the output Plink file.
+#' @param filterSample logical. Whether to filter samples (TRUE) or not (FALSE).
+#' @return list. List with two elements: failed_ibd and ibd.
+#' failed_ibd is a data frame with columns IID containing the sample IDs filtered out for IBD.
+#' ibd is a data frame with columns IID1, IID2, and PI_HAT containing pairwise IBD estimates.
+#' @noRd
 processIBDData <- function(IBD, IBDmatrix, ResultDir, foutput, filterSample) {
   if (!is.null(IBD)) {
     # Compute and save filtered IBD data
@@ -481,6 +632,12 @@ processIBDData <- function(IBD, IBDmatrix, ResultDir, foutput, filterSample) {
 
 ## Function 19
 ######### Added in 3.0
+#' @title executePlinkForIBD
+#' @description Computes and saves filtered IBD data.
+#' @param ResultDir character string. Folder location where the output Plink file will be saved.
+#' @param IBD character string. Path to the Plink file for IBD analysis.
+#' @param outFileName character string. Name of the output Plink file.
+#' @noRd
 executePlinkForIBD <- function(ResultDir, IBD, outFileName) {
   ####### Added in final version #######
   executePlinkAd(ResultDir, c(
@@ -518,12 +675,24 @@ executePlinkForIBD <- function(ResultDir, IBD, outFileName) {
 
 ## Function 20
 ######### Added in 3.0
+#' @title Read IBD data
+#' @description Read IBD data from a file.
+#' @param ResultDir character string. Folder location where the file is located.
+#' @param fileName character string. Name of the IBD file.
+#' @return data.table. Data table with columns IID1, IID2, and PI_HAT.
+#' @noRd
 readIBDData <- function(ResultDir, fileName) {
   data.table::fread(paste0(ResultDir, "/", fileName), select = c("IID1", "IID2", "PI_HAT"))
 }
 
 ## Function 21
 ######### Added in 3.0
+#' @title Identify failed samples from IBD data
+#' @description Identify samples that failed IBD threshold.
+#' @param ibd data.table. Data table with columns IID1, IID2, and PI_HAT.
+#' @param ResultDir character string. Folder location where the output file will be saved.
+#' @return data.frame. Data frame with columns IID1 and IID2 containing failed sample IDs.
+#' @noRd
 identifyFailedSamplesFromIBD <- function(ibd, ResultDir) {
   failedSamples <- unique(c(ibd$IID1, ibd$IID2))
   if (length(failedSamples) > 0) {
@@ -536,6 +705,12 @@ identifyFailedSamplesFromIBD <- function(ibd, ResultDir) {
 
 ## Function 22
 ######### Added in 3.0
+#' @title Update Plink files with IBD filter
+#' @description Update Plink files with IBD filter.
+#' @param ResultDir character string. Folder location where the output Plink file will be saved.
+#' @param foutput character string. Name of the output Plink file.
+#' @param failed_ibd data frame. Data frame with columns IID1 and IID2 containing failed sample IDs.
+#' @noRd
 updatePlinkFilesWithIBDFilter <- function(ResultDir, foutput, failed_ibd) {
   if (!is.null(failed_ibd)) {
     write.table(failed_ibd, file = paste0(ResultDir, "/samples_failed_ibd"), quote = FALSE, row.names = FALSE, col.names = FALSE)
@@ -549,6 +724,11 @@ updatePlinkFilesWithIBDFilter <- function(ResultDir, foutput, failed_ibd) {
 
 ## Function 23
 ######### Added in 3.0
+#' @title Execute Plink for generating BED files
+#' @description Execute Plink for generating BED files.
+#' @param ResultDir character string. Folder location where the output Plink file will be saved.
+#' @param foutput character string. Name of the output Plink file.
+#' @noRd
 executeMakeBed <- function(ResultDir, foutput) {
   makeBedArgs <- c("--bfile", paste0(ResultDir, "/", "foutput"), "--make-bed", "--out", paste0(ResultDir, "/", foutput), "--silent")
   executePlink(makeBedArgs, ResultDir)
