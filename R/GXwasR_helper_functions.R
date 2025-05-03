@@ -737,6 +737,11 @@ executeMakeBed <- function(ResultDir, foutput) {
 ## Function 24
 ######### Added in 3.0
 # Adjusted Helper Function
+#' @title executePlinkAd
+#' @description Internal helper function to execute Plink commands.
+#' @param ResultDir character string. Folder location where the output Plink file will be saved.
+#' @param args character vector. Arguments for the Plink command.
+#' @noRd
 executePlinkAd <- function(ResultDir, args) {
   tryCatch(
     {
@@ -752,7 +757,15 @@ executePlinkAd <- function(ResultDir, args) {
 
 ## Function 25
 ######### Added in 3.0
-# Helper Function to Set PLINK Flags
+#' @title Set PLINK Flags
+#' @description Helper function to set PLINK command line flags based on input parameters.
+#' @param maf Numeric value specifying the minor allele frequency threshold.
+#' @param geno Numeric value specifying the genotyping rate threshold.
+#' @param hwe Numeric value specifying the Hardy-Weinberg equilibrium threshold for the entire dataset.
+#' @param hweCase Numeric value specifying the Hardy-Weinberg equilibrium threshold for cases.
+#' @param hweControl Numeric value specifying the Hardy-Weinberg equilibrium threshold for controls.
+#' @return A list containing the PLINK flags for MAF, GENO, HWE, HWECase, and HWECon.
+#' @noRd
 setPlinkFlags <- function(maf, geno, hwe, hweCase, hweControl) {
   MAF <- if (!is.null(maf)) "--maf" else NULL
   GENO <- if (!is.null(geno)) "--geno" else NULL
@@ -790,7 +803,13 @@ setPlinkFlags <- function(maf, geno, hwe, hweCase, hweControl) {
 
 ## Function 26
 ######### Added in 3.0
-# Helper Function to Remove Ambiguous SNPs
+#' @title Remove Ambiguous SNPs
+#' @description This internal function removes ambiguous SNPs from a PLINK file.
+#' @param DataDir character string. Folder location of the input PLINK file.
+#' @param ResultDir character string. Folder location where the processed output PLINK file will be saved.
+#' @param finput character string. Name of the input PLINK file.
+#' @return The count of removed SNPs.
+#' @noRd
 removeAmbiguousSNPs <- function(DataDir, ResultDir, finput) {
   bimFilePath <- paste0(DataDir, "/", finput, ".bim")
   study <- read.table(file = bimFilePath, stringsAsFactors = FALSE)
@@ -818,9 +837,18 @@ removeAmbiguousSNPs <- function(DataDir, ResultDir, finput) {
   return(nrow(study_SNP))
 }
 
-## Function 27
-######### Added in 3.0
-# Helper Function to Apply Filters with PLINK
+#' @title Apply Filters with PLINK
+#' @description Helper function to apply filters using PLINK based on MAF, GENO, and HWE thresholds.
+#' @param ResultDir character string. Directory where the output PLINK file will be saved.
+#' @param DataDir character string. Directory where the input PLINK file is located.
+#' @param finput character string. Name of the input PLINK file.
+#' @param MAF character string. PLINK argument for minor allele frequency threshold.
+#' @param maf numeric. Value for the minor allele frequency threshold.
+#' @param GENO character string. PLINK argument for genotyping rate threshold.
+#' @param geno numeric. Value for the genotyping rate threshold.
+#' @param HWE character string. PLINK argument for Hardy-Weinberg equilibrium threshold.
+#' @param hwe numeric. Value for the Hardy-Weinberg equilibrium threshold.
+#' @noRd
 applyFiltersWithPlink <- function(ResultDir, DataDir, finput, MAF, maf, GENO, geno, HWE, hwe) {
   # Execute PLINK command
   executePlinkAd(ResultDir, args = c(
@@ -852,7 +880,17 @@ applyFiltersWithPlink <- function(ResultDir, DataDir, finput, MAF, maf, GENO, ge
 
 ## Function 28
 ######### Added in 3.0
-# Helper Function to Apply HWE Filters and monomorpic part with PLINK
+#' @title Apply HWE Filters and monomorphic part with PLINK
+#' @description This internal function applies Hardy-Weinberg equilibrium filters and monomorphic filters to the data using PLINK.
+#' @param ResultDir character string. Directory where the output PLINK file will be saved.
+#' @param fam4 integer. Number of samples in the input Plink file.
+#' @param casecontrol logical. Whether the dataset is a case-control study.
+#' @param HWECase character string. PLINK argument for Hardy-Weinberg equilibrium threshold for cases.
+#' @param hweCase numeric. Value for the Hardy-Weinberg equilibrium threshold for cases.
+#' @param HWECon character string. PLINK argument for Hardy-Weinberg equilibrium threshold for controls.
+#' @param hweControl numeric. Value for the Hardy-Weinberg equilibrium threshold for controls.
+#' @return A logical indicating if the dataset is a case-control study.
+#' @noRd
 applyCaseControlFilters <- function(ResultDir, fam4, casecontrol, HWECase, hweCase, HWECon, hweControl) {
   nextFile <- "filtered_temp1" # Default next file
 
@@ -908,7 +946,12 @@ applyCaseControlFilters <- function(ResultDir, fam4, casecontrol, HWECase, hweCa
 
 ## Function 29
 ######### Added in 3.0
-# Helper function to print HWE messages from log files
+#' @title Print HWE Messages
+#' @description Helper function to print HWE messages from log files
+#' @param ResultDir character string. Directory where the output PLINK file will be saved.
+#' @param logFilePath character string. Path to the log file.
+#' @param context character string. Context string to be printed before the HWE message.
+#' @noRd
 printHWEMessages <- function(ResultDir, logFilePath, context) {
   if (file.exists(paste0(ResultDir, logFilePath))) {
     logContents <- readLines(paste0(ResultDir, logFilePath))
@@ -921,7 +964,19 @@ printHWEMessages <- function(ResultDir, logFilePath, context) {
 
 ## Function 30
 ######### Added in 3.0
-# Helper Function to Handle Monomorphic SNPs
+#' @title Handle Monomorphic SNPs
+#' @description Helper function to handle monomorphic SNPs. If there are monomorphic
+#' SNPs, it writes them to a file and returns the path to the file.
+#' @param monomorphicSNPs logical. Whether monomorphic SNPs should be handled.
+#' @param mmSNPs data.frame. Data frame containing the monomorphic SNPs.
+#' @param ResultDir character string. Directory where the output PLINK file will be saved.
+#' @return A list containing the following elements:
+#' \itemize{
+#'   \item \code{mmSNP1}: The monomorphic SNPs.
+#'   \item \code{exclude}: The PLINK argument for excluding SNPs.
+#'   \item \code{excludemono}: The path to the file containing the monomorphic SNPs.
+#' }
+#' @noRd
 handleMonomorphicSNPs <- function(monomorphicSNPs, mmSNPs, ResultDir) {
   if (monomorphicSNPs == TRUE && nrow(mmSNPs) != 0) {
     mmSNP1 <- mmSNPs$SNP
@@ -941,16 +996,24 @@ handleMonomorphicSNPs <- function(monomorphicSNPs, mmSNPs, ResultDir) {
 
 ## Function 31
 ######### Added in 3.0
-# Helper Function to Handle LD Pruning
+#' @title Handle LD Pruning
+#'
+#' @description This function sets up the necessary parameters for linkage disequilibrium (LD) pruning.
+#'
+#' @param ld_prunning Logical. Indicates whether LD pruning should be performed.
+#' @param highLD_regions Data frame or NULL. Contains known high LD regions. If NULL, no high LD regions are considered.
+#' @param ResultDir Character string. Directory where the temporary files will be saved.
+#' @param window_size Integer. Window size in the variant counts for LD-based filtering.
+#' @param step_size Integer. Variant count to shift the window at the end of each step for LD filtering.
+#' @param r2_threshold Numeric. Pairwise \eqn{r^2} threshold for LD-based filtering.
+#' @return A list containing parameters needed for LD pruning.
+#' @noRd
 handleLDPruning <- function(ld_prunning, highLD_regions, ResultDir, window_size, step_size, r2_threshold) {
   if (ld_prunning) {
     excluderange <- "--exclude"
-
-    # Test for LD prunning
     range <- "range"
-    ##
+    
     if (!is.null(highLD_regions)) {
-      # Write high LD regions to a temporary file
       tempFile <- paste0(ResultDir, "/highLD_regions_temp")
       write.table(highLD_regions, file = tempFile, quote = FALSE, row.names = FALSE, col.names = FALSE)
       highLD_regions <- tempFile
@@ -961,9 +1024,7 @@ handleLDPruning <- function(ld_prunning, highLD_regions, ResultDir, window_size,
     indep <- "--indep-pairwise"
   } else {
     excluderange <- NULL
-    ## TEST
     range <- NULL
-    ####
     highLD_regions <- NULL
     indep <- NULL
     window_size <- NULL
@@ -974,7 +1035,20 @@ handleLDPruning <- function(ld_prunning, highLD_regions, ResultDir, window_size,
   return(list(excluderange = excluderange, highLD_regions = highLD_regions, indep = indep, window_size = window_size, step_size = step_size, r2_threshold = r2_threshold))
 }
 
-## Function 32
+##' @title Execute Plink with Parameters
+##' @description Helper function to execute plink with parameters
+##' @param ResultDir character string. Directory where the output PLINK file will be saved.
+##' @param filtered_temp character string. The name of the PLINK file to be processed.
+##' @param exclude character string. The parameter for excluding SNPs.
+##' @param excludemono character string. The path to the file containing monomorphic SNPs.
+##' @param excluderange character string. The parameter for excluding SNPs in a region.
+##' @param highLD_regions character string. The path to the file containing known high LD regions.
+##' @param indep character string. The parameter for LD-based filtering.
+##' @param window_size integer. Window size in the variant counts for LD-based filtering.
+##' @param step_size integer. Variant count to shift the window at the end of each step for LD filtering.
+##' @param r2_threshold numeric. Pairwise \eqn{r^2} threshold for LD-based filtering.
+##' @return Nothing
+##' @noRd
 executePlinkWithParams <- function(ResultDir, filtered_temp, exclude, excludemono, excluderange, highLD_regions, indep, window_size, step_size, r2_threshold) {
   # TEST
   # executePlinkAd(ResultDir, args = c(
@@ -1041,6 +1115,18 @@ executePlinkWithParams <- function(ResultDir, filtered_temp, exclude, excludemon
 ## Function 33
 ######### Added in 3.0
 # Helper Function to Handle Differential Missingness Filtering for Case-Control Data
+#' @title Handle Differential Missingness Filtering for Case-Control Data
+#' @description This function is not exported. It is an internal helper function that handles the differential missingness filtering for case-control data.
+#' @param ResultDir character string. Directory where the temporary files will be saved.
+#' @param casecontrol logical. Indicating whether the data is case-control or not.
+#' @param dmissX logical. Indicating whether to compute differential missingness for X chromosome SNPs only.
+#' @param dmissAutoY logical. Indicating whether to compute differential missingness for SNPs on autosomes and Y chromosome only.
+#' @param caldiffmiss logical. Indicating whether to compute differential missingness between cases and controls for each SNP.
+#' @param SNPmissCC character string. The path to the file containing SNPs with differential missingness between cases and controls.
+#' @param diffmissFilter logical. Indicating whether to filter out the SNPs or only flagged them for differential missingness in cases vs contols.
+#' @param foutput character string. The name of the output PLINK file.
+#' @return A character string containing the path to the file containing SNPs with differential missingness between cases and controls.
+#' @noRd
 handleCaseControlFiltering <- function(ResultDir, casecontrol, dmissX, dmissAutoY, caldiffmiss, SNPmissCC, diffmissFilter, foutput) {
   SNPmissCC <- NULL # Initialize
 
@@ -1090,7 +1176,11 @@ handleCaseControlFiltering <- function(ResultDir, casecontrol, dmissX, dmissAuto
 
 ## Function 34
 ######### Added in 3.0
-# Helper function to process differential missingness results
+#' @title Process Differential Missingness Results
+#' @description This function is not exported. It is an internal helper function that processes the differential missingness results.
+#' @param ResultDir character string. Directory where the temporary files are saved.
+#' @return A character vector containing the SNPs with differential missingness between cases and controls.
+#' @noRd
 processDifferentialMissingnessResults <- function(ResultDir) {
   filePath <- paste0(ResultDir, "/filtered_temp_casecontrol.missing.adjusted")
   if (file.exists(filePath)) {
@@ -1105,7 +1195,13 @@ processDifferentialMissingnessResults <- function(ResultDir) {
 
 ## Function 35
 ######### Added in 3.0
-# Helper function to apply SNP missingness filter
+#' @title Apply SNP missingness Filter
+#' @description This function is not exported. It is an internal helper function that applies the SNP missingness filter.
+#' @param ResultDir character string. Directory where the temporary files will be saved.
+#' @param SNPmissCC character string. The path to the file containing SNPs with differential missingness between cases and controls.
+#' @param diffmissFilter logical. Indicating whether to filter out the SNPs or only flagged them for differential missingness in cases vs contols.
+#' @param foutput character string. The name of the output PLINK file.
+#' @noRd
 applySNPmissCCFilter <- function(ResultDir, SNPmissCC, diffmissFilter, foutput) {
   if (!is.null(SNPmissCC) && diffmissFilter) {
     write.table(
@@ -1136,7 +1232,37 @@ applySNPmissCCFilter <- function(ResultDir, SNPmissCC, diffmissFilter, foutput) 
 }
 
 ## Function 36
+#' @title Create Mirror Manhattan Plot
+#' @description This internal helper function generates a mirror Manhattan plot using top and bottom datasets.
+#' @param top Data frame. The dataset for the top plot.
+#' @param bottom Data frame. The dataset for the bottom plot.
+#' @param tline Numeric vector. Threshold line(s) for the top plot.
+#' @param bline Numeric vector. Threshold line(s) for the bottom plot.
+#' @param chroms Character vector. Chromosome numbers to include in the plot.
+#' @param log10 Logical. Whether to transform p-values to -log10 scale.
+#' @param yaxis Character vector. Labels for the y-axis when log10 is FALSE.
+#' @param opacity Numeric. Opacity level for points in the plot.
+#' @param annotate_snp Character vector. SNPs to annotate in the plot.
+#' @param annotate_p Numeric vector. P-value threshold for annotation.
+#' @param toptitle Character string. Title for the top plot.
+#' @param bottomtitle Character string. Title for the bottom plot.
+#' @param highlight_snp Character vector. SNPs to highlight in the plot.
+#' @param highlight_p Numeric vector. P-value threshold for highlighting.
+#' @param highlighter Character string. Color for highlighted points.
+#' @param chrcolor1 Character string. Color for odd chromosomes.
+#' @param chrcolor2 Character string. Color for even chromosomes.
+#' @param freey Logical. Whether y-axis limits are free.
+#' @param background Character string. Background style, either "variegated" or "white".
+#' @param chrblocks Logical. Whether to draw chromosome blocks.
+#' @param file Character string. Filename for saving the plot.
+#' @param type Character string. File type for saving the plot.
+#' @param hgt Numeric. Height of the plot in inches.
+#' @param hgtratio Numeric. Ratio of top plot height to total height.
+#' @param wi Numeric. Width of the plot in inches.
+#' @param res Numeric. Resolution of the plot in dpi.
 #' @importFrom ggplot2 element_rect expansion
+#' @return A ggplot object representing the mirror Manhattan plot.
+#' @noRd
 gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"), log10 = TRUE,
                     yaxis, opacity = 1, annotate_snp, annotate_p, toptitle = NULL,
                     bottomtitle = NULL, highlight_snp, highlight_p, highlighter = "red",
@@ -1336,6 +1462,7 @@ gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"), log10
   ggplot2::ggsave(p, filename = paste0(file, ".", type), dpi = res, units = "in", height = hgt, width = wi)
   return(p)
 }
+
 ## Function 37
 ######### Added in 3.0
 performLDClumping <- function(ldclump, DataDir, ResultDir, LDreference, summarystat, clump_p1, clump_p2, clump_r2, clump_kb, byCHR) {
@@ -1353,8 +1480,25 @@ performLDClumping <- function(ldclump, DataDir, ResultDir, LDreference, summarys
   }
 }
 
-## Function 38
-######### Added in 3.0
+#' @title Prepare Phenotype Data
+#' 
+#' @description This internal helper function prepares the phenotype data by combining phenotype information 
+#' with genetic principal components (PCs) if specified.
+#' 
+#' @param phenofile A data frame containing phenotype information, including columns for FID, IID, and Pheno1.
+#' @param nPC Integer, specifying the number of principal components to compute. If zero or negative, PCs will not be computed.
+#' @param DataDir Character string, the directory containing input PLINK binary files.
+#' @param ResultDir Character string, the directory where output files will be saved.
+#' @param finput Character string, the prefix of the input PLINK binary files.
+#' @param highLD_regions Data frame or NULL, containing known high LD regions for SNP pruning.
+#' @param ld_prunning Logical, indicating whether LD pruning should be performed.
+#' @param window_size Integer, window size in variant count for LD-based filtering.
+#' @param step_size Integer, variant count to shift the window at the end of each step for LD filtering.
+#' @param r2_threshold Numeric, pairwise r^2 threshold for LD-based filtering.
+#' 
+#' @return A data frame with FID, IID, and optionally genetic PCs. If nPC is zero or negative, returns a data frame with FID and IID only.
+#' 
+#' @noRd
 preparePhenotypeData <- function(phenofile, nPC, DataDir, ResultDir, finput, highLD_regions, ld_prunning, window_size, step_size, r2_threshold) {
   phenotype <- cbind(phenofile[, 1:2], phenofile[, "Pheno1"])
   colnames(phenotype) <- c("FID", "IID", "Pheno1")
@@ -1372,8 +1516,16 @@ preparePhenotypeData <- function(phenofile, nPC, DataDir, ResultDir, finput, hig
   }
 }
 
-## Function 39
-######### Added in 3.0
+#' @title Compute Null Model
+#' 
+#' @description This internal helper function computes a null model for given phenotype data.
+#' 
+#' @param pheno A data frame containing phenotype information, including columns for FID, IID, and Pheno1.
+#' @param pheno_type Character string, indicating the type of phenotype data. Either "binary" or "quantitative".
+#' 
+#' @return A list containing the null model and its R-squared value.
+#' 
+#' @noRd
 computeNullModel <- function(pheno, pheno_type) {
   if (pheno_type == "binary") {
     # Convert binary phenotype to 0 and 1
@@ -1393,6 +1545,24 @@ computeNullModel <- function(pheno, pheno_type) {
 
 ## Function 40
 ######### Added in 3.0
+### prsFun
+#' @title Compute Polygenic Risk Scores
+#' 
+#' @description This internal helper function computes a polygenic risk score (PRS) for a given phenotype and set of SNPs.
+#' 
+#' @param pthreshold Numeric value, indicating the p-value threshold for computing the PRS. This value is used to include SNPs with p-values below this threshold in the computation of the PRS.
+#' @param ResultDir Character string, indicating the directory where the output should be saved.
+#' @param DataDir Character string, indicating the directory where the input data is located.
+#' @param finput Character string, indicating the file name of the input data.
+#' @param clumpExtract Character vector, indicating the command line arguments for plink to extract SNPs from the input data.
+#' @param clumpSNP Character vector, indicating the command line arguments for plink to include SNPs in the computation of the PRS.
+#' @param pheno Data frame, containing the phenotype information.
+#' @param pheno_type Character string, indicating the type of phenotype data. Either "binary" or "quantitative".
+#' @param null_model List, containing the null model and its R-squared value.
+#' 
+#' @return A data frame containing the PRS results, including the p-value threshold, R-squared, p-value, BETA, and SE of the PRS.
+#' 
+#' @noRd
 prsFun <- function(pthreshold, ResultDir, DataDir, finput, clumpExtract, clumpSNP, pheno, pheno_type, null_model) {
   print(pthreshold)
   print(paste0("Computing PRS for threshold ", pthreshold))
