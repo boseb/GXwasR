@@ -4629,7 +4629,7 @@ SexDiffZscore <- function(inputdata) {
 #' cripticut <- 0.025
 #' minMAF <- 0.01 # if MAF filter apply
 #' maxMAF <- 0.04
-#' excludeResidual <- "TRUE"
+#' excludeResidual <- TRUE
 #' 
 #' GC <- GeneticCorrBT(
 #'   DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = TRUE,
@@ -4783,7 +4783,7 @@ GeneticCorrBT <- function(DataDir, ResultDir, finput, byCHR = FALSE,
           return(herit_result)
         }
 
-        result <- data.table::rbindlist(lapply(chrnum, chrwiseRELM))
+        result <- data.table::rbindlist(lapply(chrnum, function(x) chrwiseRELM(x, ncores)))
         result <- na.omit(result)
 
         # Gather files matching the patterns
