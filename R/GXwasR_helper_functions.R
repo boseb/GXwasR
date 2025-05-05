@@ -8627,6 +8627,7 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
 
     LD_rda_file <- LD.files[grep(x = LD.files, pattern = paste0("chr", chr, ".", piece, "[\\._].*rda"))]
     LD_bim_file <- LD.files[grep(x = LD.files, pattern = paste0("chr", chr, ".", piece, "[\\._].*bim"))]
+    loop_env <- new.env() ## Create Environment to hold vars
     load(file = paste(LD.path, LD_rda_file, sep = "/"))
     snps.ref.df <- read.table(paste(LD.path, LD_bim_file, sep = "/"))
 
@@ -8692,7 +8693,7 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     idx.sign2 <- A2.gwas2 == A2.ref[names(A2.gwas2)]
     bhat2.raw <- bhat2.raw * (2 * as.numeric(idx.sign2) - 1)
 
-    M <- length(LDsc)
+    M <- length(loop_env$LDsc)
     bhat1 <- bhat2 <- numeric(M)
     names(bhat1) <- names(bhat2) <- snps.ref
     bhat1[names(bhat1.raw)] <- bhat1.raw
@@ -8715,35 +8716,35 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     ## weighted LS: use estimated h2
     ## vars from Bulik-Sullivan
 
-    h11v <- (h11.ols[2] * LDsc / M + 1 / N1)^2
-    h22v <- (h22.ols[2] * LDsc / M + 1 / N2)^2
+    h11v <- (h11.ols[2] * loop_env$LDsc / M + 1 / N1)^2
+    h22v <- (h22.ols[2] * loop_env$LDsc / M + 1 / N2)^2
 
-    reg <- lm(a11 ~ LDsc, weights = 1 / h11v)
+    reg <- lm(a11 ~ loop_env$LDsc, weights = 1 / h11v)
     h11.wls <- c(summary(reg)$coef[1:2, 1:2] * c(N1, M))
 
-    reg <- lm(a22 ~ LDsc, weights = 1 / h22v)
+    reg <- lm(a22 ~ loop_env$LDsc, weights = 1 / h22v)
     h22.wls <- c(summary(reg)$coef[1:2, 1:2] * c(N2, M))
 
-    if (N0 > 0) h12v <- sqrt(h11v * h22v) + (h12.ols[2] * LDsc / M + p1 * p2 * rho12 / N0)^2
-    if (N0 == 0) h12v <- sqrt(h11v * h22v) + (h12.ols[2] * LDsc / M)^2
+    if (N0 > 0) h12v <- sqrt(h11v * h22v) + (h12.ols[2] * loop_env$LDsc / M + p1 * p2 * rho12 / N0)^2
+    if (N0 == 0) h12v <- sqrt(h11v * h22v) + (h12.ols[2] * loop_env$LDsc / M)^2
 
-    reg <- lm(a12 ~ LDsc, weights = 1 / h12v)
+    reg <- lm(a12 ~ loop_env$LDsc, weights = 1 / h12v)
     if (N0 > 0) h12.wls <- c(summary(reg)$coef[1:2, 1:2] * c((N0 / p1 / p2), M))
     if (N0 == 0) h12.wls <- c(summary(reg)$coef[1:2, 1:2] * c(N, M))
 
     ## likelihood based
     ## estimate h2s
-    bstar1 <- crossprod(V, bhat1)
-    bstar2 <- crossprod(V, bhat2)
+    bstar1 <- crossprod(loop_env$V, bhat1)
+    bstar2 <- crossprod(loop_env$V, bhat2)
 
     opt <- stats::optim(c(h11.wls[2], 1), llfun,
-      N = N1, Nref = Nref, lam = lam, bstar = bstar1, M = M,
+      N = N1, Nref = Nref, lam = loop_env$lam, bstar = bstar1, M = M,
       lim = lim, method = "L-BFGS-B", lower = c(0, 0), upper = c(1, 10)
     )
     h11.hdl <- opt$par
 
     opt <- stats::optim(c(h22.wls[2], 1), llfun,
-      N = N2, Nref = Nref, lam = lam, bstar = bstar2, M = M,
+      N = N2, Nref = Nref, lam = loop_env$lam, bstar = bstar2, M = M,
       lim = lim, method = "L-BFGS-B", lower = c(0, 0), upper = c(1, 10)
     )
     h22.hdl <- opt$par
@@ -8751,13 +8752,13 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     opt <- stats::optim(c(h12.wls[2], rho12), llfun.gcov.part.2,
       h11 = h11.hdl, h22 = h22.hdl,
       rho12 = rho12, M = M, N1 = N1, N2 = N2, N0 = N0, Nref = Nref,
-      lam0 = lam, lam1 = lam, lam2 = lam,
+      lam0 = loop_env$lam, lam1 = loop_env$lam, lam2 = loop_env$lam,
       bstar1 = bstar1, bstar2 = bstar2,
       lim = lim, method = "L-BFGS-B", lower = c(-1, -10), upper = c(1, 10)
     )
     h12.hdl <- opt$par
 
-    c(list(h11.hdl[1]), list(h22.hdl[1]), list(h12.hdl[1]), list(bstar1), list(bstar2), list(lam))
+    c(list(h11.hdl[1]), list(h22.hdl[1]), list(h12.hdl[1]), list(bstar1), list(bstar2), list(loop_env$lam))
   }
   close(pb)
 
