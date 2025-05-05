@@ -4,4 +4,6 @@
 ^CODE_OF_CONDUCT\.md$
 ^INSTALL\.txt$
 ^plink.*\.zip$
+^gcta-.*\.zip$
+^gcta_extracted$
 ^\.github$
