@@ -5,3 +5,6 @@
 ^INSTALL\.txt$
 ^plink.*\.zip$
 ^\.github$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
