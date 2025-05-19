@@ -26,51 +26,47 @@
 #' @importFrom BiocStyle html_document
 #' @importFrom dplyr filter mutate distinct arrange select case_when summarise
 
-## Function 1
-# Installing Plink
-setupPlink <- function(wdir) {
-  # Helper function to download and unzip files
-  downloadAndUnzip <- function(file_url, dest_file, wdir) {
-    utils::download.file(destfile = dest_file, file_url, quiet = TRUE)
-    utils::unzip(dest_file, exdir = wdir)
-  }
-
-  # Helper function to remove files
-  removeFiles <- function(files, wdir) {
-    full_paths <- file.path(wdir, files)
-    invisible(do.call(file.remove, list(full_paths)))
-  }
-
-  # Get operating system information
-  OS <- Sys.info()["sysname"]
-  base_url <- "https://s3.amazonaws.com/plink1-assets/"
-  os_specific_files <- list(
-    Linux = list(file = "plink_linux_x86_64_20220402.zip", exec = "plink", remove = c("LICENSE", "prettify", "toy.map", "toy.ped")),
-    Windows = list(file = "plink_win64_20230116.zip", exec = "plink.exe", remove = c("LICENSE", "prettify.exe", "toy.map", "toy.ped")),
-    macOS = list(file = "plink_mac_20230116.zip", exec = "plink", remove = c("LICENSE", "prettify", "toy.map", "toy.ped")),
-    Darwin = list(file = "plink_mac_20230116.zip", exec = "plink", remove = c("LICENSE", "prettify", "toy.map", "toy.ped"))
-  )
-
-  if (!OS %in% names(os_specific_files)) {
-    stop("Unsupported operating system.")
-  }
-
-  # Perform the setup
-  os_data <- os_specific_files[[OS]]
-  file_url <- paste0(base_url, os_data$file)
-  dest_file <- file.path(wdir, os_data$file)
-
-  tryCatch(
-    {
-      downloadAndUnzip(file_url, dest_file, wdir)
-      Sys.chmod(file.path(wdir, os_data$exec), mode = "0777", use_umask = TRUE)
-      removeFiles(c(os_data$file, os_data$remove), wdir)
-      print("Program is set up.")
-    },
-    error = function(e) {
-      cat("An error occurred:", e$message, "\n")
+## PLINK Dependency Check
+verifyPlink <- function() {
+  os_type <- Sys.info()[["sysname"]]
+  # 1. Check PLINK_PATH environment variable
+  env_path <- Sys.getenv("PLINK_PATH", unset = NA)
+  if (!is.na(env_path)) {
+    resolved_env_path <- normalizePath(env_path, mustWork = FALSE)
+    if (file.exists(resolved_env_path)) {
+      return(resolved_env_path)
+    } else {
+      message("PLINK_PATH is set but file does not exist: ", resolved_env_path)
     }
+  }
+
+  # 2. Check system path via Sys.which
+  sys_path <- Sys.which("plink")
+  # On Windows, check for `.exe` if missing
+  if (os_type == "Windows" && !grepl("\\.exe$", sys_path, ignore.case = TRUE)) {
+    sys_path <- paste0(sys_path, ".exe")
+  }
+  # Normalize and check existence
+  resolved_sys_path <- normalizePath(sys_path, mustWork = FALSE)
+  if (nzchar(resolved_sys_path) && file.exists(resolved_sys_path)) {
+    return(resolved_sys_path)
+  }
+  
+  # 3. Failure message
+  stop("PLINK binary not found. Please install PLINK and/or set the PLINK_PATH environment variable.")
+}
+
+
+## PLINK Binary Location
+plink <- function(){
+  plink_executable <- verifyPlink()
+  plink_info <- system2(plink_executable, args = '--version', stdout = TRUE)
+  rlang::inform(
+    message = paste('Using', plink_info[[1]]), 
+    .frequency = 'regularly', 
+    .frequency_id = 'plink_check'
   )
+  plink_executable
 }
 
 ## Function 2
@@ -79,11 +75,11 @@ MFsplitPlink <- function(DataDir, ResultDir, finput, foutput, sex, xplink = FALS
     stop("Missing required Plink files in the specified DataDir.")
   }
 
-  setupPlink(ResultDir)
+  # setupPlink(ResultDir)
 
   if (xplink == FALSE && autoplink == FALSE) {
     invisible(sys::exec_wait(
-      paste0(ResultDir, "/", "./plink"),
+      plink(),
       args = c(
         "--bed",
         paste0(DataDir, "/", finput, ".bed"),
@@ -102,7 +98,7 @@ MFsplitPlink <- function(DataDir, ResultDir, finput, foutput, sex, xplink = FALS
     ))
   } else if (xplink == TRUE && autoplink == FALSE) {
     invisible(sys::exec_wait(
-      paste0(ResultDir, "/", "./plink"),
+      plink(),
       args = c(
         "--bed",
         paste0(DataDir, "/", finput, ".bed"),
@@ -122,7 +118,7 @@ MFsplitPlink <- function(DataDir, ResultDir, finput, foutput, sex, xplink = FALS
     ))
   } else if (xplink == FALSE && autoplink == TRUE) {
     invisible(sys::exec_wait(
-      paste0(ResultDir, "/", "./plink"),
+      plink(),
       args = c(
         "--bed",
         paste0(DataDir, "/", finput, ".bed"),
@@ -159,10 +155,13 @@ executePlink <- function(args, ResultDir) {
     {
       # Redirect stderr to null to suppress warning messages
       stderr_dest <- ifelse(.Platform$OS.type == "windows", "NUL", "/dev/null")
-      invisible(sys::exec_wait(file.path(ResultDir, "./plink"),
-        args = args,
-        std_err = stderr_dest
-      ))
+      invisible(
+        sys::exec_wait(
+          plink(),
+          args = args,
+          std_err = stderr_dest
+        )
+      )
     },
     error = function(e) {
       stop("An error occurred while executing Plink: ", e$message)
@@ -562,7 +561,7 @@ executePlinkAd <- function(ResultDir, args) {
     {
       stderr_dest <- ifelse(.Platform$OS.type == "windows", "NUL", "/dev/null")
       # invisible(sys::exec_wait(file.path(ResultDir, "./plink"), args = args, std_err = stderr_dest))
-      sys::exec_wait(file.path(ResultDir, "./plink"), args = args, std_err = stderr_dest)
+      sys::exec_wait(plink(), args = args, std_err = stderr_dest)
     },
     error = function(e) {
       stop("An error occurred while executing Plink: ", e$message)
@@ -1230,9 +1229,8 @@ prsFun <- function(pthreshold, ResultDir, DataDir, finput, clumpExtract, clumpSN
   # SNP.pvalue <- unique(x4[,c("SNP","P")])
   # write.table(SNP.pvalue, file=paste0(ResultDir,"/","SNP.pvalue"), quote=FALSE, row.names=FALSE)
   ######
-
   invisible(sys::exec_wait(
-    paste0(ResultDir, "/", "./plink"),
+    plink(),
     args = c(
       "--bfile", paste0(DataDir, "/", finput),
       "--score", paste0(ResultDir, "/", "prssummarystat"), 1, 2, 3, "header",
@@ -1486,9 +1484,8 @@ paraGwas <- function(
 
   # Redirect output to the specified file
   sink(file_path)
-
   invisible(sys::exec_wait(
-    paste0(ResultDir, "/", "./plink"),
+    plink(),
     args = c(
       "--bfile",
       paste0(DataDir, "/", finput),
@@ -1598,9 +1595,8 @@ FMmain <- function(DataDir, ResultDir, finput, trait, standard_beta, xmodel,
 
   if (ncores == 0) {
     print("If you want parallel computation, please provide non-zero value for argument ncores.")
-
     invisible(sys::exec_wait(
-      paste0(ResultDir, "/", "./plink"),
+      plink(),
       args = c(
         "--bfile",
         paste0(DataDir, "/", finput),
@@ -1625,7 +1621,6 @@ FMmain <- function(DataDir, ResultDir, finput, trait, standard_beta, xmodel,
       std_out = FALSE,
       std_err = FALSE
     ))
-
     if (trait[1] == "binary") {
       single_snp_result <- read.table(paste0(ResultDir, "/", xmodel, ".assoc.logistic"), header = T)
     } else if (trait[1] == "quantitative") {
@@ -2421,7 +2416,7 @@ paraGwasAuto <- function(chunks, chunk, ResultDir, finput, regress, sexv, noxsex
 
   # make plink bedfiles for this SNP in DataDir
   invisible(sys::exec_wait(
-    paste0(ResultDir, "/", "./plink"),
+    plink(),
     args = c(
       "--bfile",
       paste0(ResultDir, "/", finput),
@@ -2499,7 +2494,7 @@ autoFun <- function(DataDir, ResultDir, finput, sex, standard_beta, covarfile, i
 
   if (ncores == 0) {
     invisible(sys::exec_wait(
-      paste0(ResultDir, "/", "./plink"),
+      plink(),
       args = c(
         "--bfile",
         paste0(ResultDir, "/", finput),
@@ -2870,14 +2865,14 @@ prepareData <- function(DataDir, ResultDir, finput) {
   gdsfmt::showfile.gds(closeall = TRUE)
   # Separate X chromosome data
   invisible(sys::exec_wait(
-    paste0(ResultDir, "/", "./plink"),
+    plink(),
     args = c("--bfile", paste0(DataDir, "/", finput), "--chr", 23, "--make-bed", "--out", paste0(ResultDir, "/", "XPLINK"), "--silent"),
     std_out = FALSE, std_err = FALSE
   ))
 
   # Separate autosomal data
   invisible(sys::exec_wait(
-    paste0(ResultDir, "/", "./plink"),
+    plink(),
     args = c("--bfile", paste0(DataDir, "/", finput), "--not-chr", 23, "--make-bed", "--out", paste0(ResultDir, "/", "FilteredX"), "--silent"),
     std_out = FALSE, std_err = FALSE
   ))
@@ -3019,7 +3014,7 @@ XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
 
   ## Extra run for X related SNP for gathering other information
   invisible(sys::exec_wait(
-    paste0(ResultDir, "/", "./plink"),
+    plink(),
     args = c(
       "--bfile",
       paste0(ResultDir, "/", "XPLINK"),
@@ -3771,7 +3766,7 @@ ChrwiseLDprun <- function(DataDir, ResultDir, finput, chromosome, highLD_regions
   }
 
   invisible(sys::exec_wait(
-    paste0(ResultDir, "/", "./plink"),
+    plink(),
     args = c(
       "--bfile",
       paste0(DataDir, "/", finput),
@@ -3793,7 +3788,7 @@ ChrwiseLDprun <- function(DataDir, ResultDir, finput, chromosome, highLD_regions
   ))
 
   invisible(sys::exec_wait(
-    paste0(ResultDir, "/", "./plink"),
+    plink(),
     args = c(
       "--bfile",
       paste0(DataDir, "/", finput),
@@ -4485,13 +4480,13 @@ filterSNPsForForestPlot <- function(MR, top_snp_pval, pval_filter) {
 # Added in 3.0
 # Meta-analysis Processing
 metaFun <- function(DataDir, ResultDir, SummData, CHR, chromosome, nomap, UseA1v, extract, SNPfilev) {
-  setupPlink(ResultDir)
+  # setupPlink(ResultDir)
   chromosomev <- chromosome
 
   print(paste0("Processing chromosome ", chromosomev))
 
   invisible(sys::exec_wait(
-    paste0(ResultDir, "/", "./plink"),
+    plink(),
     args = c(
       "--meta-analysis", paste0(ResultDir, "/", SummData),
       "+",
@@ -7206,9 +7201,8 @@ processRegionFilter <- function(x, filterPAR, filterXTR, filterAmpliconic, Resul
       eol = "\r\n",
       sep = " "
     )
-
     invisible(sys::exec_wait(
-      paste0(ResultDir, "/", "./plink"),
+      plink(),
       args = c(
         "--bfile",
         paste0(DataDir, "/", finput),
@@ -7253,7 +7247,7 @@ processRegionFilter <- function(x, filterPAR, filterXTR, filterAmpliconic, Resul
     )
 
     invisible(sys::exec_wait(
-      paste0(ResultDir, "/", "./plink"),
+      plink(),
       args = c(
         "--bfile",
         paste0(DataDir, "/", finput),
@@ -7299,7 +7293,7 @@ processRegionFilter <- function(x, filterPAR, filterXTR, filterAmpliconic, Resul
 
 
     invisible(sys::exec_wait(
-      paste0(ResultDir, "/", "./plink"),
+      plink(),
       args = c(
         "--bfile",
         paste0(DataDir, "/", finput),
