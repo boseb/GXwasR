@@ -45,7 +45,7 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
       
-       # Install PLINK binary
+      # Install PLINK binary
       - name: Install PLINK
         shell: bash
         run: |
@@ -66,6 +66,31 @@ jobs:
             echo "PLINK_PATH=$BIN_DIR/plink.exe" >> $GITHUB_ENV
           fi
           chmod +x "$HOME/.local/bin"/plink* || true
+      
+      # Install GCTA binary
+      - name: Install GCTA
+        shell: bash
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          if [[ "${RUNNER_OS}" == "Linux" ]]; then
+            wget -q https://yanglab.westlake.edu.cn/software/gcta/bin/gcta-1.94.4-linux-kernel-3-x86_64.zip -O gcta.zip
+            unzip -j gcta.zip -d "$HOME/.local/bin"
+            chmod +x "$HOME/.local/bin/gcta64"
+          elif [[ "${RUNNER_OS}" == "macOS" ]]; then
+            wget -q https://yanglab.westlake.edu.cn/software/gcta/bin/gcta-1.94.1-macOS-x86_64.zip -O gcta.zip
+            unzip -j gcta.zip -d "$HOME/.local/bin"
+            mv "$HOME/.local/bin/"gcta-1.* "$HOME/.local/bin/gcta64"
+            chmod +x "$HOME/.local/bin/gcta64"
+          elif [[ "${RUNNER_OS}" == "Windows" ]]; then
+            export BIN_DIR="$USERPROFILE/.local/bin"
+            mkdir -p "$BIN_DIR"
+            curl -LO https://yanglab.westlake.edu.cn/software/gcta/bin/gcta-1.94.1-Win-x86_64.zip
+            unzip gcta-1.94.1-Win-x86_64.zip -d gcta_extracted
+            cp gcta_extracted/gcta-1.94.1-Win-x86_64/exe/gcta64.exe "$BIN_DIR/gcta64.exe"
+            chmod +x "$BIN_DIR/gcta64.exe" || true
+            echo "$BIN_DIR" >> $GITHUB_PATH
+            echo "GCTA_PATH=$BIN_DIR/gcta64.exe" >> $GITHUB_ENV
+          fi
 
       - uses: r-lib/actions/check-r-package@v2
         with:
