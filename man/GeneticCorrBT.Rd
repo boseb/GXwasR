@@ -122,7 +122,7 @@ Xsome <- TRUE
 cripticut <- 0.025
 minMAF <- 0.01 # if MAF filter apply
 maxMAF <- 0.04
-excludeResidual <- "TRUE"
+excludeResidual <- TRUE
 
 GC <- GeneticCorrBT(
   DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = TRUE,
