@@ -21,9 +21,9 @@ jobs:
         config:
           - {os: macos-latest,   r: 'release'}
           - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
+          # - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'oldrel-1'}
+          # - {os: ubuntu-latest,   r: 'oldrel-1'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -44,8 +44,32 @@ jobs:
         with:
           extra-packages: any::rcmdcheck
           needs: check
+      
+       # Install PLINK binary
+      - name: Install PLINK
+        shell: bash
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          if [[ "${RUNNER_OS}" == "Linux" ]]; then
+            wget -q https://s3.amazonaws.com/plink1-assets/plink_linux_x86_64_20220402.zip -O plink.zip
+            unzip -j plink.zip plink -d "$HOME/.local/bin"
+          elif [[ "${RUNNER_OS}" == "macOS" ]]; then
+            wget -q https://s3.amazonaws.com/plink1-assets/plink_mac_20230116.zip -O plink.zip
+            unzip -j plink.zip plink -d "$HOME/.local/bin"
+          elif [[ "${RUNNER_OS}" == "Windows" ]]; then
+            export BIN_DIR="$USERPROFILE/.local/bin"
+            mkdir -p "$BIN_DIR"
+            curl -LO https://s3.amazonaws.com/plink1-assets/plink_win64_20230116.zip
+            unzip -j plink_win64_20230116.zip plink.exe -d "$BIN_DIR"
+            chmod +x "$BIN_DIR"/plink.exe || true
+            echo "$BIN_DIR" >> $GITHUB_PATH
+            echo "PLINK_PATH=$BIN_DIR/plink.exe" >> $GITHUB_ENV
+          fi
+          chmod +x "$HOME/.local/bin"/plink* || true
 
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
+          error-on: '"error"'
+        

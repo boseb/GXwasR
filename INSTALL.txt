@@ -1,0 +1,72 @@
+PLINK binary installation instructions
+======================================
+
+This package depends on the external command-line tool PLINK (https://www.cog-genomics.org/plink/),
+which is not distributed with the package. Please follow the instructions below to download and install
+PLINK for your operating system.
+
+You may install either PLINK v1.9 or PLINK v2.0 — both are compatible with this package.
+
+───────────────────────────────────────────────
+Windows
+───────────────────────────────────────────────
+
+1. Visit: https://www.cog-genomics.org/plink/1.9/
+2. Download the Windows zip archive under "Download PLINK 1.9".
+3. Extract the contents of the archive.
+4. Move `plink.exe` to a folder that is part of your system PATH
+   (e.g., `C:\Program Files\plink\`), or note the full path to it.
+5. Optionally, set the environment variable `PLINK_PATH` in R or your system:
+
+   In R:
+     Sys.setenv(PLINK_PATH = "C:/path/to/plink.exe")
+
+───────────────────────────────────────────────
+macOS (Apple Silicon or Intel)
+───────────────────────────────────────────────
+
+1. Visit: https://www.cog-genomics.org/plink/1.9/ or https://www.cog-genomics.org/plink/2.0/
+2. Download the macOS binary (choose the latest build).
+3. Extract the contents and move `plink` or `plink2` to a directory in your PATH,
+   e.g., `/usr/local/bin/` or `/opt/homebrew/bin/`.
+4. You can verify the installation with:
+     plink --version
+5. If you do not want to move the binary into your PATH, you can set:
+
+   In R:
+     Sys.setenv(PLINK_PATH = "/path/to/plink")
+
+───────────────────────────────────────────────
+Linux
+───────────────────────────────────────────────
+
+1. Visit: https://www.cog-genomics.org/plink/1.9/ or https://www.cog-genomics.org/plink/2.0/
+2. Download the Linux binary.
+3. Extract the archive and move the binary to `/usr/local/bin/` or another location in your PATH.
+4. Make sure the binary is executable:
+     chmod +x /usr/local/bin/plink
+5. Optionally, set the PLINK_PATH environment variable in R or your shell profile:
+
+   In R:
+     Sys.setenv(PLINK_PATH = "/usr/local/bin/plink")
+
+───────────────────────────────────────────────
+Testing your installation
+───────────────────────────────────────────────
+
+To check that PLINK is available in R:
+
+```r
+plink_path <- Sys.getenv("PLINK_PATH", unset = Sys.which("plink"))
+if (!file.exists(plink_path) || !nzchar(plink_path)) {
+  stop("PLINK binary not found. Please install PLINK and/or set the PLINK_PATH environment variable.")
+}
+```
+
+─────────────────────────────────────────────── 
+Notes 
+───────────────────────────────────────────────
+
+- PLINK is released under the GNU General Public License and is freely available.
+- This package does not modify the user system and assumes PLINK is installed separately by the user.
+- For reproducibility, you are encouraged to document the PLINK version used in your analyses.

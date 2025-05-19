@@ -43,7 +43,7 @@ common variants with unrelated individuals.
 `ClumpLD()`; `GetMFPlink()`; `plinkVCF()`; `MergeRegion()`;
 `FilterAllele()`; `PlinkSummary()`
 
-## Installation
+## 📦 Installation
 
 You can install the development version of GXwasR from
 [GitHub](https://github.com/) with:
@@ -53,7 +53,58 @@ You can install the development version of GXwasR from
 pak::pak("boseb/GXwasR")
 ```
 
-## Example
+## External Dependency: PLINK
+
+This package depends on the [PLINK](https://www.cog-genomics.org/plink/)
+command-line tool (version 1.9 or 2.0). PLINK must be installed
+separately and made available on your system.
+
+PLINK is not bundled with this package and must either:
+
+- be on your system PATH, or
+- be specified via the PLINK_PATH environment variable.
+
+### 🔧 PLINK Installation Instructions
+
+Binaries for all major platforms can be downloaded from:
+
+- [PLINK v1.9](https://www.cog-genomics.org/plink/1.9/)
+- [PLINK v2.0](https://www.cog-genomics.org/plink/2.0/)
+
+Detailed, platform-specific setup instructions can be found in the
+INSTALL file included with this package.
+
+### 🧭 Configuring the PLINK Path
+
+This package will attempt to locate PLINK using:
+
+- The `PLINK_PATH` environment variable, if set.
+- The system path, via `Sys.which("plink")`.
+
+If PLINK is not found, an error will be raised with guidance on how to
+resolve it.
+
+You can manually set the path in your R session:
+
+``` r
+Sys.setenv(PLINK_PATH = "/path/to/plink")
+```
+
+For a persistent configuration, you can add this line to your .Renviron
+file:
+
+    PLINK_PATH=/path/to/plink
+
+To verify that PLINK is discoverable:
+
+``` r
+plink_path <- Sys.getenv("PLINK_PATH", unset = Sys.which("plink"))
+if (!file.exists(plink_path) || !nzchar(plink_path)) {
+  stop("PLINK binary not found. Please install PLINK and/or set the PLINK_PATH environment variable.")
+}
+```
+
+## Example Analysis
 
 Run a genome-wide association study (GWAS) and X-chromosome-wide
 association study (XWAS):
@@ -62,8 +113,14 @@ association study (XWAS):
 library(GXwasR)
 #> 
 #> GXwasR: Genome-wide and x-chromosome wide association analyses applying best practices of quality control over genetic data
-#> Version 0.02.02 () installed
-#> Author: Banabithi Bose [aut, cre] (<https://orcid.org/0000-0003-0842-8768>)
+#> Version 0.99.0 () installed
+#> Author: c(
+#>     person(given = "Banabithi",
+#>            family = "Bose",
+#>            role = c("cre", "aut"),
+#>            email = "banabithi.bose@gmail.com",
+#>            comment = c(ORCID = "0000-0003-0842-8768"))
+#>            )
 #> Maintainer: Banabithi Bose <banabithi.bose@gmail.com>
 #> Tutorial: https://github.com
 #> Use citation("GXwasR") to know how to cite this work.
@@ -85,11 +142,10 @@ ResultGXwas <- GXwas(
   MF.mc.cores = 1, 
   ncores = 0
   )
-#> [1] "Program is set up."
 #> [1] "Running FMstatrified model"
-#> [1] "Program is set up."
+#> Using plink: Release 0.83
+#> This message is displayed once every 8 hours.
 #> [1] "Stratified test is running"
-#> [1] "Program is set up."
 #> [1] "Stratified test is running"
 #> [1] "If you want parallel computation, please provide non-zero value for argument ncores."
 #> [1] "If you want parallel computation, please provide non-zero value for argument ncores."
@@ -98,7 +154,7 @@ ResultGXwas <- GXwas(
 
 <img src="man/figures/README-example-1.png" width="100%" /><img src="man/figures/README-example-2.png" width="100%" /><img src="man/figures/README-example-3.png" width="100%" /><img src="man/figures/README-example-4.png" width="100%" /><img src="man/figures/README-example-5.png" width="100%" /><img src="man/figures/README-example-6.png" width="100%" />
 
-    #> [1] "Three dataframes such as, CombinedWAS, MaleWAS and FemaleWAS are produced in/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpKVUyp9"
+    #> [1] "Three dataframes such as, CombinedWAS, MaleWAS and FemaleWAS are produced in/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp71sMmm"
     ResultGXwas
     #> $CombinedWAS
     #> Key: <SNP>
