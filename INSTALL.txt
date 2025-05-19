@@ -5,7 +5,7 @@ This package depends on the external command-line tool PLINK (https://www.cog-ge
 which is not distributed with the package. Please follow the instructions below to download and install
 PLINK for your operating system.
 
-You may install either PLINK v1.9 or PLINK v2.0 — both are compatible with this package.
+Please install PLINK v1.9.
 
 ───────────────────────────────────────────────
 Windows
@@ -13,10 +13,10 @@ Windows
 
 1. Visit: https://www.cog-genomics.org/plink/1.9/
 2. Download the Windows zip archive under "Download PLINK 1.9".
-3. Extract the contents of the archive.
+3. Extract the archive contents.
 4. Move `plink.exe` to a folder that is part of your system PATH
    (e.g., `C:\Program Files\plink\`), or note the full path to it.
-5. Optionally, set the environment variable `PLINK_PATH` in R or your system:
+6. Preferrably, set the PLINK_PATH environment variable in R:
 
    In R:
      Sys.setenv(PLINK_PATH = "C:/path/to/plink.exe")
@@ -25,13 +25,13 @@ Windows
 macOS (Apple Silicon or Intel)
 ───────────────────────────────────────────────
 
-1. Visit: https://www.cog-genomics.org/plink/1.9/ or https://www.cog-genomics.org/plink/2.0/
+1. Visit: https://www.cog-genomics.org/plink/1.9/
 2. Download the macOS binary (choose the latest build).
-3. Extract the contents and move `plink` or `plink2` to a directory in your PATH,
-   e.g., `/usr/local/bin/` or `/opt/homebrew/bin/`.
-4. You can verify the installation with:
-     plink --version
-5. If you do not want to move the binary into your PATH, you can set:
+3. Extract the archive contents.
+4. Move `plink` to a directory in your PATH, e.g., `/usr/local/bin/` or `/opt/homebrew/bin/`.
+5. Ensure the binary is executable:
+     chmod +x /usr/local/bin/plink
+6. Preferrably, set the PLINK_PATH environment variable in R:
 
    In R:
      Sys.setenv(PLINK_PATH = "/path/to/plink")
@@ -40,12 +40,13 @@ macOS (Apple Silicon or Intel)
 Linux
 ───────────────────────────────────────────────
 
-1. Visit: https://www.cog-genomics.org/plink/1.9/ or https://www.cog-genomics.org/plink/2.0/
+1. Visit: https://www.cog-genomics.org/plink/1.9/
 2. Download the Linux binary.
-3. Extract the archive and move the binary to `/usr/local/bin/` or another location in your PATH.
-4. Make sure the binary is executable:
+3. Extract the archive contents. 
+4. Move `plink` to a directory in your PATH, e.g., `/usr/local/bin/` or `/opt/homebrew/bin/`.
+5. Make sure the binary is executable:
      chmod +x /usr/local/bin/plink
-5. Optionally, set the PLINK_PATH environment variable in R or your shell profile:
+5. Preferrably, set the PLINK_PATH environment variable in R:
 
    In R:
      Sys.setenv(PLINK_PATH = "/usr/local/bin/plink")
@@ -70,3 +71,77 @@ Notes
 - PLINK is released under the GNU General Public License and is freely available.
 - This package does not modify the user system and assumes PLINK is installed separately by the user.
 - For reproducibility, you are encouraged to document the PLINK version used in your analyses.
+
+GCTA binary installation instructions
+=====================================
+
+This package depends on the external command-line tool GCTA (https://yanglab.westlake.edu.cn/software/gcta/),
+which is not distributed with the package. Please follow the instructions below to download and install
+GCTA for your operating system.
+
+───────────────────────────────────────────────
+Windows
+───────────────────────────────────────────────
+
+1. Visit: https://yanglab.westlake.edu.cn/software/gcta/
+2. Scroll down to the Windows section under "Download".
+3. Download the latest Windows binary archive (e.g., `gcta-1.94.1.zip`).
+4. Extract the archive contents.
+5. Move `gcta64.exe` to a folder that is part of your system PATH
+   (e.g., `C:\Program Files\GCTA\`), or note the full path to it.
+6. Preferrably, set the GCTA_PATH environment variable in R:
+
+   In R:
+     Sys.setenv(GCTA_PATH = "C:/path/to/gcta64.exe")
+
+───────────────────────────────────────────────
+macOS (Apple Silicon or Intel)
+───────────────────────────────────────────────
+
+1. Visit: https://yanglab.westlake.edu.cn/software/gcta/
+2. Download the macOS binary archive (e.g., `gcta-1.94.4-macOS-arm64.zip` or `gcta-1.94.1-macOS-x86_64.zip`).
+3. Extract the archive contents.
+4. Move `gcta64` binary (rename if necessary) to a directory in your PATH, e.g., `/usr/local/bin/` or `/opt/homebrew/bin/`.
+5. Ensure the binary is executable:
+     chmod +x /usr/local/bin/gcta64
+6. Preferrably, set the GCTA_PATH environment variable in R:
+
+   In R:
+     Sys.setenv(GCTA_PATH = "/usr/local/bin/gcta64")
+
+───────────────────────────────────────────────
+Linux
+───────────────────────────────────────────────
+
+1. Visit: https://yanglab.westlake.edu.cn/software/gcta/
+2. Download the Linux binary archive (e.g., `gcta-1.94.1-linux-kernel-3-x86_64.zip`).
+3. Extract the archive contents.
+4. Move `gcta64` to `/usr/local/bin/` or another directory in your PATH.
+5. Make the binary executable:
+     chmod +x /usr/local/bin/gcta64
+6. Preferrably, set the GCTA_PATH environment variable in R:
+
+   In R:
+     Sys.setenv(GCTA_PATH = "/usr/local/bin/gcta64")
+
+───────────────────────────────────────────────
+Testing your installation
+───────────────────────────────────────────────
+
+To check that GCTA is available in R:
+
+```r
+gcta_path <- Sys.getenv("GCTA_PATH", unset = Sys.which("gcta64"))
+if (!file.exists(gcta_path) || !nzchar(gcta_path)) {
+  stop("GCTA binary not found. Please install GCTA and/or set the GCTA_PATH environment variable.")
+}
+```
+
+─────────────────────────────────────────────── 
+Notes 
+───────────────────────────────────────────────
+
+- GCTA is distributed by the Yang Lab and may be subject to usage restrictions — review the license and citation requirements.
+- This package does not modify the user system and assumes GCTA is installed separately by the user.
+- The GCTA binary is named gcta64 on all platforms.
+- For reproducibility, you are encouraged to document the GCTA version used in your analyses.

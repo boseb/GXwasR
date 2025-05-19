@@ -56,8 +56,8 @@ pak::pak("boseb/GXwasR")
 ## External Dependency: PLINK
 
 This package depends on the [PLINK](https://www.cog-genomics.org/plink/)
-command-line tool (version 1.9 or 2.0). PLINK must be installed
-separately and made available on your system.
+command-line tool (version 1.9). PLINK must be installed separately and
+made available on your system.
 
 PLINK is not bundled with this package and must either:
 
@@ -69,7 +69,6 @@ PLINK is not bundled with this package and must either:
 Binaries for all major platforms can be downloaded from:
 
 - [PLINK v1.9](https://www.cog-genomics.org/plink/1.9/)
-- [PLINK v2.0](https://www.cog-genomics.org/plink/2.0/)
 
 Detailed, platform-specific setup instructions can be found in the
 INSTALL file included with this package.
@@ -101,6 +100,56 @@ To verify that PLINK is discoverable:
 plink_path <- Sys.getenv("PLINK_PATH", unset = Sys.which("plink"))
 if (!file.exists(plink_path) || !nzchar(plink_path)) {
   stop("PLINK binary not found. Please install PLINK and/or set the PLINK_PATH environment variable.")
+}
+```
+
+## External Dependency: GCTA
+
+This package also utilizes the
+[GCTA](https://yanglab.westlake.edu.cn/software/gcta/#Overview)
+command-line tool (Genome-wide Complex Trait Analysis). GCTA must be
+installed separately and made available on your system.
+
+GCTA is not bundled with this package and must either:
+
+-be on your system PATH, or - be specified via the GCTA_PATH environment
+variable.
+
+### 🔧 GCTA Installation Instructions
+
+Binaries for all major platforms can be downloaded from the
+[GCTA](https://yanglab.westlake.edu.cn/software/gcta/#Overview) website.
+
+Detailed, platform-specific setup instructions can be found in the
+INSTALL file included with this package.
+
+### 🧭 Configuring the GCTA Path
+
+This package will attempt to locate GCTA using:
+
+- The GCTA_PATH environment variable, if set.
+- The system path, via Sys.which(“gcta64”).
+
+If GCTA is not found, an error will be raised with guidance on how to
+resolve it.
+
+You can manually set the path in your R session:
+
+``` r
+Sys.setenv(GCTA_PATH = "/path/to/gcta64")
+```
+
+For a persistent configuration, you can add this line to your .Renviron
+file:
+
+    GCTA_PATH=/path/to/gcta64
+
+To verify that GCTA is discoverable:
+
+``` r
+gcta_path <- Sys.getenv("GCTA_PATH", unset = Sys.which("gcta64"))
+if (!file.exists(gcta_path) || !nzchar(gcta_path)) {
+  stop("GCTA binary not found. Please install GCTA and/or set the GCTA_PATH environment variable.")
 }
 ```
 
@@ -143,7 +192,7 @@ ResultGXwas <- GXwas(
   ncores = 0
   )
 #> [1] "Running FMstatrified model"
-#> Using plink: Release 0.83
+#> Using PLINK v1.9.0-b.7.7 64-bit (22 Oct 2024)
 #> This message is displayed once every 8 hours.
 #> [1] "Stratified test is running"
 #> [1] "Stratified test is running"
@@ -154,7 +203,7 @@ ResultGXwas <- GXwas(
 
 <img src="man/figures/README-example-1.png" width="100%" /><img src="man/figures/README-example-2.png" width="100%" /><img src="man/figures/README-example-3.png" width="100%" /><img src="man/figures/README-example-4.png" width="100%" /><img src="man/figures/README-example-5.png" width="100%" /><img src="man/figures/README-example-6.png" width="100%" />
 
-    #> [1] "Three dataframes such as, CombinedWAS, MaleWAS and FemaleWAS are produced in/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp71sMmm"
+    #> [1] "Three dataframes such as, CombinedWAS, MaleWAS and FemaleWAS are produced in/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpqOMzTI"
     ResultGXwas
     #> $CombinedWAS
     #> Key: <SNP>
