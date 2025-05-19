@@ -56,8 +56,8 @@ pak::pak("boseb/GXwasR")
 ## External Dependency: PLINK
 
 This package depends on the [PLINK](https://www.cog-genomics.org/plink/)
-command-line tool (version 1.9 or 2.0). PLINK must be installed
-separately and made available on your system.
+command-line tool (version 1.9). PLINK must be installed separately and
+made available on your system.
 
 PLINK is not bundled with this package and must either:
 
@@ -69,7 +69,6 @@ PLINK is not bundled with this package and must either:
 Binaries for all major platforms can be downloaded from:
 
 - [PLINK v1.9](https://www.cog-genomics.org/plink/1.9/)
-- [PLINK v2.0](https://www.cog-genomics.org/plink/2.0/)
 
 Detailed, platform-specific setup instructions can be found in the
 INSTALL file included with this package.
@@ -204,7 +203,7 @@ ResultGXwas <- GXwas(
 
 <img src="man/figures/README-example-1.png" width="100%" /><img src="man/figures/README-example-2.png" width="100%" /><img src="man/figures/README-example-3.png" width="100%" /><img src="man/figures/README-example-4.png" width="100%" /><img src="man/figures/README-example-5.png" width="100%" /><img src="man/figures/README-example-6.png" width="100%" />
 
-    #> [1] "Three dataframes such as, CombinedWAS, MaleWAS and FemaleWAS are produced in/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp4YXHgn"
+    #> [1] "Three dataframes such as, CombinedWAS, MaleWAS and FemaleWAS are produced in/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpqOMzTI"
     ResultGXwas
     #> $CombinedWAS
     #> Key: <SNP>

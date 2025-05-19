@@ -5,7 +5,7 @@ This package depends on the external command-line tool PLINK (https://www.cog-ge
 which is not distributed with the package. Please follow the instructions below to download and install
 PLINK for your operating system.
 
-You may install either PLINK v1.9 or PLINK v2.0 — both are compatible with this package.
+Please install PLINK v1.9.
 
 ───────────────────────────────────────────────
 Windows
@@ -13,7 +13,7 @@ Windows
 
 1. Visit: https://www.cog-genomics.org/plink/1.9/
 2. Download the Windows zip archive under "Download PLINK 1.9".
-3. Extract the contents of the archive.
+3. Extract the archive contents.
 4. Move `plink.exe` to a folder that is part of your system PATH
    (e.g., `C:\Program Files\plink\`), or note the full path to it.
 5. Optionally, set the environment variable `PLINK_PATH` in R or your system:
@@ -25,13 +25,13 @@ Windows
 macOS (Apple Silicon or Intel)
 ───────────────────────────────────────────────
 
-1. Visit: https://www.cog-genomics.org/plink/1.9/ or https://www.cog-genomics.org/plink/2.0/
+1. Visit: https://www.cog-genomics.org/plink/1.9/
 2. Download the macOS binary (choose the latest build).
-3. Extract the contents and move `plink` or `plink2` to a directory in your PATH,
-   e.g., `/usr/local/bin/` or `/opt/homebrew/bin/`.
-4. You can verify the installation with:
-     plink --version
-5. If you do not want to move the binary into your PATH, you can set:
+3. Extract the archive contents.
+4. Move `plink` to a directory in your PATH, e.g., `/usr/local/bin/` or `/opt/homebrew/bin/`.
+5. Ensure the binary is executable:
+     chmod +x /usr/local/bin/plink
+6. Optionally, set the PLINK_PATH environment variable in R:
 
    In R:
      Sys.setenv(PLINK_PATH = "/path/to/plink")
@@ -40,12 +40,13 @@ macOS (Apple Silicon or Intel)
 Linux
 ───────────────────────────────────────────────
 
-1. Visit: https://www.cog-genomics.org/plink/1.9/ or https://www.cog-genomics.org/plink/2.0/
+1. Visit: https://www.cog-genomics.org/plink/1.9/
 2. Download the Linux binary.
-3. Extract the archive and move the binary to `/usr/local/bin/` or another location in your PATH.
-4. Make sure the binary is executable:
+3. Extract the archive contents. 
+4. Move `plink` to a directory in your PATH, e.g., `/usr/local/bin/` or `/opt/homebrew/bin/`.
+5. Make sure the binary is executable:
      chmod +x /usr/local/bin/plink
-5. Optionally, set the PLINK_PATH environment variable in R or your shell profile:
+5. Optionally, set the PLINK_PATH environment variable in R:
 
    In R:
      Sys.setenv(PLINK_PATH = "/usr/local/bin/plink")
