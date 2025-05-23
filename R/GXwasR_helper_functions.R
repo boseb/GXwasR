@@ -3373,7 +3373,7 @@ ComputeGRMauto <- function(DataDir, ResultDir, finput, partGRM, nGRM, cripticut,
 
     OS <- Sys.info()["sysname"]
 
-    if (OS == "Linux" | OS == "Mac") {
+    if (OS == "Linux" | OS == "Mac" | OS == "Darwin") {
       system(paste0("cat ", ResultDir, "/", "GXwasR.part_", nGRM, "_*.grm.id > ", ResultDir, "/GXwasR.grm.id"))
       system(paste0("cat ", ResultDir, "/", "GXwasR.part_", nGRM, "_*.grm.bin > ", ResultDir, "/GXwasR.bin"))
       system(paste0("cat ", ResultDir, "/", "GXwasR.part_", nGRM, "_*.grm.N.bin > ", ResultDir, "/GXwasR.N.bin"))
@@ -3472,7 +3472,7 @@ ComputeGRMX <- function(DataDir, ResultDir, finput, partGRM, nGRM, minMAF = NULL
 
     OS <- Sys.info()["sysname"]
 
-    if (OS == "Linux" | OS == "Mac") {
+    if (OS == "Linux" | OS == "Mac" | OS == "Darwin" ) {
       system(paste0("cat ", ResultDir, "/", "xGXwasR.part_", nGRM, "_*.grm.id > ", ResultDir, "/xGXwasR.grm.id"))
       system(paste0("cat ", ResultDir, "/", "xGXwasR.part_", nGRM, "_*.grm.bin > ", ResultDir, "/xGXwasR.grm.bin"))
       system(paste0("cat ", ResultDir, "/", "xGXwasR.part_", nGRM, "_*.grm.N.bin > ", ResultDir, "/xGXwasR.grm.N.bin"))
