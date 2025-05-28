@@ -1995,6 +1995,8 @@ MergeRegion <- function(DataDir, ResultDir, finput1, finput2, foutput, use_commo
 #' @param PVbyCHR
 #' Boolean value, `TRUE` or `FALSE` specifying to do the plink to vcf conversion chromosome-wise or not. The default is `TRUE`.
 #'
+#' @importFrom Rsamtools bgzip indexTabix 
+#' 
 #' @return
 #' `NULL`
 #'
