@@ -5628,6 +5628,8 @@ loadAndProcessReferenceAncestry <- function(ResultDir, reference) {
     # ref_ancestry_EUR_AFR_ASIAN <- ref_ancestry
     colnames(ref_ancestry_EUR_AFR_ASIAN) <- c("ID", "Ancestry")
     ref_ancestry_EUR_AFR_ASIAN$Ancestry <- paste0("Ref_", ref_ancestry_EUR_AFR_ASIAN$Ancestry)
+  } else {
+    ## TODO
   }
 
   return(ref_ancestry_EUR_AFR_ASIAN)
@@ -5636,7 +5638,7 @@ loadAndProcessReferenceAncestry <- function(ResultDir, reference) {
 ## Function 112
 ## Added in 3.0
 prepareAncestryData <- function(study_pop, ref_ancestry_EUR_AFR_ASIAN) {
-  study_ancestry <- study_pop
+  study_ancestry <- study_pop ## TODO
   colnames(study_ancestry) <- c("ID", "Ancestry")
   study_ancestry$Ancestry <- paste0("Study_", study_ancestry$Ancestry)
 

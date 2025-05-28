@@ -9,6 +9,7 @@ AncestryCheck(
   ResultDir = tempdir(),
   finput,
   reference = c("HapMapIII_NCBI36", "ThousandGenome"),
+  user_ref_data_dir = NULL,
   filterSNP = TRUE,
   studyLD = TRUE,
   studyLD_window_size = 50,
