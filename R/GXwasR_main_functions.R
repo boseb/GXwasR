@@ -121,6 +121,7 @@ AncestryCheck <-
            ResultDir = tempdir(),
            finput,
            reference = c("HapMapIII_NCBI36", "ThousandGenome"),
+           user_ref_data_dir = NULL,
            filterSNP = TRUE,
            studyLD = TRUE,
            studyLD_window_size = 50,
@@ -161,10 +162,15 @@ AncestryCheck <-
 
         # setupPlink(ResultDir)
 
-        Download_reference(refdata = reference, wdir = ResultDir)
+        Download_reference(refdata = reference, wdir = ResultDir, user_ref_data_dir = user_ref_data_dir)
 
         # Changing the snp ids in reference .bim file
-        rbim <- read.table(paste0(ResultDir, "/", reference, ".bim"))
+        if(is.null(user_ref_data_dir)) {
+          rbim <- read.table(paste0(ResultDir, "/", reference, ".bim"))
+        } else {
+          rbim <- read.table(paste0(ResultDir, "/", user_ref_data_dir, ".bim"))
+        }
+        
         # Assuming sbim is your data frame
         rbim$V2 <- paste(rbim$V1, rbim$V4, sep = ":")
         # Replace the new input .bim file with new snp ids.
@@ -5614,6 +5620,9 @@ FilterSNP <- function(DataDir, ResultDir, finput, foutput, SNPvec, extract = FAL
 #'
 #' @param wdir
 #' A character string specifying the working directory where the reference data will be downloaded and extracted.
+#' 
+#' @param user_ref_data_dir
+#' A path to a directory specifying where reference .fam, .bim, and .bed files may be found.
 #'
 #' @return
 #' Invisible. The function prints a message upon successful download and extraction of the reference data.
@@ -5624,7 +5633,7 @@ FilterSNP <- function(DataDir, ResultDir, finput, foutput, SNPvec, extract = FAL
 #' Download_reference("ThousandGenome", "path/to/your/directory")
 #' Download_reference("HapMapIII_NCBI36", tempdir())
 #' }
-Download_reference <- function(refdata, wdir = tempdir()) {
+Download_reference <- function(refdata, wdir = tempdir(), user_ref_data_dir = NULL) {
   # Input validation
   if (!is.character(refdata) || !is.character(wdir)) {
     stop("Both 'refdata' and 'wdir' must be character strings.")
@@ -5639,70 +5648,78 @@ Download_reference <- function(refdata, wdir = tempdir()) {
     stop("The specified working directory does not exist.")
   }
 
-  tryCatch(
-    {
-      OS <- Sys.info()["sysname"]
-      options(timeout = 200)
+  if (!is.null(user_ref_data_dir) & !dir.exists(user_ref_data_dir)) {
+    stop("The specified working directory does not exist.")
+  }
 
-      if (refdata == "HapMapIII_NCBI36") {
-        url <- "https://figshare.com/ndownloader/files/40585145"
-        file_ext <- ".zip"
-      } else if (refdata == "ThousandGenome") {
-        # url <- "https://figshare.com/ndownloader/files/40728539"
-        url <- "https://figshare.com/ndownloader/files/46552177"
-        file_ext <- ".tar.gz"
-      }
+  if(is.null(user_ref_data_dir)) {
+    tryCatch(
+      {
+        OS <- Sys.info()["sysname"]
+        options(timeout = 200)
 
-      destfile <- paste0(wdir, "/", refdata, file_ext)
-
-      # Downloading based on OS
-      if (OS %in% c("Linux", "macOS")) {
-        utils::download.file(url, destfile, quiet = TRUE)
-      } else if (OS == "Windows") {
-        utils::download.file(url, destfile, quiet = TRUE, mode = "wb")
-      } else {
-        stop("Unsupported Operating System.")
-      }
-
-      # Extracting files
-      if (file_ext == ".zip") {
-        utils::unzip(destfile, exdir = wdir, junkpaths = TRUE)
-      } else if (file_ext == ".tar.gz") {
-        utils::untar(destfile, exdir = wdir)
-      }
-
-      invisible(file.remove(destfile))
-
-      # List the extracted files in the working directory
-
-      ##### Added in V7
-
-      # Define new names
-
-      if (refdata == "ThousandGenome") {
-        new_names <- c("ThousandGenome.bed", "ThousandGenome.bim", "ThousandGenome.fam")
-
-        # Original file paths
-        extracted_files <- as.list(paste0(wdir, "/", c("Ref10Kgenome.bed", "Ref10Kgenome.bim", "Ref10Kgenome.fam")))
-
-        # Rename files
-        for (i in seq_along(extracted_files)) {
-          old_name <- extracted_files[[i]]
-          new_name <- file.path(wdir, new_names[i])
-          file.rename(old_name, new_name)
+        if (refdata == "HapMapIII_NCBI36") {
+          url <- "https://figshare.com/ndownloader/files/40585145"
+          file_ext <- ".zip"
+        } else if (refdata == "ThousandGenome") {
+          # url <- "https://figshare.com/ndownloader/files/40728539"
+          url <- "https://figshare.com/ndownloader/files/46552177"
+          file_ext <- ".tar.gz"
         }
+
+        destfile <- paste0(wdir, "/", refdata, file_ext)
+
+        # Downloading based on OS
+        if (OS %in% c("Linux", "macOS", "Darwin")) {
+          utils::download.file(url, destfile, quiet = TRUE)
+        } else if (OS == "Windows") {
+          utils::download.file(url, destfile, quiet = TRUE, mode = "wb")
+        } else {
+          stop("Unsupported Operating System.")
+        }
+
+        # Extracting files
+        if (file_ext == ".zip") {
+          utils::unzip(destfile, exdir = wdir, junkpaths = TRUE)
+        } else if (file_ext == ".tar.gz") {
+          utils::untar(destfile, exdir = wdir)
+        }
+
+        invisible(file.remove(destfile))
+
+        # List the extracted files in the working directory
+
+        ##### Added in V7
+
+        # Define new names
+
+        if (refdata == "ThousandGenome") {
+          new_names <- c("ThousandGenome.bed", "ThousandGenome.bim", "ThousandGenome.fam")
+
+          # Original file paths
+          extracted_files <- as.list(paste0(wdir, "/", c("Ref10Kgenome.bed", "Ref10Kgenome.bim", "Ref10Kgenome.fam")))
+
+          # Rename files
+          for (i in seq_along(extracted_files)) {
+            old_name <- extracted_files[[i]]
+            new_name <- file.path(wdir, new_names[i])
+            file.rename(old_name, new_name)
+          }
+        }
+        #########
+        print(paste0("Reference data '", refdata, "' downloaded and extracted in ", wdir, "."))
+      },
+      error = function(e) {
+        message("An error occurred: ", e$message)
+        return(NULL)
+      },
+      warning = function(w) {
+        message("Warning: ", w$message)
       }
-      #########
-      print(paste0("Reference data '", refdata, "' downloaded and extracted in ", wdir, "."))
-    },
-    error = function(e) {
-      message("An error occurred: ", e$message)
-      return(NULL)
-    },
-    warning = function(w) {
-      message("Warning: ", w$message)
-    }
-  )
+    )
+  } else {
+    message(paste('Reference data used from', user_ref_data_dir))
+  }
 }
 
 
