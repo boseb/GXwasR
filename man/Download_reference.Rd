@@ -4,12 +4,14 @@
 \alias{Download_reference}
 \title{Download Hapmap phase 3 and 1000 Genome phase 3 Data}
 \usage{
-Download_reference(refdata, wdir = tempdir())
+Download_reference(refdata, wdir = tempdir(), user_ref_data_dir = NULL)
 }
 \arguments{
 \item{refdata}{A character string specifying the reference dataset to download. Should be one of 'HapMapIII_NCBI36' or 'ThousandGenome'.}
 
 \item{wdir}{A character string specifying the working directory where the reference data will be downloaded and extracted.}
+
+\item{user_ref_data_dir}{A path to a directory specifying where reference .fam, .bim, and .bed files may be found.}
 }
 \value{
 Invisible. The function prints a message upon successful download and extraction of the reference data.
