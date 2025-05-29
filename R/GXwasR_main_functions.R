@@ -680,7 +680,7 @@ TestXGene <- function(DataDir,
       invisible(lapply(g, snpcorrFun))
       print("SNP-SNP correlation matrices are done.")
 
-      score.file <- paste0(ResultDir, "/gene.test.score.file.vcf.gz")
+      score_file <- paste0(ResultDir, "/gene.test.score.file.vcf.gz")
       gene.file <- gene_file
 
       print("line 126")
@@ -693,7 +693,21 @@ TestXGene <- function(DataDir,
       }
 
       if (genebasedTest == "SKAT") {
-        return(runSKAT(score_file, paste0(DataDir, "/", gene_file), genes1, paste0(ResultDir, "/cormatrix"), gene_approximation, anno_type, beta_par, weights_function, geno_variance_weights, kernel_p_method, acc_devies, lim_devies, rho, skato_p_threshold))
+        return(runSKAT(
+          score.file = score_file, 
+          gene.file = paste0(DataDir, "/", gene_file), 
+          genes = genes1, 
+          cor.path = paste0(ResultDir, "/cormatrix"), 
+          gene_approximation = gene_approximation, 
+          anno.type = anno_type, 
+          beta.par = beta_par, 
+          weights.function = weights_function, 
+          geno_variance_weights = geno_variance_weights, 
+          kernel_p_method = kernel_p_method, 
+          acc_devies = acc_devies, 
+          lim_devies = lim_devies, 
+          rho = rho, 
+          skato_p_threshold = skato_p_threshold))
       } else if (genebasedTest == "SKATO") {
         return(runSKATO(score_file, paste0(DataDir, "/", gene_file), genes1, paste0(ResultDir, "/cormatrix"), anno_type, gene_approximation, beta_par, weights_function, kernel_p_method, acc_devies, lim_devies, rho, skato_p_threshold))
       } else if (genebasedTest == "sumchi") {
