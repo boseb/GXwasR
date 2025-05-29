@@ -2005,7 +2005,6 @@ MergeRegion <- function(DataDir, ResultDir, finput1, finput2, foutput, use_commo
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' finput <- "GXwasR_example" # Plink file
 #' foutput <- "GXwasR_example1"
 #' DataDir <- system.file("extdata", package = "GXwasR")
@@ -2014,108 +2013,87 @@ MergeRegion <- function(DataDir, ResultDir, finput1, finput2, foutput, use_commo
 #' VtoP <- FALSE
 #' Famfile <- NULL
 #' PVbyCHR <- FALSE
-#' x <- plinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)
-#' }
-plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput, VtoP = FALSE, PtoV = TRUE, Famfile = NULL, PVbyCHR = TRUE) {
-  # Validate inputs
+#' plinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)
+
+plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput, 
+                     VtoP = FALSE, PtoV = TRUE, Famfile = NULL, PVbyCHR = TRUE) {
+  # Validate Inputs
   if (!validateInputForPlinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)) {
     return(NULL)
   }
-
-  tryCatch(
-    {
-      if (PtoV == TRUE) {
-        if (checkFiles(DataDir, finput)) {
-          # setupPlink(ResultDir)
-          
-
-          if (PVbyCHR == FALSE) {
-            executePlinkAd(ResultDir, c(
-              "--bfile", paste0(DataDir, "/", finput),
-              "--recode", "vcf", "--allow-extra-chr",
-              "--out", paste0(ResultDir, "/", foutput, "_vcf"), "--silent"
-            ))
-
-            # Generate vcf.gz file and its index file vcf.gz.tbi
-            utils::download.file(
-              destfile = paste0(ResultDir, "/", "bgzip_tabix.zip"),
-              "https://github.com/boseb/bose_binaries/raw/main/bgzip_tabix.zip", quiet = TRUE,
-            )
-
-            utils::unzip(paste0(ResultDir, "/", "bgzip_tabix.zip"), exdir = ResultDir)
-
-            Sys.chmod(paste0(ResultDir, "/bgzip"), mode = "0777", use_umask = TRUE)
-            # Sys.chmod(paste0(ResultDir,"/tabix"), mode = "0777", use_umask = TRUE)
-            fn <- paste0(foutput, "_vcf.vcf")
-            system(paste0(ResultDir, "/", "./bgzip ", ResultDir, "/", fn))
-          } else {
-            bimfile <- read.table(paste0(DataDir, "/", finput, ".bim"))
-            chrnum <- as.numeric(gsub("chr", "", unique(bimfile$V1)))
-
-            funVCFchr <- function(chrnum) {
-              print(paste0("Running for chromosome = ", chrnum))
-              executePlinkAd(ResultDir, c(
-                "--bfile", paste0(DataDir, "/", finput),
-                "--chr", chrnum,
-                "--recode", "vcf", "--allow-extra-chr",
-                "--out", paste0(ResultDir, "/", foutput, "_chr", chrnum), "--silent"
-              ))
-              # Generate vcf.gz file and its index file vcf.gz.tbi
-              utils::download.file(
-                destfile = paste0(ResultDir, "/", "bgzip_tabix.zip"),
-                "https://github.com/boseb/bose_binaries/raw/main/bgzip_tabix.zip", quiet = TRUE,
-              )
-
-              utils::unzip(paste0(ResultDir, "/", "bgzip_tabix.zip"), exdir = ResultDir)
-
-              Sys.chmod(paste0(ResultDir, "/bgzip"), mode = "0777", use_umask = TRUE)
-              fn <- paste0(foutput, "_chr", chrnum, ".vcf")
-              system(paste0(ResultDir, "/", "./bgzip ", ResultDir, "/", fn))
-            }
-            invisible(lapply(chrnum, funVCFchr))
-          }
-
-          removeTempFiles(ResultDir, "bgzip")
-          removeTempFiles(ResultDir, "log")
-          invisible(removeTempFiles(ResultDir, "hh"))
-        } else {
-          stop("There are no Plink files in DataDir. Please specify correct DataDir path with input Plink files.")
-        }
-      } else if (VtoP == TRUE) {
-        if (file.exists(paste0(DataDir, "/", finput, ".vcf"))) {
-          # setupPlink(ResultDir)
-          
-
-          executePlinkAd(ResultDir, c(
-            "--vcf", paste0(DataDir, "/", finput, ".vcf"),
-            "--keep-allele-order", "--allow-extra-chr",
-            "--make-bed", "--const-fid", "1",
-            "--out", paste0(ResultDir, "/", foutput), "--silent"
-          ))
-
-          # Replace the .fam file if necessary
-          if (!is.null(Famfile)) {
-            fam <- read.table(paste0(DataDir, "/", Famfile))
-            write.table(fam, file = paste0(ResultDir, "/", foutput, ".fam"), col.names = FALSE, row.names = FALSE, quote = FALSE)
-          } else {
-            print("Famfile is null. The generated .fam file will have missing phenotypes.")
-          }
-        } else {
-          stop("There is missing VCF file in specified DataDir. Please specify correct directory path with input VCF files.")
-        }
+  
+  tryCatch({
+    if (PtoV) {
+      if (!checkFiles(DataDir, finput)) {
+        stop("There are no Plink files in DataDir. Please specify correct DataDir path with input Plink files.")
       }
-
-      print(paste0("Output files are produced in ResultDir: ", ResultDir))
-      removeTempFiles(ResultDir, "plink")
-    },
-    error = function(e) {
-      message("An error occurred: ", e$message)
-      return(NULL)
-    },
-    warning = function(w) {
-      message("Warning: ", w$message)
+      
+      convertPlinkToVCF <- function(prefix, chr = NULL) {
+        args <- c("--bfile", file.path(DataDir, finput),
+        "--recode", "vcf", "--allow-extra-chr",
+        "--out", file.path(ResultDir, prefix), "--silent")
+        if (!is.null(chr)) {
+          args <- c(args, "--chr", chr)
+        }
+        executePlinkAd(ResultDir, args)
+        
+        # Compress and index
+        vcf_path <- file.path(ResultDir, paste0(prefix, ".vcf"))
+        vcf_gz_path <- Rsamtools::bgzip(
+          file = vcf_path,
+          dest = paste0(vcf_path, ".gz"),
+          overwrite = TRUE
+        )
+        Rsamtools::indexTabix(vcf_gz_path, format = "vcf")
+      }
+      
+      if (PVbyCHR) {
+        bimfile <- read.table(file.path(DataDir, paste0(finput, ".bim")))
+        chrs <- unique(bimfile$V1)
+        chrs <- gsub("^chr", "", chrs)  # Normalize chromosome names
+        invisible(lapply(chrs, function(chr) {
+          message("Processing chromosome: ", chr)
+          convertPlinkToVCF(paste0(foutput, "_chr", chr), chr)
+        }))
+      } else {
+        convertPlinkToVCF(paste0(foutput, "_vcf"))
+      }
+      removeTempFiles(ResultDir, "log")
+      removeTempFiles(ResultDir, "hh")
     }
-  )
+    
+    if (VtoP) {
+      vcf_file <- file.path(DataDir, paste0(finput, ".vcf"))
+      if (!file.exists(vcf_file)) {
+        stop("VCF file not found in DataDir. Please specify correct directory path with input VCF files.")
+      }
+      
+      executePlinkAd(ResultDir, c(
+        "--vcf", vcf_file,
+        "--keep-allele-order", "--allow-extra-chr",
+        "--make-bed", "--const-fid", "1",
+        "--out", file.path(ResultDir, foutput), "--silent"
+      ))
+      
+      if (!is.null(Famfile)) {
+        fam <- read.table(file.path(DataDir, Famfile))
+        write.table(fam, file = file.path(ResultDir, paste0(foutput, ".fam")),
+        col.names = FALSE, row.names = FALSE, quote = FALSE)
+      } else {
+        message("Famfile is NULL. The generated .fam file will have missing phenotypes.")
+      }
+    }
+    
+    message("Output files are produced in ResultDir: ", ResultDir)
+    removeTempFiles(ResultDir, "plink")
+  },
+  error = function(e) {
+    message("An error occurred: ", e$message)
+    return(NULL)
+  },
+  warning = function(w) {
+    message("Warning: ", w$message)
+  })
 }
 
 
