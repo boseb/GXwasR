@@ -4693,24 +4693,7 @@ ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nit
 ## Function 97
 # sumFREGAT (2017-2022) Gulnara R. Svishcheva & Nadezhda M. Belonogova, ICG SB RAS
 geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.RData", output.file.prefix) {
-  OS <- Sys.info()["sysname"]
-  if (OS == "Windows") {
-    print("Currently this function maynot work on Windows as bgzip and tabix for windows are down. Pleas use linux environment.")
 
-    utils::download.file(
-      destfile = paste0(ResultDir, "/", "bgzip_tabix.zip"),
-      "https://github.com/boseb/bose_binaries/raw/main/bgzip_tabix.zip", mode = "wb", quiet = TRUE,
-    )
-  } else {
-    utils::download.file(
-      destfile = paste0(ResultDir, "/", "bgzip_tabix.zip"),
-      "https://github.com/boseb/bose_binaries/raw/main/bgzip_tabix.zip", quiet = TRUE,
-    )
-  }
-  utils::unzip(paste0(ResultDir, "/", "bgzip_tabix.zip"), exdir = ResultDir)
-
-  Sys.chmod(paste0(ResultDir, "/bgzip"), mode = "0777", use_umask = TRUE)
-  Sys.chmod(paste0(ResultDir, "/tabix"), mode = "0777", use_umask = TRUE)
   # 'CHROM', 'POS', 'ID', 'EA', 'P', 'BETA', 'EAF'
   if (length(data) == 1) {
     input.file <- data
@@ -4928,15 +4911,21 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
     suppressWarnings(write.table(vcf, paste0(ResultDir, "/", fn), row.names = FALSE, quote = FALSE, append = TRUE, sep = "\t"))
   }
 
-  fn.gz <- paste(fn, "gz", sep = ".")
-  # if (file.exists(fn.gz)) system(paste('rm', fn.gz))
-  # system(paste('./bgzip', fn))
-  # system(paste('./tabix -p vcf', fn.gz))
-  # print(paste('File', fn.gz, 'has been created'))
-  if (file.exists(paste0(ResultDir, "/", fn.gz))) system(paste("rm", paste0(ResultDir, "/", fn.gz)))
-  system(paste0(ResultDir, "/", "./bgzip ", ResultDir, "/", fn))
-  system(paste0(ResultDir, "/", "./tabix -p vcf ", ResultDir, "/", fn.gz))
-  print(paste("File", fn.gz, "has been created"))
+  # Build full path to input file and its gzipped output
+  vcf_path <- file.path(ResultDir, fn)
+  vcf_gz <- paste0(vcf_path, ".gz")
+
+  # Remove existing gzipped file if it exists
+  if (file.exists(vcf_gz)) file.remove(vcf_gz)
+
+  # Compress the VCF using Rsamtools::bgzip()
+  Rsamtools::bgzip(file = vcf_path, dest = vcf_gz, overwrite = TRUE)
+
+  # Index the gzipped VCF using Rsamtools::indexTabix()
+  Rsamtools::indexTabix(file = vcf_gz, format = "vcf")
+
+  # Confirmation message
+  message(paste("File", vcf_gz, "has been created and indexed"))
 }
 
 ## Function 98
