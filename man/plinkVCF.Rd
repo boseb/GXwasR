@@ -55,7 +55,7 @@ PtoV <- TRUE
 VtoP <- FALSE
 Famfile <- NULL
 PVbyCHR <- FALSE
-x <- plinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)
+plinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)
 }
 \author{
 Banabithi Bose
