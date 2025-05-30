@@ -5994,6 +5994,15 @@ LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, st
 #'
 #' @param numCores
 #' The number of cores to be used. The default is 2.
+#' 
+#' @details
+#' This function requires access to the reference LD data via an environment variable.
+#' You must set one of the following environment variables to the appropriate directory:
+#' 
+#' - `UKB_ARRAY_PATH` for the Axiom Array reference (`UKB_array`)
+#' - `UKB_IMPUTED_PATH` for the full imputed reference (`UKB_imputed`)
+#' - `UKB_IMPUTED_HAPMAP2_PATH` for the imputed HapMap2 subset (`UKB_imputed_hapmap2`)
+#'
 #'
 #' @return A list is returned with:
 #' \itemize{
@@ -6007,6 +6016,8 @@ LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, st
 #'
 #' @references
 #' \insertRef{Ning2020}{GXwasR}
+#' 
+#' @export
 #'
 #' @examples
 #' sumstat1 <- data.frame(SNP = "rs1", A1 = "A", A2 = "G", N = 1000, Z = 2.5)
@@ -6016,7 +6027,7 @@ LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, st
 #'  res <- SumstatGenCorr(ResultDir, "UKB_imputed_hapmap2_SVD_eigen99_extraction",
 #'                       "sumstat1", "sumstat2")
 #' }
-#' @export
+
 SumstatGenCorr <- function(
   ResultDir = tempdir(),
   referenceLD,
