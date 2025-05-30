@@ -71,6 +71,15 @@ and genetic correlation.
 This function calculates the genetic correlation between two summary statistics
 using a specified reference linkage disequilibrium (LD) matrix from the UK Biobank.
 }
+\details{
+This function requires access to the reference LD data via an environment variable.
+You must set one of the following environment variables to the appropriate directory:
+\itemize{
+\item \code{UKB_ARRAY_PATH} for the Axiom Array reference (\code{UKB_array})
+\item \code{UKB_IMPUTED_PATH} for the full imputed reference (\code{UKB_imputed})
+\item \code{UKB_IMPUTED_HAPMAP2_PATH} for the imputed HapMap2 subset (\code{UKB_imputed_hapmap2})
+}
+}
 \examples{
 sumstat1 <- data.frame(SNP = "rs1", A1 = "A", A2 = "G", N = 1000, Z = 2.5)
 sumstat2 <- data.frame(SNP = "rs1", A1 = "A", A2 = "G", N = 1000, Z = 1.8)
