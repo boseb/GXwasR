@@ -469,7 +469,7 @@ AncestryCheck <-
 #' @param reference_matrix_used
 #' Boolean value, `TRUE` or `FALSE` logical indicating whether the correlation matrices were generated using the reference matrix. The
 #' default is `FALSE`. If  `TRUE`, regularization algorithms will be applied to ensure the invertibility and numerical stability of
-#' the matrices.
+#' the matrices.TESTTESTTEST
 #'
 #' @returns
 #' A data frame with columns:
