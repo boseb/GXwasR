@@ -5656,7 +5656,7 @@ Download_reference <- function(refdata, wdir = tempdir()) {
       destfile <- paste0(wdir, "/", refdata, file_ext)
 
       # Downloading based on OS
-      if (OS %in% c("Linux", "macOS")) {
+      if (OS %in% c("Linux", "macOS", "Darwin")) {
         utils::download.file(url, destfile, quiet = TRUE)
       } else if (OS == "Windows") {
         utils::download.file(url, destfile, quiet = TRUE, mode = "wb")
