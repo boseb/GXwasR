@@ -72,10 +72,13 @@ This function calculates the genetic correlation between two summary statistics
 using a specified reference linkage disequilibrium (LD) matrix from the UK Biobank.
 }
 \examples{
-# Not Run
-# ResultDir = tempdir()
-# res <- SumstatGenCorr(ResultDir, "UKB_imputed_hapmap2_SVD_eigen99_extraction",
-#                      "sumstat1", "sumstat2")
+sumstat1 <- data.frame(SNP = "rs1", A1 = "A", A2 = "G", N = 1000, Z = 2.5)
+sumstat2 <- data.frame(SNP = "rs1", A1 = "A", A2 = "G", N = 1000, Z = 1.8)
+if (nzchar(Sys.getenv("UKB_IMPUTED_HAPMAP2_PATH"))) {
+ResultDir = tempdir()
+ res <- SumstatGenCorr(ResultDir, "UKB_imputed_hapmap2_SVD_eigen99_extraction",
+                      "sumstat1", "sumstat2")
+}
 }
 \references{
 \insertRef{Ning2020}{GXwasR}

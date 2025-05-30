@@ -6009,10 +6009,13 @@ LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, st
 #' \insertRef{Ning2020}{GXwasR}
 #'
 #' @examples
-#' # Not Run
-#' # ResultDir = tempdir()
-#' # res <- SumstatGenCorr(ResultDir, "UKB_imputed_hapmap2_SVD_eigen99_extraction",
-#' #                      "sumstat1", "sumstat2")
+#' sumstat1 <- data.frame(SNP = "rs1", A1 = "A", A2 = "G", N = 1000, Z = 2.5)
+#' sumstat2 <- data.frame(SNP = "rs1", A1 = "A", A2 = "G", N = 1000, Z = 1.8)
+#' if (nzchar(Sys.getenv("UKB_IMPUTED_HAPMAP2_PATH"))) {
+#' ResultDir = tempdir()
+#'  res <- SumstatGenCorr(ResultDir, "UKB_imputed_hapmap2_SVD_eigen99_extraction",
+#'                       "sumstat1", "sumstat2")
+#' }
 #' @export
 SumstatGenCorr <- function(
   ResultDir = tempdir(),
