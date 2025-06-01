@@ -75,18 +75,21 @@ using a specified reference linkage disequilibrium (LD) matrix from the UK Bioba
 This function requires access to the reference LD data via an environment variable.
 You must set one of the following environment variables to the appropriate directory:
 \itemize{
-\item \code{UKB_ARRAY_PATH} for the Axiom Array reference (\code{UKB_array})
-\item \code{UKB_IMPUTED_PATH} for the full imputed reference (\code{UKB_imputed})
-\item \code{UKB_IMPUTED_HAPMAP2_PATH} for the imputed HapMap2 subset (\code{UKB_imputed_hapmap2})
+\item \code{UKB_ARRAY_PATH} for the Axiom Array reference (\code{UKB_array_SVD_eigen90_extraction})
+\item \code{UKB_IMPUTED_PATH} for the full imputed reference (\code{UKB_imputed_SVD_eigen99_extraction})
+\item \code{UKB_IMPUTED_HAPMAP2_PATH} for the imputed HapMap2 subset (\code{UKB_imputed_hapmap2_SVD_eigen99_extraction})
 }
 }
 \examples{
-sumstat1 <- data.frame(SNP = "rs1", A1 = "A", A2 = "G", N = 1000, Z = 2.5)
-sumstat2 <- data.frame(SNP = "rs1", A1 = "A", A2 = "G", N = 1000, Z = 1.8)
+sumstat1 <- GXwasR:::simulateSumstats()
+sumstat2 <- GXwasR:::simulateSumstats()
 if (nzchar(Sys.getenv("UKB_IMPUTED_HAPMAP2_PATH"))) {
-ResultDir = tempdir()
- res <- SumstatGenCorr(ResultDir, "UKB_imputed_hapmap2_SVD_eigen99_extraction",
-                      "sumstat1", "sumstat2")
+ res <- SumstatGenCorr(
+   ResultDir = tempdir(), 
+   referenceLD = "UKB_imputed_hapmap2_SVD_eigen99_extraction",
+   sumstat1 = sumstat1,
+   sumstat2 = sumstat2
+ )
 }
 }
 \references{
