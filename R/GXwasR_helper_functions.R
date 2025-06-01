@@ -9244,3 +9244,39 @@ llfun <- function(param, N, M, Nref = 1000, lam, bstar, lim = exp(-10)) {
   ll <- sum(log(lamh2)) + sum(bstar^2 / (lamh2))
   return(ll)
 }
+
+#' Simulate mock summary statistics for SNPs
+#'
+#' Generates a mock data frame containing 100 SNPs with random identifiers,
+#' distinct allele pairs, sample sizes, and Z-scores. Intended for internal
+#' testing or demonstration purposes.
+#' 
+#' @importFrom stats rnorm
+#'
+#' @return A data.frame with columns: SNP, A1, A2, N, Z
+#' @keywords internal
+
+simulateSumstats <- function() {
+  set.seed(123)
+
+  n_snps <- 100
+  snp_ids <- paste0("rs", sample(1e6:2e6, n_snps))
+  alleles <- c("A", "C", "G", "T")
+  
+  # Generate distinct mock allele pairs
+  get_alleles <- function(n) {
+    A1 <- sample(alleles, n, replace = TRUE)
+    A2 <- sapply(A1, function(a) sample(setdiff(alleles, a), 1))
+    list(A1 = A1, A2 = A2)
+  }
+  
+  allele_data <- get_alleles(n_snps)
+  
+  data.frame(
+    SNP = snp_ids,
+    A1 = allele_data$A1,
+    A2 = allele_data$A2,
+    N = sample(50000:100000, n_snps, replace = TRUE),
+    Z = rnorm(n_snps)
+  )
+}
