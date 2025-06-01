@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# GXwasR
+# GXwasR <img src="man/figures/logo.png" align="right" height="44" alt="" />
 
 A tool for conducting sex-aware quality control, association analysis,
 and testing various models of sex-dependent genetic effects in complex
@@ -53,7 +53,19 @@ You can install the development version of GXwasR from
 pak::pak("boseb/GXwasR")
 ```
 
-## External Dependency: PLINK
+### External Dependencies
+
+This package requires PLINK and GCTA, two widely used command-line tools
+for genetic data analysis:
+
+- PLINK: A toolset for genome association and linkage analysis.
+- GCTA: Genome-wide Complex Trait Analysis, used for estimating genetic
+  relationships and variance components.
+
+Please follow the instructions below to ensure both tools are installed
+and available to your system before use.
+
+#### PLINK
 
 This package depends on the [PLINK](https://www.cog-genomics.org/plink/)
 command-line tool (version 1.9). PLINK must be installed separately and
@@ -61,10 +73,10 @@ made available on your system.
 
 PLINK is not bundled with this package and must either:
 
-- be on your system PATH, or
-- be specified via the PLINK_PATH environment variable.
+- (*preferred*) be specified via the PLINK_PATH environment variable, or
+- be on your system PATH.
 
-### 🔧 PLINK Installation Instructions
+##### 🔧 PLINK Installation Instructions
 
 Binaries for all major platforms can be downloaded from:
 
@@ -73,7 +85,7 @@ Binaries for all major platforms can be downloaded from:
 Detailed, platform-specific setup instructions can be found in the
 INSTALL file included with this package.
 
-### 🧭 Configuring the PLINK Path
+##### 🧭 Configuring the PLINK Path
 
 This package will attempt to locate PLINK using:
 
@@ -103,7 +115,7 @@ if (!file.exists(plink_path) || !nzchar(plink_path)) {
 }
 ```
 
-## External Dependency: GCTA
+#### GCTA
 
 This package also utilizes the
 [GCTA](https://yanglab.westlake.edu.cn/software/gcta/#Overview)
@@ -112,10 +124,10 @@ installed separately and made available on your system.
 
 GCTA is not bundled with this package and must either:
 
--be on your system PATH, or - be specified via the GCTA_PATH environment
-variable.
+- (*preferred*) be specified via the GCTA_PATH environment variable, or
+- be on your system PATH.
 
-### 🔧 GCTA Installation Instructions
+##### 🔧 GCTA Installation Instructions
 
 Binaries for all major platforms can be downloaded from the
 [GCTA](https://yanglab.westlake.edu.cn/software/gcta/#Overview) website.
@@ -123,12 +135,12 @@ Binaries for all major platforms can be downloaded from the
 Detailed, platform-specific setup instructions can be found in the
 INSTALL file included with this package.
 
-### 🧭 Configuring the GCTA Path
+##### 🧭 Configuring the GCTA Path
 
 This package will attempt to locate GCTA using:
 
 - The GCTA_PATH environment variable, if set.
-- The system path, via Sys.which(“gcta64”).
+- The system path, via `Sys.which("gcta64")`.
 
 If GCTA is not found, an error will be raised with guidance on how to
 resolve it.
@@ -152,6 +164,27 @@ if (!file.exists(gcta_path) || !nzchar(gcta_path)) {
   stop("GCTA binary not found. Please install GCTA and/or set the GCTA_PATH environment variable.")
 }
 ```
+
+#### ⚠️ macOS Security Warning
+
+macOS may block these applications from launching because they were
+downloaded from the internet and aren’t explicitly approved by Apple. If
+you see a warning like:
+
+    "“(PLINK/GCTA)” can’t be opened because Apple cannot check it for malicious software."
+
+You can still run the app by following these steps:
+
+1.  Open System Settings (or System Preferences on older macOS
+    versions).
+2.  Go to Privacy & Security.
+3.  Scroll down to the Security section.
+4.  You should see a message about the blocked app — click “Open
+    Anyway”.
+5.  Confirm when prompted.
+
+For more details, see Apple’s official guide:
+<https://support.apple.com/en-us/102445>
 
 ## Example Analysis
 
@@ -203,7 +236,7 @@ ResultGXwas <- GXwas(
 
 <img src="man/figures/README-example-1.png" width="100%" /><img src="man/figures/README-example-2.png" width="100%" /><img src="man/figures/README-example-3.png" width="100%" /><img src="man/figures/README-example-4.png" width="100%" /><img src="man/figures/README-example-5.png" width="100%" /><img src="man/figures/README-example-6.png" width="100%" />
 
-    #> [1] "Three dataframes such as, CombinedWAS, MaleWAS and FemaleWAS are produced in/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpqOMzTI"
+    #> [1] "Three dataframes such as, CombinedWAS, MaleWAS and FemaleWAS are produced in/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpS3uFmt"
     ResultGXwas
     #> $CombinedWAS
     #> Key: <SNP>

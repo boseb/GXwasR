@@ -71,11 +71,26 @@ and genetic correlation.
 This function calculates the genetic correlation between two summary statistics
 using a specified reference linkage disequilibrium (LD) matrix from the UK Biobank.
 }
+\details{
+This function requires access to the reference LD data via an environment variable.
+You must set one of the following environment variables to the appropriate directory:
+\itemize{
+\item \code{UKB_ARRAY_PATH} for the Axiom Array reference (\code{UKB_array_SVD_eigen90_extraction})
+\item \code{UKB_IMPUTED_PATH} for the full imputed reference (\code{UKB_imputed_SVD_eigen99_extraction})
+\item \code{UKB_IMPUTED_HAPMAP2_PATH} for the imputed HapMap2 subset (\code{UKB_imputed_hapmap2_SVD_eigen99_extraction})
+}
+}
 \examples{
-# Not Run
-# ResultDir = tempdir()
-# res <- SumstatGenCorr(ResultDir, "UKB_imputed_hapmap2_SVD_eigen99_extraction",
-#                      "sumstat1", "sumstat2")
+sumstat1 <- GXwasR:::simulateSumstats()
+sumstat2 <- GXwasR:::simulateSumstats()
+if (nzchar(Sys.getenv("UKB_IMPUTED_HAPMAP2_PATH"))) {
+ res <- SumstatGenCorr(
+   ResultDir = tempdir(), 
+   referenceLD = "UKB_imputed_hapmap2_SVD_eigen99_extraction",
+   sumstat1 = sumstat1,
+   sumstat2 = sumstat2
+ )
+}
 }
 \references{
 \insertRef{Ning2020}{GXwasR}
