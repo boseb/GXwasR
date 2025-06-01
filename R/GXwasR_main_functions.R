@@ -5662,7 +5662,7 @@ Download_reference <- function(refdata, wdir = tempdir()) {
       destfile <- paste0(wdir, "/", refdata, file_ext)
 
       # Downloading based on OS
-      if (OS %in% c("Linux", "macOS")) {
+      if (OS %in% c("Linux", "macOS", "Darwin")) {
         utils::download.file(url, destfile, quiet = TRUE)
       } else if (OS == "Windows") {
         utils::download.file(url, destfile, quiet = TRUE, mode = "wb")
@@ -6000,6 +6000,15 @@ LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, st
 #'
 #' @param numCores
 #' The number of cores to be used. The default is 2.
+#' 
+#' @details
+#' This function requires access to the reference LD data via an environment variable.
+#' You must set one of the following environment variables to the appropriate directory:
+#' 
+#' - `UKB_ARRAY_PATH` for the Axiom Array reference (`UKB_array_SVD_eigen90_extraction`)
+#' - `UKB_IMPUTED_PATH` for the full imputed reference (`UKB_imputed_SVD_eigen99_extraction`)
+#' - `UKB_IMPUTED_HAPMAP2_PATH` for the imputed HapMap2 subset (`UKB_imputed_hapmap2_SVD_eigen99_extraction`)
+#'
 #'
 #' @return A list is returned with:
 #' \itemize{
@@ -6013,54 +6022,70 @@ LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, st
 #'
 #' @references
 #' \insertRef{Ning2020}{GXwasR}
+#' 
+#' @export
 #'
 #' @examples
-#' # Not Run
-#' # ResultDir = tempdir()
-#' # res <- SumstatGenCorr(ResultDir, "UKB_imputed_hapmap2_SVD_eigen99_extraction",
-#' #                      "sumstat1", "sumstat2")
-#' @export
-SumstatGenCorr <- function(ResultDir = tempdir(), referenceLD, sumstat1, sumstat2, Nref = 335265, N0 = min(sumstat1$N), eigen.cut = "automatic", lim = exp(-18), parallel = FALSE, numCores = 2) {
-  # Ensure HDL package is installed and loaded
-  # devtools::install_github("zhenin/HDL/HDL")
-  # library(HDL)
+#' sumstat1 <- GXwasR:::simulateSumstats()
+#' sumstat2 <- GXwasR:::simulateSumstats()
+#' if (nzchar(Sys.getenv("UKB_IMPUTED_HAPMAP2_PATH"))) {
+#'  res <- SumstatGenCorr(
+#'    ResultDir = tempdir(), 
+#'    referenceLD = "UKB_imputed_hapmap2_SVD_eigen99_extraction",
+#'    sumstat1 = sumstat1,
+#'    sumstat2 = sumstat2
+#'  )
+#' }
 
-  # Define URLs based on reference LD
-  urls <- c(
+SumstatGenCorr <- function(
+  ResultDir = tempdir(),
+  referenceLD,
+  sumstat1,
+  sumstat2,
+  Nref = 335265,
+  N0 = min(sumstat1$N),
+  eigen.cut = "automatic",
+  lim = exp(-18),
+  parallel = FALSE,
+  numCores = 2
+) {
+  reference_paths <- list(
+    UKB_imputed_hapmap2_SVD_eigen99_extraction = Sys.getenv("UKB_IMPUTED_HAPMAP2_PATH", unset = NA),
+    UKB_imputed_SVD_eigen99_extraction = Sys.getenv("UKB_IMPUTED_PATH", unset = NA),
+    UKB_array_SVD_eigen90_extraction = Sys.getenv("UKB_ARRAY_PATH", unset = NA)
+  )
+
+  reference_urls <- c(
     UKB_imputed_hapmap2_SVD_eigen99_extraction = "https://www.dropbox.com/s/kv5zhgu274wg9z5/UKB_imputed_hapmap2_SVD_eigen99_extraction.tar.gz?dl=1",
     UKB_imputed_SVD_eigen99_extraction = "https://www.dropbox.com/s/6js1dzy4tkc3gac/UKB_imputed_SVD_eigen99_extraction.tar.gz?dl=1",
     UKB_array_SVD_eigen90_extraction = "https://www.dropbox.com/s/fuvpwsf6r8tjd6c/UKB_array_SVD_eigen90_extraction.tar.gz?dl=1"
   )
 
-  if (!referenceLD %in% names(urls)) {
-    stop("Invalid referenceLD. Choose from: ", paste(names(urls), collapse = ", "))
+  if (!referenceLD %in% names(reference_paths)) {
+    stop("Invalid referenceLD. Choose from: ", paste(names(reference_paths), collapse = ", "))
   }
 
-  # Prepare paths and URL
-  url <- urls[[referenceLD]]
-  full_path <- file.path(ResultDir, paste0(referenceLD, ".tar.gz"))
-  LD_path <- file.path(ResultDir, referenceLD)
+  LD_path <- reference_paths[[referenceLD]]
 
-  # Check if the referenceLD folder exists and contains files
-  if (!dir.exists(LD_path) || length(list.files(LD_path)) == 0) {
-    # Set internet download options for a longer timeout and larger buffer size
-    options(timeout = 500) # Increase timeout to 500 seconds
-    options(download.file.method = "libcurl") # Use 'libcurl' for potentially better handling of large files
-
-    # Download and extract the file
-    download.file(url, destfile = full_path, mode = "wb")
-    untar(full_path, exdir = ResultDir)
-  } else {
-    message("Reference LD data already exists, skipping download and extraction.")
+  if (is.na(LD_path) || !dir.exists(LD_path)) {
+    stop(paste0(
+      "The environment variable for '", referenceLD, "' is not set or the directory does not exist.\n",
+      "Please set the appropriate environment variable before running this function.\n",
+      "Reference data can be obtained from: ", reference_urls[[referenceLD]]
+    ))
   }
 
-  # Compute genetic correlation using HDL
+  # Compute genetic correlation
   res.HDL <- tryCatch(
     {
-      if (parallel == FALSE) {
-        HDL.rg(gwas1.df = sumstat1, gwas2.df = sumstat2, LD.path = LD_path, Nref = Nref, N0 = N0, eigen.cut = eigen.cut, lim = lim)
-      } else if (parallel == TRUE) {
-        HDL.rg.parallel(gwas1.df = sumstat1, gwas2.df = sumstat2, LD.path = LD_path, Nref = Nref, N0 = N0, eigen.cut = eigen.cut, lim = lim, numCores = numCores)
+      if (!parallel) {
+        HDL.rg(gwas1.df = sumstat1, gwas2.df = sumstat2,
+               LD.path = LD_path, Nref = Nref, N0 = N0,
+               eigen.cut = eigen.cut, lim = lim)
+      } else {
+        HDL.rg.parallel(gwas1.df = sumstat1, gwas2.df = sumstat2,
+                        LD.path = LD_path, Nref = Nref, N0 = N0,
+                        eigen.cut = eigen.cut, lim = lim, numCores = numCores)
       }
     },
     error = function(e) {
