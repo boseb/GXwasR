@@ -495,6 +495,7 @@ AncestryCheck <-
 #' @importFrom regioneR toGRanges
 #' @importFrom plyranges join_overlap_intersect
 #' @importFrom sumFREGAT SKAT SKATO sumchi ACAT BT PCA FLM simpleM minp
+#' @importFrom rlang inform format_error_bullets
 #'
 #' @export
 #'
@@ -612,7 +613,7 @@ TestXGene <- function(DataDir,
       genes.gr <- GenomicRanges::makeGRangesFromDataFrame(genes, keep.extra.columns = T)
 
       suppressWarnings(SNPfile <- read.table(
-        file = paste0(DataDir, "/", finput, ".bim"),
+        file = paste0(file.path(DataDir, finput), ".bim"),
         header = FALSE,
         # na = "NA",
         na.strings = "NA"
@@ -622,21 +623,31 @@ TestXGene <- function(DataDir,
       SNPfile$start <- SNPfile$V4
       SNPfile$end <- SNPfile$V4
       SNPfile$SNP <- SNPfile$V2
-      snp_data <- SNPfile[, c(7, 8, 9, 10)]
+      snp_data <- SNPfile %>% select(.data$chr, .data$start, .data$end, .data$SNP)
       snp.gr <- regioneR::toGRanges(snp_data)
       gene_snp_intersect <-
         as.data.frame(plyranges::join_overlap_intersect(genes.gr, snp.gr))
-      print(paste0(length(unique(
-        gene_snp_intersect$gene_name
-      )), " genes are having ", length(unique(
-        gene_snp_intersect$SNP
-      )), " SNPs"))
+      rlang::inform(
+        rlang::format_error_bullets(
+          c("i" = paste0(
+            length(
+              unique(
+                gene_snp_intersect$gene_name
+              )
+            ), " genes are having ", length(
+              unique(
+                gene_snp_intersect$SNP
+              )
+            ), " SNPs")
+          )
+        )
+      )
       gene_snp <- unique(gene_snp_intersect[, c(6, 11)])
       snpcount <- as.data.frame(table(gene_snp$gene_name))
 
       g <- as.character(snpcount[, 1])
-      dir.create(path = paste0(ResultDir, "/cormatrix"))
-      print("SNP-SNP correlation matrices are being created.")
+      dir.create(path = file.path(ResultDir, "cormatrix"))
+      rlang::inform(rlang::format_error_bullets("SNP-SNP correlation matrices are being created..."))
 
       snpcorrFun <- function(g) {
         # g <- gene_snp$gene_name
@@ -677,12 +688,10 @@ TestXGene <- function(DataDir,
       }
 
       invisible(lapply(g, snpcorrFun))
-      print("SNP-SNP correlation matrices are done.")
+      rlang::inform(rlang::format_error_bullets(c('v' ="SNP-SNP correlation matrices are done.")))
 
       score_file <- paste0(ResultDir, "/gene.test.score.file.vcf.gz")
       gene.file <- gene_file
-
-      print("line 126")
 
       if (is.null(max_gene)) {
         genes1 <- as.vector(g)
@@ -730,7 +739,11 @@ TestXGene <- function(DataDir,
       return(NULL)
     },
     warning = function(w) {
-      message("Warning: ", w$message)
+      rlang::inform(
+        rlang::format_error_bullets(
+          c('!' = paste("Warning:", w$message))
+        )
+      )
     }
   )
 }
