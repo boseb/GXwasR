@@ -8,4 +8,6 @@
 ^gcta-.*\.zip$
 ^gcta_extracted$
 ^\.github$
+^\.vscode$
 ^GXwasR-package\.Rd$
+^logo
