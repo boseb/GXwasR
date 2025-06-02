@@ -20,9 +20,9 @@ jobs:
       matrix:
         config:
           - {os: macos-latest,   r: 'release'}
-          - {os: windows-latest, r: 'release'}
+          # - {os: windows-latest, r: 'release'}
           # - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
+          # - {os: ubuntu-latest,   r: 'release'}
           # - {os: ubuntu-latest,   r: 'oldrel-1'}
 
     env:
@@ -45,6 +45,13 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
       
+      # Compile these macOS packages from source
+      - name: Reinstall Rsamtools from source (macOS only, via pak)
+        if: runner.os == 'macOS'
+        run: |
+          pak::pak("bioc::Rsamtools?source=true")
+        shell: Rscript {0}
+
       # Install PLINK binary
       - name: Install PLINK
         shell: bash

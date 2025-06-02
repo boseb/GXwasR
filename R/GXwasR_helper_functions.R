@@ -4735,7 +4735,12 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
   ColNames <- c("CHROM", "POS", "EAF")
   v <- !ColNames %in% colnames(df)
   take <- ColNames[v]
-  if (sum(v)) print(paste("Columns that are missing and will be looked for in reference data:", paste(take, collapse = ", ")))
+  if (sum(v)) 
+    rlang::inform(
+      rlang::format_error_bullets(
+        c("i" = paste("Columns that are missing and will be looked for in reference data:", paste(take, collapse = ", ")))
+      )
+    )
   take[take == "EAF"] <- "AF"
 
   if ("BETA" %in% colnames(df)) {
@@ -4745,10 +4750,18 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
       colnames(df)[which(colnames(df) == "ALT")] <- "ALT0"
       take <- c(take, "REF", "ALT")
     } else {
-      print("Effect allele column not found, effect sizes cannot be linked")
+      rlang::inform(
+        rlang::format_error_bullets(
+          c("x" = "Effect allele column not found, effect sizes cannot be linked")
+        )
+      )
     }
   } else {
-    print("Effect sizes (beta) column not found")
+    rlang::inform(
+      rlang::format_error_bullets(
+        c("x" = "Effect sizes (beta) column not found")
+      )
+    )
   }
   if (length(take) > 0) {
     is.ref <- 0
@@ -4758,7 +4771,12 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
         if (file.exists(reference)) {
           is.ref <- 1
         } else {
-          if (reference != "") print("Reference file not found! Please download it from https://mga.bionet.nsc.ru/sumFREGAT/ref1KG.MAC5.EUR_AF.RData to use 1000 Genome Reference correlation matrices")
+          if (reference != "") 
+            rlang::inform(
+              rlang::format_error_bullets(
+                c("x" = "Reference file not found! Please download it from https://mga.bionet.nsc.ru/sumFREGAT/ref1KG.MAC5.EUR_AF.RData to use 1000 Genome Reference correlation matrices")
+              )
+            )
         }
       }
     } else if (length(reference) > 1) is.ref <- is.ref.object <- 1
@@ -4767,7 +4785,11 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
       if (is.ref.object) {
         ref <- reference
       } else {
-        print("Loading reference file...")
+        rlang::inform(
+          rlang::format_error_bullets(
+            "Loading reference file..."
+          )
+        )
         ref <- get(load(reference))
       }
       colnames(ref) <- toupper(colnames(ref))
@@ -4778,25 +4800,50 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
       if (!sum(v, na.rm = TRUE)) {
         if (all(c("CHROM", "POS") %in% colnames(df))) {
           df$ind <- paste(df$CHROM, df$POS, sep = ":")
-          print("No IDs matching, trying to link through map data...")
+          rlang::inform(
+            rlang::format_error_bullets(
+              c("No IDs matching, trying to link through map data...")
+            )
+          )
           ref$ind <- paste(ref$CHROM, ref$POS, sep = ":")
           v <- match(df$ind, ref$ind)
           if (sum(!is.na(v)) < (length(v) / 2)) {
-            print("Too few variants match between input file and reference data")
+            rlang::inform(
+              rlang::format_error_bullets(
+                c("x" = "Too few variants match between input file and reference data")
+              )
+            )
             v <- NA
           }
         }
       }
       if (sum(v, na.rm = TRUE)) {
-        print(paste(sum(!is.na(v)), "of", length(v), "variants found in reference"))
+        rlang::inform(
+          rlang::format_error_bullets(
+            c("i" = paste(sum(!is.na(v)), "of", length(v), "variants found in reference"))
+          )
+        )
         vv <- take %in% colnames(ref)
         if (sum(!vv)) {
-          print(paste("Columns that are missing in reference data:", paste(take[!vv], collapse = ", ")))
+          rlang::inform(
+            rlang::format_error_bullets(
+              c("i" = paste("Columns that are missing in reference data:", paste(take[!vv], collapse = ", ")))
+            )
+          )
           if ("REF" %in% take & !"REF" %in% colnames(ref)) {
-            print("Reference alleles not found, effect sizes cannot be linked")
+            rlang::inform(
+              rlang::format_error_bullets(
+                c("!" = "Reference alleles not found, effect sizes cannot be linked")
+              )
+            )
             df$BETA <- df$EFFECT.ALLELE <- NULL
           }
-          if ("AF" %in% take & !"AF" %in% colnames(ref)) print("Allele frequencies not found, some weighted tests will be unavailable")
+          if ("AF" %in% take & !"AF" %in% colnames(ref)) 
+            rlang::inform(
+              rlang::format_error_bullets(
+                c("!" = "Allele frequencies not found, some weighted tests will be unavailable")
+              )
+            )
         }
         df <- cbind(df, ref[v, take[vv]])
       }
@@ -4821,7 +4868,11 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
       v <- unique(c(v, which(df$EFFECT.ALLELE != df$REF & df$EFFECT.ALLELE != df$ALT)))
     }
     if (sum(v, na.rm = T)) {
-      print(paste("Effect alleles or REF/ALT alleles do not match reference data for", sum(v), "variant(s)"))
+      rlang::inform(
+        rlang::format_error_bullets(
+          c("i" = paste("Effect alleles or REF/ALT alleles do not match reference data for", sum(v), "variant(s)"))
+        )
+      )
       df[v, "BETA"] <- NA
     }
     df[is.na(df$EFFECT.ALLELE) | is.na(df$REF), "BETA"] <- NA
@@ -4832,11 +4883,19 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
       df$EAF[v] <- 1 - df$EAF[v]
       colnames(df)[colnames(df) == "EAF"] <- "AF"
     }
-    print(paste("Effect sizes recoded for", length(v), "variant(s)"))
+    rlang::inform(
+      rlang::format_error_bullets(
+        c("i" = paste("Effect sizes recoded for", length(v), "variant(s)"))
+      )
+    )
   }
 
   if (any(df$P == 0)) {
-    print("Some P values equal zero, will be assigned to minimum value in the sample")
+    rlang::inform(
+      rlang::format_error_bullets(
+         c("i" = "Some P values equal zero, will be assigned to minimum value in the sample")
+      )  
+    )
     df$P[df$P == 0] <- min(df$P[df$P > 0])
   }
   df$Z <- qnorm(df$P / 2, lower.tail = FALSE)
@@ -4872,28 +4931,44 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
   if ("AF" %in% colnames(df)) {
     vcf$INFO <- paste0(vcf$INFO, ";AF=", df$AF)
     title <- c(title, '##INFO=<ID=AF,Number=1,Type=Float,Description="Frequency of alternative allele">')
-    print(paste0("Allele frequencies found and linked"))
+    rlang::inform(
+      rlang::format_error_bullets(
+        c("v" = paste0("Allele frequencies found and linked"))
+      )
+    )
   }
 
   a <- grep("\\bW", colnames(df))
   if (length(a) == 1) {
     vcf$INFO <- paste0(vcf$INFO, ";W=", df[, a])
     title <- c(title, '##INFO=<ID=W,Number=1,Type=Float,Description="Weights">')
-    print(paste0("User weights ('", colnames(df)[a], "') found and linked"))
+    rlang::inform(
+      rlang::format_error_bullets(
+        c("v" = paste0("User weights ('", colnames(df)[a], "') found and linked"))
+      )
+    )
   }
 
   a <- grep("\\bANNO", colnames(df), value = TRUE)
   if (length(a) == 1) {
     vcf$INFO <- paste0(vcf$INFO, ";ANNO=", df[, a])
     title <- c(title, '##INFO=<ID=ANNO,Number=1,Type=String,Description="Variants annotations">')
-    print(paste0("Annotations ('", colnames(df)[a], "') found and linked"))
+    rlang::inform(
+      rlang::format_error_bullets(
+        c("v" = paste0("Annotations ('", colnames(df)[a], "') found and linked"))
+      )
+    )
   }
 
   a <- grep("\\bPROB", colnames(df), value = TRUE)
   for (an in a) {
     vcf$INFO <- paste0(vcf$INFO, ";", an, "=", df[, as.character(an)])
     title <- c(title, paste0("##INFO=<ID=", an, ",Number=1,Type=Float,Description='", an, "'>"))
-    print(paste0("Column '", an, "' linked"))
+    rlang::inform(
+      rlang::format_error_bullets(
+        c("v" = paste0("Column '", an, "' linked"))
+      )
+    )
   }
 
   # write.table(title, fn, col.names = FALSE, row.names = FALSE, quote = FALSE, sep = '\t')
@@ -4925,7 +5000,10 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
   Rsamtools::indexTabix(file = vcf_gz, format = "vcf")
 
   # Confirmation message
-  message(paste("File", vcf_gz, "has been created and indexed"))
+  rlang::inform(
+    rlang::format_error_bullets(
+      c("v" = paste("File", vcf_gz, "has been created and indexed")))
+    ) 
 }
 
 ## Function 98
