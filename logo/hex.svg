@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2521 2911">
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Lexend+Deca");
+
+    text {
+      font-family: "Lexend Deca";
+    }
+  </style>
+
+  <polygon
+    transform="translate(1260.5, 1455.5) scale(25.21)"
+    points="0.000,57.735 50.000,28.868 50.000,-28.868 0.000,-57.735 -50.000,-28.868 -50.000,28.868"
+    fill="#f5e7e0"
+  />
+
+  <g transform="translate(1260.5, 1455.5) scale(16) translate(0, -12)">
+    <circle cx="0" cy="0" r="34" fill="#dba194" opacity="0.5" />
+
+    <path
+      fill="none"
+      stroke="#a97ea3"
+      stroke-width="8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-dasharray="0 0.9999"
+      pathLength="9"
+      d="M -35 -36 C -35 -10 35 10 35 36"
+    />
+
+    <path
+      fill="none"
+      stroke="#dba194"
+      stroke-width="8"
+      d="M 35 -40 C 35 -10 -35 10 -35 40"
+    />
+
+    <path
+      fill="none"
+      stroke="#434970"
+      stroke-width="8"
+      d="M 0 -30 A 30 30 0 1 0 30 0 L 0 0"
+    />
+
+    <text
+      x="0"
+      y="58"
+      fill="#434970"
+      text-anchor="middle"
+      dominant-baseline="central"
+      style="font-size: 22px"
+    >
+      GXwasR
+    </text>
+  </g>
+</svg>
