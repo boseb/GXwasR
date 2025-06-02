@@ -49,7 +49,7 @@ jobs:
       - name: Reinstall Rsamtools, etc from source (macOS only, via pak)
         if: runner.os == 'macOS'
         run: |
-          pak::pak(c("bioc::Rhtslib?source=true", "bioc::Rsamtools?source=true", "bioc::GenomicRanges?source=true")))
+          pak::pak(c("bioc::Rhtslib?source=true", "bioc::Rsamtools?source=true", "bioc::GenomicRanges?source=true"))
         shell: Rscript {0}
 
       # Install PLINK binary
