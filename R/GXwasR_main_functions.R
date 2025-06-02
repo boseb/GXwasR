@@ -500,6 +500,7 @@ AncestryCheck <-
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
@@ -539,6 +540,7 @@ AncestryCheck <-
 #'   flm_basis_function, flm_num_basis, flm_poly_order, flip_genotypes,
 #'   omit_linear_variant
 #' )
+#' }
 
 TestXGene <- function(DataDir,
                       ResultDir = tempdir(),
@@ -581,170 +583,173 @@ TestXGene <- function(DataDir,
                       flip_genotypes = FALSE,
                       omit_linear_variant = FALSE) {
   tryCatch(
-    {
-      if (!checkFiles(DataDir, finput)) {
-        stop("Missing required Plink files in the specified DataDir.")
-      }
+    withCallingHandlers(
+      {
+        if (!checkFiles(DataDir, finput)) {
+          stop("Missing required Plink files in the specified DataDir.")
+        }
 
-      # setupPlink(ResultDir)
+        # setupPlink(ResultDir)
 
-      input.dat <- sumstat[, c("CHROM", "POS", "ID", "A1", "P", "BETA", "EAF")]
-      colnames(input.dat) <- c("CHROM", "POS", "ID", "EA", "P", "BETA", "EAF")
-      ref.data <- sumstat[, c("CHROM", "POS", "ID", "A2", "A1", "EAF")]
-      colnames(ref.data) <-
-        c("CHROM", "POS", "ID", "REF", "ALT", "AF") ## Following convention for reference data
+        input.dat <- sumstat[, c("CHROM", "POS", "ID", "A1", "P", "BETA", "EAF")]
+        colnames(input.dat) <- c("CHROM", "POS", "ID", "EA", "P", "BETA", "EAF")
+        ref.data <- sumstat[, c("CHROM", "POS", "ID", "A2", "A1", "EAF")]
+        colnames(ref.data) <-
+          c("CHROM", "POS", "ID", "REF", "ALT", "AF") ## Following convention for reference data
 
-      if (is.null(ref_data)) {
-        ref_data <- ref.data
-      } else {
-        ref_data <- ref_data
-      }
+        if (is.null(ref_data)) {
+          ref_data <- ref.data
+        } else {
+          ref_data <- ref_data
+        }
 
-      geneTestScoreFile(
-        ResultDir = ResultDir, data = input.dat,
-        reference = ref_data,
-        output.file.prefix = "gene.test.score.file"
-      ) ## use suppressWarnings()
+        geneTestScoreFile(
+          ResultDir = ResultDir, data = input.dat,
+          reference = ref_data,
+          output.file.prefix = "gene.test.score.file"
+        ) ## use suppressWarnings()
 
-      genes <- read.table(paste0(DataDir, "/", gene_file))
-      colnames(genes) <- c(c("gene_name", "X", "chr", "Y", "start", "end"))
-      genes$up_Mb <- genes$start - gene_range
-      genes$down_Mb <- genes$end + gene_range
-      genes.gr <- GenomicRanges::makeGRangesFromDataFrame(genes, keep.extra.columns = T)
+        genes <- read.table(paste0(DataDir, "/", gene_file))
+        colnames(genes) <- c(c("gene_name", "X", "chr", "Y", "start", "end"))
+        genes$up_Mb <- genes$start - gene_range
+        genes$down_Mb <- genes$end + gene_range
+        genes.gr <- GenomicRanges::makeGRangesFromDataFrame(genes, keep.extra.columns = T)
 
-      suppressWarnings(SNPfile <- read.table(
-        file = paste0(file.path(DataDir, finput), ".bim"),
-        header = FALSE,
-        # na = "NA",
-        na.strings = "NA"
-      ))
-
-      SNPfile$chr <- SNPfile$V1
-      SNPfile$start <- SNPfile$V4
-      SNPfile$end <- SNPfile$V4
-      SNPfile$SNP <- SNPfile$V2
-      snp_data <- SNPfile %>% select(.data$chr, .data$start, .data$end, .data$SNP)
-      snp.gr <- regioneR::toGRanges(snp_data)
-      gene_snp_intersect <-
-        as.data.frame(plyranges::join_overlap_intersect(genes.gr, snp.gr))
-      rlang::inform(
-        rlang::format_error_bullets(
-          c("i" = paste0(
-            length(
-              unique(
-                gene_snp_intersect$gene_name
-              )
-            ), " genes are having ", length(
-              unique(
-                gene_snp_intersect$SNP
-              )
-            ), " SNPs")
-          )
-        )
-      )
-      gene_snp <- unique(gene_snp_intersect[, c(6, 11)])
-      snpcount <- as.data.frame(table(gene_snp$gene_name))
-
-      g <- as.character(snpcount[, 1])
-      dir.create(path = file.path(ResultDir, "cormatrix"))
-      rlang::inform(rlang::format_error_bullets("SNP-SNP correlation matrices are being created..."))
-
-      snpcorrFun <- function(g) {
-        # g <- gene_snp$gene_name
-        snps <- gene_snp[gene_snp$gene_name == g, 2, drop = FALSE]
-        # print(g)
-        write.table(
-          snps,
-          file = paste0(ResultDir, "/cor_snps.txt"),
-          quote = FALSE,
-          row.names = FALSE,
-          col.names = FALSE,
-          eol = "\r\n"
-        )
-
-        invisible(sys::exec_wait(
-          plink(),
-          args = c(
-            "--bfile",
-            paste0(DataDir, "/", finput),
-            "--r2",
-            "square",
-            "--extract",
-            paste0(ResultDir, "/cor_snps.txt"),
-            "--out",
-            paste0(ResultDir, "/snpcorr"),
-            "--silent"
-          ),
-          std_out = FALSE,
-          std_err = FALSE
+        suppressWarnings(SNPfile <- read.table(
+          file = paste0(file.path(DataDir, finput), ".bim"),
+          header = FALSE,
+          # na = "NA",
+          na.strings = "NA"
         ))
 
-        snpcorr <- as.matrix(read.table(file = paste0(ResultDir, "/snpcorr.ld")))
-        colnames(snpcorr) <- snps$SNP
-        rownames(snpcorr) <- snps$SNP
-        snpcorr <- as.data.frame(snpcorr)
-        save(snpcorr, file = paste0(ResultDir, "/cormatrix/", g, ".RData"))
-        return()
-      }
-
-      invisible(lapply(g, snpcorrFun))
-      rlang::inform(rlang::format_error_bullets(c('v' ="SNP-SNP correlation matrices are done.")))
-
-      score_file <- paste0(ResultDir, "/gene.test.score.file.vcf.gz")
-      gene.file <- gene_file
-
-      if (is.null(max_gene)) {
-        genes1 <- as.vector(g)
-      } else {
-        maxgene <- max_gene
-        genes1 <- as.vector(g[1:max_gene])
-      }
-
-      if (genebasedTest == "SKAT") {
-        return(runSKAT(
-          score.file = score_file, 
-          gene.file = paste0(DataDir, "/", gene_file), 
-          genes = genes1, 
-          cor.path = paste0(ResultDir, "/cormatrix"), 
-          gene_approximation = gene_approximation, 
-          anno.type = anno_type, 
-          beta.par = beta_par, 
-          weights.function = weights_function, 
-          geno_variance_weights = geno_variance_weights, 
-          kernel_p_method = kernel_p_method, 
-          acc_devies = acc_devies, 
-          lim_devies = lim_devies, 
-          rho = rho, 
-          skato_p_threshold = skato_p_threshold))
-      } else if (genebasedTest == "SKATO") {
-        return(runSKATO(score_file, paste0(DataDir, "/", gene_file), genes1, paste0(ResultDir, "/cormatrix"), anno_type, gene_approximation, beta_par, weights_function, kernel_p_method, acc_devies, lim_devies, rho, skato_p_threshold))
-      } else if (genebasedTest == "sumchi") {
-        return(runSumChi(score_file, paste0(DataDir, "/", gene_file), genes1, paste0(ResultDir, "/cormatrix"), gene_approximation, anno_type, kernel_p_method, acc_devies, lim_devies))
-      } else if (genebasedTest == "ACAT") {
-        return(runACAT(score_file, paste0(DataDir, "/", gene_file), genes1, anno_type, beta_par, weights_function, geno_variance_weights, mac_threshold, sample_size))
-      } else if (genebasedTest == "BT") {
-        return(runBT(score_file, paste0(DataDir, "/", gene_file), genes1, paste0(ResultDir, "/cormatrix"), anno_type, beta_par, weights_function))
-      } else if (genebasedTest == "PCA") {
-        return(runPCA(score_file, paste0(DataDir, "/", gene_file), genes1, paste0(ResultDir, "/cormatrix"), gene_approximation, anno_type, sample_size, beta_par, weights_function, reference_matrix_used, regularize_fun, pca_var_fraction))
-      } else if (genebasedTest == "FLM") {
-        return(runFLM(score_file, paste0(DataDir, "/", gene_file), genes1, paste0(ResultDir, "/cormatrix"), gene_approximation, anno_type, sample_size, beta_par, weights_function, flm_basis_function, flm_num_basis, flm_poly_order, flip_genotypes, omit_linear_variant, reference_matrix_used, regularize_fun))
-      } else if (genebasedTest == "simpleM") {
-        return(runSimpleM(score_file, gene_file, genes1, anno_type, pca_var_fraction))
-      } else if (genebasedTest == "minp") {
-        return(runMinP(score_file, gene_file, genes1, anno_type))
-      }
-    },
-    error = function(e) {
-      message("An error occurred: ", e$message)
-      return(NULL)
-    },
-    warning = function(w) {
-      rlang::inform(
-        rlang::format_error_bullets(
-          c('!' = paste("Warning:", w$message))
+        SNPfile$chr <- SNPfile$V1
+        SNPfile$start <- SNPfile$V4
+        SNPfile$end <- SNPfile$V4
+        SNPfile$SNP <- SNPfile$V2
+        snp_data <- SNPfile %>% select(.data$chr, .data$start, .data$end, .data$SNP)
+        snp.gr <- regioneR::toGRanges(snp_data)
+        gene_snp_intersect <-
+          as.data.frame(plyranges::join_overlap_intersect(genes.gr, snp.gr))
+        rlang::inform(
+          rlang::format_error_bullets(
+            c("i" = paste0(
+              length(
+                unique(
+                  gene_snp_intersect$gene_name
+                )
+              ), " genes are having ", length(
+                unique(
+                  gene_snp_intersect$SNP
+                )
+              ), " SNPs")
+            )
+          )
         )
-      )
-    }
+        gene_snp <- unique(gene_snp_intersect[, c(6, 11)])
+        snpcount <- as.data.frame(table(gene_snp$gene_name))
+
+        g <- as.character(snpcount[, 1])
+        dir.create(path = file.path(ResultDir, "cormatrix"))
+        rlang::inform(rlang::format_error_bullets("SNP-SNP correlation matrices are being created..."))
+
+        snpcorrFun <- function(g) {
+          # g <- gene_snp$gene_name
+          snps <- gene_snp[gene_snp$gene_name == g, 2, drop = FALSE]
+          # print(g)
+          write.table(
+            snps,
+            file = paste0(ResultDir, "/cor_snps.txt"),
+            quote = FALSE,
+            row.names = FALSE,
+            col.names = FALSE,
+            eol = "\r\n"
+          )
+
+          invisible(sys::exec_wait(
+            plink(),
+            args = c(
+              "--bfile",
+              paste0(DataDir, "/", finput),
+              "--r2",
+              "square",
+              "--extract",
+              paste0(ResultDir, "/cor_snps.txt"),
+              "--out",
+              paste0(ResultDir, "/snpcorr"),
+              "--silent"
+            ),
+            std_out = FALSE,
+            std_err = FALSE
+          ))
+
+          snpcorr <- as.matrix(read.table(file = paste0(ResultDir, "/snpcorr.ld")))
+          colnames(snpcorr) <- snps$SNP
+          rownames(snpcorr) <- snps$SNP
+          snpcorr <- as.data.frame(snpcorr)
+          save(snpcorr, file = paste0(ResultDir, "/cormatrix/", g, ".RData"))
+          return()
+        }
+
+        invisible(lapply(g, snpcorrFun))
+        rlang::inform(rlang::format_error_bullets(c('v' ="SNP-SNP correlation matrices are done.")))
+
+        score_file <- paste0(ResultDir, "/gene.test.score.file.vcf.gz")
+        gene.file <- gene_file
+
+        if (is.null(max_gene)) {
+          genes1 <- as.vector(g)
+        } else {
+          maxgene <- max_gene
+          genes1 <- as.vector(g[1:max_gene])
+        }
+
+        if (genebasedTest == "SKAT") {
+          return(runSKAT(
+            score.file = score_file, 
+            gene.file = paste0(DataDir, "/", gene_file), 
+            genes = genes1, 
+            cor.path = paste0(ResultDir, "/cormatrix"), 
+            gene_approximation = gene_approximation, 
+            anno.type = anno_type, 
+            beta.par = beta_par, 
+            weights.function = weights_function, 
+            geno_variance_weights = geno_variance_weights, 
+            kernel_p_method = kernel_p_method, 
+            acc_devies = acc_devies, 
+            lim_devies = lim_devies, 
+            rho = rho, 
+            skato_p_threshold = skato_p_threshold))
+        } else if (genebasedTest == "SKATO") {
+          return(runSKATO(score_file, paste0(DataDir, "/", gene_file), genes1, paste0(ResultDir, "/cormatrix"), anno_type, gene_approximation, beta_par, weights_function, kernel_p_method, acc_devies, lim_devies, rho, skato_p_threshold))
+        } else if (genebasedTest == "sumchi") {
+          return(runSumChi(score_file, paste0(DataDir, "/", gene_file), genes1, paste0(ResultDir, "/cormatrix"), gene_approximation, anno_type, kernel_p_method, acc_devies, lim_devies))
+        } else if (genebasedTest == "ACAT") {
+          return(runACAT(score_file, paste0(DataDir, "/", gene_file), genes1, anno_type, beta_par, weights_function, geno_variance_weights, mac_threshold, sample_size))
+        } else if (genebasedTest == "BT") {
+          return(runBT(score_file, paste0(DataDir, "/", gene_file), genes1, paste0(ResultDir, "/cormatrix"), anno_type, beta_par, weights_function))
+        } else if (genebasedTest == "PCA") {
+          return(runPCA(score_file, paste0(DataDir, "/", gene_file), genes1, paste0(ResultDir, "/cormatrix"), gene_approximation, anno_type, sample_size, beta_par, weights_function, reference_matrix_used, regularize_fun, pca_var_fraction))
+        } else if (genebasedTest == "FLM") {
+          return(runFLM(score_file, paste0(DataDir, "/", gene_file), genes1, paste0(ResultDir, "/cormatrix"), gene_approximation, anno_type, sample_size, beta_par, weights_function, flm_basis_function, flm_num_basis, flm_poly_order, flip_genotypes, omit_linear_variant, reference_matrix_used, regularize_fun))
+        } else if (genebasedTest == "simpleM") {
+          return(runSimpleM(score_file, gene_file, genes1, anno_type, pca_var_fraction))
+        } else if (genebasedTest == "minp") {
+          return(runMinP(score_file, gene_file, genes1, anno_type))
+        }
+      },
+      error = function(e) {
+        message("An error occurred: ", e$message)
+        return(NULL)
+      },
+      warning = function(w) {
+        rlang::inform(
+          rlang::format_error_bullets(
+            c('!' = paste("Warning:", conditionMessage(w)))
+          )
+        )
+        invokeRestart("muffleWarning") 
+      }
+    )
   )
 }
 

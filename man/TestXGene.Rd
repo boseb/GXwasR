@@ -182,6 +182,7 @@ Though this function implicitly performs X-linked gene-based test, it is flexibl
 For the details about the different tests, please follow the associated paper.
 }
 \examples{
+\donttest{
 DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
@@ -221,6 +222,7 @@ GenetestResult <- TestXGene(DataDir, ResultDir, finput, sumstat, gene_file,
   flm_basis_function, flm_num_basis, flm_poly_order, flip_genotypes,
   omit_linear_variant
 )
+}
 }
 \references{
 \insertAllCited{}
