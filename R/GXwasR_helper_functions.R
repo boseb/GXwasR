@@ -53,7 +53,16 @@ verifyPlink <- function() {
   }
   
   # 3. Failure message
-  stop("PLINK binary not found. Please install PLINK and/or set the PLINK_PATH environment variable.")
+  rlang::abort(
+    message = rlang::format_error_bullets(c(
+      "PLINK binary not found.",
+      "x" = "Attempted to locate the 'PLINK_PATH' environment variable and 'plink' in system PATH.",
+      "i" = "Ensure PLINK is available and executable.",
+      "i" = "You can permanently set the path to 'plink' by running:",
+      " " = "usethis::edit_r_environ()  # then add a line like: PLINK_PATH=/full/path/to/plink")
+    ),
+    class = "plink_not_found"
+  )
 }
 
 
@@ -3222,7 +3231,16 @@ verifyGCTA <- function() {
   }
   
   # 3. Failure message
-  stop("GCTA binary not found. Please install GCTA and/or set the GCTA_PATH environment variable.")
+  rlang::abort(
+    message = rlang::format_error_bullets(c(
+      "GCTA binary not found.",
+      "x" = "Attempted to locate the 'GCTA_PATH' environment variable and 'gcta64' in system PATH.",
+      "i" = "Ensure GCTA is available and executable.",
+      "i" = "You can permanently set the path to 'gcta64' by running:",
+      " " = "usethis::edit_r_environ()  # then add a line like: GCTA_PATH=/full/path/to/gcta64")
+    ),
+    class = "gcta_not_found"
+  )
 }
 
 gcta <- function(){
