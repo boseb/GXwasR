@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# GXwasR <img src="man/figures/logo.png" align="right" height="44" alt="" />
+# GXwasR <img src="man/figures/logo.svg" align="right" height="139" alt="" />
 
 A tool for conducting sex-aware quality control, association analysis,
 and testing various models of sex-dependent genetic effects in complex
@@ -236,7 +236,7 @@ ResultGXwas <- GXwas(
 
 <img src="man/figures/README-example-1.png" width="100%" /><img src="man/figures/README-example-2.png" width="100%" /><img src="man/figures/README-example-3.png" width="100%" /><img src="man/figures/README-example-4.png" width="100%" /><img src="man/figures/README-example-5.png" width="100%" /><img src="man/figures/README-example-6.png" width="100%" />
 
-    #> [1] "Three dataframes such as, CombinedWAS, MaleWAS and FemaleWAS are produced in/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpS3uFmt"
+    #> [1] "Three dataframes such as, CombinedWAS, MaleWAS and FemaleWAS are produced in/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmpqj9NMo"
     ResultGXwas
     #> $CombinedWAS
     #> Key: <SNP>
