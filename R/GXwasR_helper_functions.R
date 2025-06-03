@@ -25,6 +25,7 @@
 #' @importFrom ggrepel geom_text_repel
 #' @importFrom BiocStyle html_document
 #' @importFrom dplyr filter mutate distinct arrange select case_when summarise
+#' @importFrom rlang inform format_error_bullets
 
 ## PLINK Dependency Check
 verifyPlink <- function() {
@@ -138,7 +139,7 @@ MFsplitPlink <- function(DataDir, ResultDir, finput, foutput, sex, xplink = FALS
     ))
   }
 
-  print("Stratified test is running")
+  rlang::inform(rlang::format_error_bullets("Stratified test is running"))
 }
 
 ## Function 3
@@ -173,11 +174,11 @@ executePlink <- function(args, ResultDir) {
 ########## Added in 3.0
 analyzePhenotypeData <- function(fam, fam4) {
   No.of.missing.pheno <- nrow(fam[fam$V6 == -9 | fam$V6 == 0, ])
-  print(paste0("Number of missing phenotypes:", No.of.missing.pheno))
+  rlang::inform(rlang::format_error_bullets(c("i" = paste0("Number of missing phenotypes:", No.of.missing.pheno))))
   No.of.males <- nrow(fam[fam$V5 == 1, ])
   No.of.females <- nrow(fam[fam$V5 == 2, ])
-  print(paste0("Number of males:", No.of.males))
-  print(paste0("Number of females:", No.of.females))
+  rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of males:", No.of.males))))
+  rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of females:", No.of.females))))
 
 
   unique_pheno <- unique(fam4$V6)
@@ -186,35 +187,35 @@ analyzePhenotypeData <- function(fam, fam4) {
     No.of.cases <- nrow(fam4[fam4$V6 == 2, ])
     No.of.controls <- nrow(fam4[fam4$V6 == 1, ])
     message <- "This is a case-control data."
-    print(message)
+    rlang::inform(rlang::format_error_bullets(message))
     ## Updated in 4.0
-    print(paste0("Number of cases:", No.of.cases))
-    print(paste0("Number of controls:", No.of.controls))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of cases:", No.of.cases))))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of controls:", No.of.controls))))
 
     ## Updated in 5.0
     if (No.of.males != 0) {
       M <- fam[fam$V5 == 1, ]
       No.of.cases.in.males <- nrow(M[M$V6 == 2, ])
       No.of.controls.in.males <- nrow(M[M$V6 == 1, ])
-      print(paste0("Number of cases in males:", No.of.cases.in.males))
-      print(paste0("Number of controls in males:", No.of.controls.in.males))
+      rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of cases in males:", No.of.cases.in.males))))
+      rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of controls in males:", No.of.controls.in.males))))
     }
     if (No.of.females != 0) {
       PF <- fam[fam$V5 == 2, ]
       No.of.cases.in.females <- nrow(PF[PF$V6 == 2, ])
       No.of.controls.in.females <- nrow(PF[PF$V6 == 1, ])
-      print(paste0("Number of cases in females:", No.of.cases.in.females))
-      print(paste0("Number of controls in females:", No.of.controls.in.females))
+      rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of cases in females:", No.of.cases.in.females))))
+      rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of controls in females:", No.of.controls.in.females))))
     }
   } else if (length(unique_pheno) == 1 && unique_pheno != -9) {
-    message <- paste0("This dataset contains a single trait value: ", unique_pheno)
-    print(message)
+    message <- paste("This dataset contains a single trait value:", unique_pheno)
+    rlang::inform(rlang::format_error_bullets(message))
   } else if (unique(fam$V6) == -9) {
     message <- "This dataset contains missing trait values for all samples."
-    print(message)
+    rlang::inform(rlang::format_error_bullets(message))
   } else {
     message <- "This dataset contains quantitative trait value."
-    print(message)
+    rlang::inform(rlang::format_error_bullets(message))
   }
 }
 
@@ -309,7 +310,7 @@ removeTempFiles <- function(directory, pattern) {
   if (length(tempFiles) > 0) {
     suppressWarnings(file.remove(tempFiles))
   } else {
-    print(paste("No files found with pattern:", pattern, "in directory:", directory))
+    rlang::inform(rlang::format_error_bullets(c("x" = paste("No files found with pattern:", pattern, "in directory:", directory))))
   }
 
   # Reset the sink to stop redirecting the output to the file
@@ -355,7 +356,7 @@ createHeterozygosityPlot <- function(hetermiss, hetfail, imissfail, het, imiss, 
   hetermiss$shape <- as.factor(hetermiss$shape)
 
   # Plotting
-  print("Plots are initiated.")
+  rlang::inform(rlang::format_error_bullets("Plots are initiated."))
   plot_hetimiss <- ggplot2::ggplot(data = hetermiss, ggplot2::aes(x = with(hetermiss, logF_MISS), y = F, color = with(hetermiss, type), shape = with(hetermiss, shape))) +
     ggplot2::geom_point() +
     ggplot2::scale_shape_manual(values = c(16, 17), guide = "none") +
@@ -393,7 +394,7 @@ processAmbiguousSamples <- function(DataDir, ResultDir, finput, fam1) {
   executePlink(pruneArgs, ResultDir)
 
   fam2 <- nrow(read.table(paste0(ResultDir, "/", "FINPUT", ".fam"), header = FALSE))
-  print(paste0("No. of ambiguous samples filtered out: ", fam1 - fam2))
+  rlang::inform(rlang::format_error_bullets(c("i" = paste0("Number of ambiguous samples filtered out: ", fam1 - fam2))))
 
   copyTempFiles(ResultDir, DataDir, "FINPUT")
   "FINPUT"
@@ -420,7 +421,7 @@ filterSamples <- function(DataDir, ResultDir, finput, failed_het_imiss, filterSa
       "--silent"
     )
     executePlink(excludeSamplesArgs, ResultDir)
-    print("Samples are flagged for missingness and heterogygosity threshold.")
+    rlang::inform(rlang::format_error_bullets("Samples are flagged for missingness and heterogygosity threshold."))
   }
 }
 
@@ -428,20 +429,20 @@ filterSamples <- function(DataDir, ResultDir, finput, failed_het_imiss, filterSa
 ######### Added in 3.0
 printSampleFilterResults <- function(imissfail, hetfail, failed_het_imiss) {
   if (nrow(imissfail) == 0) {
-    print("No. of samples filtered/flagged for missingness: 0")
+    rlang::inform(rlang::format_error_bullets(c("i" = "No. of samples filtered/flagged for missingness: 0")))
   } else {
-    print(paste0("No. of samples filtered/flagged for missingness: ", length(unique(imissfail$IID))))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0("No. of samples filtered/flagged for missingness: ", length(unique(imissfail$IID))))))
   }
 
   if (nrow(hetfail) == 0) {
-    print("No. of samples filtered/flagged for heterozygosity: 0")
+    rlang::inform(rlang::format_error_bullets(c("i" = "No. of samples filtered/flagged for heterozygosity: 0")))
   } else {
-    print(paste0("No. of samples filtered/flagged for heterozygosity threshold: ", length(unique(hetfail$IID))))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0("No. of samples filtered/flagged for heterozygosity threshold: ", length(unique(hetfail$IID))))))
   }
   if (nrow(failed_het_imiss) == 0) {
-    print("No. of samples filtered for missingness and heterozygosity: 0")
+    rlang::inform(rlang::format_error_bullets(c("i" = "No. of samples filtered for missingness and heterozygosity: 0")))
   } else {
-    print(paste0("No. of samples filtered/flagged for missingness and heterozygosity: ", length(unique(failed_het_imiss$IID))))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0("No. of samples filtered/flagged for missingness and heterozygosity: ", length(unique(failed_het_imiss$IID))))))
   }
 }
 
@@ -455,7 +456,7 @@ processIBDData <- function(IBD, IBDmatrix, ResultDir, foutput, filterSample) {
     # Optionally save the entire IBD matrix
     if (IBDmatrix) {
       executePlinkForIBD(ResultDir, NULL, "Entire_ibd")
-      print("Entire IBD matrix 'Entire_ibd.genome' saved in ResultDir.")
+      rlang::inform(rlang::format_error_bullets(c("v" = "Entire IBD matrix 'Entire_ibd.genome' saved in ResultDir.")))
     }
 
     # Read filtered IBD data
@@ -578,10 +579,10 @@ setPlinkFlags <- function(maf, geno, hwe, hweCase, hweControl) {
 
   if (!is.null(hwe)) {
     if (!is.null(hweControl)) {
-      print("Since hwe is not NULL, hweControl should be NULL. Setting hweControl = NULL implicitly.")
+      rlang::inform(rlang::format_error_bullets(c("i" = "Since hwe is not NULL, hweControl should be NULL. Setting hweControl = NULL implicitly.")))
       hweControl <- NULL
     } else if (!is.null(hweCase)) {
-      print("Since hwe is not NULL, hweCase should be NULL. Setting hweCase = NULL implicitly.")
+      rlang::inform(rlang::format_error_bullets(c("i" = "Since hwe is not NULL, hweCase should be NULL. Setting hweCase = NULL implicitly.")))
       hweCase <- NULL
     }
     HWE <- "--hwe"
@@ -655,11 +656,11 @@ applyFiltersWithPlink <- function(ResultDir, DataDir, finput, MAF, maf, GENO, ge
 
   # Check if the file exists and print relevant messages
   if (file.exists(paste0(ResultDir, "/filtered_temp1.bed"))) {
-    print("Thresholds for maf, geno and hwe worked.")
+    rlang::inform(rlang::format_error_bullets(c("v" = "Thresholds for maf, geno and hwe worked.")))
     logContents <- readLines(paste0(ResultDir, "/filtered_temp1.log"))
-    print(grep("variants removed", logContents, value = TRUE))
+    rlang::inform(rlang::format_error_bullets(c("i" = grep("variants removed", logContents, value = TRUE))))
   } else {
-    print("Error applying thresholds or file not found.")
+    rlang::inform(rlang::format_error_bullets(c("x" = "Error applying thresholds or file not found.")))
     executePlinkAd(ResultDir, args = c(
       "--bfile", paste0(DataDir, "/", finput),
       "--make-bed",
@@ -702,7 +703,7 @@ applyCaseControlFilters <- function(ResultDir, fam4, casecontrol, HWECase, hweCa
     nextFile <- "filtered_temp2"
   } else {
     if (length(unique(fam4$V6)) == 1) {
-      print("There is no case-control status in the plink files. Setting casecontrol = FALSE implicitly.")
+      rlang::inform(rlang::format_error_bullets(c("i" = "There is no case-control status in the plink files. Setting casecontrol = FALSE implicitly.")))
       casecontrol <- FALSE
     } else {
       casecontrol <- FALSE
@@ -718,8 +719,8 @@ applyCaseControlFilters <- function(ResultDir, fam4, casecontrol, HWECase, hweCa
       "--silent"
     ))
   } else {
-    print("Something went wrong.")
-    print(grep("Error", readLines(paste0(ResultDir, "/", nextFile, ".log")), value = TRUE))
+    rlang::inform(rlang::format_error_bullets(c("x" = "Something went wrong.")))
+    rlang::inform(rlang::format_error_bullets(c("x" = grep("Error", readLines(paste0(ResultDir, "/", nextFile, ".log")), value = TRUE))))
   }
 
   return(casecontrol)
@@ -732,9 +733,9 @@ printHWEMessages <- function(ResultDir, logFilePath, context) {
   if (file.exists(paste0(ResultDir, logFilePath))) {
     logContents <- readLines(paste0(ResultDir, logFilePath))
     message <- paste0(context, ", ", stringr::str_sub(grep("Hardy-Weinberg", logContents, value = TRUE), 7))
-    print(message)
+    rlang::inform(rlang::format_error_bullets(message))
   } else {
-    print(paste0(context, " log file not found."))
+    rlang::inform(rlang::format_error_bullets(c("x" = paste0(context, " log file not found."))))
   }
 }
 
@@ -751,7 +752,7 @@ handleMonomorphicSNPs <- function(monomorphicSNPs, mmSNPs, ResultDir) {
     exclude <- NULL
     excludemono <- NULL
     if (monomorphicSNPs == TRUE || nrow(mmSNPs) != 0) {
-      print("There are no monomorphic SNPs.")
+      rlang::inform(rlang::format_error_bullets(c("i" = "There are no monomorphic SNPs.")))
     }
   }
 
@@ -875,7 +876,7 @@ handleCaseControlFiltering <- function(ResultDir, casecontrol, dmissX, dmissAuto
       chrfilter <- "--not-chr"
       chrv <- 23
     } else {
-      print("Filtering for differential missingness between cases and controls is turned off.")
+      rlang::inform(rlang::format_error_bullets(c("i" = "Filtering for differential missingness between cases and controls is turned off.")))
     }
 
     if (caldiffmiss) {
@@ -894,7 +895,7 @@ handleCaseControlFiltering <- function(ResultDir, casecontrol, dmissX, dmissAuto
 
     applySNPmissCCFilter(ResultDir, SNPmissCC, diffmissFilter, foutput)
   } else {
-    print("No filter based on differential missingness will be applied.")
+    rlang::inform(rlang::format_error_bullets(c("i" = "No filter based on differential missingness will be applied.")))
 
     executePlinkAd(ResultDir, args = c(
       "--bfile", paste0(ResultDir, "/filtered_temp4_processed"), # TEST
@@ -942,7 +943,7 @@ applySNPmissCCFilter <- function(ResultDir, SNPmissCC, diffmissFilter, foutput) 
       "--silent"
     ))
   } else {
-    print("No SNP with differential missingness between cases and controls.")
+    rlang::inform(rlang::format_error_bullets(c("i" = "No SNP with differential missingness between cases and controls.")))
     executePlinkAd(ResultDir, args = c(
       # "--bfile", paste0(ResultDir, "/filtered_temp4"),
       "--bfile", paste0(ResultDir, "/filtered_temp4_processed"), ## TEST
@@ -1108,7 +1109,7 @@ gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"), log10
   # Annotate
   if (!missing(annotate_p)) {
     if (!requireNamespace(c("ggrepel"), quietly = TRUE) == TRUE) {
-      print("Consider installing 'ggrepel' for improved text annotation")
+      rlang::inform(rlang::format_error_bullets("Consider installing 'ggrepel' for improved text annotation"))
       p1 <- p1 + ggplot2::geom_text(data = d_order[d_order$pvalue < annotate_p[1] & d_order$Location == "Top", ], ggplot2::aes(.data$pos_index, .data$pval, label = .data$SNP))
       p2 <- p2 + ggplot2::geom_text(data = d_order[d_order$pvalue < annotate_p[2] & d_order$Location == "Bottom", ], ggplot2::aes(.data$pos_index, .data$pval, label = .data$SNP))
     } else {
@@ -1118,7 +1119,7 @@ gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"), log10
   }
   if (!missing(annotate_snp)) {
     if (!requireNamespace(c("ggrepel"), quietly = TRUE) == TRUE) {
-      print("Consider installing 'ggrepel' for improved text annotation")
+      rlang::inform(rlang::format_error_bullets("Consider installing 'ggrepel' for improved text annotation"))
       p1 <- p1 + ggplot2::geom_text(data = d_order[d_order$SNP %in% annotate_snp & d_order$Location == "Top", ], ggplot2::aes(.data$pos_index, .data$pval, label = .data$SNP))
       p2 <- p2 + ggplot2::geom_text(data = d_order[d_order$SNP %in% annotate_snp & d_order$Location == "Bottom", ], ggplot2::aes(.data$pos_index, .data$pval, label = .data$SNP))
     } else {
@@ -1133,7 +1134,7 @@ gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"), log10
   # Format
   if (chrblocks == TRUE) {
     if (freey == TRUE) {
-      print("Sorry, drawing chrblocks with freey=TRUE is currently unsupported and will be ignored.")
+      rlang::inform(rlang::format_error_bullets("Sorry, drawing chrblocks with freey=TRUE is currently unsupported and will be ignored."))
     } else {
       p1 <- p1 + ggplot2::theme(axis.text.x = ggplot2::element_text(vjust = 1), axis.ticks.x = ggplot2::element_blank()) + ggplot2::ylim(c(yaxismin1, yaxismax1))
       p2 <- p2 + ggplot2::scale_y_reverse(limits = c(yaxismax2, yaxismin2)) + ggplot2::theme(axis.text.x = ggplot2::element_blank(), axis.ticks.x = ggplot2::element_blank())
@@ -1150,7 +1151,7 @@ gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"), log10
   p1 <- p1 + ggplot2::guides(fill = "none", color = "none")
   p2 <- p2 + ggplot2::guides(fill = "none", color = "none")
   # Save
-  print(paste0("Saving plot to ", file, ".", type))
+  rlang::inform(rlang::format_error_bullets(c("i" = paste0("Saving plot to ", file, ".", type))))
   p <- gridExtra::grid.arrange(gridExtra::arrangeGrob(p1, top = toptitle), gridExtra::arrangeGrob(p2, bottom = bottomtitle), padding = 0, heights = c(hgtratio, 1 - hgtratio))
   ggplot2::ggsave(p, filename = paste0(file, ".", type), dpi = res, units = "in", height = hgt, width = wi)
   return(p)
@@ -1186,7 +1187,7 @@ preparePhenotypeData <- function(phenofile, nPC, DataDir, ResultDir, finput, hig
     colnames(GP) <- c("FID", "IID", paste0("PC", 1:nPC))
     return(GP)
   } else {
-    print("Parameter 'nPC' is either zero or negative. Genetic PC will not be computed.")
+    rlang::inform(rlang::format_error_bullets(c("i" = "Parameter 'nPC' is either zero or negative. Genetic PC will not be computed.")))
     return(phenotype[, 1:2])
   }
 }
@@ -1213,8 +1214,8 @@ computeNullModel <- function(pheno, pheno_type) {
 ## Function 40
 ######### Added in 3.0
 prsFun <- function(pthreshold, ResultDir, DataDir, finput, clumpExtract, clumpSNP, pheno, pheno_type, null_model) {
-  print(pthreshold)
-  print(paste0("Computing PRS for threshold ", pthreshold))
+  rlang::inform(rlang::format_error_bullets(c("i" = pthreshold)))
+  rlang::inform(rlang::format_error_bullets(paste0("Computing PRS for threshold ", pthreshold)))
 
   pt <- data.table::as.data.table(cbind(pthreshold, 0, pthreshold))
   colnames(pt) <- c("Threshold", "Lowerbound", "UpperBound")
@@ -1428,7 +1429,7 @@ FMsub <- function(ResultDir, plot.jpeg, plotname, snp_pval, annotateTopSnp, sugg
         suppressWarnings(qqman::manhattan(XWAS_ADD_X, ylim = c(0, uplim), suggestiveline = suggestiveline, genomewideline = genomewideline, annotatePval = snp_pval, annotateTop = annotateTopSnp, main = "Manhattan plot of XWAS"))
         suppressWarnings(qqman::qq(XWAS_ADD_X$P, main = paste0(("Q-Q plot of XWAS p-values with GIF = "), round(lamdaGC1, 3))))
       } else {
-        print("X-chromosome may not be present.")
+        rlang::inform(rlang::format_error_bullets(c("i" = "X-chromosome may not be present.")))
       }
 
       gc(reset = TRUE)
@@ -1447,14 +1448,14 @@ FMsub <- function(ResultDir, plot.jpeg, plotname, snp_pval, annotateTopSnp, sugg
         suppressWarnings(qqman::manhattan(XWAS_ADD_X, ylim = c(0, uplim), suggestiveline = suggestiveline, genomewideline = genomewideline, annotatePval = snp_pval, annotateTop = annotateTopSnp, main = "Manhattan plot of XWAS"))
         suppressWarnings(qqman::qq(XWAS_ADD_X$P, main = paste0(("Q-Q plot of XWAS p-values with GIF = "), round(lamdaGC1, 3))))
       } else {
-        print("X-chromosome association betas may not be present.")
+        rlang::inform(rlang::format_error_bullets(c("i" = "X-chromosome association betas may not be present.")))
       }
       gc(reset = TRUE)
     }
 
     return(na.omit(XWAS))
   } else if (file.exists(paste0(ResultDir, "/", "allsnpsresults.rda"))[1] == FALSE) {
-    print(paste0("GWAS cannot be performed. Check the log file in ResultDir for checking the error."))
+    rlang::inform(rlang::format_error_bullets(c("x" = paste0("GWAS cannot be performed. Check the log file in ResultDir details."))))
   }
 }
 
@@ -1465,7 +1466,7 @@ paraGwas <- function(
     interactionv, parameterv, Inphenocovv, covar, covarv,
     snpfile) {
   ## Chunkfile create
-  print(paste0("Chunk index processing: ", chunks))
+  rlang::inform(rlang::format_error_bullets(paste0("Chunk index processing: ", chunks)))
   if (nrow(snpfile) >= (chunks + chunk)) {
     snp_names <- snpfile$V2[chunks:(chunks + chunk)]
   } else {
@@ -1594,7 +1595,7 @@ FMmain <- function(DataDir, ResultDir, finput, trait, standard_beta, xmodel,
   }
 
   if (ncores == 0) {
-    print("If you want parallel computation, please provide non-zero value for argument ncores.")
+    rlang::inform(rlang::format_error_bullets("If you want parallel computation, please provide non-zero value for argument ncores."))
     invisible(sys::exec_wait(
       plink(),
       args = c(
@@ -1634,7 +1635,7 @@ FMmain <- function(DataDir, ResultDir, finput, trait, standard_beta, xmodel,
     chunks <- round(seq(1, nrow(snpfile), by = chunk), 0)
 
     #### Parallel computation
-    print("Parallel computation is in progress --------->")
+    rlang::inform(rlang::format_error_bullets("Parallel computation is in progress --------->"))
     cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
 
     invisible(parallel::clusterEvalQ(cl, library(data.table)))
@@ -1929,19 +1930,19 @@ applyStoufferMethod <- function(pvals, MF.p.corr, MF.zero.sub, MF.na.rm, MF.mc.c
     chunk <- round(nrow(pvals) / ncores) + 1
     chunks <- round(seq(1, nrow(pvals), by = chunk), 0)
 
-    print("cluster making started")
+    rlang::inform(rlang::format_error_bullets(c("i" = "cluster making started")))
     cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
 
     invisible(parallel::clusterEvalQ(cl, library(data.table)))
     invisible(parallel::clusterEvalQ(cl, library(parallel)))
-    print("cluster export started")
+    rlang::inform(rlang::format_error_bullets(c("i" = "cluster export started")))
     parallel::clusterExport(cl = cl, NULL, envir = environment())
 
-    print("cluster making done")
+    rlang::inform(rlang::format_error_bullets(c("i" = "cluster making done")))
     Pnew <- data.table::as.data.table(data.table::rbindlist(parallel::parLapply(cl, chunks, paraStouffer, chunk = chunk, pvals = pvals, MF.p.corr = MF.p.corr, MF.zero.sub = MF.zero.sub, MF.na.rm = MF.na.rm)))
 
     parallel::stopCluster(cl)
-    print("clusters stopped.")
+    rlang::inform(rlang::format_error_bullets(c("i" = "clusters stopped.")))
   }
   return(Pnew)
 }
@@ -1980,7 +1981,7 @@ generateGWASPlots <- function(plot.jpeg, plotname, FemaleWAS, MaleWAS, gwas.t2, 
       sink() # This line resets the output redirection
     }
 
-    print("Miami plot of stratified GWAS is saved in working directory.")
+    rlang::inform(rlang::format_error_bullets(c("v" = "Miami plot of stratified GWAS is saved in working directory.")))
     gc(reset = TRUE)
 
     if (nrow(gwas.t2) != 0 && nrow(gwas.b2) != 0) {
@@ -2006,9 +2007,9 @@ generateGWASPlots <- function(plot.jpeg, plotname, FemaleWAS, MaleWAS, gwas.t2, 
         sink() # This line resets the output redirection
       }
 
-      print("Miami plot of stratified XWAS is saved in working directory.")
+      rlang::inform(rlang::format_error_bullets(c("v" = "Miami plot of stratified XWAS is saved in working directory.")))
     } else {
-      print("Miami plot for stratified XWAS cannot be drawn.")
+      rlang::inform(rlang::format_error_bullets(c("x" = "Miami plot for stratified XWAS cannot be drawn.")))
     }
     gc(reset = TRUE)
 
@@ -2023,18 +2024,18 @@ generateGWASPlots <- function(plot.jpeg, plotname, FemaleWAS, MaleWAS, gwas.t2, 
       uplim <- -log10(min(XWAS_ADD_X1$P)) + 1
       suppressWarnings(qqman::manhattan(XWAS_ADD_X1, ylim = c(0, uplim), suggestiveline = suggestiveline, genomewideline = genomewideline, annotatePval = snp_pval, annotateTop = annotateTopSnp, main = "Manhattan plot of male-female combined XWAS"))
     } else {
-      print("There may not be any X chromosome in the data.")
+      rlang::inform(rlang::format_error_bullets(c("i" = "There may not be any X chromosome in the data.")))
     }
     gc(reset = TRUE)
     if (sum(Result1$P) == nrow(Result1)) {
-      print("All adjusted p values are 1, qq plot cannot be created.")
+      rlang::inform(rlang::format_error_bullets(c("x" = "All adjusted p values are 1, qq plot cannot be created.")))
     } else {
       suppressWarnings(qqman::qq(Result1$P, main = paste0(("Q-Q plot of GWAS male-female combined with GIF = "), round(lamdaGC, 3))))
       gc(reset = TRUE)
     }
 
     if (sum(XWAS_ADD_X1$P) == nrow(XWAS_ADD_X1)) {
-      print("All adjusted p values are 1, qq plot cannot be created.")
+      rlang::inform(rlang::format_error_bullets(c("x" = "All adjusted p values are 1, qq plot cannot be created.")))
     } else {
       suppressWarnings(qqman::qq(XWAS_ADD_X1$P, main = paste0(("Q-Q plot of XWAS male-female combined p-values with GIF = "), lamdaGC1)))
     }
@@ -2098,7 +2099,7 @@ generateGWASPlots <- function(plot.jpeg, plotname, FemaleWAS, MaleWAS, gwas.t2, 
     gc(reset = TRUE)
 
     if (sum(Result1$P) == nrow(Result1)) {
-      print("All adjusted p values are 1, qq plot cannot be created.")
+      rlang::inform(rlang::format_error_bullets(c("x" = "All adjusted p values are 1, qq plot cannot be created.")))
     } else {
       gc(reset = TRUE)
       suppressWarnings(qqman::qq(Result1$P, main = paste0(("Q-Q plot of male-female combined GWAS with GIF = "), round(lamdaGC, 3))))
@@ -2106,7 +2107,7 @@ generateGWASPlots <- function(plot.jpeg, plotname, FemaleWAS, MaleWAS, gwas.t2, 
     }
 
     if (sum(XWAS_ADD_X1$P) == nrow(XWAS_ADD_X1)) {
-      print("All adjusted p values are 1, qq plot cannot be created.")
+      rlang::inform(rlang::format_error_bullets(c("x" = "All adjusted p values are 1, qq plot cannot be created.")))
     } else {
       gc(reset = TRUE)
       qqman::qq(XWAS_ADD_X1$P, main = paste0(("Q-Q plot of male-female combined XWAS with GIF = "), round(lamdaGC1, 3)))
@@ -2170,7 +2171,7 @@ createPlots <- function(ResultDir, plotname, FemaleWAS, MaleWAS, gwas.t2, gwas.b
       sink() # This line resets the output redirection
     }
   } else {
-    print("Miami plot for stratified XWAS cannot be drawn.")
+    rlang::inform(rlang::format_error_bullets(c("x" = "Miami plot for stratified XWAS cannot be drawn.")))
   }
 
   # Manhattan plot
@@ -2182,21 +2183,21 @@ createPlots <- function(ResultDir, plotname, FemaleWAS, MaleWAS, gwas.t2, gwas.b
     uplim <- -log10(min(XWAS_ADD_X$P, na.rm = TRUE)) + 1
     suppressWarnings(qqman::manhattan(XWAS_ADD_X, ylim = c(0, uplim), suggestiveline = suggestiveline, genomewideline = genomewideline, annotatePval = snp_pval, annotateTop = annotateTopSnp, main = "Manhattan plot of male-female combined XWAS"))
   } else {
-    print("There may not be any X chromosome in the data.")
+    rlang::inform(rlang::format_error_bullets(c("i" = "There may not be any X chromosome in the data.")))
   }
 
   # QQ plot
   if (sum(Result$P, na.rm = TRUE) != nrow(Result)) {
     suppressWarnings(qqman::qq(Result$P, main = paste0("Q-Q plot of GWAS male-female combined with GIF = ", round(lamdaGC, 3))))
   } else {
-    print("All adjusted p values are 1, qq plot cannot be created.")
+    rlang::inform(rlang::format_error_bullets(c("x" = "All adjusted p values are 1, qq plot cannot be created.")))
   }
 
   # QQ plot for XWAS
   if (sum(XWAS_ADD_X$P, na.rm = TRUE) != nrow(XWAS_ADD_X)) {
     suppressWarnings(qqman::qq(XWAS_ADD_X$P, main = paste0("Q-Q plot of XWAS male-female combined p-values with GIF = ", round(lamdaGC1, 3))))
   } else {
-    print("All adjusted p values are 1, qq plot cannot be created.")
+    rlang::inform(rlang::format_error_bullets(c("x" = "All adjusted p values are 1, qq plot cannot be created.")))
   }
 
   if (plot.jpeg[1] == TRUE) {
@@ -2244,7 +2245,7 @@ FMcomb_sub <- function(ResultDir, combtest, MF.p.corr,
       chunks <- round(seq(1, nrow(pvals), by = chunk), 0)
 
       #### Parallel computation
-      print("Parallel computation is in progress --------->")
+      rlang::inform(rlang::format_error_bullets("Parallel computation is in progress --------->"))
       cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
 
       invisible(parallel::clusterEvalQ(cl, library(data.table)))
@@ -2321,7 +2322,7 @@ FMcomb_sub <- function(ResultDir, combtest, MF.p.corr,
 
 
   # Call to the helper function for plotting
-  print("Plots are initiated.")
+  rlang::inform(rlang::format_error_bullets(c("i" = "Plots are initiated.")))
   createPlots(ResultDir, plotname, FemaleWAS, MaleWAS, gwas.t2, gwas.b2, Result, XWAS_ADD_X, snp_pval, suggestiveline, genomewideline, annotateTopSnp, lamdaGC, lamdaGC1, plot.jpeg)
 
   gc(reset = TRUE)
@@ -2396,7 +2397,7 @@ FMcomb <-
     CombinedWAS <- na.omit(CombinedWAS)
     save(CombinedWAS, file = paste0(ResultDir, "/", "CombinedWAS.Rda"))
     gc(reset = TRUE)
-    print(paste0("Three dataframes such as, CombinedWAS, MaleWAS and FemaleWAS are produced in", ResultDir))
+    rlang::inform(rlang::format_error_bullets(paste0("Three dataframes such as, CombinedWAS, MaleWAS and FemaleWAS are produced in", ResultDir)))
     return(list(CombinedWAS = CombinedWAS, MaleWAS = MaleWAS, FemaleWAS = FemaleWAS))
   }
 
@@ -2523,7 +2524,7 @@ autoFun <- function(DataDir, ResultDir, finput, sex, standard_beta, covarfile, i
     chunks <- round(seq(1, nrow(snpfile), by = chunk), 0)
 
     #### Parallel computation
-    print("Parallel computation is in progress --------->")
+    rlang::inform(rlang::format_error_bullets("Parallel computation is in progress --------->"))
     cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
 
     invisible(parallel::clusterEvalQ(cl, library(data.table)))
@@ -2557,7 +2558,7 @@ autoFun <- function(DataDir, ResultDir, finput, sex, standard_beta, covarfile, i
       )
     return(XWAS)
   } else if (file.exists(paste0(ResultDir, "/", fl))[1] == FALSE) {
-    print(paste0("AutosomeWAS cannot be performed. Check the ", stringr::str_sub(fl, 1, 5), "log file in DataDir for checking the error."))
+    rlang::inform(rlang::format_error_bullets(paste0(c("x" = "AutosomeWAS cannot be performed. Check the ", stringr::str_sub(fl, 1, 5), "log file in DataDir for details."))))
   }
 }
 
@@ -2948,7 +2949,7 @@ XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
 
       #### Parallel computation
       gc(reset = TRUE)
-      print("Parallel computation is in progress --------->")
+      rlang::inform(rlang::format_error_bullets("Parallel computation is in progress --------->"))
       cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
 
       invisible(parallel::clusterEvalQ(cl, library(data.table)))
@@ -2968,7 +2969,7 @@ XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
   } else {
     DataDir <- DataDir
     covarfile <- covarfile
-    print("Running GWAScxci model for X chromosome.")
+    rlang::inform(rlang::format_error_bullets("Running GWAScxci model for X chromosome."))
 
     if (ncores == 0) {
       Result_pval <- data.table::rbindlist(lapply(Snp, XCMAX4_data2, DataDir = DataDir, genosnp = genosnp, P = P, Samp = Samp, covarfile = covarfile))
@@ -2978,7 +2979,7 @@ XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
 
       #### Parallel computation
       gc(reset = TRUE)
-      print("Parallel computation is in progress --------->")
+      rlang::inform(rlang::format_error_bullets("Parallel computation is in progress --------->"))
       cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
 
       invisible(parallel::clusterEvalQ(cl, library(data.table)))
@@ -3005,7 +3006,7 @@ XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
   }
 
   ## Performing Autosome WAS
-  print("Running GWAScxci model for autosome.")
+  rlang::inform(rlang::format_error_bullets("Running GWAScxci model for autosome."))
   XWAS_2 <- autoFun(
     DataDir = DataDir, ResultDir = ResultDir, finput = "FilteredX", sex = sex, standard_beta = standard_beta,
     covarfile = covarfile, interaction = interaction,
@@ -3059,9 +3060,9 @@ XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
 
     GXWAS <- XWAS
     save(GXWAS, file = paste0(ResultDir, "/GXWAS_XCGA.Rda"))
-    print(paste0("A dataframe named GXWAS_XCGA.Rda is saved in ", ResultDir))
+    rlang::inform(rlang::format_error_bullets(c("v" = paste0("A dataframe named GXWAS_XCGA.Rda is saved in ", ResultDir))))
   } else if (file.exists(paste0(ResultDir, "/", "XChrRun.assoc.logistic")) == FALSE) {
-    print("XWAS cannot be performed. Check the XChrRun.log file for checking the error.")
+    rlang::inform(rlang::format_error_bullets(c("x" = "XWAS cannot be performed. Check the XChrRun.log file for details.")))
   }
 
   return(GXWAS)
@@ -3171,12 +3172,12 @@ ComputeLDSC <- function(summarystat, precomputedLD, LDSC_blocks, chi2_thr1, chi2
   S1S2 <- merge(S1, S2, by = c("CHR", "SNP"))
 
   if (byCHR == FALSE) {
-    print(paste0("Percentage of overlapping SNPs from original summary statistics with precomputed LD matrix based on chromosome, position and SNP id: ", round(length(unique(S1S2$SNP)) / length(unique(S1$SNP)), 2) * 100, "%"))
-    print("Please check whether this percentage makes sense considering the genome build of summary statistics and precomputed LD matrix.")
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0("Percentage of overlapping SNPs from original summary statistics with precomputed LD matrix based on chromosome, position and SNP id: ", round(length(unique(S1S2$SNP)) / length(unique(S1$SNP)), 2) * 100, "%"))))
+    rlang::inform(rlang::format_error_bullets("Please check whether this percentage makes sense considering the genome build of summary statistics and precomputed LD matrix."))
   } else {
     S1chr <- unique(S1$CHR)
-    print(paste0("For chromosome ", S1chr, " percentage of overlapping SNPs from original summary statistics with precomputed LD matrix based on chromosome, position and SNP id: ", round(length(unique(S1S2$SNP)) / length(unique(S1$SNP)), 2) * 100, "%"))
-    print("Please check whether this percentage makes sense considering the genome build of summary statistics and precomputed LD matrix.")
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0("For chromosome ", S1chr, " percentage of overlapping SNPs from original summary statistics with precomputed LD matrix based on chromosome, position and SNP id: ", round(length(unique(S1S2$SNP)) / length(unique(S1$SNP)), 2) * 100, "%"))))
+    rlang::inform(rlang::format_error_bullets("Please check whether this percentage makes sense considering the genome build of summary statistics and precomputed LD matrix."))
   }
 
   if (round(length(unique(S1S2$SNP)) / length(unique(S1$SNP)), 2) * 100 != 0) {
@@ -3331,8 +3332,8 @@ ComputeGRMauto <- function(DataDir, ResultDir, finput, partGRM, nGRM, cripticut,
 
     if (file.exists(paste0(ResultDir, "/GXwasR.grm.id"))) {
       if (ByCHR == FALSE) {
-        print(grep("GRM has been saved", readLines(paste0(ResultDir, "/GXwasR.log")), value = TRUE))
-        print(grep("Number of SNPs in each pair", readLines(paste0(ResultDir, "/GXwasR.log")), value = TRUE))
+        rlang::inform(rlang::format_error_bullets(c("v" = grep("GRM has been saved", readLines(paste0(ResultDir, "/GXwasR.log")), value = TRUE))))
+        rlang::inform(rlang::format_error_bullets(c("i" = grep("Number of SNPs in each pair", readLines(paste0(ResultDir, "/GXwasR.log")), value = TRUE))))
       } else {
         # List of file extensions to copy and rename
         file_extensions <- c("grm.id", "grm.bin", "grm.N.bin")
@@ -3345,7 +3346,7 @@ ComputeGRMauto <- function(DataDir, ResultDir, finput, partGRM, nGRM, cripticut,
         }
       }
     } else {
-      print("No GRM is created.")
+      rlang::inform(rlang::format_error_bullets(c("i" = "No GRM was created.")))
     }
   } else {
     partGRMfun <- function(i) {
@@ -3382,8 +3383,8 @@ ComputeGRMauto <- function(DataDir, ResultDir, finput, partGRM, nGRM, cripticut,
       #####
       if (file.exists(paste0(ResultDir, "/GXwasR.grm.id"))) {
         if (ByCHR == FALSE) {
-          print(grep("Partitioned GRM has been saved", readLines(paste0(ResultDir, "/GXwasR.log")), value = TRUE))
-          print(grep("Number of SNPs in each pair", readLines(paste0(ResultDir, "/GXwasR.log")), value = TRUE))
+          rlang::inform(rlang::format_error_bullets(c("v" = grep("Partitioned GRM has been saved", readLines(paste0(ResultDir, "/GXwasR.log")), value = TRUE))))
+          rlang::inform(rlang::format_error_bullets(c("i" = grep("Number of SNPs in each pair", readLines(paste0(ResultDir, "/GXwasR.log")), value = TRUE))))
         } else {
           # List of file extensions to copy and rename
           file_extensions <- c("grm.id", "grm.bin", "grm.N.bin")
@@ -3396,7 +3397,7 @@ ComputeGRMauto <- function(DataDir, ResultDir, finput, partGRM, nGRM, cripticut,
           }
         }
       } else {
-        print("No GRM is created.")
+        rlang::inform(rlang::format_error_bullets(c("i" = "No GRM was created.")))
       }
 
       #####
@@ -3445,10 +3446,10 @@ ComputeGRMX <- function(DataDir, ResultDir, finput, partGRM, nGRM, minMAF = NULL
     # Execute GCTA with the specified arguments for X chromosome GRM
     executeGCTA(ResultDir, args)
     if (file.exists(paste0(ResultDir, "/xGXwasR.grm.id"))) {
-      print(grep("GRM has been saved", readLines(paste0(ResultDir, "/xGXwasR.log")), value = TRUE))
-      print(grep("Number of SNPs in each pair", readLines(paste0(ResultDir, "/xGXwasR.log")), value = TRUE))
+      rlang::inform(rlang::format_error_bullets(c("v" = grep("GRM has been saved", readLines(paste0(ResultDir, "/xGXwasR.log")), value = TRUE))))
+      rlang::inform(rlang::format_error_bullets(c("i" = grep("Number of SNPs in each pair", readLines(paste0(ResultDir, "/xGXwasR.log")), value = TRUE))))
     } else {
-      print("GRM is not created.")
+      rlang::inform(rlang::format_error_bullets(c("i" = "No GRM was created.")))
     }
   } else {
     partGRM <- function(i) {
@@ -3546,7 +3547,12 @@ ComputeREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100
     resultREML <- na.omit(data.table::fread(paste0(ResultDir, "/", chr, "test_reml.hsq"), fill = TRUE))
     return(resultREML)
   } else {
-    print("Convergence issue occurs, please check the models, use byCHR = TRUE, check different options, SNP partitioning or quality of the data")
+    rlang::inform(rlang::format_error_bullets(c(
+      "x" = "Convergence issue occurred, please:", 
+      "*" = "verify the model used", 
+      "*" = "set byCHR = TRUE", 
+      "*" = "set different options", 
+      "*" = "verify SNP partitioning or quality of the data")))
 
     log_file <- paste0(ResultDir, "/", chr, "test_reml.log")
 
@@ -3573,7 +3579,7 @@ ComputeREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100
 ## Function 76
 ComputeREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile = NULL, GE = FALSE, cat_covarfile = NULL, quant_covarfile = NULL,
                              prevalence = 0.01, grmfile = "multi_GRMs.txt", computeGRM = FALSE, grmfile_name = NULL, ncores = 2) {
-  print(paste("computeGRM is set to:", computeGRM))
+  rlang::inform(rlang::format_error_bullets(c("i" = paste("computeGRM is set to:", computeGRM))))
 
   if (is.null(phenofile)) {
     pheno <- NULL
@@ -3609,13 +3615,13 @@ ComputeREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 1
 
   ## Create multi_GRMs.txt in ResultDir
   if (isTRUE(computeGRM)) {
-    print("Creating multi_GRMs.txt because computeGRM is TRUE")
+    rlang::inform(rlang::format_error_bullets("Creating multi_GRMs.txt because computeGRM is TRUE"))
 
     fileConn <- file(paste0(ResultDir, "/multi_GRMs.txt"))
     writeLines(c(paste0(ResultDir, "/GXwasR"), paste0(ResultDir, "/xGXwasR")), fileConn)
     close(fileConn)
   } else {
-    print("computeGRM is FALSE, checking grmfile_name")
+    rlang::inform(rlang::format_error_bullets("computeGRM is FALSE, checking grmfile_name"))
 
     if (is.null(grmfile_name)) {
       stop("grmfile_name must be provided if computeGRM is FALSE")
@@ -3650,7 +3656,12 @@ ComputeREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 1
     resultREML <- na.omit(data.table::fread(paste0(ResultDir, "/test_reml.hsq"), fill = TRUE))
     return(resultREML)
   } else {
-    print("Convergence issue occurs, please check the models, use byCHR = TRUE, check different options, SNP partitioning or quality of the data")
+    rlang::inform(rlang::format_error_bullets(c(
+      "x" = "Convergence issue occurred, please:", 
+      "*" = "verify the model used", 
+      "*" = "set byCHR = TRUE", 
+      "*" = "set different options", 
+      "*" = "verify SNP partitioning or quality of the data")))
 
     log_file <- paste0(ResultDir, "/test_reml.log")
 
@@ -3705,11 +3716,11 @@ GettingGene <- function(gene_file, gene_range, SNP_bimfile, finput) {
   gene_snp_intersect <-
     as.data.frame(plyranges::join_overlap_intersect(genes.gr, snp.gr))
 
-  print(paste0(length(unique(
+  rlang::inform(rlang::format_error_bullets(c("i" = paste0(length(unique(
     gene_snp_intersect$gene_name
   )), " genes are having ", length(unique(
     gene_snp_intersect$SNP
-  )), " SNPs"))
+  )), " SNPs"))))
   gene_snp <- unique(gene_snp_intersect[, c(6, 11)])
   snpcount <- as.data.frame(table(gene_snp$gene_name))
 }
@@ -3881,7 +3892,7 @@ PlotHeritability <- function(Hdata, miMAF, maMAF, plotjpeg, plotname, ResultDir)
     )))
     dev.off()
 
-    print(paste0("Plots are saved in ", ResultDir, " with name ", plotname, ".jpeg"))
+    rlang::inform(rlang::format_error_bullets(c("v" = paste0("Plots are saved in ", ResultDir, " with name ", plotname, ".jpeg"))))
   }
 }
 
@@ -3944,7 +3955,7 @@ processLDSCModel <- function(DataDir, ResultDir, finput, precomputedLD, IndepSNP
         chi2_thr1 = chi2_thr1, chi2_thr2 = chi2_thr2, intercept = intercept, ncores = ncores, byCHR = byCHR
       )
     } else {
-      print("For LDSC model, please supply pre-computed LD scores as a dataframe in the 'precomputedLD' argument.")
+      rlang::inform(rlang::format_error_bullets(c("i" = "For LDSC model, please supply pre-computed LD scores as a dataframe in the 'precomputedLD' argument.")))
     }
 
     herit_result <- data.table::as.data.table(t(as.data.frame(result)))
@@ -3970,28 +3981,28 @@ processLDSCModel <- function(DataDir, ResultDir, finput, precomputedLD, IndepSNP
 
       if (PlotIndepSNP == TRUE) {
         if (is.null(precomputedLD)) {
-          print("For LDSC model precomputedLD cannot be NULL.")
+          rlang::inform(rlang::format_error_bullets(c("x" = "For LDSC model precomputedLD cannot be NULL.")))
         } else {
           chrsummarystat <- summarystat[summarystat$chr == chromosome, ]
 
           if (!is.null(IndepSNPs)) {
             bimfile1 <- merge(IndepSNPs, chrsummarystat, by = "rsid")
           } else {
-            print("IndepSNPs needed to be supplied else all SNPs are being used.")
+            rlang::inform(rlang::format_error_bullets(c("i" = "IndepSNPs needed to be supplied else all SNPs are being used.")))
 
             bimfile1 <- summarystat[summarystat$chr == chromosome, ]
           }
         }
       } else {
         if (is.null(precomputedLD)) {
-          print("For LDSC model precomputedLD cannot be NULL.")
+          rlang::inform(rlang::format_error_bullets(c("x" = "For LDSC model precomputedLD cannot be NULL.")))
         } else {
           bimfile1 <- summarystat[summarystat$chr == chromosome, ]
         }
       }
 
       if (is.null(precomputedLD)) {
-        print("For LDSC model precomputedLD cannot be NULL.")
+        rlang::inform(rlang::format_error_bullets(c("x" = "For LDSC model precomputedLD cannot be NULL.")))
       } else {
         snp_proportion <- round(length(unique(bimfile1$rsid)) / length(unique(summarystat$rsid)), 2)
       }
@@ -3999,10 +4010,10 @@ processLDSCModel <- function(DataDir, ResultDir, finput, precomputedLD, IndepSNP
       ## Getting number of genes and proteins
       GP <- GeneProtein(ResultDir = ResultDir, hg = hg, chromosome = chromosome)
 
-      print(paste0("Processing chromosome ", chromosome))
+      rlang::inform(rlang::format_error_bullets(c("i" = paste0("Processing chromosome ", chromosome))))
 
       if (is.null(precomputedLD)) {
-        print("For LDSC model, please supply pre-computed LD scores as a dataframe in the 'precomputedLD' argument.")
+        rlang::inform(rlang::format_error_bullets(c("x" = "For LDSC model, please supply pre-computed LD scores as a dataframe in the 'precomputedLD' argument.")))
       } else {
         result1 <- ComputeLDSC(
           summarystat = bimfile1, precomputedLD = precomputedLD, LDSC_blocks = LDSC_blocks,
@@ -4033,7 +4044,7 @@ processLDSCModel <- function(DataDir, ResultDir, finput, precomputedLD, IndepSNP
     result <- data.table::rbindlist(lapply(chrnum, chrwiseLD), fill = TRUE)
     x <- na.omit(result)
     if (nrow(x) < 3) {
-      print("Not enough data points for plots.")
+      rlang::inform(rlang::format_error_bullets(c("x" = "Not enough data points for plots.")))
       result1 <- result[, 1:9]
       result2 <- na.omit(result1)
       colnames(result2) <- c("chromosome", "snp_proportion", "no.of.genes", "no.of.proteins", "Intercept", "Int_SE", "Variance", "SE", "Source")
@@ -4098,7 +4109,7 @@ processGREMLModel <- function(DataDir, ResultDir, finput, byCHR, autosome, Xsome
           partGRM = partGRM, nGRM = nGRM, minMAF = minMAF, maxMAF = maxMAF, ncores = ncores
         )
       } else {
-        print("Skipping GRM computation.")
+        rlang::inform(rlang::format_error_bullets(c("i" = "Skipping GRM computation.")))
       }
       ## Compute REML
       herit_result <- ComputeREMLmulti(
@@ -4127,7 +4138,7 @@ processGREMLModel <- function(DataDir, ResultDir, finput, byCHR, autosome, Xsome
 
       return(herit_result)
     } else {
-      print("Autosome and Xsome cannot be set as FALSE together.")
+      rlang::inform(rlang::format_error_bullets(c("x" = "Autosome and Xsome cannot both be set as FALSE.")))
     }
   } else {
     bimfile <- read.table(paste0(DataDir, "/", finput, ".bim"))
@@ -4156,7 +4167,7 @@ processGREMLModel <- function(DataDir, ResultDir, finput, byCHR, autosome, Xsome
       ## Getting number of genes and proteins
       GP <- GeneProtein(ResultDir = ResultDir, hg = hg, chromosome = chromosome)
 
-      print(paste0("Processing chromosome ", chromosome))
+      rlang::inform(rlang::format_error_bullets(paste0("Processing chromosome ", chromosome)))
 
       if (chromosome == 23) {
         if (computeGRM == TRUE) {
@@ -4207,7 +4218,7 @@ processGREMLModel <- function(DataDir, ResultDir, finput, byCHR, autosome, Xsome
 
     x <- na.omit(result)
     if (nrow(x) < 3) {
-      print("Not enough data points for plots.")
+      rlang::inform(rlang::format_error_bullets(c("x" = "Not enough data points for plots.")))
       return(result)
     } else {
       result1 <- result[result$Source == "V(G)/Vp", ]
@@ -4388,7 +4399,7 @@ allForestplot <- function(i, MR2, Sbeta) {
 ## Added in 3.0
 ## Apply Genomic Control
 getGCse <- function(SummData, ResultDir) {
-  print("Applying study-specific genomic control.")
+  rlang::inform(rlang::format_error_bullets(c("i" = "Applying study-specific genomic control.")))
   s1 <- read.table(paste0(ResultDir, "/", SummData), header = TRUE)
 
   # From p-values, calculate chi-squared statistic
@@ -4419,7 +4430,7 @@ adjustPvalThreshold <- function(top_snp_pval, MR, pval_filter) {
   )
   if (top_snp_pval < min_pval) {
     adjusted_pval <- min_pval * 100
-    print(paste0("Minimum p-value is higher than provided threshold. Using ", adjusted_pval))
+    rlang::inform(rlang::format_error_bullets("i" = (paste0("Minimum p-value is higher than provided threshold. Using ", adjusted_pval))))
     return(adjusted_pval)
   } else {
     return(top_snp_pval)
@@ -4445,7 +4456,7 @@ metaFun <- function(DataDir, ResultDir, SummData, CHR, chromosome, nomap, UseA1v
   # setupPlink(ResultDir)
   chromosomev <- chromosome
 
-  print(paste0("Processing chromosome ", chromosomev))
+  rlang::inform(rlang::format_error_bullets(paste0("Processing chromosome ", chromosomev)))
 
   invisible(sys::exec_wait(
     plink(),
@@ -4479,7 +4490,7 @@ generatePlots <- function(MRfiltered, Sbeta, ResultDir, plotname, useSNPposition
   # Determine the number of SNPs to plot
   numSNPs <- min(length(unique(MRfiltered$SNP)), 10)
   if (length(unique(MRfiltered$SNP)) > 10) {
-    print("Maximum 10 Forest plots of 10 chosen SNPs will be drawn in the plot window. For all other Forest plots, please check ResultDir.")
+    rlang::inform(rlang::format_error_bullets(c("i" = "Maximum 10 Forest plots of 10 chosen SNPs will be drawn in the plot window. For all other Forest plots, please check ResultDir.")))
   }
 
   # Generate Forest plots
@@ -4572,10 +4583,14 @@ ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr 
     # colnames(x1)<- NULL
     # rownames(x1)<- NULL
     # print(x1)
-    print(grep("Error", readLines(paste0(ResultDir, "/", chr, "test_bireml.log")), value = TRUE))
-    print(grep("Note: to constrain", readLines(paste0(ResultDir, "/", chr, "test_bireml.log")), value = TRUE))
-    print("Convergence problem occurs, please try byCHR = TRUE, check different options, SNP partitioning or ensure the quality of the input data.")
-    print("The result will be provided for the last iteration.")
+    rlang::inform(rlang::format_error_bullets(c("x" = grep("Error", readLines(paste0(ResultDir, "/", chr, "test_bireml.log")), value = TRUE))))
+    rlang::inform(rlang::format_error_bullets(c("i" = grep("Note: to constrain", readLines(paste0(ResultDir, "/", chr, "test_bireml.log")), value = TRUE))))
+    rlang::inform(rlang::format_error_bullets(c(
+      "x" = "Convergence issue occurred, please:", 
+      "*" = "set byCHR = TRUE", 
+      "*" = "set different options", 
+      "*" = "verify SNP partitioning or quality of the data")))
+    rlang::inform(rlang::format_error_bullets(c("i" = "The result will be provided for the last iteration.")))
     # if(grep("Error", readLines(paste0(ResultDir,"/",chr,"test_bireml.log")), value = TRUE) == 0){
     #   x <- data.frame(Source = NA, Variance = NA, SE = NA)
     #   print("Segmentation fault from GCTA 1.94.1.")
@@ -4591,7 +4606,7 @@ ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr 
 ## Function 96
 ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile, cat_covarfile = NULL,
                                   quant_covarfile = NULL, grmfile = "multi_GRMs.txt", excludeResidual = c("FALSE", "TRUE"), computeGRM = FALSE, grmfile_name = NULL, ncores = 2) {
-  print(paste("computeGRM is set to:", computeGRM))
+  rlang::inform(rlang::format_error_bullets(c("i" = paste("computeGRM is set to:", computeGRM))))
 
   if (excludeResidual == "FALSE") {
     ExResi <- NULL
@@ -4620,13 +4635,13 @@ ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nit
   # close(fileConn)
   ## Create multi_GRMs.txt in ResultDir
   if (isTRUE(computeGRM)) {
-    print("Creating multi_GRMs.txt because computeGRM is TRUE")
+    rlang::inform(rlang::format_error_bullets(c("i" = "Creating multi_GRMs.txt because computeGRM is TRUE")))
 
     fileConn <- file(paste0(ResultDir, "/multi_GRMs.txt"))
     writeLines(c(paste0(ResultDir, "/GXwasR"), paste0(ResultDir, "/xGXwasR")), fileConn)
     close(fileConn)
   } else {
-    print("computeGRM is FALSE, checking grmfile_name")
+    rlang::inform(rlang::format_error_bullets(c("i" = "computeGRM is FALSE, checking grmfile_name")))
 
     if (is.null(grmfile_name)) {
       stop("grmfile_name must be provided if computeGRM is FALSE")
@@ -4679,10 +4694,14 @@ ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nit
     # colnames(x1)<- NULL
     # rownames(x1)<- NULL
     # print(x1)
-    print(grep("Error", readLines(paste0(ResultDir, "/test_bireml.log")), value = TRUE))
-    print(grep("Note: to constrain", readLines(paste0(ResultDir, "/test_bireml.log")), value = TRUE))
-    print("Convergence problem occurs, please try byCHR = TRUE, check different options, SNP partitioning or ensure the quality of the input data.")
-    print("The result will be provided for the last iteration.")
+    rlang::inform(rlang::format_error_bullets(c("x" = grep("Error", readLines(paste0(ResultDir, "/test_bireml.log")), value = TRUE))))
+    rlang::inform(rlang::format_error_bullets(c("i" = grep("Note: to constrain", readLines(paste0(ResultDir, "/test_bireml.log")), value = TRUE))))
+    rlang::inform(rlang::format_error_bullets(c(
+      "x" = "Convergence issue occurred, please:", 
+      "*" = "set byCHR = TRUE", 
+      "*" = "set different options", 
+      "*" = "verify SNP partitioning or quality of the data")))
+    rlang::inform(rlang::format_error_bullets(c("i" = "The result will be provided for the last iteration.")))
     # x <- as.data.frame(t(x1))
     # x <- x[-1,]
     # colnames(x) <- c("Source", "Variance","SE")
@@ -4695,7 +4714,7 @@ ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nit
 geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.RData", output.file.prefix) {
   OS <- Sys.info()["sysname"]
   if (OS == "Windows") {
-    print("Currently this function maynot work on Windows as bgzip and tabix for windows are down. Pleas use linux environment.")
+    rlang::inform(rlang::format_error_bullets(c("i" = "Currently this function may not work on Windows as bgzip and tabix for windows are down. Please use linux environment.")))
 
     utils::download.file(
       destfile = paste0(ResultDir, "/", "bgzip_tabix.zip"),
@@ -4752,7 +4771,7 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
   ColNames <- c("CHROM", "POS", "EAF")
   v <- !ColNames %in% colnames(df)
   take <- ColNames[v]
-  if (sum(v)) print(paste("Columns that are missing and will be looked for in reference data:", paste(take, collapse = ", ")))
+  if (sum(v)) rlang::inform(rlang::format_error_bullets(c("i" = paste("he following columns are missing and will be searched for in the reference data:", paste(take, collapse = ", ")))))
   take[take == "EAF"] <- "AF"
 
   if ("BETA" %in% colnames(df)) {
@@ -4762,10 +4781,10 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
       colnames(df)[which(colnames(df) == "ALT")] <- "ALT0"
       take <- c(take, "REF", "ALT")
     } else {
-      print("Effect allele column not found, effect sizes cannot be linked")
+      rlang::inform(rlang::format_error_bullets(c("x" = "Effect allele column not found, effect sizes cannot be linked")))
     }
   } else {
-    print("Effect sizes (beta) column not found")
+    rlang::inform(rlang::format_error_bullets(c("x" = "Effect sizes (beta) column not found")))
   }
   if (length(take) > 0) {
     is.ref <- 0
@@ -4775,7 +4794,7 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
         if (file.exists(reference)) {
           is.ref <- 1
         } else {
-          if (reference != "") print("Reference file not found! Please download it from https://mga.bionet.nsc.ru/sumFREGAT/ref1KG.MAC5.EUR_AF.RData to use 1000 Genome Reference correlation matrices")
+          if (reference != "") rlang::inform(rlang::format_error_bullets(c("x" = "Reference file not found! Please download it from https://mga.bionet.nsc.ru/sumFREGAT/ref1KG.MAC5.EUR_AF.RData to use 1000 Genome Reference correlation matrices")))
         }
       }
     } else if (length(reference) > 1) is.ref <- is.ref.object <- 1
@@ -4784,7 +4803,7 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
       if (is.ref.object) {
         ref <- reference
       } else {
-        print("Loading reference file...")
+        rlang::inform(rlang::format_error_bullets(c("Loading reference file...")))
         ref <- get(load(reference))
       }
       colnames(ref) <- toupper(colnames(ref))
@@ -4795,25 +4814,25 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
       if (!sum(v, na.rm = TRUE)) {
         if (all(c("CHROM", "POS") %in% colnames(df))) {
           df$ind <- paste(df$CHROM, df$POS, sep = ":")
-          print("No IDs matching, trying to link through map data...")
+          rlang::inform(rlang::format_error_bullets("No IDs matching, trying to link through map data..."))
           ref$ind <- paste(ref$CHROM, ref$POS, sep = ":")
           v <- match(df$ind, ref$ind)
           if (sum(!is.na(v)) < (length(v) / 2)) {
-            print("Too few variants match between input file and reference data")
+            rlang::inform(rlang::format_error_bullets(c("x" = "Too few variants match between input file and reference data")))
             v <- NA
           }
         }
       }
       if (sum(v, na.rm = TRUE)) {
-        print(paste(sum(!is.na(v)), "of", length(v), "variants found in reference"))
+        rlang::inform(rlang::format_error_bullets(c("i" = paste(sum(!is.na(v)), "of", length(v), "variants found in reference"))))
         vv <- take %in% colnames(ref)
         if (sum(!vv)) {
-          print(paste("Columns that are missing in reference data:", paste(take[!vv], collapse = ", ")))
+          rlang::inform(rlang::format_error_bullets(c("i" = paste("Columns that are missing in reference data:", paste(take[!vv], collapse = ", ")))))
           if ("REF" %in% take & !"REF" %in% colnames(ref)) {
-            print("Reference alleles not found, effect sizes cannot be linked")
+            rlang::inform(rlang::format_error_bullets(c("x" = "Reference alleles not found, effect sizes cannot be linked")))
             df$BETA <- df$EFFECT.ALLELE <- NULL
           }
-          if ("AF" %in% take & !"AF" %in% colnames(ref)) print("Allele frequencies not found, some weighted tests will be unavailable")
+          if ("AF" %in% take & !"AF" %in% colnames(ref)) rlang::inform(rlang::format_error_bullets(c("i" = "Allele frequencies not found, some weighted tests will be unavailable")))
         }
         df <- cbind(df, ref[v, take[vv]])
       }
@@ -4838,7 +4857,7 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
       v <- unique(c(v, which(df$EFFECT.ALLELE != df$REF & df$EFFECT.ALLELE != df$ALT)))
     }
     if (sum(v, na.rm = T)) {
-      print(paste("Effect alleles or REF/ALT alleles do not match reference data for", sum(v), "variant(s)"))
+      rlang::inform(rlang::format_error_bullets(c("i" = paste("Effect alleles or REF/ALT alleles do not match reference data for", sum(v), "variant(s)"))))
       df[v, "BETA"] <- NA
     }
     df[is.na(df$EFFECT.ALLELE) | is.na(df$REF), "BETA"] <- NA
@@ -4849,11 +4868,11 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
       df$EAF[v] <- 1 - df$EAF[v]
       colnames(df)[colnames(df) == "EAF"] <- "AF"
     }
-    print(paste("Effect sizes recoded for", length(v), "variant(s)"))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste("Effect sizes recoded for", length(v), "variant(s)"))))
   }
 
   if (any(df$P == 0)) {
-    print("Some P values equal zero, will be assigned to minimum value in the sample")
+    rlang::inform(rlang::format_error_bullets(c("i" = "Some P values equal zero, will be assigned to minimum value in the sample")))
     df$P[df$P == 0] <- min(df$P[df$P > 0])
   }
   df$Z <- qnorm(df$P / 2, lower.tail = FALSE)
@@ -4889,28 +4908,28 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
   if ("AF" %in% colnames(df)) {
     vcf$INFO <- paste0(vcf$INFO, ";AF=", df$AF)
     title <- c(title, '##INFO=<ID=AF,Number=1,Type=Float,Description="Frequency of alternative allele">')
-    print(paste0("Allele frequencies found and linked"))
+    rlang::inform(rlang::format_error_bullets(c("v" = "Allele frequencies found and linked")))
   }
 
   a <- grep("\\bW", colnames(df))
   if (length(a) == 1) {
     vcf$INFO <- paste0(vcf$INFO, ";W=", df[, a])
     title <- c(title, '##INFO=<ID=W,Number=1,Type=Float,Description="Weights">')
-    print(paste0("User weights ('", colnames(df)[a], "') found and linked"))
+    rlang::inform(rlang::format_error_bullets(c("v" = paste0("User weights ('", colnames(df)[a], "') found and linked"))))
   }
 
   a <- grep("\\bANNO", colnames(df), value = TRUE)
   if (length(a) == 1) {
     vcf$INFO <- paste0(vcf$INFO, ";ANNO=", df[, a])
     title <- c(title, '##INFO=<ID=ANNO,Number=1,Type=String,Description="Variants annotations">')
-    print(paste0("Annotations ('", colnames(df)[a], "') found and linked"))
+    rlang::inform(rlang::format_error_bullets(c("v" = paste0("Annotations ('", colnames(df)[a], "') found and linked"))))
   }
 
   a <- grep("\\bPROB", colnames(df), value = TRUE)
   for (an in a) {
     vcf$INFO <- paste0(vcf$INFO, ";", an, "=", df[, as.character(an)])
     title <- c(title, paste0("##INFO=<ID=", an, ",Number=1,Type=Float,Description='", an, "'>"))
-    print(paste0("Column '", an, "' linked"))
+    rlang::inform(rlang::format_error_bullets(c("v" = paste0("Column '", an, "' linked"))))
   }
 
   # write.table(title, fn, col.names = FALSE, row.names = FALSE, quote = FALSE, sep = '\t')
@@ -4936,7 +4955,7 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
   if (file.exists(paste0(ResultDir, "/", fn.gz))) system(paste("rm", paste0(ResultDir, "/", fn.gz)))
   system(paste0(ResultDir, "/", "./bgzip ", ResultDir, "/", fn))
   system(paste0(ResultDir, "/", "./tabix -p vcf ", ResultDir, "/", fn.gz))
-  print(paste("File", fn.gz, "has been created"))
+  rlang::inform(rlang::format_error_bullets(c("v" = paste("File", fn.gz, "has been created"))))
 }
 
 ## Function 98
@@ -5297,15 +5316,15 @@ filterATGCSNPs <- function(DataDir, ResultDir, finput, reference) {
 
   # Print Messages
   if (nrow(study_SNP) == 0) {
-    print("No SNP had 'A-T' and 'G-C' in study data.")
+    rlang::inform(rlang::format_error_bullets("No SNP had 'A-T' and 'G-C' in study data."))
   } else {
-    print(paste0(nrow(study_SNP), " SNPs had 'A-T' and 'G-C' in study data. These SNPs were removed."))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0(nrow(study_SNP), " SNPs had 'A-T' and 'G-C' in study data. These SNPs were removed."))))
   }
 
   if (nrow(ref_SNP) == 0) {
-    print("No SNP had 'A-T' and 'G-C' in reference data.")
+    rlang::inform(rlang::format_error_bullets("No SNP had 'A-T' and 'G-C' in reference data."))
   } else {
-    print(paste0(nrow(ref_SNP), " SNPs were 'A-T' and 'G-C' in reference data. These SNPs were removed."))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0(nrow(ref_SNP), " SNPs were 'A-T' and 'G-C' in reference data. These SNPs were removed."))))
   }
 }
 
@@ -5315,7 +5334,7 @@ executePlinkForUnfilteredData <- function(DataDir, ResultDir, finput, reference)
   executePlinkAd(ResultDir, c("--bfile", paste0(DataDir, "/", finput), "--make-bed", "--out", paste0(ResultDir, "/filtered_study_temp2"), "--silent"))
   executePlinkAd(ResultDir, c("--bfile", paste0(ResultDir, "/", reference), "--make-bed", "--out", paste0(ResultDir, "/filtered_ref_temp2"), "--silent"))
 
-  print("A-T and C-G SNPs recommended to remove from both the reference and study data set by setting filterSNP == TRUE")
+  rlang::inform(rlang::format_error_bullets("A-T and C-G SNPs recommended to remove from both the reference and study data set by setting filterSNP == TRUE"))
 }
 
 ## Function 105
@@ -5334,7 +5353,7 @@ findCommonSNPs <- function(ResultDir) {
     # if (nrow(common_snps) == 0){
     stop("No common SNPs found between study and reference data. This analysis cannot be done.")
   } else {
-    print(paste0("No. of. overlapping SNPs between study and reference data using chromosme ID and position:", length(common_snps)))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0("Number of overlapping SNPs between study and reference data using chromosme ID and position:", length(common_snps)))))
   }
 
   # Updated in final
@@ -5560,9 +5579,12 @@ mergeDatasetsAndPerformPCA <- function(ResultDir) {
   removeTempFiles(ResultDir, "filtered_ref_temp7")
 
   if (file.exists(paste0(ResultDir, "/study_ref_merge.eigenvec"))) {
-    print("PCA done.")
+    rlang::inform(rlang::format_error_bullets(c("v" = "PCA done.")))
   } else {
-    print("PCA cannot be computed. Please check whether you have sufficient number of overlapping SNPs between study and reference data, too many missing genotypes in study data or closely related individuals, hence GRM cannot be extracted.")
+    rlang::inform(
+      rlang::format_error_bullets(c(
+        "x" = "PCA cannot be computed.",
+        "i" = "Please check whether you have sufficient number of overlapping SNPs between study and reference data. There are too many missing genotypes in study data or closely related individuals so GRM cannot be extracted.")))
     stop("Ancestry check cannot be performed since PCA cannot be computed")
   }
 }
@@ -5709,11 +5731,11 @@ reportAlleleFlips <- function(snp_allele_flips, ResultDir) {
   snp_allele_flips_count <- length(unique(snp_allele_flips))
 
   if (snp_allele_flips_count == 0) {
-    print("No allele flips between study and reference data.")
+    rlang::inform(rlang::format_error_bullets(c("i" = "No allele flips between study and reference data.")))
   } else {
-    print(paste0(snp_allele_flips_count, " allele flips identified between study and reference data."))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0(snp_allele_flips_count, " allele flips identified between study and reference data."))))
     mergebim <- read.table(paste0(ResultDir, "/study_ref_merge.bim"))
-    print(paste0(length(unique(mergebim$V2)), " SNPs were finally retained in study and reference data after correcting for position mismatch and allele flips."))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0(length(unique(mergebim$V2)), " SNPs were finally retained in study and reference data after correcting for position mismatch and allele flips."))))
   }
 }
 
@@ -5872,18 +5894,18 @@ detectOutliers <- function(tab, ResultDir, DataDir, finput, outlier, outlierOf, 
       file = paste0(ResultDir, "/Outlier_ancestry"),
       quote = FALSE, row.names = FALSE, col.names = FALSE, eol = "\r\n", sep = " "
     )
-    print(paste0(nrow(unique(Outlier_samples_fam)), " samples are outliers of selected reference population."))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0(nrow(unique(Outlier_samples_fam)), " samples are outliers of selected reference population."))))
   } else {
-    print("There is no outlier sample.")
+    rlang::inform(rlang::format_error_bullets(c("x" = "There is no outlier sample.")))
   }
 
   ## Added in 5.0
   # Report non-outlier results for selected reference population
   Sample_Ref_Pop <- na.omit(study_pop[study_pop$Assigned_Pop_ZScore == outlierOf, ])
   if (nrow(Sample_Ref_Pop) != 0) {
-    print(paste0(length(unique(Sample_Ref_Pop[, 1])), " samples are NOT outliers of selected reference population."))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0(length(unique(Sample_Ref_Pop[, 1])), " samples are NOT outliers of selected reference population."))))
   } else {
-    print("There are no non-outlier samples.")
+    rlang::inform(rlang::format_error_bullets(c("x" = "There are no non-outlier samples.")))
   }
 
   # Prepare Outlier_samples1
@@ -7137,12 +7159,12 @@ setFilterParameters <- function(CHRX, CHRY, filterCHR, regionfile, filterPAR, fi
   }
 
   if (!is.null(fch) && !is.null(rf)) {
-    print("filterCHR and regionfile, cannot be in effect together.")
+    rlang::inform(rlang::format_error_bullets(c("x" = "filterCHR and regionfile, cannot be used together.")))
     return()
   } else if (!is.null(fch) && (filterPAR == TRUE | filterXTR == TRUE | filterAmpliconic == TRUE)) {
-    print("filterCHR cannot be in effect with other filters such as PAR, XTR, Ampliconic. Other filters were implicitly FALSE.")
+    rlang::inform(rlang::format_error_bullets(c("x" = "filterCHR cannot be used with other filters such as PAR, XTR, Ampliconic. Other filters were implicitly FALSE.")))
   } else if (!is.null(rf) && (filterPAR == TRUE | filterXTR == TRUE | filterAmpliconic == TRUE)) {
-    print("regionfile cannot be in effect with other filters such as PAR, XTR, Ampliconic. Other filters were implicitly FALSE.")
+    rlang::inform(rlang::format_error_bullets(c("x" = "regionfile cannot be used with other filters such as PAR, XTR, Ampliconic. Other filters were implicitly FALSE.")))
   }
 
   return(list(CHRX = CHRX, fch = fch, rf = rf))
@@ -7184,10 +7206,12 @@ processRegionFilter <- function(x, filterPAR, filterXTR, filterAmpliconic, Resul
     if (file.exists(paste0(ResultDir, "/", foutput, "_par_region.bim"))) {
       par_snps <- read.table(paste0(ResultDir, "/", foutput, "_par_region.bim"))
       colnames(par_snps) <- c("CHR", "SNP", "START", "END", "A1", "A2")
-      print(paste0("PAR SNPs:", length(unique(par_snps$SNP))))
+      rlang::inform(rlang::format_error_bullets(c("i" = paste0("PAR SNPs:", length(unique(par_snps$SNP))))))
     } else {
-      print("There is no PAR region in the input data. Argument filterPAR cannot set to be TRUE.")
-      print("Changing it as filterPAR = FALSE")
+      rlang::inform(
+        rlang::format_error_bullets(c(
+          "x" = "There is no PAR region in the input data. Argument filterPAR cannot set to be TRUE.",
+          "i" = "Changing filterPAR to FALSE")))
       filterPAR <- FALSE
       par_snps <- NULL
     }
@@ -7229,10 +7253,13 @@ processRegionFilter <- function(x, filterPAR, filterXTR, filterAmpliconic, Resul
     if (file.exists(paste0(ResultDir, "/", foutput, "_xtr_region.bim"))) {
       xtr_snps <- read.table(paste0(ResultDir, "/", foutput, "_xtr_region.bim"))
       colnames(xtr_snps) <- c("CHR", "SNP", "START", "END", "A1", "A2")
-      print(paste0("XTR SNPs:", length(unique(xtr_snps$SNP))))
+      rlang::inform(rlang::format_error_bullets(c("i" = paste0("XTR SNPs:", length(unique(xtr_snps$SNP))))))
     } else {
-      print("There is no XTR region in the input data. Argument filterXTR cannot set to be TRUE.")
-      print("Changing it as filterXTR = FALSE")
+      rlang::inform(
+        rlang::format_error_bullets(c(
+          "x" = "There is no XTR region in the input data. Argument filterXTR cannot set to be TRUE.",
+          "i" = "Changing filterXTR to FALSE"
+        )))
       filterXTR <- FALSE
       xtr_snps <- NULL
     }
@@ -7275,10 +7302,13 @@ processRegionFilter <- function(x, filterPAR, filterXTR, filterAmpliconic, Resul
     if (file.exists(paste0(ResultDir, "/", foutput, "_ampliconic_region.bim"))) {
       ampliconic_snps <- read.table(paste0(ResultDir, "/", foutput, "_ampliconic_region.bim"))
       colnames(ampliconic_snps) <- c("CHR", "SNP", "START", "END", "A1", "A2")
-      print(paste0("Ampliconic SNPs:", length(unique(ampliconic_snps$SNP))))
+      rlang::inform(rlang::format_error_bullets(c("i" = paste0("Ampliconic SNPs:", length(unique(ampliconic_snps$SNP))))))
     } else {
-      print("There is no ampliconic region in the input data. Argument filterAmpliconic cannot set to be TRUE.")
-      print("Changing it as filterAmpliconic = FALSE")
+      rlang::inform(
+        rlang::format_error_bullets(c(
+          "x" = "There is no ampliconic region in the input data. Argument filterAmpliconic cannot set to be TRUE.",
+          "i" = "Changing filterAmpliconic to FALSE"
+        )))
       filterAmpliconic <- FALSE
       ampliconic_snps <- NULL
     }
