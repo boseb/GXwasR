@@ -6,6 +6,8 @@
 \alias{GXwasR-package}
 \title{GXwasR: Genome-wide and x-chromosome wide association analyses applying best practices of quality control over genetic data}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 This package performs various models of genome-wide and x-chromosome wide association analyses applying best practices of quality control over genetic data.
 }
 \author{
