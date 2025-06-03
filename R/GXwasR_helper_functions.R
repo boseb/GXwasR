@@ -29,14 +29,35 @@
 ## PLINK Dependency Check
 verifyPlink <- function() {
   os_type <- Sys.info()[["sysname"]]
+
+  # Helper to determine if the found plink binary is the bioinformatics version
+  is_bioinformatics_plink <- function(plink_path) {
+    out <- tryCatch(
+      {
+        system2(plink_path, "--version", stdout = TRUE, stderr = TRUE)
+      },
+      error = function(e) {
+        character()
+      }
+    )
+    if (length(out) == 0) {
+      return(FALSE)
+    }
+    
+    has_plink_signature <- any(grepl("^PLINK v[0-9.]+", out))
+    is_not_putty <- !any(grepl("plink:|Release|PuTTY|Build platform", out, ignore.case = TRUE))
+    
+    has_plink_signature && is_not_putty
+  }
+
   # 1. Check PLINK_PATH environment variable
   env_path <- Sys.getenv("PLINK_PATH", unset = NA)
   if (!is.na(env_path)) {
     resolved_env_path <- normalizePath(env_path, mustWork = FALSE)
-    if (file.exists(resolved_env_path)) {
+    if (file.exists(resolved_env_path) && is_bioinformatics_plink(resolved_env_path)) {
       return(resolved_env_path)
-    } else {
-      message("PLINK_PATH is set but file does not exist: ", resolved_env_path)
+    } else if (file.exists(resolved_env_path)) {
+      message("PLINK_PATH is set but points to a non-bioinformatics 'plink' binary: ", resolved_env_path)
     }
   }
 
@@ -49,11 +70,24 @@ verifyPlink <- function() {
   # Normalize and check existence
   resolved_sys_path <- normalizePath(sys_path, mustWork = FALSE)
   if (nzchar(resolved_sys_path) && file.exists(resolved_sys_path)) {
-    return(resolved_sys_path)
+    if (is_bioinformatics_plink(resolved_sys_path)) {
+      return(resolved_sys_path)
+    } else {
+      message("System 'plink' found at ", resolved_sys_path, ", but it does not appear to be the bioinformatics version.")
+    }
   }
-  
+
   # 3. Failure message
-  stop("PLINK binary not found. Please install PLINK and/or set the PLINK_PATH environment variable.")
+  rlang::abort(
+    message = rlang::format_error_bullets(c(
+      "PLINK binary not found.",
+      "x" = "Attempted to locate the 'PLINK_PATH' environment variable and 'plink' in system PATH.",
+      "i" = "Ensure PLINK is available and executable (bioinformatics version).",
+      "i" = "You can permanently set the path to 'plink' by running:",
+      " " = "usethis::edit_r_environ()  # then add a line like: PLINK_PATH=/full/path/to/plink")
+    ),
+    class = "plink_not_found"
+  )
 }
 
 
@@ -3222,7 +3256,16 @@ verifyGCTA <- function() {
   }
   
   # 3. Failure message
-  stop("GCTA binary not found. Please install GCTA and/or set the GCTA_PATH environment variable.")
+  rlang::abort(
+    message = rlang::format_error_bullets(c(
+      "GCTA binary not found.",
+      "x" = "Attempted to locate the 'GCTA_PATH' environment variable and 'gcta64' in system PATH.",
+      "i" = "Ensure GCTA is available and executable.",
+      "i" = "You can permanently set the path to 'gcta64' by running:",
+      " " = "usethis::edit_r_environ()  # then add a line like: GCTA_PATH=/full/path/to/gcta64")
+    ),
+    class = "gcta_not_found"
+  )
 }
 
 gcta <- function(){
