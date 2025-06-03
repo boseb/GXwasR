@@ -26,6 +26,7 @@
 #' @importFrom BiocStyle html_document
 #' @importFrom dplyr filter mutate distinct arrange select case_when summarise
 #' @importFrom rlang inform format_error_bullets
+#' @importFrom cli cli_progress_bar pb_bar pb_percent pb_current pb_total cli_progress_update cli_progress_done
 
 ## PLINK Dependency Check
 verifyPlink <- function() {
@@ -3602,13 +3603,22 @@ ComputeREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100
     if (file.exists(log_file)) {
       lines <- readLines(log_file)
       start_line <- grep("Reading IDs", lines)
-
+    
       if (length(start_line) > 0) {
-        cat(lines[start_line:length(lines)], sep = "\n")
+        message_lines <- lines[start_line:length(lines)]
+        rlang::inform(
+          rlang::format_error_bullets(c(
+            "Log output from 'Reading IDs':",
+            setNames(message_lines, rep("*", length(message_lines)))
+          ))
+        )
       } else {
-        cat("The specified starting line was not found in the log file.\n")
+        rlang::inform("The specified starting line ('Reading IDs') was not found in the log file.")
       }
+    } else {
+      rlang::inform("Log file not found.")
     }
+    
 
     resultREML <- data.frame(Source = NA, Variance = NA, SE = NA)
     return(resultREML)
@@ -3709,14 +3719,25 @@ ComputeREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 1
     log_file <- paste0(ResultDir, "/test_reml.log")
 
     suppressWarnings(if (file.exists(log_file)) {
-      lines <- readLines(log_file)
-      start_line <- grep("Reading IDs", lines)
-
-      if (length(start_line) > 0) {
-        cat(lines[start_line:length(lines)], sep = "\n")
+      if (file.exists(log_file)) {
+        lines <- readLines(log_file)
+        start_line <- grep("Reading IDs", lines)
+      
+        if (length(start_line) > 0) {
+          message_lines <- lines[start_line:length(lines)]
+          rlang::inform(
+            rlang::format_error_bullets(c(
+              "Log output from 'Reading IDs':",
+              setNames(message_lines, rep("*", length(message_lines)))
+            ))
+          )
+        } else {
+          rlang::inform("The specified starting line ('Reading IDs') was not found in the log file.")
+        }
       } else {
-        cat("The specified starting line was not found in the log file.\n")
+        rlang::inform("Log file not found.")
       }
+      
     })
 
     resultREML <- data.frame(Source = NA, Variance = NA, SE = NA)
@@ -7620,15 +7641,20 @@ HDL.rg <-
       }
     }
     time.start <- date()
-    cat("Analysis starts on", time.start, "\n")
-    if (output.file != "") {
-      cat("Analysis starts on", time.start, "\n", file = output.file, append = T)
+    rlang::inform(paste("Analysis starts on", time.start))
+    # Write to file if specified
+    if (nzchar(output.file)) {
+      con <- file(output.file, open = "a")  # open in append mode
+      writeLines(paste("Analysis starts on", time.start), con = con)
+      close(con)
     }
 
     if (eigen.cut != "automatic" && is.na(as.numeric(eigen.cut))) {
       error.message <- "The input of eigen.cut has to be 'automatic' or a number between 0 and 1. \n"
-      if (output.file != "") {
-        cat(error.message, file = output.file, append = T)
+      if (nzchar(output.file)) {
+        con <- file(output.file, open = "a")  # open in append mode
+        writeLines(paste("Analysis starts on", time.start), con = con)
+        close(con)
       }
       stop(error.message)
     }
@@ -7647,8 +7673,10 @@ HDL.rg <-
       if (is.null(names(nsnps.list))) names(nsnps.list) <- as.character(1:length(nsnps.list))
     } else {
       error.message <- "It seems this directory does not contain all files needed for HDL. Please check your LD.path again. The current version of HDL only supports pre-computed LD reference panels."
-      if (output.file != "") {
-        cat(error.message, file = output.file, append = T)
+      if (nzchar(output.file)) {
+        con <- file(output.file, open = "a")  # open in append mode
+        writeLines(error.message, con = con)
+        close(con)
       }
       stop(error.message)
     }
@@ -7664,9 +7692,13 @@ HDL.rg <-
     if (!("Z" %in% colnames(gwas1.df))) {
       if (("b" %in% colnames(gwas1.df)) && ("se" %in% colnames(gwas1.df))) {
         if (abs(median(gwas1.df$b) - 1) < 0.1) {
-          cat("Taking log(b) in GWAS 1 because b is likely to be OR instead of log(OR). \n")
+          rlang::inform(rlang::format_error_bullets(c("i" = "Taking log(b) in GWAS 1 because b is likely to be OR instead of log(OR).")))
           if (output.file != "") {
-            cat("Taking log(b) in GWAS 1 because b is likely to be OR instead of log(OR). \n", file = output.file, append = T)
+            if (nzchar(output.file)) {
+              con <- file(output.file, open = "a")  # open in append mode
+              writeLines("Taking log(b) in GWAS 1 because b is likely to be OR instead of log(OR).", con = con)
+              close(con)
+            }
           }
           gwas1.df$Z <- log(gwas1.df$b) / gwas1.df$se
         } else {
@@ -7674,8 +7706,10 @@ HDL.rg <-
         }
       } else {
         error.message <- "Z is not available in GWAS 1, meanwhile either b or se is missing. Please check."
-        if (output.file != "") {
-          cat(error.message, file = output.file, append = T)
+        if (nzchar(output.file)) {
+          con <- file(output.file, open = "a")  # open in append mode
+          writeLines(error.message, con = con)
+          close(con)
         }
         stop(error.message)
       }
@@ -7684,9 +7718,11 @@ HDL.rg <-
     if (!("Z" %in% colnames(gwas2.df))) {
       if (("b" %in% colnames(gwas2.df)) && ("se" %in% colnames(gwas2.df))) {
         if (abs(median(gwas2.df$b) - 1) < 0.1) {
-          cat("Taking log(b) in GWAS 2 because b is likely to be OR instead of log(OR). \n")
-          if (output.file != "") {
-            cat("Taking log(b) in GWAS 2 because b is likely to be OR instead of log(OR). \n", file = output.file, append = T)
+          rlang::inform(rlang::format_error_bullets(c("i" = "Taking log(b) in GWAS 2 because b is likely to be OR instead of log(OR).")))
+          if (nzchar(output.file)) {
+            con <- file(output.file, open = "a")  # open in append mode
+            writeLines("Taking log(b) in GWAS 2 because b is likely to be OR instead of log(OR).", con = con)
+            close(con)
           }
           gwas2.df$Z <- log(gwas2.df$b) / gwas2.df$se
         } else {
@@ -7694,8 +7730,10 @@ HDL.rg <-
         }
       } else {
         error.message <- "Z is not available in GWAS 2, meanwhile either b or se is missing. Please check."
-        if (output.file != "") {
-          cat(error.message, file = output.file, append = T)
+        if (nzchar(output.file)) {
+          con <- file(output.file, open = "a")  # open in append mode
+          writeLines(error.message, con = con)
+          close(con)
         }
         stop(error.message)
       }
@@ -7727,8 +7765,10 @@ HDL.rg <-
       gwas2.df$N[is.na(gwas2.df$N)] <- median(gwas2.df$N, na.rm = T)
     } else {
       error.message <- "If given, the argument fill.missing.N can only be one of below: 'min', 'max', 'median'."
-      if (output.file != "") {
-        cat(error.message, file = output.file, append = T)
+      if (nzchar(output.file)) {
+        con <- file(output.file, open = "a")  # open in append mode
+        writeLines(error.message, con = con)
+        close(con)
       }
       stop(error.message)
     }
@@ -7738,32 +7778,50 @@ HDL.rg <-
     k1.percent <- paste("(", round(100 * k1 / length(snps.name.list), 2), "%)", sep = "")
     k2.percent <- paste("(", round(100 * k2 / length(snps.name.list), 2), "%)", sep = "")
 
-    cat(k1.0 - k1, "SNPs were removed in GWAS 1 due to missing N or missing test statistic. \n")
-    cat(k2.0 - k2, "SNPs were removed in GWAS 2 due to missing N or missing test statistic. \n")
-    if (output.file != "") {
-      cat(k1.0 - k1, " SNPs were removed in GWAS 1 due to missing N or missing test statistic. \n", file = output.file, append = T)
-      cat(k2.0 - k2, " SNPs were removed in GWAS 2 due to missing N or missing test statistic. \n", file = output.file, append = T)
+    snp_remove_gwas1 <- paste(k1.0 - k1, "SNPs were removed in GWAS 1 due to missing N or missing test statistic.")
+    snp_remove_gwas2 <- paste(k2.0 - k2, "SNPs were removed in GWAS 2 due to missing N or missing test statistic.")
+    rlang::inform(
+      rlang::format_error_bullets(c(
+        "i" = snp_remove_gwas1,
+        "i" = snp_remove_gwas2
+      ))
+    )
+    if (nzchar(output.file)) {
+      con <- file(output.file, open = "a")  # open in append mode
+      writeLines(c(snp_remove_gwas1, snp_remove_gwas2), con = con, sep = '\n')
+      close(con)
     }
 
-    cat(k1, "out of", length(snps.name.list), k1.percent, "SNPs in reference panel are available in GWAS 1. \n")
-    cat(k2, "out of", length(snps.name.list), k2.percent, "SNPs in reference panel are available in GWAS 2. \n")
-    if (output.file != "") {
-      cat(k1, "out of", length(snps.name.list), k1.percent, "SNPs in reference panel are available in GWAS 1. \n", file = output.file, append = T)
-      cat(k2, "out of", length(snps.name.list), k2.percent, "SNPs in reference panel are available in GWAS 2. \n", file = output.file, append = T)
+    snp_ref_panel_gwas1 <- paste(k1, "out of", length(snps.name.list), k1.percent, "SNPs in reference panel are available in GWAS 1.")
+    snp_ref_panel_gwas2 <- paste(k2, "out of", length(snps.name.list), k2.percent, "SNPs in reference panel are available in GWAS 2.")
+    rlang::inform(
+      rlang::format_error_bullets(c(
+        "i" = snp_ref_panel_gwas1,
+        "i" = snp_ref_panel_gwas2
+      ))
+    )
+    if (nzchar(output.file)) {
+      con <- file(output.file, open = "a")  # open in append mode
+      writeLines(c(snp_ref_panel_gwas1, snp_ref_panel_gwas2), con = con, sep = '\n')
+      close(con)
     }
     if (k1 < length(snps.name.list) * 0.99) {
-      error.message <- "Warning: More than 1% SNPs in reference panel are missed in GWAS 1. This may generate bias in estimation. Please make sure that you are using the correct reference panel. \n"
-      if (output.file != "") {
-        cat(error.message, file = output.file, append = T)
+      error.message <- "Warning: More than 1% SNPs in reference panel are missed in GWAS 1. This may generate bias in estimation. Please make sure that you are using the correct reference panel."
+      if (nzchar(output.file)) {
+        con <- file(output.file, open = "a")  # open in append mode
+        writeLines(error.message, con = con)
+        close(con)
       }
-      cat(error.message)
+      rlang::inform(rlang::format_error_bullets(c("!" = error.message)))
     }
     if (k2 < length(snps.name.list) * 0.99) {
-      error.message <- "Warning: More than 1% SNPs in reference panel are missed in GWAS 2. This may generate bias in estimation. Please make sure that you are using the correct reference panel. \n"
-      if (output.file != "") {
-        cat(error.message, file = output.file, append = T)
+      error.message <- "Warning: More than 1% SNPs in reference panel are missed in GWAS 2. This may generate bias in estimation. Please make sure that you are using the correct reference panel."
+      if (nzchar(output.file)) {
+        con <- file(output.file, open = "a")  # open in append mode
+        writeLines(error.message, con = con)
+        close(con)
       }
-      cat(error.message)
+      rlang::inform(rlang::format_error_bullets(c("!" = error.message)))
     }
 
     ## stats
@@ -7780,9 +7838,8 @@ HDL.rg <-
 
     bstar1.v <- bstar2.v <- lam.v <- list()
     HDL11.df <- HDL12.df <- HDL22.df <- names.row <- NULL
-    counter <- 0
-    message <- ""
     num.pieces <- length(unlist(nsnps.list))
+    pb <- cli::cli_progress_bar("Estimation", total = num.pieces, format = "{cli::pb_bar} {cli::pb_percent} ({cli::pb_current}/{cli::pb_total})")
     for (chr in names(nsnps.list)) {
       k <- length(nsnps.list[[chr]])
       for (piece in 1:k) {
@@ -7922,15 +7979,11 @@ HDL.rg <-
         bstar2.v <- c(bstar2.v, list(bstar2))
         lam.v <- c(lam.v, list(loop_env$lam))
 
-        ## Report progress ##
-        counter <- counter + 1
-        value <- round(counter / num.pieces * 100)
-        backspaces <- paste(rep("\b", nchar(message)), collapse = "")
-        message <- paste("Estimation is ongoing ... ", value, "%", sep = "", collapse = "")
-        cat(backspaces, message, sep = "")
+        ## Update progress ##
+        cli::cli_progress_update()
       }
     }
-    cat("\n")
+    cli::cli_progress_done()
     rownames(HDL11.df) <- rownames(HDL22.df) <- rownames(HDL12.df) <- names.row
 
     h1_2 <- sum(HDL11.df[, 1])
@@ -7938,11 +7991,12 @@ HDL.rg <-
     gen.cov <- sum(HDL12.df[, 1])
 
     ##### Estimated likelihood for h12 + h11, h22 independent #####
-    cat("\n")
-    cat("Integrating piecewise results \n")
-    if (output.file != "") {
-      cat("\n", file = output.file, append = T)
-      cat("Integrating piecewise results \n", file = output.file, append = T)
+    message("\n")
+    rlang::inform("Integrating piecewise results")
+    if (nzchar(output.file)) {
+      con <- file(output.file, open = "a")  # open in append mode
+      writeLines(c("\n", "Integrating piecewise results"), con = con, sep = '\n')
+      close(con)
     }
     M.ref <- sum(unlist(nsnps.list))
     eigen_select.fun <- function(x, k) {
@@ -8145,9 +8199,11 @@ HDL.rg <-
         )
         k <- k + 1
         if (k > length(starting.value.v)) {
-          error.message <- "Algorithm failed to converge after trying different initial values. \n"
-          if (output.file != "") {
-            cat(error.message, file = output.file, append = T)
+          error.message <- "Algorithm failed to converge after trying different initial values."
+          if (nzchar(output.file)) {
+            con <- file(output.file, open = "a")  # open in append mode
+            writeLines(error.message, con = con)
+            close(con)
           }
           stop(error.message)
         }
@@ -8173,43 +8229,36 @@ HDL.rg <-
       }
     }
 
-    cat("\n")
-    cat("Point estimates: \n")
-    cat(
-      "Heritability of phenotype 1: ",
-      output(h11),
-      "\n"
+    rlang::inform("Point estimates:")
+    rlang::inform(
+      rlang::format_error_bullets(c(
+        "*" = paste("Heritability of phenotype 1: ", output(h11)),
+        "*" = paste("Heritability of phenotype 2: ", output(h22)), 
+        "*" = paste("Genetic Covariance: ", output(h12)),
+        "*" = paste("Genetic Correlation: ", output(rg))
+      ))
     )
-    cat(
-      "Heritability of phenotype 2: ",
-      output(h22),
-      "\n"
-    )
-    cat(
-      "Genetic Covariance: ",
-      output(h12),
-      "\n"
-    )
-    cat(
-      "Genetic Correlation: ",
-      output(rg),
-      "\n"
-    )
+    
     if (h11 == 0 | h22 == 0) {
-      cat("Warning: Heritability of one trait was estimated to be 0, which may be due to:
-          1) The true heritability is very small;
-          2) The sample size is too small;
-          3) Many SNPs in the chosen reference panel are missing in the GWAS;
-          4) There is a severe mismatch between the GWAS population and the population for computing the reference panel")
+      rlang::inform(
+        rlang::format_error_bullets(c(
+          "!" = "Warning: Heritability of one trait was estimated to be 0, which may be due to:",
+          " " = "1) The true heritability is very small;",
+          " " = "2) The sample size is too small;",
+          " " = "3) Many SNPs in the chosen reference panel are missing in the GWAS;",
+          " " = "4) There is a severe mismatch between the GWAS population and the population for computing the reference panel"
+        ))
+      )
     }
-    cat("\n")
 
-    cat("Continuing computing standard error with jackknife \n")
-    if (output.file != "") {
-      cat("Continuing computing standard error with jackknife \n", file = output.file, append = T)
+    rlang::inform(rlang::format_error_bullets(c("i" = "Continuing computing standard error with jackknife")))
+    if (nzchar(output.file)) {
+      con <- file(output.file, open = "a")  # open in append mode
+      writeLines("Continuing computing standard error with jackknife", con = con)
+      close(con)
     }
-    counter <- 0
-    message <- ""
+    
+    cli::cli_progress_bar("Jackknife estimation", total = length(lam.v), format = "{cli::pb_bar} {cli::pb_percent} ({cli::pb_current}/{cli::pb_total})")
     rg.jackknife <- h11.jackknife <- h12.jackknife <- h22.jackknife <- numeric(length(lam.v))
     if (intercept.output == T) {
       h11.intercept.jackknife <- h12.intercept.jackknife <- h22.intercept.jackknife <- numeric(length(lam.v))
@@ -8246,13 +8295,10 @@ HDL.rg <-
         h22.intercept.jackknife[i] <- h22.hdl.jackknife[2]
       }
 
-      ## Report progress ##
-      counter <- counter + 1
-      value <- round(counter / length(lam.v) * 100)
-      backspaces <- paste(rep("\b", nchar(message)), collapse = "")
-      message <- paste("Progress... ", value, "%", sep = "", collapse = "")
-      cat(backspaces, message, sep = "")
+      ## Update progress ##
+      cli::cli_progress_update()
     }
+    cli::cli_progress_done()
     rg.jackknife <- rg.jackknife[!is.infinite(rg.jackknife)]
     h11.se <- sqrt(mean((h11.jackknife - mean(h11.jackknife))^2) * (length(h11.jackknife) - 1))
     h12.se <- sqrt(mean((h12.jackknife - mean(h12.jackknife))^2) * (length(h12.jackknife) - 1))
@@ -8295,76 +8341,60 @@ HDL.rg <-
     }
 
     end.time <- date()
-    cat("\n")
-    cat("\n")
-    cat(
-      "Heritability of phenotype 1: ",
-      output(h11),
-      paste0("(", output(h11.se), ") \n")
+    message("\n")
+    rlang::inform(
+      rlang::format_error_bullets(c(
+        paste("Heritability of phenotype 1:", output(h11), "(", output(h11.se), ")"),
+        paste("Heritability of phenotype 2:", output(h22), "(", output(h22.se), ")"),
+        paste("Genetic Covariance:", output(h12), "(", output(h12.se), ")"),
+        paste("Genetic Correlation:", output(rg), "(", output(rg.se), ")"),
+        paste("P:", p.out)
+      ))
     )
-    cat(
-      "Heritability of phenotype 2: ",
-      output(h22),
-      paste0("(", output(h22.se), ") \n")
-    )
-    cat(
-      "Genetic Covariance: ",
-      output(h12),
-      paste0("(", output(h12.se), ") \n")
-    )
-    cat(
-      "Genetic Correlation: ",
-      output(rg),
-      paste0("(", output(rg.se), ") \n")
-    )
-    cat("P: ", p.out, "\n")
     if (h11 == 0 | h22 == 0) {
-      cat("Warning: Heritability of one trait was estimated to be 0, which may be due to:
-          1) The true heritability is very small;
-          2) The sample size is too small;
-          3) Many SNPs in the chosen reference panel are missing in the GWAS.")
+      rlang::inform(
+        rlang::format_error_bullets(c(
+          "!" = "Warning: Heritability of one trait was estimated to be 0, which may be due to:",
+          " " = "1) The true heritability is very small;",
+          " " = "2) The sample size is too small;",
+          " " = "3) Many SNPs in the chosen reference panel are missing in the GWAS."
+        ))
+      )
     }
-    cat("\n")
-    cat("Analysis finished at", end.time, "\n")
+    message("\n")
+    rlang::inform(paste("Analysis finished at", end.time))
 
-    if (output.file != "") {
-      cat("\n", file = output.file, append = TRUE)
-      cat("\n", file = output.file, append = TRUE)
-      cat("Heritability of phenotype 1: ",
-        output(h11),
-        paste0("(", output(h11.se), ") \n"),
-        file = output.file, append = TRUE
+    if (nzchar(output.file)) {
+      con <- file(output.file, open = "a")  # open in append mode
+      writeLines(c(
+        "\n",
+        paste("Heritability of phenotype 1:", output(h11), "(", output(h11.se), ")"),
+        paste("Heritability of phenotype 2:", output(h22), "(", output(h22.se), ")"),
+        paste("Genetic Covariance:", output(h12), "(", output(h12.se), ")"),
+        paste("Genetic Correlation:", output(rg), "(", output(rg.se), ")"),
+        paste("P:", p.out)
+      ), con = con, sep = '\n'
       )
-      cat("Heritability of phenotype 2: ",
-        output(h22),
-        paste0("(", output(h22.se), ") \n"),
-        file = output.file, append = TRUE
-      )
-      cat("Genetic Covariance: ",
-        output(h12),
-        paste0("(", output(h12.se), ") \n"),
-        file = output.file, append = TRUE
-      )
-      cat("Genetic Correlation: ",
-        output(rg),
-        paste0("(", output(rg.se), ") \n"),
-        file = output.file, append = TRUE
-      )
-      cat("P: ", p.out, "\n", file = output.file, append = TRUE)
-      if (h11 == 0 | h22 == 0) {
-        cat("Warning: Heritability of one trait was estimated to be 0, which may be due to:
+      close(con)
+    }
+
+    if (nzchar(output.file & h11 == 0 | h22 == 0)) {
+      con <- file(output.file, open = "a")  # open in append mode
+      writeLines(c(
+        "\n",
+        paste("Warning: Heritability of one trait was estimated to be 0, which may be due to:
             1) The true heritability is very low;
             2) The sample size of the GWAS is too small;
             3) Many SNPs in the chosen reference panel are absent in the GWAS;
-            4) There is a severe mismatch between the GWAS population and the population for computing the reference panel", file = output.file, append = TRUE)
-      }
-      cat("\n", file = output.file, append = TRUE)
-      cat("Analysis finished at", end.time, "\n", file = output.file, append = TRUE)
-      cat("The results were saved to", output.file)
-      cat("\n")
-      cat("The results were saved to", output.file, file = output.file, append = TRUE)
-      cat("\n", file = output.file, append = TRUE)
+            4) There is a severe mismatch between the GWAS population and the population for computing the reference panel"),
+        paste("Analysis finished at", end.time),
+        paste("The results were saved to", output.file)
+      ), con = con, sep = "\n"
+      )
+      close(con)
     }
+
+      rlang::inform(rlang::format_error_bullets(c("v" = "The results were saved to", output.file)))
 
     if (jackknife.df == TRUE) {
       jackknife.df <- rbind(h11.jackknife, h22.jackknife, h12.jackknife, rg.jackknife)
@@ -8526,15 +8556,20 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
   }
 
   time.start <- date()
-  cat("Analysis starts on", time.start, "\n")
-  if (output.file != "") {
-    cat("Analysis starts on", time.start, "\n", file = output.file, append = TRUE)
+  rlang::inform(paste("Analysis starts on", time.start))
+  # Write to file if specified
+  if (nzchar(output.file)) {
+    con <- file(output.file, open = "a")  # open in append mode
+    writeLines(paste("Analysis starts on", time.start), con = con)
+    close(con)
   }
 
   if (eigen.cut != "automatic" && is.na(as.numeric(eigen.cut))) {
     error.message <- "The input of eigen.cut has to be 'automatic' or a number between 0 and 1. \n"
-    if (output.file != "") {
-      cat(error.message, file = output.file, append = TRUE)
+    if (nzchar(output.file)) {
+      con <- file(output.file, open = "a")  # open in append mode
+      writeLines(paste("Analysis starts on", time.start), con = con)
+      close(con)
     }
     stop(error.message)
   }
@@ -8553,8 +8588,10 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     if (is.null(names(nsnps.list))) names(nsnps.list) <- as.character(1:length(nsnps.list))
   } else {
     error.message <- "It seems this directory does not contain all files needed for HDL. Please check your LD.path again. The current version of HDL only supports pre-computed LD reference panels."
-    if (output.file != "") {
-      cat(error.message, file = output.file, append = TRUE)
+    if (nzchar(output.file)) {
+      con <- file(output.file, open = "a")  # open in append mode
+      writeLines(error.message, con = con)
+      close(con)
     }
     stop(error.message)
   }
@@ -8570,9 +8607,13 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
   if (!("Z" %in% colnames(gwas1.df))) {
     if (("b" %in% colnames(gwas1.df)) && ("se" %in% colnames(gwas1.df))) {
       if (abs(median(gwas1.df$b) - 1) < 0.1) {
-        cat("Taking log(b) in GWAS 1 because b is likely to be OR instead of log(OR). \n")
+        rlang::inform(rlang::format_error_bullets(c("i" = "Taking log(b) in GWAS 1 because b is likely to be OR instead of log(OR).")))
         if (output.file != "") {
-          cat("Taking log(b) in GWAS 1 because b is likely to be OR instead of log(OR). \n", file = output.file, append = TRUE)
+          if (nzchar(output.file)) {
+            con <- file(output.file, open = "a")  # open in append mode
+            writeLines("Taking log(b) in GWAS 1 because b is likely to be OR instead of log(OR).", con = con)
+            close(con)
+          }
         }
         gwas1.df$Z <- log(gwas1.df$b) / gwas1.df$se
       } else {
@@ -8580,8 +8621,10 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
       }
     } else {
       error.message <- "Z is not available in GWAS 1, meanwhile either b or se is missing. Please check."
-      if (output.file != "") {
-        cat(error.message, file = output.file, append = TRUE)
+      if (nzchar(output.file)) {
+        con <- file(output.file, open = "a")  # open in append mode
+        writeLines(error.message, con = con)
+        close(con)
       }
       stop(error.message)
     }
@@ -8590,18 +8633,22 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
   if (!("Z" %in% colnames(gwas2.df))) {
     if (("b" %in% colnames(gwas2.df)) && ("se" %in% colnames(gwas2.df))) {
       if (abs(median(gwas2.df$b) - 1) < 0.1) {
-        cat("Taking log(b) in GWAS 2 because b is likely to be OR instead of log(OR). \n")
-        if (output.file != "") {
-          cat("Taking log(b) in GWAS 2 because b is likely to be OR instead of log(OR). \n", file = output.file, append = TRUE)
-        }
+        rlang::inform(rlang::format_error_bullets(c("i" = "Taking log(b) in GWAS 2 because b is likely to be OR instead of log(OR).")))
+          if (nzchar(output.file)) {
+            con <- file(output.file, open = "a")  # open in append mode
+            writeLines("Taking log(b) in GWAS 2 because b is likely to be OR instead of log(OR).", con = con)
+            close(con)
+          }
         gwas2.df$Z <- log(gwas2.df$b) / gwas2.df$se
       } else {
         gwas2.df$Z <- gwas2.df$b / gwas2.df$se
       }
     } else {
       error.message <- "Z is not available in GWAS 2, meanwhile either b or se is missing. Please check."
-      if (output.file != "") {
-        cat(error.message, file = output.file, append = TRUE)
+      if (nzchar(output.file)) {
+        con <- file(output.file, open = "a")  # open in append mode
+        writeLines(error.message, con = con)
+        close(con)
       }
       stop(error.message)
     }
@@ -8633,8 +8680,10 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     gwas2.df$N[is.na(gwas2.df$N)] <- median(gwas2.df$N, na.rm = TRUE)
   } else {
     error.message <- "If given, the argument fill.missing.N can only be one of below: 'min', 'max', 'median'."
-    if (output.file != "") {
-      cat(error.message, file = output.file, append = TRUE)
+    if (nzchar(output.file)) {
+      con <- file(output.file, open = "a")  # open in append mode
+      writeLines(error.message, con = con)
+      close(con)
     }
     stop(error.message)
   }
@@ -8644,25 +8693,36 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
   k1.percent <- paste("(", round(100 * k1 / length(snps.name.list), 2), "%)", sep = "")
   k2.percent <- paste("(", round(100 * k2 / length(snps.name.list), 2), "%)", sep = "")
 
-  cat(k1, "out of", length(snps.name.list), k1.percent, "SNPs in reference panel are available in GWAS 1.", " \n")
-  cat(k2, "out of", length(snps.name.list), k2.percent, "SNPs in reference panel are available in GWAS 2.", " \n")
-  if (output.file != "") {
-    cat(k1, "out of", length(snps.name.list), k1.percent, "SNPs in reference panel are available in GWAS 1.", " \n", file = output.file, append = TRUE)
-    cat(k2, "out of", length(snps.name.list), k2.percent, "SNPs in reference panel are available in GWAS 2.", " \n", file = output.file, append = TRUE)
+  snp_ref_panel_gwas1 <- paste(k1, "out of", length(snps.name.list), k1.percent, "SNPs in reference panel are available in GWAS 1.")
+  snp_ref_panel_gwas2 <- paste(k2, "out of", length(snps.name.list), k2.percent, "SNPs in reference panel are available in GWAS 2.")
+  rlang::inform(
+    rlang::format_error_bullets(c(
+      "i" = snp_ref_panel_gwas1,
+      "i" = snp_ref_panel_gwas2
+    ))
+  )
+  if (nzchar(output.file)) {
+    con <- file(output.file, open = "a")  # open in append mode
+    writeLines(c(snp_ref_panel_gwas1, snp_ref_panel_gwas2), con = con, sep = '\n')
+    close(con)
   }
   if (k1 < length(snps.name.list) * 0.99) {
-    error.message <- "Warning: More than 1% SNPs in reference panel are missed in GWAS 1. This may generate bias in estimation. Please make sure that you are using correct reference panel.  \n"
-    if (output.file != "") {
-      cat(error.message, file = output.file, append = TRUE)
-    }
-    cat(error.message)
+    error.message <- "Warning: More than 1% SNPs in reference panel are missed in GWAS 1. This may generate bias in estimation. Please make sure that you are using the correct reference panel."
+      if (nzchar(output.file)) {
+        con <- file(output.file, open = "a")  # open in append mode
+        writeLines(error.message, con = con)
+        close(con)
+      }
+      rlang::inform(rlang::format_error_bullets(c("!" = error.message)))
   }
   if (k2 < length(snps.name.list) * 0.99) {
-    error.message <- "Warning: More than 1% SNPs in reference panel are missed in GWAS 2. This may generate bias in estimation. Please make sure that you are using correct reference panel.  \n"
-    if (output.file != "") {
-      cat(error.message, file = output.file, append = TRUE)
-    }
-    cat(error.message)
+    error.message <- "Warning: More than 1% SNPs in reference panel are missed in GWAS 2. This may generate bias in estimation. Please make sure that you are using the correct reference panel."
+      if (nzchar(output.file)) {
+        con <- file(output.file, open = "a")  # open in append mode
+        writeLines(error.message, con = con)
+        close(con)
+      }
+      rlang::inform(rlang::format_error_bullets(c("!" = error.message)))
   }
 
   ## stats
@@ -8835,7 +8895,7 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
   }
   close(pb)
 
-  cat("\n")
+  message("\n")
 
   h1_2 <- sum(unlist(lapply(HDL.res.pieces.list, FUN = "[[", 1)))
   h2_2 <- sum(unlist(lapply(HDL.res.pieces.list, FUN = "[[", 2)))
@@ -8847,11 +8907,12 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
 
   ##### Estimated likelihood for h12 + h11,h22 independent #####
 
-  cat("\n")
-  cat("Integrating piecewise results \n")
-  if (output.file != "") {
-    cat("\n", file = output.file, append = TRUE)
-    cat("Integrating piecewise results \n", file = output.file, append = TRUE)
+  message("\n")
+  rlang::inform("Integrating piecewise results")
+  if (nzchar(output.file)) {
+    con <- file(output.file, open = "a")  # open in append mode
+    writeLines(c("\n", "Integrating piecewise results"), con = con, sep = '\n')
+    close(con)
   }
   M.ref <- sum(unlist(nsnps.list))
   eigen_select.fun <- function(x, k) {
@@ -9054,10 +9115,12 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
       )
       k <- k + 1
       if (k > length(starting.value.v)) {
-        error.message <- "Algorithm failed to converge after trying different initial values. \n"
-        if (output.file != "") {
-          cat(error.message, file = output.file, append = TRUE)
-        }
+        error.message <- "Algorithm failed to converge after trying different initial values."
+          if (nzchar(output.file)) {
+            con <- file(output.file, open = "a")  # open in append mode
+            writeLines(error.message, con = con)
+            close(con)
+          }
         stop(error.message)
       }
     }
@@ -9082,41 +9145,34 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     }
   }
 
-  cat("\n")
-  cat("Point estimates: \n")
-  cat(
-    "Heritability of phenotype 1: ",
-    output(h11),
-    "\n"
-  )
-  cat(
-    "Heritability of phenotype 2: ",
-    output(h22),
-    "\n"
-  )
-  cat(
-    "Genetic Covariance: ",
-    output(h12),
-    "\n"
-  )
-  cat(
-    "Genetic Correlation: ",
-    output(rg),
-    "\n"
-  )
-  if (h11 == 0 | h22 == 0) {
-    cat("Warning: Heritability of one trait was estimated to be 0, which may be due to:
-        1) The true heritability is very small;
-        2) The sample size is too small;
-        3) Many SNPs in the chosen reference panel are missing in the GWAS;
-        4) There is a severe mismatch between the GWAS population and the population for computing reference panel.")
-  }
-  cat("\n")
+  rlang::inform("Point estimates:")
+    rlang::inform(
+      rlang::format_error_bullets(c(
+        "*" = paste("Heritability of phenotype 1: ", output(h11)),
+        "*" = paste("Heritability of phenotype 2: ", output(h22)), 
+        "*" = paste("Genetic Covariance: ", output(h12)),
+        "*" = paste("Genetic Correlation: ", output(rg))
+      ))
+    )
+    
+    if (h11 == 0 | h22 == 0) {
+      rlang::inform(
+        rlang::format_error_bullets(c(
+          "!" = "Warning: Heritability of one trait was estimated to be 0, which may be due to:",
+          " " = "1) The true heritability is very small;",
+          " " = "2) The sample size is too small;",
+          " " = "3) Many SNPs in the chosen reference panel are missing in the GWAS;",
+          " " = "4) There is a severe mismatch between the GWAS population and the population for computing the reference panel"
+        ))
+      )
+    }
 
-  cat("Continuing computing standard error with jackknife \n")
-  if (output.file != "") {
-    cat("Continuing computing standard error with jackknife \n", file = output.file, append = TRUE)
-  }
+    rlang::inform(rlang::format_error_bullets(c("i" = "Continuing computing standard error with jackknife")))
+    if (nzchar(output.file)) {
+      con <- file(output.file, open = "a")  # open in append mode
+      writeLines("Continuing computing standard error with jackknife", con = con)
+      close(con)
+    }
 
   pb <- txtProgressBar(max = num.pieces, style = 3)
   opts <- list(progress = progress)
@@ -9208,76 +9264,60 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
   }
 
   end.time <- date()
-  cat("\n")
-  cat("\n")
-  cat(
-    "Heritability of phenotype 1: ",
-    output(h11),
-    paste0("(", output(h11.se), ") \n")
+  message("\n")
+  rlang::inform(
+    rlang::format_error_bullets(c(
+      paste("Heritability of phenotype 1:", output(h11), "(", output(h11.se), ")"),
+      paste("Heritability of phenotype 2:", output(h22), "(", output(h22.se), ")"),
+      paste("Genetic Covariance:", output(h12), "(", output(h12.se), ")"),
+      paste("Genetic Correlation:", output(rg), "(", output(rg.se), ")"),
+      paste("P:", p.out)
+    ))
   )
-  cat(
-    "Heritability of phenotype 2: ",
-    output(h22),
-    paste0("(", output(h22.se), ") \n")
-  )
-  cat(
-    "Genetic Covariance: ",
-    output(h12),
-    paste0("(", output(h12.se), ") \n")
-  )
-  cat(
-    "Genetic Correlation: ",
-    output(rg),
-    paste0("(", output(rg.se), ") \n")
-  )
-  cat("P: ", p.out, "\n")
   if (h11 == 0 | h22 == 0) {
-    cat("Warning: Heritability of one trait was estimated to be 0, which may be due to:
-        1) The true heritability is very small;
-        2) The sample size of the GWAS is too small;
-        3) Many SNPs in the chosen reference panel are missing in the GWAS.")
+    rlang::inform(
+      rlang::format_error_bullets(c(
+        "!" = "Warning: Heritability of one trait was estimated to be 0, which may be due to:",
+        " " = "1) The true heritability is very small;",
+        " " = "2) The sample size is too small;",
+        " " = "3) Many SNPs in the chosen reference panel are missing in the GWAS."
+      ))
+    )
   }
-  cat("\n")
-  cat("Analysis finished at", end.time, "\n")
+  message("\n")
+  rlang::inform(paste("Analysis finished at", end.time))
 
-  if (output.file != "") {
-    cat("\n", file = output.file, append = TRUE)
-    cat("\n", file = output.file, append = TRUE)
-    cat("Heritability of phenotype 1: ",
-      output(h11),
-      paste0("(", output(h11.se), ") \n"),
-      file = output.file, append = TRUE
+  if (nzchar(output.file)) {
+    con <- file(output.file, open = "a")  # open in append mode
+    writeLines(c(
+      "\n",
+      paste("Heritability of phenotype 1:", output(h11), "(", output(h11.se), ")"),
+      paste("Heritability of phenotype 2:", output(h22), "(", output(h22.se), ")"),
+      paste("Genetic Covariance:", output(h12), "(", output(h12.se), ")"),
+      paste("Genetic Correlation:", output(rg), "(", output(rg.se), ")"),
+      paste("P:", p.out)
+    ), con = con, sep = '\n'
     )
-    cat("Heritability of phenotype 2: ",
-      output(h22),
-      paste0("(", output(h22.se), ") \n"),
-      file = output.file, append = TRUE
-    )
-    cat("Genetic Covariance: ",
-      output(h12),
-      paste0("(", output(h12.se), ") \n"),
-      file = output.file, append = TRUE
-    )
-    cat("Genetic Correlation: ",
-      output(rg),
-      paste0("(", output(rg.se), ") \n"),
-      file = output.file, append = TRUE
-    )
-    cat("P: ", p.out, "\n", file = output.file, append = TRUE)
-    if (h11 == 0 | h22 == 0) {
-      cat("Warning: Heritability of one trait was estimated to be 0, which may be due to:
+    close(con)
+  }
+
+  if (nzchar(output.file & h11 == 0 | h22 == 0)) {
+    con <- file(output.file, open = "a")  # open in append mode
+    writeLines(c(
+      "\n",
+      paste("Warning: Heritability of one trait was estimated to be 0, which may be due to:
           1) The true heritability is very low;
           2) The sample size of the GWAS is too small;
-          3) Many SNPs in the chosen reference panel are missing in the GWAS;
-          4) There is a severe mismatch between the GWAS population and the population for computing reference panel", file = output.file, append = TRUE)
-    }
-    cat("\n", file = output.file, append = TRUE)
-    cat("Analysis finished at", end.time, "\n", file = output.file, append = TRUE)
-    cat("The results were saved to", output.file)
-    cat("\n")
-    cat("The results were saved to", output.file, file = output.file, append = TRUE)
-    cat("\n", file = output.file, append = TRUE)
+          3) Many SNPs in the chosen reference panel are absent in the GWAS;
+          4) There is a severe mismatch between the GWAS population and the population for computing the reference panel"),
+      paste("Analysis finished at", end.time),
+      paste("The results were saved to", output.file)
+    ), con = con, sep = "\n"
+    )
+    close(con)
   }
+
+    rlang::inform(rlang::format_error_bullets(c("v" = "The results were saved to", output.file)))
 
   if (jackknife.df == TRUE) {
     jackknife.df <- rbind(h11.jackknife, h22.jackknife, h12.jackknife, rg.jackknife)

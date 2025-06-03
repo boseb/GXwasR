@@ -5940,7 +5940,7 @@ LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, st
     },
     error = function(e) {
       # Handle errors by returning a more user-friendly message
-      cat("Error during LD pruning: ", e$message, "\n")
+      rlang::inform(rlang::format_error_bullets(c("x" = paste0("Error during LD pruning: ", e$message))))
       return(NULL) # Return NULL to indicate failure
     }
   )
