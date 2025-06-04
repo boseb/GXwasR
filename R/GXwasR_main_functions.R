@@ -5650,7 +5650,7 @@ Download_reference <- function(refdata, wdir = tempdir()) {
 
   tryCatch(
     {
-      OS <- Sys.info()["sysname"]
+      os_type <- detect_os_type()
       options(timeout = 200)
 
       if (refdata == "HapMapIII_NCBI36") {
@@ -5665,9 +5665,9 @@ Download_reference <- function(refdata, wdir = tempdir()) {
       destfile <- paste0(wdir, "/", refdata, file_ext)
 
       # Downloading based on OS
-      if (OS %in% c("Linux", "macOS", "Darwin")) {
+      if (os_type == "unix") {
         utils::download.file(url, destfile, quiet = TRUE)
-      } else if (OS == "Windows") {
+      } else if (os_type == "windows") {
         utils::download.file(url, destfile, quiet = TRUE, mode = "wb")
       } else {
         stop("Unsupported Operating System.")
