@@ -188,8 +188,8 @@ AncestryCheck <-
           referenceLDMessage <- processLDreferenceData(ResultDir, highLD_regions, referLD, referLD_window_size, referLD_step_size, referLD_r2_threshold)
 
           # Printing the messages returned by the functions
-          print(studyLDMessage)
-          print(referenceLDMessage)
+          rlang::inform(studyLDMessage)
+          rlang::inform(referenceLDMessage)
 
           # Define patterns for files to remove
 
@@ -1002,7 +1002,7 @@ QCsnp <-
 
         # Remove ambiguous SNPs
         removedSNPCount <- removeAmbiguousSNPs(DataDir, ResultDir, finput)
-        print(paste0(removedSNPCount, " Ambiguous SNPs (A-T/G-C), indels etc. were removed."))
+        rlang::inform(rlang::format_error_bullets(c("i" = paste0(removedSNPCount, " Ambiguous SNPs (A-T/G-C), indels etc. were removed."))))
 
 
         ## This will be done for the entire file irrespective of case-control status. This will create "filtered_temp1".
@@ -1049,7 +1049,7 @@ QCsnp <-
         # Filter for case-control differential missingness
         SNPmissCC <- handleCaseControlFiltering(ResultDir, casecontrol, dmissX, dmissAutoY, caldiffmiss, SNPmissCC, diffmissFilter, foutput)
 
-        print(paste0("Output plink files prefixed as ,", foutput, ", with passed SNPs are saved in ResultDir."))
+        rlang::inform(rlang::format_error_bullets(c("v" = paste0("Output plink files prefixed as ,", foutput, ", with passed SNPs are saved in ResultDir."))))
 
         # Remove filtered_temp* files
         removeTempFiles(ResultDir, "filtered_temp")
@@ -1071,8 +1071,8 @@ QCsnp <-
         resultbim <- read.table(paste0(ResultDir, "/", foutput, ".bim"))
         inputbim <- read.table(paste0(DataDir, "/", finput, ".bim"))
 
-        print(paste0("Input file has ", length(unique(inputbim$V2)), " SNPs."))
-        print(paste0("Output file has ", length(unique(resultbim$V2)), " SNPs after filtering."))
+        rlang::inform(rlang::format_error_bullets(c("i" = paste0("Input file has ", length(unique(inputbim$V2)), " SNPs."))))
+        rlang::inform(rlang::format_error_bullets(c("i" = paste0("Output file has ", length(unique(resultbim$V2)), " SNPs after filtering."))))
 
 
         return(list(MonomorSNPs = mmSNP1, DiffMissSNPs = SNPmissCC))
@@ -1318,7 +1318,7 @@ EstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL, 
 
   if (is.null(precomputedLD)) {
     if (checkFiles(DataDir, finput) == TRUE) {
-      print("Input genotype files are present in specified directory.")
+      rlang::inform(rlang::format_error_bullets(c("v" = "Input genotype files are present in specified directory.")))
     } else {
       stop("Missing required Plink files in the specified DataDir.")
     }
@@ -1356,7 +1356,7 @@ EstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL, 
         # Use removeFiles helper function to delete the files
         suppressWarnings(removeFiles1(files_to_remove))
 
-        print(paste0("All GRM related files are in ", ResultDir))
+        rlang::inform(rlang::format_error_bullets(c("v" = paste0("All GRM related files are in ", ResultDir))))
 
         return(greml_results)
       }
@@ -1856,13 +1856,13 @@ ComputePRS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phen
       p2 <- createSexDistributionPlot(dat)
 
       if (pheno_type == "binary") {
-        print("Plots are initiated.")
+        rlang::inform(rlang::format_error_bullets(c("i" = "Plots are initiated.")))
         print(createBinaryPhenotypePlots(dat, p1, p2))
-        print("Plots are printed.")
+        rlang::inform(rlang::format_error_bullets(c("v" = "Plots are printed.")))
       } else {
-        print("Plots are initiated.")
+        rlang::inform(rlang::format_error_bullets(c("i" = "Plots are initiated.")))
         print(ggpubr::ggarrange(p1, p2))
-        print("Plots are printed.")
+        rlang::inform(rlang::format_error_bullets(c("v" = "Plots are printed.")))
       }
 
       # Define patterns for files to be removed
@@ -1963,7 +1963,7 @@ MergeRegion <- function(DataDir, ResultDir, finput1, finput2, foutput, use_commo
         )
         executePlink(merge_args)
 
-        print("Merging is done using the common SNPs between the input genotype files.")
+        rlang::inform(rlang::format_error_bullets(c("v" = "Merging is done using the common SNPs between the input genotype files.")))
 
         # Clean-up
         ftemp <- c(list.files(ResultDir, pattern = "new"), list.files(ResultDir, pattern = "common_snps"))
@@ -1974,10 +1974,10 @@ MergeRegion <- function(DataDir, ResultDir, finput1, finput2, foutput, use_commo
           "--allow-no-sex", "--make-bed", "--out", file.path(ResultDir, foutput), "--silent"
         )
         executePlink(merge_args)
-        print("Merging is done with all the SNPs i.e., union of the SNPs.")
+        rlang::inform(rlang::format_error_bullets(c("v" = "Merging is done with all the SNPs i.e., union of the SNPs.")))
       }
 
-      print(paste0("Plink files with merged regions are in ", ResultDir, " prefixed as ", foutput))
+      rlang::inform(rlang::format_error_bullets(c("v" = paste0("Plink files with merged regions are in ", ResultDir, " prefixed as ", foutput))))
     },
     error = function(e) {
       message("An error occurred: ", e$message)
@@ -2255,7 +2255,7 @@ SexCheck <-
         }
 
         if (yChr == 0) {
-          print("There are no Y chromosomes in the input PLINK files. Estimates will be based solely on the X chromosome.")
+          rlang::inform(rlang::format_error_bullets(c("i" = "There are no Y chromosomes in the input PLINK files. Estimates will be based solely on the X chromosome.")))
         }
 
         if (impute_sex == FALSE) {
@@ -2358,9 +2358,7 @@ SexCheck <-
               stringsAsFactors = FALSE,
               header = TRUE
             )
-          print(
-            "The output plink files with imputed sex, prefixed, seximputed_plink, is in the ResultDir."
-          )
+          rlang::inform(rlang::format_error_bullets(c("v" = "The output plink files with imputed sex, prefixed, seximputed_plink, are available in the ResultDir.")))
         }
 
         # Cleanup temporary files
@@ -2515,7 +2513,7 @@ FilterPlinkSample <- function(DataDir, ResultDir,
           ))
         }
       }
-      print(paste0(foutput, " plink files with desired samples are in ", ResultDir))
+      rlang::inform(rlang::format_error_bullets(c("v" = paste0(foutput, " plink files with desired samples are in ", ResultDir))))
       return()
     },
     error = function(e) {
@@ -2656,7 +2654,7 @@ GetMFPlink <- function(DataDir,
         ))
       }
 
-      print(paste0("Output plink files, prefixed as ", foutput, ", are in ", ResultDir))
+      rlang::inform(rlang::format_error_bullets(c("v" = paste0("Output plink files, prefixed as ", foutput, ", are in ", ResultDir))))
       return()
     },
     error = function(e) {
@@ -2784,8 +2782,11 @@ Xhwe <- function(DataDir, ResultDir = tempdir(), finput, filterSNP = TRUE, foutp
       X_excluded_SNPs <- unique(snp)
 
       if (length(X_excluded_SNPs) == 0) {
-        print("No SNP to be excluded.")
-        print("Input plink files are unchanged. No output plink files are produced.") ## Added in 5.0.
+        rlang::inform(
+          rlang::format_error_bullets(c(
+            "i" = "No SNP to be excluded.",
+            "i" = "Input plink files are unchanged. No output plink files are produced."
+          )))
         return()
       } else {
         if (length(X_excluded_SNPs) != 0 & filterSNP == "TRUE") {
@@ -2818,9 +2819,7 @@ Xhwe <- function(DataDir, ResultDir = tempdir(), finput, filterSNP = TRUE, foutp
           ))
 
 
-          print(
-            paste0("Failed SNPs are excluded from the output plink files prefixed as ", foutput, " is in ", ResultDir)
-          )
+          rlang::inform(rlang::format_error_bullets(c("i" = paste0("Failed SNPs are excluded from the output plink files prefixed as ", foutput, " is in ", ResultDir))))
 
           ftemp <- list.files(paste0(ResultDir, "/"), pattern = "hwe")
           invisible(file.remove(paste0(ResultDir, "/", ftemp)))
@@ -2828,7 +2827,7 @@ Xhwe <- function(DataDir, ResultDir = tempdir(), finput, filterSNP = TRUE, foutp
           invisible(file.remove(paste0(ResultDir, "/", ftemp)))
           return(X_excluded_SNPs)
         } else {
-          print("SNPs are flagged.")
+          rlang::inform(rlang::format_error_bullets(c("i" = "SNPs are flagged.")))
           ftemp <- list.files(paste0(ResultDir, "/"), pattern = "hwe")
           invisible(file.remove(paste0(ResultDir, "/", ftemp)))
           ftemp <- list.files(paste0(ResultDir, "/"), pattern = "female")
@@ -2981,7 +2980,7 @@ MAFdiffSexControl <- function(DataDir,
       flaggedSnps <- unique(y[y$P < bf, 2, drop = TRUE])
 
       if (length(flaggedSnps) == 0) {
-        print("No SNP to be flagged or excluded.")
+        rlang::inform(rlang::format_error_bullets(c("i" = "No SNP to be flagged or excluded.")))
         flaggedSnps <- NULL
       } else if (length(flaggedSnps) != 0 & filterSNP == TRUE) {
         utils::write.table(
@@ -3018,7 +3017,7 @@ MAFdiffSexControl <- function(DataDir,
         )
         return(as.list(flaggedSnps))
       } else if (length(flaggedSnps) != 0 & filterSNP == FALSE) {
-        print("SNPs are flagged.")
+        rlang::inform(rlang::format_error_bullets(c("i" = "SNPs are flagged.")))
       }
 
       ftemp <- list.files(paste0(ResultDir, "/"), pattern = "OUTPUT")
@@ -3295,7 +3294,7 @@ QCsample <- function(DataDir,
           "--silent"
         )
         executePlink(excludeSamplesArgs)
-        print("Missingness and heterogygosity thresholds are NULL.")
+        rlang::inform(rlang::format_error_bullets(c("i" = "Missingness and heterogygosity thresholds are NULL.")))
         hm <- NULL
         imissfail <- NULL
         hetfail <- NULL
@@ -3315,26 +3314,26 @@ QCsample <- function(DataDir,
       }
 
       if (is.null(IBD)) {
-        print("There will be no sample to be filtered for IBD with 'IBD' threshold.")
+        rlang::inform(rlang::format_error_bullets(c("i" = "There will be no sample to be filtered for IBD with 'IBD' threshold.")))
         ibd <- NULL
       } else if (!is.null(failed_ibd)) {
         if (filterSample == TRUE) {
-          print(paste0("No. of samples marked to be filtered out for IDB after missingness and heterozygosity filter: ", nrow(failed_ibd)))
+          rlang::inform(rlang::format_error_bullets(c("i" = paste0("No. of samples marked to be filtered out for IDB after missingness and heterozygosity filter: ", nrow(failed_ibd)))))
         } else if (filterSample == FALSE) {
-          print(paste0("No. of samples are flagged out for IDB after missingness and heterozygosity filter: ", nrow(failed_ibd)))
+          rlang::inform(rlang::format_error_bullets(c("i" = paste0("No. of samples are flagged out for IDB after missingness and heterozygosity filter: ", nrow(failed_ibd)))))
         }
       } else if (is.null(failed_ibd)) {
-        print("No sample is filtered out for IDB after missingness and heterozygosity filter.")
+        rlang::inform(rlang::format_error_bullets(c("i" = "No sample is filtered out for IDB after missingness and heterozygosity filter.")))
       }
 
       ###################
 
       Outputsample <- nrow(read.table(paste0(ResultDir, "/", foutput, ".fam"), header = FALSE))
-      print(paste0("No. of samples in input plink files: ", fam1))
-      print(paste0("No. of samples in output plink files: ", Outputsample))
-      print(paste0("Output plink files, ", foutput, " with final samples are in ", ResultDir, "."))
+      rlang::inform(rlang::format_error_bullets(c("i" = paste0("No. of samples in input plink files: ", fam1))))
+      rlang::inform(rlang::format_error_bullets(c("i" = paste0("No. of samples in output plink files: ", Outputsample))))
+      rlang::inform(rlang::format_error_bullets(c("v" = paste0("Output plink files, ", foutput, " with final samples are in ", ResultDir, "."))))
       if (filterSample == FALSE) {
-        print("Samples are flagged only.")
+        rlang::inform(rlang::format_error_bullets(c("i" = "Samples are flagged only.")))
       }
       return(list(
         HM = hm,
@@ -3402,14 +3401,14 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 
   tryCatch(
     {
-      print("Generating Miami plots for stratified test.")
+      rlang::inform(rlang::format_error_bullets("Generating Miami plots for stratified test."))
       suppressWarnings(invisible(gmirror(
         top = FemaleWAS, bottom = MaleWAS, tline = snp_pval, bline = snp_pval,
         toptitle = "GWAS of females", bottomtitle = "GWAS of males",
         highlight_p = c(snp_pval, snp_pval), highlighter = "green", chrblocks = TRUE, file = paste0(ResultDir, "/", "Stratified_GWAS")
       )))
 
-      print(paste0("Miami plot of stratified GWAS is saved in ", ResultDir))
+      rlang::inform(rlang::format_error_bullets(c("v" = paste0("Miami plot of stratified GWAS is saved in ", ResultDir))))
 
       if (Xchr == TRUE) {
         FemaleWAS <- as.data.frame(FemaleWAS)
@@ -3429,7 +3428,7 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
           highlight_p = c(snp_pval, snp_pval), highlighter = "green", chrblocks = TRUE, file = paste0(ResultDir, "/", "Stratified_XWAS")
         )))
         gc(reset = TRUE)
-        print(paste0("Miami plot of stratified XWAS is saved in ", ResultDir))
+        rlang::inform(rlang::format_error_bullets(c("v" = paste0("Miami plot of stratified XWAS is saved in ", ResultDir))))
       } else {
         return()
       }
@@ -3679,7 +3678,7 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
       pb$tick(6)
 
       if (xmodel[1] == "FMcombx01") {
-        print("Running FMcombx01 model")
+        rlang::inform(rlang::format_error_bullets("Running FMcombx01 model"))
 
         x <- suppressWarnings(FMmain(
           DataDir = DataDir, ResultDir = ResultDir, finput = finput, trait = trait, standard_beta = standard_beta, xmodel = xmodel,
@@ -3689,7 +3688,7 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
 
         pb$tick(20)
       } else if (xmodel[1] == "FMcombx02") {
-        print("Running FMcombx02 model")
+        rlang::inform(rlang::format_error_bullets("Running FMcombx02 model"))
 
 
         x <- suppressWarnings(FMmain(
@@ -3700,7 +3699,7 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
 
         pb$tick(20)
       } else if (xmodel[1] == "FMstatrified") {
-        print("Running FMstatrified model")
+        rlang::inform(rlang::format_error_bullets("Running FMstatrified model"))
 
         ## Making male and female files in ResultDir
 
@@ -3722,9 +3721,9 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
         invisible(file.remove(paste0(ResultDir, "/", ftemp)))
       } else if (xmodel[1] == "GWAScxci") {
         if (trait[1] == "quantitative") {
-          return(print("For GWAScxci model, trait needs to be quantitative. Please correct the input file."))
+          return(rlang::inform(rlang::format_error_bullets(c("x" = "For GWAScxci model, trait needs to be quantitative. Please correct the input file."))))
         } else {
-          print("Running GWAScxci model")
+          rlang::inform(rlang::format_error_bullets("Running GWAScxci model"))
         }
         x <- suppressWarnings(XCMAFun(
           DataDir = DataDir, ResultDir = ResultDir, finput = finput, standard_beta = standard_beta,
@@ -3924,7 +3923,7 @@ MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile =
       }
       # Write summary data files to ResultDir
       for (i in 1:length(SummData)) {
-        print(paste0("Processing file number ", i))
+        rlang::inform(rlang::format_error_bullets(c("i" = paste0("Processing file number ", i))))
         write.table(SummData[[i]], paste0(ResultDir, "/", "SNPdata_", i), row.names = FALSE, col.names = TRUE, quote = FALSE)
       }
 
@@ -3934,7 +3933,7 @@ MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile =
       if (GCse == TRUE) {
         invisible(lapply(SummData, getGCse, ResultDir = ResultDir))
       } else {
-        print("No study-specific genomic control was applied.")
+        rlang::inform(rlang::format_error_bullets(c("i" = "No study-specific genomic control was applied.")))
         # file.copy(from=paste0(DataDir,"/",SummData),to=paste0(ResultDir,"/",SummData),overwrite = TRUE,copy.mode = TRUE)
       }
 
@@ -4006,7 +4005,7 @@ MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile =
       invisible(suppressWarnings(lapply(i, allForestplot, MR2 = MRfiltered, Sbeta = Sbeta)))
       dev.off()
 
-      print(paste0(plotname, " files containing the forest plots of the SNPs are produced in the directory ", ResultDir, "."))
+      rlang::inform(rlang::format_error_bullets(c("v" = paste0(plotname, " files containing the forest plots of the SNPs are produced in the directory ", ResultDir, "."))))
 
 
       # Check for problem SNPs
@@ -4063,7 +4062,7 @@ MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile =
         invisible(suppressWarnings(qqman::manhattan(mR, ylim = c(0, 10), annotatePval = pval_threshold_manplot, annotateTop = TRUE, main = "Manhattan plot of weighted Z-score meta GWAS")))
         invisible(suppressWarnings(qqman::qq(mR$P, main = paste0(("Q-Q plot of weighted Z-score meta GWAS p-values with GIF = "), lamdaGC))))
         dev.off()
-        print(paste0(plotname, " files containing the forest plots of the SNPs are produced in the directory ", ResultDir, "."))
+        rlang::inform(rlang::format_error_bullets(c("v" = paste0(plotname, " files containing the forest plots of the SNPs are produced in the directory ", ResultDir, "."))))
 
         #####
       } else {
@@ -4076,7 +4075,7 @@ MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile =
         Msummdata <- MR[, !names(MR) %in%
           c("P", "BETA", "SEfixed", "CIfixedLL", "CIfixedUL", "P.R.", "BETA.R.", "SErandom", "CIrandomLL", "CIrandomUL", "P.WZ.", "WEIGHTED_Z", "SEweighted", "CIweightedLL", "CIweightedUL")]
 
-        print("Since useSNPposition = FALSE, there will be no Manhattan and QQ plot will be generated.")
+        rlang::inform(rlang::format_error_bullets(c("i" = "Since useSNPposition = FALSE, there will be no Manhattan and QQ plot will be generated.")))
       }
       return(list(Resultfixed = Mfixed, Resultrandom = Mrandom, Resultweighted = Mweighted, Metadata = Msummdata, ProblemSNP = MP))
     },
@@ -4208,7 +4207,7 @@ ClumpLD <- function(DataDir, finput, SNPdata, ResultDir = tempdir(),
       
 
       for (i in 1:length(SNPdata)) {
-        print(paste0("Processing summary statistics ", i))
+        rlang::inform(rlang::format_error_bullets(paste0("Processing summary statistics ", i)))
         write.table(SNPdata[[i]],
           paste0(ResultDir, "/", "SNPdata_", i),
           row.names = FALSE, col.names = TRUE, quote = FALSE
@@ -4223,7 +4222,7 @@ ClumpLD <- function(DataDir, finput, SNPdata, ResultDir = tempdir(),
 
         chrwiseLD <- function(chrnum) {
           chromosome <- unique(bimfile$V1)[chrnum]
-          print(paste0("Running LD clumping for chromosome ", chromosome))
+          rlang::inform(rlang::format_error_bullets(paste0("Running LD clumping for chromosome ", chromosome)))
           # Ensure 'plink' is executable and in the correct directory
           # plink_executable <- paste0(ResultDir, "/plink")
 
@@ -4284,7 +4283,7 @@ ClumpLD <- function(DataDir, finput, SNPdata, ResultDir = tempdir(),
             invisible(do.call(file.remove, list(paste0(ResultDir, "/", "ClumpLD.clumped"))))
             return(ldc2)
           } else {
-            print(paste0("No significant clump results for chromosome ", chromosome))
+            rlang::inform(rlang::format_error_bullets(c("i" = paste0("No significant clump results for chromosome ", chromosome))))
             ldc2 <- data.frame("", "", "", "", "", "", "", "")
             colnames(ldc2) <- c("INDEX", "PSNP", "RSQ", "KB", "P", "ALLELES", "F", "CHR")
             return(ldc2)
@@ -4348,7 +4347,7 @@ ClumpLD <- function(DataDir, finput, SNPdata, ResultDir = tempdir(),
           LDC <- ldc2
           All_ldc <- ldcall
         } else {
-          print(paste0("No significant clump results"))
+          rlang::inform(rlang::format_error_bullets(c("i" = "No significant clump results")))
           # Create dummy dataframes if no best clump file exists.
           LDC <- data.frame("", "", "", "", "", "", "", "")
           colnames(LDC) <- c("INDEX", "PSNP", "RSQ", "KB", "P", "ALLELES", "F", "CHR")
@@ -4415,7 +4414,7 @@ DiffZeroOne <- function(inputdata, diffzero = TRUE, diffone = TRUE) {
   tryCatch(
     {
       if (diffzero == FALSE & diffone == FALSE) {
-        print("Both diffzero and diffone cannot set to be FALSE.")
+        rlang::inform(rlang::format_error_bullets(c("x" = "Both diffzero and diffone cannot set to be FALSE.")))
         return()
       } else if (diffzero == TRUE && diffone == TRUE) {
         inputdata1 <- inputdata
@@ -4701,7 +4700,7 @@ GeneticCorrBT <- function(DataDir, ResultDir, finput, byCHR = FALSE,
               partGRM = partGRM, nGRM = nGRM, minMAF = minMAF, maxMAF = maxMAF, ncores = ncores
             )
           } else {
-            print("Skipping GRM computation.")
+            rlang::inform(rlang::format_error_bullets(c("i" = "Skipping GRM computation.")))
           }
 
           ## Compute REML
@@ -4732,7 +4731,7 @@ GeneticCorrBT <- function(DataDir, ResultDir, finput, byCHR = FALSE,
 
           return(herit_result)
         } else {
-          print("autosome and Xsome cannot be set as FALSE together.")
+          rlang::inform(rlang::format_error_bullets(c("x" = "autosome and Xsome cannot both be set as FALSE.")))
         }
       } else {
         bimfile <- read.table(paste0(DataDir, "/", finput, ".bim"))
@@ -4743,7 +4742,7 @@ GeneticCorrBT <- function(DataDir, ResultDir, finput, byCHR = FALSE,
         chrwiseRELM <- function(chrnum, ncores) {
           chromosome <- as.integer(unique(bimfile$V1)[chrnum])
 
-          print(paste0("Processing chromosome ", chromosome))
+          rlang::inform(rlang::format_error_bullets(paste0("Processing chromosome ", chromosome)))
 
 
           if (chromosome == 23) {
@@ -5009,8 +5008,8 @@ FilterRegion <-
             CHR <- "chrY"
           }
 
-          print("line 3491")
-          print(CHR)
+          # print("line 3491")
+          rlang::inform(rlang::format_error_bullets(c("i" = CHR)))
           if (exclude == TRUE) {
             if (regionfile == FALSE) {
               x <- readGenomicFeatures(DataDir1, CHRX, CHRY, CHR, HG)
@@ -5054,14 +5053,14 @@ FilterRegion <-
               bim1 <- read.table(paste0(DataDir, "/", finput, ".bim"))
 
               num_marker_excluded <- nrow(bim1) - nrow(bim)
-              print(paste0(num_marker_excluded, " SNPs are discarded."))
-
-
-              print(paste0("Plink files with passed SNPs are in ", ResultDir, " prefixed as ", foutput))
-
-              print(paste0("Plink files with discarded SNPs are in ", ResultDir, " prefixed as ", foutput, "_snps_extracted"))
+              rlang::inform(
+                rlang::format_error_bullets(c(
+                  "i" = paste0(num_marker_excluded, " SNPs are discarded."),
+                  "v" = paste0("Plink files with passed SNPs are in ", ResultDir, " prefixed as ", foutput),
+                  "v" = paste0("Plink files with discarded SNPs are in ", ResultDir, " prefixed as ", foutput, "_snps_extracted")
+                )))
             } else {
-              print("No SNPs to be discarded or flagged. No output plink files are created.")
+              rlang::inform(rlang::format_error_bullets(c("i" = "No SNPs to be discarded or flagged. No output plink files are created.")))
             }
             ## Modified in V7
           } else if (exclude == FALSE) {
@@ -5074,7 +5073,7 @@ FilterRegion <-
             filterXTR <- snps[[5]]
             filterAmpliconic <- snps[[6]]
 
-            print("SNPs are only flagged for the desired region.")
+            rlang::inform(rlang::format_error_bullets(c("i" = "SNPs are only flagged for the desired region.")))
           }
 
           if (regionfile == FALSE) {
@@ -5095,10 +5094,12 @@ FilterRegion <-
           bim1 <- read.table(paste0(DataDir, "/", finput, ".bim"))
 
           num_marker_excluded <- nrow(bim1) - nrow(bim)
-          print(paste0(num_marker_excluded, " SNPs are discarded."))
-
-          print(paste0("Plink files with passed SNPs are in ", ResultDir, " prefixed as ", foutput))
-          print(paste0("Plink files with discarded SNPs are in ", ResultDir, " prefixed as ", foutput, "_snps_extracted"))
+          rlang::inform(
+            rlang::format_error_bullets(c(
+              "i" = paste0(num_marker_excluded, " SNPs are discarded."),
+              "v" = paste0("Plink files with passed SNPs are in ", ResultDir, " prefixed as ", foutput), 
+              "v" = paste0("Plink files with discarded SNPs are in ", ResultDir, " prefixed as ", foutput, "_snps_extracted")
+            )))
         } else if (exclude == FALSE) {
           bim <- read.table(paste0(ResultDir, "/", foutput, ".bim"))
           colnames(bim) <- c("CHR", "SNP", "START", "END", "A1", "A2")
@@ -5164,14 +5165,14 @@ PlinkSummary <- function(DataDir, ResultDir = tempdir(), finput) {
         fam$V6 <- fam$V1
         fam <- fam[, c(6, 1:5)]
         colnames(fam) <- c("V1", "V2", "V3", "V4", "V5", "V6")
-        print(".fam file has five columns, please provide six columns in this to utilize GXwasR.")
+        rlang::inform(rlang::format_error_bullets(c("x" = ".fam file has five columns, please provide six columns in this to utilize GXwasR.")))
       }
 
       fam$V6 <- as.numeric(as.character(fam$V6))
       fam <- stats::na.omit(fam)
       fam4 <- fam[fam$V5 != 0 & fam$V6 != 0 & fam$V6 != -9, ]
 
-      print(paste0("Dataset:", finput))
+      rlang::inform(rlang::format_error_bullets(c("i" = paste("Dataset:", finput))))
 
       # Analyze phenotype data
       analyzePhenotypeData(fam, fam4)
@@ -5182,11 +5183,13 @@ PlinkSummary <- function(DataDir, ResultDir = tempdir(), finput) {
       No.of.snps <- length(unique(bim$V2))
       No.of.samples <- length(unique(fam$V2))
 
-      print(paste0("Number of chromosomes:", No.of.chr))
-      print(paste0("Chr:", unique(bim$V1)))
-      print(paste0("Total number of SNPs:", No.of.snps))
-      print(paste0("Total number of samples:", No.of.samples))
-
+      rlang::inform(
+        rlang::format_error_bullets(c(
+          "i" = paste("Number of chromosomes:", No.of.chr),
+          "i" = paste("Chr:", unique(bim$V1)),
+          "i" = paste("Total number of SNPs:", No.of.snps),
+          "i" = paste("Total number of samples:", No.of.samples)
+        )))
       return(NULL)
     },
     error = function(e) {
@@ -5262,7 +5265,7 @@ FilterAllele <- function(DataDir, ResultDir, finput, foutput) {
       if (nrow(x1) != 0) {
         write.table(x1$V2, file = paste0(ResultDir, "/snps_multiallelic"), quote = F, col.names = F, row.names = F)
       } else {
-        print("There is no multi-allelic SNP present in the input dataset.")
+        rlang::inform(rlang::format_error_bullets(c("i" = "There is no multi-allelic SNP present in the input dataset.")))
         return()
       }
 
@@ -5285,10 +5288,12 @@ FilterAllele <- function(DataDir, ResultDir, finput, foutput) {
 
       bimf1 <- read.table(paste0(ResultDir, "/", foutput, ".bim"))
 
-      print(paste0("Input dataset has ", nrow(bimf), " SNPs."))
-      print(paste0("Plink files with only biallelic SNPs are in ", ResultDir, " prefixed as ", foutput))
-      print(paste0("Output dataset has ", nrow(bimf1), " SNPs."))
-
+      rlang::inform(
+        rlang::format_error_bullets(c(
+          "i" = paste0("Input dataset has ", nrow(bimf), " SNPs."),
+          "i" = paste0("Output dataset has ", nrow(bimf1), " SNPs."),
+          "v" = paste0("Plink files with only biallelic SNPs are in ", ResultDir, " prefixed as ", foutput)
+        )))
       return()
     },
     error = function(e) {
@@ -5597,10 +5602,11 @@ FilterSNP <- function(DataDir, ResultDir, finput, foutput, SNPvec, extract = FAL
 
       bim <- read.table(paste0(ResultDir, "/", foutput, ".bim"))
 
-      print(paste0(nrow(bim), " SNPs are extracted"))
-
-      print(paste0("Plink files with extracted SNPs are in ", ResultDir, " prefixed as ", foutput))
-
+      rlang::inform(
+        rlang::format_error_bullets(c(
+          "i" = paste0(nrow(bim), " SNPs are extracted"),
+          "v" = paste0("Plink files with extracted SNPs are in ", ResultDir, " prefixed as ", foutput)
+        )))
       return(NULL)
     },
     error = function(e) {
@@ -5704,7 +5710,7 @@ Download_reference <- function(refdata, wdir = tempdir()) {
         }
       }
       #########
-      print(paste0("Reference data '", refdata, "' downloaded and extracted in ", wdir, "."))
+      rlang::inform(rlang::format_error_bullets(c("i" = paste0("Reference data '", refdata, "' downloaded and extracted in ", wdir, "."))))
     },
     error = function(e) {
       message("An error occurred: ", e$message)
@@ -5789,7 +5795,7 @@ DummyCovar <- function(DataDir, bfile, incovar, outcovar) {
   ))
 
   x <- read.table(paste0(DataDir, "/", outcovar, ".cov"), header = TRUE)
-  print(paste0("Covariate file: ", outcovar, ".cov is in ", DataDir))
+  rlang::inform(rlang::format_error_bullets(c("i" = paste0("Covariate file: ", outcovar, ".cov is in ", DataDir))))
   return(x)
 }
 
@@ -5945,7 +5951,7 @@ LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, st
     },
     error = function(e) {
       # Handle errors by returning a more user-friendly message
-      cat("Error during LD pruning: ", e$message, "\n")
+      rlang::inform(rlang::format_error_bullets(c("x" = paste0("Error during LD pruning: ", e$message))))
       return(NULL) # Return NULL to indicate failure
     }
   )
