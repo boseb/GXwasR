@@ -3416,9 +3416,9 @@ ComputeGRMauto <- function(DataDir, ResultDir, finput, partGRM, nGRM, cripticut,
     i <- 1:nGRM
     lapply(i, partGRMfun)
 
-    OS <- Sys.info()["sysname"]
+    os_type <- detect_os_type()
 
-    if (OS == "Linux" | OS == "Mac" | OS == "Darwin") {
+    if (os_type == "unix") {
       grm_parts <- c("grm.id", "grm.bin", "grm.N.bin")
 
       for (ext in grm_parts) {
@@ -3427,7 +3427,7 @@ ComputeGRMauto <- function(DataDir, ResultDir, finput, partGRM, nGRM, cripticut,
         system2("cat", args = c(input_pattern), stdout = output_file)
       }
 
-    } else if (OS == "Windows") {
+    } else if (os_type == "windows") {
       grm_parts <- c("grm.id", "grm.bin", "grm.N.bin")
 
       for (ext in grm_parts) {
@@ -3527,8 +3527,8 @@ ComputeGRMX <- function(DataDir, ResultDir, finput, partGRM, nGRM, minMAF = NULL
     i <- 1:nGRM
     lapply(i, partGRM)
 
-    OS <- Sys.info()["sysname"]
-    if (OS == "Linux" | OS == "Mac") {
+    os_type <- detect_os_type()
+    if (os_type == "unix") {
       grm_parts <- c("grm.id", "grm.bin", "grm.N.bin")
 
       for (ext in grm_parts) {
@@ -3537,7 +3537,7 @@ ComputeGRMX <- function(DataDir, ResultDir, finput, partGRM, nGRM, minMAF = NULL
         system2("cat", args = c(input_pattern), stdout = output_file)
       }
 
-    } else if (OS == "Windows") {
+    } else if (os_type == "windows") {
       grm_parts <- c("grm.id", "grm.bin", "grm.N.bin")
 
       for (ext in grm_parts) {
