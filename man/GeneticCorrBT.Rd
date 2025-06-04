@@ -108,7 +108,7 @@ correlation chromosome-wise.
 DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
-byCHR <- FALSE
+byCHR <- TRUE
 REMLalgo <- 0
 nitr <- 3
 ncores <- 3
@@ -124,8 +124,8 @@ minMAF <- 0.01 # if MAF filter apply
 maxMAF <- 0.04
 excludeResidual <- TRUE
 
-GC <- GeneticCorrBT(
-  DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = TRUE,
+genetic_correlation <- GeneticCorrBT(
+  DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = byCHR,
   REMLalgo = 0, nitr = 10, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL,
   partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
   cripticut = 0.025, minMAF = NULL, maxMAF = NULL, excludeResidual = TRUE, ncores = ncores

@@ -4614,7 +4614,7 @@ SexDiffZscore <- function(inputdata) {
 #' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
-#' byCHR <- FALSE
+#' byCHR <- TRUE
 #' REMLalgo <- 0
 #' nitr <- 3
 #' ncores <- 3
@@ -4630,8 +4630,8 @@ SexDiffZscore <- function(inputdata) {
 #' maxMAF <- 0.04
 #' excludeResidual <- TRUE
 #' 
-#' GC <- GeneticCorrBT(
-#'   DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = TRUE,
+#' genetic_correlation <- GeneticCorrBT(
+#'   DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = byCHR,
 #'   REMLalgo = 0, nitr = 10, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL,
 #'   partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
 #'   cripticut = 0.025, minMAF = NULL, maxMAF = NULL, excludeResidual = TRUE, ncores = ncores
@@ -4782,9 +4782,8 @@ GeneticCorrBT <- function(DataDir, ResultDir, finput, byCHR = FALSE,
 
             return(herit_result)
           }
-
           result <- data.table::rbindlist(lapply(chrnum, function(x) chrwiseRELM(x, ncores)), fill = TRUE)
-          result <- na.omit(result)
+          # result <- na.omit(result)
 
           # Gather files matching the patterns
           patterns <- c("bireml", "grm", "test", "gcta", "GCphenofile", "multi_GRMs.txt")
