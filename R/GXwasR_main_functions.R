@@ -1319,7 +1319,7 @@ EstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL, 
         patterns <- c("plink", "test_reml", "LDfiltered", "HumanGenome", "LDsnp", "test", "gcta", "MAF", "GRM", "phenofile.phen", "sink")
 
         files_to_remove <- unlist(lapply(patterns, function(pattern) {
-          list.files(ResultDir, pattern = pattern, full.names = TRUE)
+          list.files(ResultDir, pattern = patterns, full.names = TRUE)
         }))
 
         # Use removeFiles helper function to delete the files
@@ -4651,160 +4651,164 @@ GeneticCorrBT <- function(DataDir, ResultDir, finput, byCHR = FALSE,
   }
 
   tryCatch(
-    {
-      # setupGCTA(ResultDir)
-      ## ComputeBivarREMLone phenofile
-      write.table(phenofile, file = paste0(ResultDir, "/", "GCphenofile"), row.names = FALSE, quote = FALSE)
+    withCallingHandlers(
+      {
+        # setupGCTA(ResultDir)
+        ## ComputeBivarREMLone phenofile
+        write.table(phenofile, file = paste0(ResultDir, "/", "GCphenofile"), row.names = FALSE, quote = FALSE)
 
-      if (byCHR == FALSE) {
-        if (autosome == TRUE && Xsome == FALSE) {
-          ## Compute GRM
-          if (computeGRM == TRUE) {
-            ComputeGRMauto(
-              DataDir = DataDir, ResultDir = ResultDir, finput = finput,
-              partGRM = partGRM, nGRM = nGRM, cripticut = cripticut, minMAF = minMAF, maxMAF = maxMAF, ncores = ncores
+        if (byCHR == FALSE) {
+          if (autosome == TRUE && Xsome == FALSE) {
+            ## Compute GRM
+            if (computeGRM == TRUE) {
+              ComputeGRMauto(
+                DataDir = DataDir, ResultDir = ResultDir, finput = finput,
+                partGRM = partGRM, nGRM = nGRM, cripticut = cripticut, minMAF = minMAF, maxMAF = maxMAF, ncores = ncores
+              )
+
+              grmfile_name <- "GXwasR"
+            } else {
+              grmfile_name <- grmfile_name
+            }
+            ## Compute REML
+            herit_result <- ComputeBivarREMLone(
+              DataDir = DataDir, ResultDir = ResultDir, REMLalgo = REMLalgo, nitr = nitr, phenofile = "GCphenofile", cat_covarfile = cat_covarfile,
+              quant_covarfile = quant_covarfile, excludeResidual = excludeResidual, chr = "chromosome", grmfile = grmfile_name, ncores = ncores
             )
 
-            grmfile_name <- "GXwasR"
-          } else {
-            grmfile_name <- grmfile_name
-          }
-          ## Compute REML
-          herit_result <- ComputeBivarREMLone(
-            DataDir = DataDir, ResultDir = ResultDir, REMLalgo = REMLalgo, nitr = nitr, phenofile = "GCphenofile", cat_covarfile = cat_covarfile,
-            quant_covarfile = quant_covarfile, excludeResidual = excludeResidual, chr = "chromosome", grmfile = grmfile_name, ncores = ncores
-          )
+            return(herit_result)
+          } else if (autosome == TRUE && Xsome == TRUE) {
+            if (computeGRM == TRUE) {
+              ## Compute GRM Autosome
+              ComputeGRMauto(
+                DataDir = DataDir, ResultDir = ResultDir, finput = finput,
+                partGRM = partGRM, nGRM = nGRM, cripticut = cripticut, minMAF = minMAF, maxMAF = maxMAF, ncores = ncores
+              )
+              ## Compute GRM X
+              ComputeGRMX(
+                DataDir = DataDir, ResultDir = ResultDir, finput = finput,
+                partGRM = partGRM, nGRM = nGRM, minMAF = minMAF, maxMAF = maxMAF, ncores = ncores
+              )
+            } else {
+              rlang::inform(rlang::format_error_bullets(c("i" = "Skipping GRM computation.")))
+            }
 
-          return(herit_result)
-        } else if (autosome == TRUE && Xsome == TRUE) {
-          if (computeGRM == TRUE) {
-            ## Compute GRM Autosome
-            ComputeGRMauto(
-              DataDir = DataDir, ResultDir = ResultDir, finput = finput,
-              partGRM = partGRM, nGRM = nGRM, cripticut = cripticut, minMAF = minMAF, maxMAF = maxMAF, ncores = ncores
-            )
-            ## Compute GRM X
-            ComputeGRMX(
-              DataDir = DataDir, ResultDir = ResultDir, finput = finput,
-              partGRM = partGRM, nGRM = nGRM, minMAF = minMAF, maxMAF = maxMAF, ncores = ncores
-            )
-          } else {
-            rlang::inform(rlang::format_error_bullets(c("i" = "Skipping GRM computation.")))
-          }
-
-          ## Compute REML
-          herit_result <- ComputeBivarREMLmulti(
-            DataDir = DataDir, ResultDir = ResultDir, REMLalgo = REMLalgo, nitr = nitr, phenofile = "GCphenofile", cat_covarfile = cat_covarfile,
-            quant_covarfile = quant_covarfile, excludeResidual = excludeResidual, grmfile = "multi_GRMs.txt", computeGRM = computeGRM, grmfile_name = grmfile_name, ncores = ncores
-          )
-
-          return(herit_result)
-        } else if (autosome == FALSE && Xsome == TRUE) {
-          if (computeGRM == TRUE) {
-            ## Compute GRM X
-            ComputeGRMX(
-              DataDir = DataDir, ResultDir = ResultDir, finput = finput,
-              partGRM = partGRM, nGRM = nGRM, minMAF = minMAF, maxMAF = maxMAF, ncores = ncores
+            ## Compute REML
+            herit_result <- ComputeBivarREMLmulti(
+              DataDir = DataDir, ResultDir = ResultDir, REMLalgo = REMLalgo, nitr = nitr, phenofile = "GCphenofile", cat_covarfile = cat_covarfile,
+              quant_covarfile = quant_covarfile, excludeResidual = excludeResidual, grmfile = "multi_GRMs.txt", computeGRM = computeGRM, grmfile_name = grmfile_name, ncores = ncores
             )
 
-
-            grmfile_name <- "xGXwasR"
-          } else {
-            grmfile_name <- paste0("x", grmfile_name)
-          }
-          ## Compute REML X
-          herit_result <- ComputeBivarREMLone(
-            DataDir = DataDir, ResultDir = ResultDir, REMLalgo = REMLalgo, nitr = nitr, phenofile = "GCphenofile", cat_covarfile = cat_covarfile,
-            quant_covarfile = quant_covarfile, excludeResidual = excludeResidual, chr = "chromosome", grmfile = grmfile_name, ncores = ncores
-          )
-
-          return(herit_result)
-        } else {
-          rlang::inform(rlang::format_error_bullets(c("x" = "autosome and Xsome cannot both be set as FALSE.")))
-        }
-      } else {
-        bimfile <- read.table(paste0(DataDir, "/", finput, ".bim"))
-
-        chrnum <- 1:length(unique(bimfile$V1))
-        # chrnum <- 1:3
-
-        chrwiseRELM <- function(chrnum, ncores) {
-          chromosome <- as.integer(unique(bimfile$V1)[chrnum])
-
-          rlang::inform(rlang::format_error_bullets(paste0("Processing chromosome ", chromosome)))
-
-
-          if (chromosome == 23) {
+            return(herit_result)
+          } else if (autosome == FALSE && Xsome == TRUE) {
             if (computeGRM == TRUE) {
               ## Compute GRM X
-
               ComputeGRMX(
                 DataDir = DataDir, ResultDir = ResultDir, finput = finput,
                 partGRM = partGRM, nGRM = nGRM, minMAF = minMAF, maxMAF = maxMAF, ncores = ncores
               )
 
+
               grmfile_name <- "xGXwasR"
             } else {
               grmfile_name <- paste0("x", grmfile_name)
             }
-
             ## Compute REML X
             herit_result <- ComputeBivarREMLone(
               DataDir = DataDir, ResultDir = ResultDir, REMLalgo = REMLalgo, nitr = nitr, phenofile = "GCphenofile", cat_covarfile = cat_covarfile,
-              quant_covarfile = quant_covarfile, excludeResidual = excludeResidual, chr = 23, grmfile = grmfile_name, ncores = ncores
+              quant_covarfile = quant_covarfile, excludeResidual = excludeResidual, chr = "chromosome", grmfile = grmfile_name, ncores = ncores
             )
 
-            herit_result <- data.table::as.data.table(cbind(chromosome, herit_result))
+            return(herit_result)
           } else {
-            if (computeGRM == TRUE) {
-              ## Compute GRM
-              ComputeGRMauto(
-                DataDir = DataDir, ResultDir = ResultDir, finput = finput,
-                partGRM = partGRM, nGRM = nGRM, cripticut = cripticut,
-                minMAF = minMAF, maxMAF = maxMAF, ByCHR = byCHR, CHRnum = chromosome, ncores = ncores
+            rlang::inform(rlang::format_error_bullets(c("x" = "autosome and Xsome cannot both be set as FALSE.")))
+          }
+        } else {
+          bimfile <- read.table(paste0(DataDir, "/", finput, ".bim"))
+
+          chrnum <- 1:length(unique(bimfile$V1))
+          # chrnum <- 1:3
+
+          chrwiseRELM <- function(chrnum, ncores) {
+            chromosome <- as.integer(unique(bimfile$V1)[chrnum])
+
+            rlang::inform(paste0("Processing chromosome ", chromosome))
+
+
+            if (chromosome == 23) {
+              if (computeGRM == TRUE) {
+                ## Compute GRM X
+
+                ComputeGRMX(
+                  DataDir = DataDir, ResultDir = ResultDir, finput = finput,
+                  partGRM = partGRM, nGRM = nGRM, minMAF = minMAF, maxMAF = maxMAF, ncores = ncores
+                )
+
+                grmfile_name <- "xGXwasR"
+              } else {
+                grmfile_name <- paste0("x", grmfile_name)
+              }
+
+              ## Compute REML X
+              herit_result <- ComputeBivarREMLone(
+                DataDir = DataDir, ResultDir = ResultDir, REMLalgo = REMLalgo, nitr = nitr, phenofile = "GCphenofile", cat_covarfile = cat_covarfile,
+                quant_covarfile = quant_covarfile, excludeResidual = excludeResidual, chr = 23, grmfile = grmfile_name, ncores = ncores
               )
 
-              grmfile_name <- "GXwasR"
+              herit_result <- data.table::as.data.table(cbind(chromosome, herit_result))
             } else {
-              grmfile_name <- paste0("Chr", chromosome, "_", grmfile_name)
+              if (computeGRM == TRUE) {
+                ## Compute GRM
+                ComputeGRMauto(
+                  DataDir = DataDir, ResultDir = ResultDir, finput = finput,
+                  partGRM = partGRM, nGRM = nGRM, cripticut = cripticut,
+                  minMAF = minMAF, maxMAF = maxMAF, ByCHR = byCHR, CHRnum = chromosome, ncores = ncores
+                )
+
+                grmfile_name <- "GXwasR"
+              } else {
+                grmfile_name <- paste0("Chr", chromosome, "_", grmfile_name)
+              }
+
+              ## Compute REML
+              herit_result <- ComputeBivarREMLone(
+                DataDir = DataDir, ResultDir = ResultDir, REMLalgo = REMLalgo, nitr = nitr, phenofile = "GCphenofile", cat_covarfile = cat_covarfile,
+                quant_covarfile = quant_covarfile, excludeResidual = excludeResidual, chr = chromosome, grmfile = grmfile_name, ncores = ncores
+              )
+
+
+              herit_result <- data.table::as.data.table(cbind(chromosome, herit_result))
             }
 
-            ## Compute REML
-            herit_result <- ComputeBivarREMLone(
-              DataDir = DataDir, ResultDir = ResultDir, REMLalgo = REMLalgo, nitr = nitr, phenofile = "GCphenofile", cat_covarfile = cat_covarfile,
-              quant_covarfile = quant_covarfile, excludeResidual = excludeResidual, chr = chromosome, grmfile = grmfile_name, ncores = ncores
-            )
-
-
-            herit_result <- data.table::as.data.table(cbind(chromosome, herit_result))
+            return(herit_result)
           }
 
-          return(herit_result)
+          result <- data.table::rbindlist(lapply(chrnum, function(x) chrwiseRELM(x, ncores)), fill = TRUE)
+          result <- na.omit(result)
+
+          # Gather files matching the patterns
+          patterns <- c("bireml", "grm", "test", "gcta", "GCphenofile", "multi_GRMs.txt")
+          files_to_remove <- unlist(lapply(patterns, function(pattern) {
+            list.files(ResultDir, pattern = patterns, full.names = TRUE)
+          }))
+
+          # Use removeFiles helper function to delete the files
+          file.remove(files_to_remove, showWarnings = FALSE)
+          # removeFiles(files_to_remove, ResultDir)
+
+          return(result)
         }
-
-        result <- data.table::rbindlist(lapply(chrnum, function(x) chrwiseRELM(x, ncores)))
-        result <- na.omit(result)
-
-        # Gather files matching the patterns
-        patterns <- c("bireml", "grm", "test", "gcta", "GCphenofile", "multi_GRMs.txt")
-        files_to_remove <- unlist(lapply(patterns, function(pattern) {
-          list.files(ResultDir, pattern = pattern, full.names = TRUE)
-        }))
-
-        # Use removeFiles helper function to delete the files
-        removeFiles(files_to_remove, ResultDir)
-
-        return(result)
+      },
+      error = function(e) {
+        message("An error occurred: ", e$message)
+        return(NULL)
+      },
+      warning = function(w) {
+        message("Warning: ", w$message)
+        invokeRestart("muffleWarning") 
       }
-    },
-    error = function(e) {
-      message("An error occurred: ", e$message)
-      return(NULL)
-    },
-    warning = function(w) {
-      message("Warning: ", w$message)
-    }
-  )
+    )
+  ) 
 }
 
 
