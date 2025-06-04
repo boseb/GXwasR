@@ -3471,7 +3471,6 @@ ComputeGRMauto <- function(DataDir, ResultDir, finput, partGRM, nGRM, cripticut,
 ComputeGRMX <- function(DataDir, ResultDir, finput, partGRM, nGRM, minMAF = NULL, maxMAF = NULL, ncores = ncores) {
   ## Removing PAR regions and adding it to autosomes, PAR = chr 24 in .bim file.
 
-
   if (is.null(maxMAF)) {
     maxmaf <- NULL
     maxmafval <- NULL
@@ -3489,94 +3488,65 @@ ComputeGRMX <- function(DataDir, ResultDir, finput, partGRM, nGRM, minMAF = NULL
     minmaf <- "--maf"
     minmafval <- minMAF
   }
+
   if (partGRM == FALSE) {
     args <- c(
-      "--bfile", paste0(DataDir, "/", finput),
+      "--bfile", file.path(DataDir, finput),
       minmaf, minmafval,
       maxmaf, maxmafval,
       "--thread-num", ncores,
       "--make-grm-xchr",
-      "--out", paste0(ResultDir, "/xGXwasR")
+      "--out", file.path(ResultDir, "xGXwasR")
     )
 
-    # Execute GCTA with the specified arguments for X chromosome GRM
     executeGCTA(ResultDir, args)
-    if (file.exists(paste0(ResultDir, "/xGXwasR.grm.id"))) {
-      rlang::inform(rlang::format_error_bullets(c("v" = grep("GRM has been saved", readLines(paste0(ResultDir, "/xGXwasR.log")), value = TRUE))))
-      rlang::inform(rlang::format_error_bullets(c("i" = grep("Number of SNPs in each pair", readLines(paste0(ResultDir, "/xGXwasR.log")), value = TRUE))))
+
+    if (file.exists(file.path(ResultDir, "xGXwasR.grm.id"))) {
+      log_lines <- readLines(file.path(ResultDir, "xGXwasR.log"))
+      rlang::inform(rlang::format_error_bullets(c(
+        "v" = grep("GRM has been saved", log_lines, value = TRUE),
+        "i" = grep("Number of SNPs in each pair", log_lines, value = TRUE)
+      )))
     } else {
       rlang::inform(rlang::format_error_bullets(c("i" = "No GRM was created.")))
     }
+
   } else {
-    partGRM <- function(i) {
+    partGRM_fn <- function(i) {
       args <- c(
-        "--bfile", paste0(DataDir, "/", finput),
+        "--bfile", file.path(DataDir, finput),
         minmaf, minmafval,
         maxmaf, maxmafval,
-        "--make-grm-xchr-part",
-        nGRM,
-        i, # Part number for X chromosome GRM
+        "--make-grm-xchr-part", nGRM, i,
         "--thread-num", ncores,
-        "--out", paste0(ResultDir, "/xGXwasR")
+        "--out", file.path(ResultDir, "xGXwasR")
       )
-
-      # Execute GCTA with the specified arguments for X chromosome part
       executeGCTA(ResultDir, args)
     }
 
-    i <- 1:nGRM
-    lapply(i, partGRM)
+    lapply(seq_len(nGRM), partGRM_fn)
 
     os_type <- detect_os_type()
-    if (os_type == "unix") {
-      grm_parts <- c("grm.id", "grm.bin", "grm.N.bin")
+    grm_parts <- c("grm.id", "grm.bin", "grm.N.bin")
 
-      for (ext in grm_parts) {
-        input_pattern <- file.path(ResultDir, paste0("GXwasR.part_", nGRM, "_*", ext))
-        output_file <- file.path(ResultDir, paste0("GXwasR.", ext))
-        system2("cat", args = c(input_pattern), stdout = output_file)
-      }
+    for (ext in grm_parts) {
+      input_pattern <- file.path(ResultDir, paste0("xGXwasR.part_", nGRM, "_*", ext))
+      output_file <- file.path(ResultDir, paste0("xGXwasR.", ext))
 
-    } else if (os_type == "windows") {
-      grm_parts <- c("grm.id", "grm.bin", "grm.N.bin")
-
-      for (ext in grm_parts) {
-        input_pattern <- file.path(ResultDir, paste0("GXwasR.part_", nGRM, "_*", ext))
-        output_file <- file.path(ResultDir, paste0("GXwasR.", ext))
-        copy_command <- paste0("copy /b ", input_pattern, " ", output_file)
-        system2("cmd.exe", args = c("/c", copy_command))
-      }
-    }
-
-    # Check if final file was successfully created
-    merged_id_path <- file.path(ResultDir, "GXwasR.grm.id")
-    if (file.exists(merged_id_path)) {
-      if (ByCHR == FALSE) {
-        log_path <- file.path(ResultDir, "GXwasR.log")
-        if (file.exists(log_path)) {
-          log_lines <- readLines(log_path)
-          messages <- c(
-            i = grep("Partitioned GRM has been saved", log_lines, value = TRUE),
-            i = grep("Number of SNPs in each pair", log_lines, value = TRUE)
-          )
-          inform(format_error_bullets(messages))
-        }
+      if (os_type == "unix") {
+        system2("cat", args = input_pattern, stdout = output_file)
+      } else if (os_type == "windows") {
+        cmd <- paste0("copy /b ", input_pattern, " ", output_file)
+        system2("cmd.exe", args = c("/c", cmd))
       } else {
-        file_extensions <- c("grm.id", "grm.bin", "grm.N.bin")
-        for (ext in file_extensions) {
-          original_file <- file.path(ResultDir, paste0("GXwasR.", ext))
-          new_file <- file.path(ResultDir, paste0("Chr", CHRnum, "_GXwasR.", ext))
-          file.copy(from = original_file, to = new_file)
-        }
+        rlang::warn(paste("Unsupported OS for merging GRM files:", os_type))
       }
-    } else {
-      inform("No GRM is created.")
     }
-
   }
 
   ## Compute GRM: GRM is calculated using the equation sum{[(xij - 2pi)*(xik - 2pi)] / [2pi(1-pi)]} as described in Yang et al. 2010 Nat Genet.
 }
+
 
 
 ## Function 75
