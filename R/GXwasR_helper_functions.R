@@ -3323,70 +3323,52 @@ executeGCTA <- function(ResultDir, args) {
 }
 
 ## Function 73
-ComputeGRMauto <- function(DataDir, ResultDir, finput, partGRM, nGRM, cripticut, minMAF = NULL, maxMAF = NULL, ByCHR = FALSE, CHRnum = NULL, ncores = ncores) {
-  if (ByCHR == FALSE) {
-    chr <- NULL
-    CHRnum <- NULL
-    autosome <- "--autosome"
-  } else {
-    chr <- "--chr"
-    CHRnum <- CHRnum
-    autosome <- NULL
-  }
+ComputeGRMauto <- function(DataDir, ResultDir, finput, partGRM, nGRM, cripticut,
+  minMAF = NULL, maxMAF = NULL,
+  ByCHR = FALSE, CHRnum = NULL, ncores = ncores) {
+  
+  autosome <- if (!ByCHR) "--autosome" else NULL
+  chr <- if (ByCHR) "--chr" else NULL
+  
+  minmaf <- if (!is.null(minMAF)) "--maf" else NULL
+  minmafval <- minMAF
 
-  if (is.null(maxMAF)) {
-    maxmaf <- NULL
-    maxmafval <- NULL
-  } else {
-    maxmaf <- "--max-maf"
-    maxmafval <- maxMAF
-  }
+  maxmaf <- if (!is.null(maxMAF) && is.null(minMAF)) "--max-maf" else NULL
+  maxmafval <- if (is.null(minMAF)) maxMAF else NULL
 
-  if (is.null(minMAF)) {
-    minmaf <- NULL
-    minmafval <- NULL
-    maxmaf <- NULL
-    maxmafval <- NULL
-  } else {
-    minmaf <- "--maf"
-    minmafval <- minMAF
-  }
+  grmcutoff <- if (cripticut != 0) "--grm-cutoff" else NULL
+  crip <- if (cripticut != 0) cripticut else NULL
 
-  if (cripticut == 0) {
-    grmcutoff <- NULL
-    crip <- NULL
-  } else {
-    grmcutoff <- "--grm-cutoff"
-    crip <- cripticut
-  }
+  base_args <- c(
+    "--bfile", file.path(DataDir, finput),
+    autosome,
+    chr, CHRnum,
+    minmaf, minmafval,
+    maxmaf, maxmafval,
+    grmcutoff, crip,
+    "--thread-num", ncores
+  )
 
-  if (partGRM == FALSE) {
-    args <- c(
-      "--bfile", paste0(DataDir, "/", finput),
-      autosome,
-      chr, CHRnum,
-      minmaf, minmafval,
-      maxmaf, maxmafval,
-      grmcutoff, crip,
-      "--thread-num", ncores,
-      "--make-grm",
-      "--out", paste0(ResultDir, "/GXwasR")
-    )
+  if (!partGRM) {
+    args <- c(base_args, "--make-grm", "--out", file.path(ResultDir, "GXwasR"))
     executeGCTA(ResultDir, args)
-
-    if (file.exists(paste0(ResultDir, "/GXwasR.grm.id"))) {
-      if (ByCHR == FALSE) {
-        rlang::inform(rlang::format_error_bullets(c("v" = grep("GRM has been saved", readLines(paste0(ResultDir, "/GXwasR.log")), value = TRUE))))
-        rlang::inform(rlang::format_error_bullets(c("i" = grep("Number of SNPs in each pair", readLines(paste0(ResultDir, "/GXwasR.log")), value = TRUE))))
+    
+    grm_id <- file.path(ResultDir, "GXwasR.grm.id")
+    if (file.exists(grm_id)) {
+      if (!ByCHR) {
+        log_lines <- readLines(file.path(ResultDir, "GXwasR.log"))
+        rlang::inform(rlang::format_error_bullets(c(
+          "v" = grep("GRM has been saved", log_lines, value = TRUE),
+          "i" = grep("Number of SNPs in each pair", log_lines, value = TRUE)
+        )))
+        message("\n")
       } else {
-        # List of file extensions to copy and rename
         file_extensions <- c("grm.id", "grm.bin", "grm.N.bin")
-
-        # Loop through the file extensions and copy/rename each file
         for (ext in file_extensions) {
-          original_file <- file.path(ResultDir, paste0("GXwasR.", ext))
-          new_file <- file.path(ResultDir, paste0("Chr", CHRnum, "_GXwasR.", ext))
-          file.copy(from = original_file, to = new_file)
+          file.copy(
+            from = file.path(ResultDir, paste0("GXwasR.", ext)),
+            to = file.path(ResultDir, paste0("Chr", CHRnum, "_GXwasR.", ext))
+          )
         }
       }
     } else {
@@ -3395,75 +3377,57 @@ ComputeGRMauto <- function(DataDir, ResultDir, finput, partGRM, nGRM, cripticut,
   } else {
     partGRMfun <- function(i) {
       args <- c(
-        "--bfile", paste0(DataDir, "/", finput),
-        autosome,
-        chr, CHRnum,
-        minmaf, minmafval,
-        maxmaf, maxmafval,
-        grmcutoff,
-        crip,
-        "--make-grm-part",
-        nGRM,
-        i, # Part number
-        "--thread-num", ncores,
-        "--out", paste0(ResultDir, "/GXwasR")
+        base_args,
+        "--make-grm-part", nGRM, i,
+        "--out", file.path(ResultDir, "GXwasR")
       )
-
-      # Execute GCTA with the specified arguments
       executeGCTA(ResultDir, args)
     }
-
-    i <- 1:nGRM
-    lapply(i, partGRMfun)
-
+    
+    lapply(seq_len(nGRM), partGRMfun)
+    
     os_type <- detect_os_type()
-
-    if (os_type == "unix") {
-      grm_parts <- c("grm.id", "grm.bin", "grm.N.bin")
-
-      for (ext in grm_parts) {
-        input_pattern <- file.path(ResultDir, paste0("GXwasR.part_", nGRM, "_*", ext))
-        output_file <- file.path(ResultDir, paste0("GXwasR.", ext))
-        system2("cat", args = c(input_pattern), stdout = output_file)
-      }
-
-    } else if (os_type == "windows") {
-      grm_parts <- c("grm.id", "grm.bin", "grm.N.bin")
-
-      for (ext in grm_parts) {
-        input_pattern <- file.path(ResultDir, paste0("GXwasR.part_", nGRM, "_*", ext))
-        output_file <- file.path(ResultDir, paste0("GXwasR.", ext))
-        copy_command <- paste0("copy /b ", input_pattern, " ", output_file)
-        system2("cmd.exe", args = c("/c", copy_command))
+    grm_parts <- c("grm.id", "grm.bin", "grm.N.bin")
+    
+    for (ext in grm_parts) {
+      input_pattern <- file.path(ResultDir, paste0("GXwasR.part_", nGRM, "_*", ext))
+      output_file <- file.path(ResultDir, paste0("GXwasR.", ext))
+      
+      if (os_type == "unix") {
+        system2("cat", args = input_pattern, stdout = output_file)
+      } else if (os_type == "windows") {
+        copy_cmd <- paste0("copy /b ", input_pattern, " ", output_file)
+        system2("cmd.exe", args = c("/c", copy_cmd))
+      } else {
+        rlang::warn(paste("Unsupported OS type for merging GRM files:", os_type))
       }
     }
-
-    # Check if final file was successfully created
-    merged_id_path <- file.path(ResultDir, "GXwasR.grm.id")
-    if (file.exists(merged_id_path)) {
-      if (ByCHR == FALSE) {
+    
+    merged_id <- file.path(ResultDir, "GXwasR.grm.id")
+    if (file.exists(merged_id)) {
+      if (!ByCHR) {
         log_path <- file.path(ResultDir, "GXwasR.log")
         if (file.exists(log_path)) {
           log_lines <- readLines(log_path)
-          messages <- c(
-            i = grep("Partitioned GRM has been saved", log_lines, value = TRUE),
-            i = grep("Number of SNPs in each pair", log_lines, value = TRUE)
-          )
-          inform(format_error_bullets(messages))
+          rlang::inform(rlang::format_error_bullets(c(
+            "i" = grep("Partitioned GRM has been saved", log_lines, value = TRUE),
+            "i" = grep("Number of SNPs in each pair", log_lines, value = TRUE)
+          )))
+          message("\n")
         }
       } else {
         file_extensions <- c("grm.id", "grm.bin", "grm.N.bin")
         for (ext in file_extensions) {
-          original_file <- file.path(ResultDir, paste0("GXwasR.", ext))
-          new_file <- file.path(ResultDir, paste0("Chr", CHRnum, "_GXwasR.", ext))
-          file.copy(from = original_file, to = new_file)
+          file.copy(
+            from = file.path(ResultDir, paste0("GXwasR.", ext)),
+            to = file.path(ResultDir, paste0("Chr", CHRnum, "_GXwasR.", ext))
+          )
         }
       }
     } else {
-      inform("No GRM was created.")
+      rlang::inform("No GRM was created.")
     }
   }
-
   ## Compute GRM: GRM is calculated using the equation sum{[(xij - 2pi)*(xik - 2pi)] / [2pi(1-pi)]} as described in Yang et al. 2010 Nat Genet.
 }
 
@@ -3507,6 +3471,7 @@ ComputeGRMX <- function(DataDir, ResultDir, finput, partGRM, nGRM, minMAF = NULL
         "v" = grep("GRM has been saved", log_lines, value = TRUE),
         "i" = grep("Number of SNPs in each pair", log_lines, value = TRUE)
       )))
+      message("\n")
     } else {
       rlang::inform(rlang::format_error_bullets(c("i" = "No GRM was created.")))
     }
@@ -3610,10 +3575,10 @@ ComputeREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100
   } else {
     rlang::inform(rlang::format_error_bullets(c(
       "x" = "Convergence issue occurred, please:", 
-      "*" = "verify the model used", 
-      "*" = "set byCHR = TRUE", 
-      "*" = "set different options", 
-      "*" = "verify SNP partitioning or quality of the data")))
+      " " = "verify the model used", 
+      " " = "set byCHR = TRUE", 
+      " " = "set different options", 
+      " " = "verify SNP partitioning or quality of the data")))
 
     log_file <- paste0(ResultDir, "/", chr, "test_reml.log")
 
@@ -3718,8 +3683,8 @@ ComputeREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 1
       "--thread-num", ncores,
       "--out", paste0(ResultDir, "/", "test_reml")
     ),
-    std_out = FALSE,
-    std_err = FALSE
+    std_out = TRUE,
+    std_err = TRUE
   ))
 
   if (file.exists(paste0(ResultDir, "/test_reml.hsq"))) {
@@ -3728,10 +3693,10 @@ ComputeREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 1
   } else {
     rlang::inform(rlang::format_error_bullets(c(
       "x" = "Convergence issue occurred, please:", 
-      "*" = "verify the model used", 
-      "*" = "set byCHR = TRUE", 
-      "*" = "set different options", 
-      "*" = "verify SNP partitioning or quality of the data")))
+      " " = "verify the model used", 
+      " " = "set byCHR = TRUE", 
+      " " = "set different options", 
+      " " = "verify SNP partitioning or quality of the data")))
 
     log_file <- paste0(ResultDir, "/test_reml.log")
 
@@ -4091,7 +4056,7 @@ processLDSCModel <- function(DataDir, ResultDir, finput, precomputedLD, IndepSNP
       ## Getting number of genes and proteins
       GP <- GeneProtein(ResultDir = ResultDir, hg = hg, chromosome = chromosome)
 
-      rlang::inform(rlang::format_error_bullets(c("i" = paste0("Processing chromosome ", chromosome))))
+      rlang::inform(paste0("Processing chromosome ", chromosome))
 
       if (is.null(precomputedLD)) {
         rlang::inform(rlang::format_error_bullets(c("x" = "For LDSC model, please supply pre-computed LD scores as a dataframe in the 'precomputedLD' argument.")))
@@ -4248,7 +4213,7 @@ processGREMLModel <- function(DataDir, ResultDir, finput, byCHR, autosome, Xsome
       ## Getting number of genes and proteins
       GP <- GeneProtein(ResultDir = ResultDir, hg = hg, chromosome = chromosome)
 
-      rlang::inform(rlang::format_error_bullets(paste0("Processing chromosome ", chromosome)))
+      rlang::inform(paste0("Processing chromosome ", chromosome))
 
       if (chromosome == 23) {
         if (computeGRM == TRUE) {
@@ -4537,7 +4502,7 @@ metaFun <- function(DataDir, ResultDir, SummData, CHR, chromosome, nomap, UseA1v
   # setupPlink(ResultDir)
   chromosomev <- chromosome
 
-  rlang::inform(rlang::format_error_bullets(paste0("Processing chromosome ", chromosomev)))
+  rlang::inform(paste0("Processing chromosome ", chromosomev))
 
   invisible(sys::exec_wait(
     plink(),
@@ -4651,7 +4616,8 @@ ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr 
     matched_lines <- grep(pattern, lines, value = TRUE)
 
     if (length(matched_lines) > 0) {
-      x1 <- read.table(text = matched_lines)
+      cleaned_lines <- sub("\\s*\\(.*\\)$", "", matched_lines)
+      x1 <- read.table(text = cleaned_lines)
       colnames(x1) <- NULL
       rownames(x1) <- NULL
       x <- as.data.frame(t(x1))
@@ -4668,10 +4634,11 @@ ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr 
     rlang::inform(rlang::format_error_bullets(c("i" = grep("Note: to constrain", readLines(paste0(ResultDir, "/", chr, "test_bireml.log")), value = TRUE))))
     rlang::inform(rlang::format_error_bullets(c(
       "x" = "Convergence issue occurred, please:", 
-      "*" = "set byCHR = TRUE", 
-      "*" = "set different options", 
-      "*" = "verify SNP partitioning or quality of the data")))
+      " " = "set byCHR = TRUE", 
+      " " = "set different options", 
+      " " = "verify SNP partitioning or quality of the data")))
     rlang::inform(rlang::format_error_bullets(c("i" = "The result will be provided for the last iteration.")))
+    message("\n")
     # if(grep("Error", readLines(paste0(ResultDir,"/",chr,"test_bireml.log")), value = TRUE) == 0){
     #   x <- data.frame(Source = NA, Variance = NA, SE = NA)
     #   print("Segmentation fault from GCTA 1.94.1.")
@@ -4761,7 +4728,8 @@ ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nit
     matched_lines <- grep(pattern, lines, value = TRUE)
 
     if (length(matched_lines) > 0) {
-      x1 <- read.table(text = matched_lines)
+      cleaned_lines <- sub("\\s*\\(.*\\)$", "", matched_lines)
+      x1 <- read.table(text = cleaned_lines)
       colnames(x1) <- NULL
       rownames(x1) <- NULL
       x <- as.data.frame(t(x1))
@@ -4779,10 +4747,11 @@ ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nit
     rlang::inform(rlang::format_error_bullets(c("i" = grep("Note: to constrain", readLines(paste0(ResultDir, "/test_bireml.log")), value = TRUE))))
     rlang::inform(rlang::format_error_bullets(c(
       "x" = "Convergence issue occurred, please:", 
-      "*" = "set byCHR = TRUE", 
-      "*" = "set different options", 
-      "*" = "verify SNP partitioning or quality of the data")))
+      " " = "set byCHR = TRUE", 
+      " " = "set different options", 
+      " " = "verify SNP partitioning or quality of the data")))
     rlang::inform(rlang::format_error_bullets(c("i" = "The result will be provided for the last iteration.")))
+    message("\n")
     # x <- as.data.frame(t(x1))
     # x <- x[-1,]
     # colnames(x) <- c("Source", "Variance","SE")
