@@ -30,7 +30,7 @@
 
 ## PLINK Dependency Check
 verifyPlink <- function() {
-  os_type <- Sys.info()[["sysname"]]
+  os_type <- detect_os_type()
 
   # Helper to determine if the found plink binary is the bioinformatics version
   is_bioinformatics_plink <- function(plink_path) {
@@ -66,7 +66,7 @@ verifyPlink <- function() {
   # 2. Check system path via Sys.which
   sys_path <- Sys.which("plink")
   # On Windows, check for `.exe` if missing
-  if (os_type == "Windows" && !grepl("\\.exe$", sys_path, ignore.case = TRUE)) {
+  if (os_type == "windows" && !grepl("\\.exe$", sys_path, ignore.case = TRUE)) {
     sys_path <- paste0(sys_path, ".exe")
   }
   # Normalize and check existence
@@ -3233,7 +3233,7 @@ ComputeLDSC <- function(summarystat, precomputedLD, LDSC_blocks, chi2_thr1, chi2
 ## Function 71
 ## Verify GCTA
 verifyGCTA <- function() {
-  os_type <- Sys.info()[["sysname"]]
+  os_type <- detect_os_type()
   # 1. Check GCTA_PATH environment variable
   env_path <- Sys.getenv("GCTA_PATH", unset = NA)
   if (!is.na(env_path)) {
@@ -3248,7 +3248,7 @@ verifyGCTA <- function() {
   # 2. Check system path via Sys.which
   sys_path <- Sys.which("gcta64")
   # On Windows, check for `.exe` if missing
-  if (os_type == "Windows" && !grepl("\\.exe$", sys_path, ignore.case = TRUE)) {
+  if (os_type == "windows" && !grepl("\\.exe$", sys_path, ignore.case = TRUE)) {
     sys_path <- paste0(sys_path, ".exe")
   }
   # Normalize and check existence
