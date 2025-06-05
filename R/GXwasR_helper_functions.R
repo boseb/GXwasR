@@ -8356,7 +8356,7 @@ HDL.rg <-
       output.file = output.file
     )
 
-      rlang::inform(rlang::format_error_bullets(c("v" = "The results were saved to", output.file)))
+      if(nzchar(output.file)) rlang::inform(rlang::format_error_bullets(c("v" = "The results were saved to", output.file)))
 
     if (jackknife.df == TRUE) {
       jackknife.df <- rbind(h11.jackknife, h22.jackknife, h12.jackknife, rg.jackknife)
@@ -9256,7 +9256,7 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     output.file = output.file
   )
 
-    rlang::inform(rlang::format_error_bullets(c("v" = "The results were saved to", output.file)))
+  if(nzchar(output.file)) rlang::inform(rlang::format_error_bullets(c("v" = "The results were saved to", output.file)))
 
   if (jackknife.df == TRUE) {
     jackknife.df <- rbind(h11.jackknife, h22.jackknife, h12.jackknife, rg.jackknife)
@@ -9311,7 +9311,7 @@ llfun <- function(param, N, M, Nref = 1000, lam, bstar, lim = exp(-10)) {
 simulateSumstats <- function() {
   set.seed(123)
 
-  n_snps <- 100
+  n_snps <- 1000
   snp_ids <- paste0("rs", sample(1e6:2e6, n_snps))
   alleles <- c("A", "C", "G", "T")
   
