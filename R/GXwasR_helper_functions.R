@@ -2,7 +2,7 @@
 # GXwasR helper functions
 #' @author Banabithi Bose
 #' @importFrom stats na.omit median qchisq binomial dnorm glm na.exclude p.adjust pchisq pnorm lm pt qnorm setNames
-#' @importFrom utils download.file read.table unzip write.table untar txtProgressBar
+#' @importFrom utils download.file read.table unzip write.table untar txtProgressBar setTxtProgressBar
 #' @importFrom qqman manhattan qq
 #' @importFrom grDevices dev.off jpeg
 #' @importFrom poolr stouffer bonferroni
@@ -8695,84 +8695,80 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     piece = unlist(lapply(X = unlist(lapply(nsnps.list, length)), seq.int, from = 1))
   )
 
+  # Setup workers and Progress Bar
   workers <- rep("localhost", times = numCores)
   cl <- parallel::makeCluster(workers)
   doSNOW::registerDoSNOW(cl)
-  pb <- utils::txtProgressBar(max = num.pieces, style = 3)
-  progress <- function(n) utils::setTxtProgressBar(pb, n)
+
+  pb <- txtProgressBar(min = 0, max = nrow(info.pieces.df), style = 3)
+  progress <- function(n) setTxtProgressBar(pb, n)
   opts <- list(progress = progress)
-  HDL.res.pieces.list <- foreach::foreach(i = 1:nrow(info.pieces.df), .options.snow = opts) %dopar% {
+
+  # Export necessary functions/operators to the foreach environment
+  HDL.res.pieces.list <- foreach::foreach(
+    i = 1:nrow(info.pieces.df),
+    .packages = c("dplyr"),
+    .options.snow = opts,
+    .export = c(
+      "%>%",
+      "llfun", "llfun.gcov.part.2"
+    )
+  ) %dopar% {
     chr <- info.pieces.df[i, "chr"]
     piece <- info.pieces.df[i, "piece"]
     ## reference sample ##
-
+    # Locate files and load LD environment
     LD_rda_file <- LD.files[grep(x = LD.files, pattern = paste0("chr", chr, ".", piece, "[\\._].*rda"))]
     LD_bim_file <- LD.files[grep(x = LD.files, pattern = paste0("chr", chr, ".", piece, "[\\._].*bim"))]
     loop_env <- new.env() ## Create Environment to hold vars
-    load(file = paste(LD.path, LD_rda_file, sep = "/"))
-    snps.ref.df <- read.table(paste(LD.path, LD_bim_file, sep = "/"))
+    load(file = file.path(LD.path, LD_rda_file), envir = loop_env)
+    snps.ref.df <- read.table(file.path(LD.path, LD_bim_file))
 
     colnames(snps.ref.df) <- c("chr", "id", "non", "pos", "A1", "A2")
     snps.ref <- snps.ref.df$id
-    A2.ref <- snps.ref.df$A2
-    names(A2.ref) <- snps.ref
+    A2.ref <- setNames(snps.ref.df$A2, snps.ref)
+    ## Clean: Check if there are multiallelic or duplicated SNPs
+    clean_subset <- function(gwas_df, A2.ref, snps.ref) {
+      df <- gwas_df %>%
+        dplyr::filter(.data$SNP %in% snps.ref) %>%
+        dplyr::distinct(.data$SNP, .data$A1, .data$A2, .keep_all = TRUE)
 
-    gwas1.df.subset <- gwas1.df %>%
-      dplyr::filter(.data$SNP %in% snps.ref) %>%
-      dplyr::distinct(.data$SNP, .data$A1, .data$A2, .keep_all = TRUE)
+      if (anyDuplicated(df$SNP)) {
+        duplicated_df <- df %>%
+          dplyr::mutate(row.num = seq_len(n())) %>%
+          dplyr::filter(.data$SNP %in% .data$SNP[duplicated(.data$SNP)]) %>%
+          dplyr::mutate(SNP_A1_A2 = paste(.data$SNP, .data$A1, .data$A2, sep = "_"))
 
-    ## Check if there are multiallelic or duplicated SNPs
-    if (any(duplicated(gwas1.df.subset$SNP)) == TRUE) {
-      gwas1.df.subset.duplicated <- gwas1.df.subset %>%
-        dplyr::mutate(row.num = 1:n()) %>%
-        dplyr::filter(.data$SNP == .data$SNP[duplicated(.data$SNP)]) %>%
-        dplyr::mutate(SNP_A1_A2 = paste(.data$SNP, .data$A1, .data$A2, sep = "_"))
-      snps.ref.df.duplicated <- snps.ref.df %>%
-        dplyr::filter(.data$id %in% gwas1.df.subset.duplicated$SNP)
-      SNP_A1_A2.valid <- c(
-        paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A1, snps.ref.df.duplicated$A2, sep = "_"),
-        paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A2, snps.ref.df.duplicated$A1, sep = "_")
-      )
-      row.remove <- gwas1.df.subset.duplicated %>%
-        dplyr::filter(!(.data$SNP_A1_A2 %in% SNP_A1_A2.valid)) %>%
-        dplyr::select(.data$row.num) %>%
-        unlist()
-      gwas1.df.subset <- gwas1.df.subset[-row.remove, ]
+        ref_dup <- snps.ref.df %>%
+          dplyr::filter(.data$id %in% duplicated_df$SNP)
+
+        valid <- c(
+          paste(ref_dup$id, ref_dup$A1, ref_dup$A2, sep = "_"),
+          paste(ref_dup$id, ref_dup$A2, ref_dup$A1, sep = "_")
+        )
+
+        rows_to_remove <- duplicated_df %>%
+          dplyr::filter(!(.data$SNP_A1_A2 %in% valid)) %>%
+          dplyr::pull(.data$row.num)
+
+        df <- df[-rows_to_remove, ]
+      }
+
+      df
     }
 
-    bhat1.raw <- gwas1.df.subset[, "Z"] / sqrt(gwas1.df.subset[, "N"])
-    A2.gwas1 <- gwas1.df.subset[, "A2"]
-    names(bhat1.raw) <- names(A2.gwas1) <- gwas1.df.subset$SNP
-    idx.sign1 <- A2.gwas1 == A2.ref[names(A2.gwas1)]
-    bhat1.raw <- bhat1.raw * (2 * as.numeric(idx.sign1) - 1)
+    gwas1.df.subset <- clean_subset(gwas1.df, A2.ref, snps.ref)
+    gwas2.df.subset <- clean_subset(gwas2.df, A2.ref, snps.ref)
 
-    gwas2.df.subset <- gwas2.df %>%
-      dplyr::filter(.data$SNP %in% snps.ref) %>%
-      dplyr::distinct(.data$SNP, .data$A1, .data$A2, .keep_all = TRUE)
-
-    ## Check if there are multiallelic or duplicated SNPs
-    if (any(duplicated(gwas2.df.subset$SNP)) == TRUE) {
-      gwas2.df.subset.duplicated <- gwas2.df.subset %>%
-        dplyr::mutate(row.num = 1:n()) %>%
-        dplyr::filter(.data$SNP == .data$SNP[duplicated(.data$SNP)]) %>%
-        dplyr::mutate(SNP_A1_A2 = paste(.data$SNP, .data$A1, .data$A2, sep = "_"))
-      snps.ref.df.duplicated <- snps.ref.df %>%
-        dplyr::filter(.data$id %in% gwas2.df.subset.duplicated$SNP)
-      SNP_A1_A2.valid <- c(
-        paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A1, snps.ref.df.duplicated$A2, sep = "_"),
-        paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A2, snps.ref.df.duplicated$A1, sep = "_")
-      )
-      row.remove <- gwas2.df.subset.duplicated %>%
-        dplyr::filter(!(.data$SNP_A1_A2 %in% SNP_A1_A2.valid)) %>%
-        dplyr::select(.data$row.num) %>%
-        unlist()
-      gwas2.df.subset <- gwas2.df.subset[-row.remove, ]
+    calc_bhat <- function(df, A2.ref) {
+      bhat <- df$Z / sqrt(df$N)
+      A2 <- df$A2
+      names(bhat) <- names(A2) <- df$SNP
+      bhat * (2 * as.numeric(A2 == A2.ref[names(A2)]) - 1)
     }
-    bhat2.raw <- gwas2.df.subset[, "Z"] / sqrt(gwas2.df.subset[, "N"])
-    A2.gwas2 <- gwas2.df.subset[, "A2"]
-    names(bhat2.raw) <- names(A2.gwas2) <- gwas2.df.subset$SNP
-    idx.sign2 <- A2.gwas2 == A2.ref[names(A2.gwas2)]
-    bhat2.raw <- bhat2.raw * (2 * as.numeric(idx.sign2) - 1)
+
+    bhat1.raw <- calc_bhat(gwas1.df.subset, A2.ref)
+    bhat2.raw <- calc_bhat(gwas2.df.subset, A2.ref)
 
     M <- length(loop_env$LDsc)
     bhat1 <- bhat2 <- numeric(M)
@@ -8780,66 +8776,63 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     bhat1[names(bhat1.raw)] <- bhat1.raw
     bhat2[names(bhat2.raw)] <- bhat2.raw
 
-    a11 <- bhat1**2
-    a22 <- bhat2**2
+    a11 <- bhat1^2
+    a22 <- bhat2^2
     a12 <- bhat1 * bhat2
 
-    reg <- lm(a11 ~ LDsc)
-    h11.ols <- c(summary(reg)$coef[1:2, 1:2] * c(N1, M))
+    # Unweighted regressions
+    h11.ols <- summary(lm(a11 ~ loop_env$LDsc))$coef[1:2, 1:2] * c(N1, M)
+    h22.ols <- summary(lm(a22 ~ loop_env$LDsc))$coef[1:2, 1:2] * c(N2, M)
 
-    reg <- lm(a22 ~ LDsc)
-    h22.ols <- c(summary(reg)$coef[1:2, 1:2] * c(N2, M))
+    reg12 <- lm(a12 ~ loop_env$LDsc)
+    h12.ols <- if (N0 > 0) {
+      summary(reg12)$coef[1:2, 1:2] * c(N0 / p1 / p2, M)
+    } else {
+      summary(reg12)$coef[1:2, 1:2] * c(N, M)
+    }
 
-    reg <- lm(a12 ~ LDsc)
-    if (N0 > 0) h12.ols <- c(summary(reg)$coef[1:2, 1:2] * c((N0 / p1 / p2), M))
-    if (N0 == 0) h12.ols <- c(summary(reg)$coef[1:2, 1:2] * c(N, M))
-
-    ## weighted LS: use estimated h2
-    ## vars from Bulik-Sullivan
-
+    # Weighted regressions
     h11v <- (h11.ols[2] * loop_env$LDsc / M + 1 / N1)^2
     h22v <- (h22.ols[2] * loop_env$LDsc / M + 1 / N2)^2
 
-    reg <- lm(a11 ~ loop_env$LDsc, weights = 1 / h11v)
-    h11.wls <- c(summary(reg)$coef[1:2, 1:2] * c(N1, M))
+    h11.wls <- summary(lm(a11 ~ loop_env$LDsc, weights = 1 / h11v))$coef[1:2, 1:2] * c(N1, M)
+    h22.wls <- summary(lm(a22 ~ loop_env$LDsc, weights = 1 / h22v))$coef[1:2, 1:2] * c(N2, M)
 
-    reg <- lm(a22 ~ loop_env$LDsc, weights = 1 / h22v)
-    h22.wls <- c(summary(reg)$coef[1:2, 1:2] * c(N2, M))
+    h12v <- sqrt(h11v * h22v) +
+      if (N0 > 0) {
+        (h12.ols[2] * loop_env$LDsc / M + p1 * p2 * rho12 / N0)^2
+      } else {
+        (h12.ols[2] * loop_env$LDsc / M)^2
+      }
 
-    if (N0 > 0) h12v <- sqrt(h11v * h22v) + (h12.ols[2] * loop_env$LDsc / M + p1 * p2 * rho12 / N0)^2
-    if (N0 == 0) h12v <- sqrt(h11v * h22v) + (h12.ols[2] * loop_env$LDsc / M)^2
+    h12.wls <- summary(lm(a12 ~ loop_env$LDsc, weights = 1 / h12v))$coef[1:2, 1:2] *
+      if (N0 > 0) c(N0 / p1 / p2, M) else c(N, M)
 
-    reg <- lm(a12 ~ loop_env$LDsc, weights = 1 / h12v)
-    if (N0 > 0) h12.wls <- c(summary(reg)$coef[1:2, 1:2] * c((N0 / p1 / p2), M))
-    if (N0 == 0) h12.wls <- c(summary(reg)$coef[1:2, 1:2] * c(N, M))
-
-    ## likelihood based
-    ## estimate h2s
+    # Likelihood-based estimation
     bstar1 <- crossprod(loop_env$V, bhat1)
     bstar2 <- crossprod(loop_env$V, bhat2)
 
-    opt <- stats::optim(c(h11.wls[2], 1), llfun,
+    h11.hdl <- stats::optim(
+      c(h11.wls[2], 1), llfun,
       N = N1, Nref = Nref, lam = loop_env$lam, bstar = bstar1, M = M,
       lim = lim, method = "L-BFGS-B", lower = c(0, 0), upper = c(1, 10)
-    )
-    h11.hdl <- opt$par
+    )$par
 
-    opt <- stats::optim(c(h22.wls[2], 1), llfun,
+    h22.hdl <- stats::optim(
+      c(h22.wls[2], 1), llfun,
       N = N2, Nref = Nref, lam = loop_env$lam, bstar = bstar2, M = M,
       lim = lim, method = "L-BFGS-B", lower = c(0, 0), upper = c(1, 10)
-    )
-    h22.hdl <- opt$par
+    )$par
 
-    opt <- stats::optim(c(h12.wls[2], rho12), llfun.gcov.part.2,
-      h11 = h11.hdl, h22 = h22.hdl,
-      rho12 = rho12, M = M, N1 = N1, N2 = N2, N0 = N0, Nref = Nref,
+    h12.hdl <- stats::optim(
+      c(h12.wls[2], rho12), llfun.gcov.part.2,
+      h11 = h11.hdl, h22 = h22.hdl, rho12 = rho12, M = M,
+      N1 = N1, N2 = N2, N0 = N0, Nref = Nref,
       lam0 = loop_env$lam, lam1 = loop_env$lam, lam2 = loop_env$lam,
-      bstar1 = bstar1, bstar2 = bstar2,
-      lim = lim, method = "L-BFGS-B", lower = c(-1, -10), upper = c(1, 10)
-    )
-    h12.hdl <- opt$par
-
-    c(list(h11.hdl[1]), list(h22.hdl[1]), list(h12.hdl[1]), list(bstar1), list(bstar2), list(loop_env$lam))
+      bstar1 = bstar1, bstar2 = bstar2, lim = lim,
+      method = "L-BFGS-B", lower = c(-1, -10), upper = c(1, 10)
+    )$par
+    list(h11.hdl[1], h22.hdl[1], h12.hdl[1], bstar1, bstar2, loop_env$lam)
   }
   close(pb)
 
@@ -9120,10 +9113,18 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
       output.file = output.file
     )
 
-  pb <- txtProgressBar(max = num.pieces, style = 3)
+  pb <- txtProgressBar(min = 0, max = nrow(info.pieces.df), style = 3)
   opts <- list(progress = progress)
 
-  HDL.res.jackknife.list <- foreach::foreach(i = 1:length(lam.v), .options.snow = opts) %dopar% {
+  HDL.res.jackknife.list <- foreach::foreach(
+    i = 1:length(lam.v), 
+    .options.snow = opts,
+    .export = c(
+      "%>%", 
+      "llfun", "llfun.gcov.part.2"
+    )
+    ) %dopar% {
+    # Optimization steps
     opt <- stats::optim(h11.hdl.use, llfun,
       N = N1, Nref = Nref, lam = unlist(lam.v.use[-i]), bstar = unlist(bstar1.v.use[-i]), M = M.ref,
       lim = lim, method = "L-BFGS-B", lower = c(0, 0), upper = c(1, 10)
@@ -9144,6 +9145,7 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
       lim = lim, method = "L-BFGS-B", lower = c(-1, -10), upper = c(1, 10)
     )
     h12.hdl.jackknife <- opt$par
+    # Output
     if (intercept.output) {
       c(
         h11.hdl.jackknife[1], h22.hdl.jackknife[1], h12.hdl.jackknife[1],
