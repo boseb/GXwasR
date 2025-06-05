@@ -7983,14 +7983,14 @@ HDL.rg <-
         a12 <- bhat1 * bhat2
 
         reg <- lm(a11 ~ loop_env$LDsc)
-        h11.ols <- c(summary(reg)$coef[1:2, 1:2] * c(N1, M))
+        h11.ols <- c(summary(reg)$coefficients[1:2, 1:2] * c(N1, M))
 
         reg <- lm(a22 ~ loop_env$LDsc)
-        h22.ols <- c(summary(reg)$coef[1:2, 1:2] * c(N2, M))
+        h22.ols <- c(summary(reg)$coefficients[1:2, 1:2] * c(N2, M))
 
         reg <- lm(a12 ~ loop_env$LDsc)
-        if (N0 > 0) h12.ols <- c(summary(reg)$coef[1:2, 1:2] * c((N0 / p1 / p2), M))
-        if (N0 == 0) h12.ols <- c(summary(reg)$coef[1:2, 1:2] * c(N, M))
+        if (N0 > 0) h12.ols <- c(summary(reg)$coefficients[1:2, 1:2] * c((N0 / p1 / p2), M))
+        if (N0 == 0) h12.ols <- c(summary(reg)$coefficients[1:2, 1:2] * c(N, M))
 
         ##  ................................ weighted LS: use estimated h2
         ## vars from Bulik-Sullivan
@@ -7999,17 +7999,17 @@ HDL.rg <-
         h22v <- (h22.ols[2] * loop_env$LDsc / M + 1 / N2)^2
 
         reg <- lm(a11 ~ loop_env$LDsc, weights = 1 / h11v)
-        h11.wls <- c(summary(reg)$coef[1:2, 1:2] * c(N1, M))
+        h11.wls <- c(summary(reg)$coefficients[1:2, 1:2] * c(N1, M))
 
         reg <- lm(a22 ~ loop_env$LDsc, weights = 1 / h22v)
-        h22.wls <- c(summary(reg)$coef[1:2, 1:2] * c(N2, M))
+        h22.wls <- c(summary(reg)$coefficients[1:2, 1:2] * c(N2, M))
 
         if (N0 > 0) h12v <- sqrt(h11v * h22v) + (h12.ols[2] * loop_env$LDsc / M + p1 * p2 * rho12 / N0)^2
         if (N0 == 0) h12v <- sqrt(h11v * h22v) + (h12.ols[2] * loop_env$LDsc / M)^2
 
         reg <- lm(a12 ~ loop_env$LDsc, weights = 1 / h12v)
-        if (N0 > 0) h12.wls <- c(summary(reg)$coef[1:2, 1:2] * c((N0 / p1 / p2), M))
-        if (N0 == 0) h12.wls <- c(summary(reg)$coef[1:2, 1:2] * c(N, M))
+        if (N0 > 0) h12.wls <- c(summary(reg)$coefficients[1:2, 1:2] * c((N0 / p1 / p2), M))
+        if (N0 == 0) h12.wls <- c(summary(reg)$coefficients[1:2, 1:2] * c(N, M))
 
         ## .................................  likelihood based
         ## ....  estimate h2s
@@ -8445,7 +8445,7 @@ HDL.rg <-
       close(con)
     }
 
-    if (nzchar(output.file & h11 == 0 | h22 == 0)) {
+    if (nzchar(output.file) & h11 == 0 | h22 == 0) {
       con <- file(output.file, open = "a")  # open in append mode
       writeLines(c(
         "\n",
@@ -8904,14 +8904,14 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     a12 <- bhat1 * bhat2
 
     reg <- lm(a11 ~ LDsc)
-    h11.ols <- c(summary(reg)$coef[1:2, 1:2] * c(N1, M))
+    h11.ols <- c(summary(reg)$coefficients[1:2, 1:2] * c(N1, M))
 
     reg <- lm(a22 ~ LDsc)
-    h22.ols <- c(summary(reg)$coef[1:2, 1:2] * c(N2, M))
+    h22.ols <- c(summary(reg)$coefficients[1:2, 1:2] * c(N2, M))
 
     reg <- lm(a12 ~ LDsc)
-    if (N0 > 0) h12.ols <- c(summary(reg)$coef[1:2, 1:2] * c((N0 / p1 / p2), M))
-    if (N0 == 0) h12.ols <- c(summary(reg)$coef[1:2, 1:2] * c(N, M))
+    if (N0 > 0) h12.ols <- c(summary(reg)$coefficients[1:2, 1:2] * c((N0 / p1 / p2), M))
+    if (N0 == 0) h12.ols <- c(summary(reg)$coefficients[1:2, 1:2] * c(N, M))
 
     ## weighted LS: use estimated h2
     ## vars from Bulik-Sullivan
@@ -8920,17 +8920,17 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     h22v <- (h22.ols[2] * loop_env$LDsc / M + 1 / N2)^2
 
     reg <- lm(a11 ~ loop_env$LDsc, weights = 1 / h11v)
-    h11.wls <- c(summary(reg)$coef[1:2, 1:2] * c(N1, M))
+    h11.wls <- c(summary(reg)$coefficients[1:2, 1:2] * c(N1, M))
 
     reg <- lm(a22 ~ loop_env$LDsc, weights = 1 / h22v)
-    h22.wls <- c(summary(reg)$coef[1:2, 1:2] * c(N2, M))
+    h22.wls <- c(summary(reg)$coefficients[1:2, 1:2] * c(N2, M))
 
     if (N0 > 0) h12v <- sqrt(h11v * h22v) + (h12.ols[2] * loop_env$LDsc / M + p1 * p2 * rho12 / N0)^2
     if (N0 == 0) h12v <- sqrt(h11v * h22v) + (h12.ols[2] * loop_env$LDsc / M)^2
 
     reg <- lm(a12 ~ loop_env$LDsc, weights = 1 / h12v)
-    if (N0 > 0) h12.wls <- c(summary(reg)$coef[1:2, 1:2] * c((N0 / p1 / p2), M))
-    if (N0 == 0) h12.wls <- c(summary(reg)$coef[1:2, 1:2] * c(N, M))
+    if (N0 > 0) h12.wls <- c(summary(reg)$coefficients[1:2, 1:2] * c((N0 / p1 / p2), M))
+    if (N0 == 0) h12.wls <- c(summary(reg)$coefficients[1:2, 1:2] * c(N, M))
 
     ## likelihood based
     ## estimate h2s
