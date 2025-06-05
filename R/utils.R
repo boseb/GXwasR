@@ -33,3 +33,30 @@ detect_os_type <- function() {
     return("unknown")
   }
 }
+
+#' @title Internal Logging Helper
+#' @description
+#' Appends one or more lines to a log file if a valid path is provided.
+#' Optionally prepends a timestamp to each message.
+#'
+#' @param ... Character strings to be logged. Each will be combined with line breaks.
+#' @param output.file Character string specifying the file path to write to. If empty (`""`), no logging occurs.
+#' @param sep Character string to separate input lines. Defaults to `"\n"`.
+#' @param timestamp Logical, whether to prepend a timestamp to the log entry. Default is `TRUE`.
+#'
+#' @return Invisible `NULL`. Used for side-effects only.
+#'
+#' @keywords internal
+#' @noRd
+log_output <- function(..., output.file, sep = "\n", timestamp = TRUE) {
+  if (nzchar(output.file)) {
+    con <- file(output.file, open = "a")
+    on.exit(close(con))
+    msg <- paste(..., sep = sep)
+    if (timestamp) {
+      msg <- paste(format(Sys.time(), "[%Y-%m-%d %H:%M:%S]"), msg)
+    }
+    writeLines(msg, con = con)
+  }
+  invisible(NULL)
+}
