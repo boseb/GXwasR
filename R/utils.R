@@ -55,7 +55,7 @@ simulateSumstats <- function() {
   # Generate distinct mock allele pairs
   get_alleles <- function(n) {
     A1 <- sample(alleles, n, replace = TRUE)
-    A2 <- sapply(A1, function(a) sample(setdiff(alleles, a), 1))
+    A2 <- vapply(A1, function(a) sample(setdiff(alleles, a), 1), character(1))
     list(A1 = A1, A2 = A2)
   }
   
