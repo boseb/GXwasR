@@ -47,7 +47,6 @@ format, then plink will just create a 'dummy' FAM file with the same name as you
 and missing sex.
 }
 \examples{
-\dontrun{
 finput <- "GXwasR_example" # Plink file
 foutput <- "GXwasR_example1"
 DataDir <- system.file("extdata", package = "GXwasR")
@@ -56,8 +55,7 @@ PtoV <- TRUE
 VtoP <- FALSE
 Famfile <- NULL
 PVbyCHR <- FALSE
-x <- plinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)
-}
+plinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)
 }
 \author{
 Banabithi Bose

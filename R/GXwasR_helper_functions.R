@@ -4799,24 +4799,7 @@ ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nit
 ## Function 97
 # sumFREGAT (2017-2022) Gulnara R. Svishcheva & Nadezhda M. Belonogova, ICG SB RAS
 geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.RData", output.file.prefix) {
-  OS <- Sys.info()["sysname"]
-  if (OS == "Windows") {
-    rlang::inform(rlang::format_error_bullets(c("i" = "Currently this function may not work on Windows as bgzip and tabix for windows are down. Please use linux environment.")))
 
-    utils::download.file(
-      destfile = paste0(ResultDir, "/", "bgzip_tabix.zip"),
-      "https://github.com/boseb/bose_binaries/raw/main/bgzip_tabix.zip", mode = "wb", quiet = TRUE,
-    )
-  } else {
-    utils::download.file(
-      destfile = paste0(ResultDir, "/", "bgzip_tabix.zip"),
-      "https://github.com/boseb/bose_binaries/raw/main/bgzip_tabix.zip", quiet = TRUE,
-    )
-  }
-  utils::unzip(paste0(ResultDir, "/", "bgzip_tabix.zip"), exdir = ResultDir)
-
-  Sys.chmod(paste0(ResultDir, "/bgzip"), mode = "0777", use_umask = TRUE)
-  Sys.chmod(paste0(ResultDir, "/tabix"), mode = "0777", use_umask = TRUE)
   # 'CHROM', 'POS', 'ID', 'EA', 'P', 'BETA', 'EAF'
   if (length(data) == 1) {
     input.file <- data
@@ -4858,7 +4841,12 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
   ColNames <- c("CHROM", "POS", "EAF")
   v <- !ColNames %in% colnames(df)
   take <- ColNames[v]
-  if (sum(v)) rlang::inform(rlang::format_error_bullets(c("i" = paste("he following columns are missing and will be searched for in the reference data:", paste(take, collapse = ", ")))))
+  if (sum(v)) 
+    rlang::inform(
+      rlang::format_error_bullets(
+        c("i" = paste("Columns that are missing and will be looked for in reference data:", paste(take, collapse = ", ")))
+      )
+    )
   take[take == "EAF"] <- "AF"
 
   if ("BETA" %in% colnames(df)) {
@@ -4868,10 +4856,18 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
       colnames(df)[which(colnames(df) == "ALT")] <- "ALT0"
       take <- c(take, "REF", "ALT")
     } else {
-      rlang::inform(rlang::format_error_bullets(c("x" = "Effect allele column not found, effect sizes cannot be linked")))
+      rlang::inform(
+        rlang::format_error_bullets(
+          c("x" = "Effect allele column not found, effect sizes cannot be linked")
+        )
+      )
     }
   } else {
-    rlang::inform(rlang::format_error_bullets(c("x" = "Effect sizes (beta) column not found")))
+    rlang::inform(
+      rlang::format_error_bullets(
+        c("x" = "Effect sizes (beta) column not found")
+      )
+    )
   }
   if (length(take) > 0) {
     is.ref <- 0
@@ -4881,7 +4877,12 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
         if (file.exists(reference)) {
           is.ref <- 1
         } else {
-          if (reference != "") rlang::inform(rlang::format_error_bullets(c("x" = "Reference file not found! Please download it from https://mga.bionet.nsc.ru/sumFREGAT/ref1KG.MAC5.EUR_AF.RData to use 1000 Genome Reference correlation matrices")))
+          if (reference != "") 
+            rlang::inform(
+              rlang::format_error_bullets(
+                c("x" = "Reference file not found! Please download it from https://mga.bionet.nsc.ru/sumFREGAT/ref1KG.MAC5.EUR_AF.RData to use 1000 Genome Reference correlation matrices")
+              )
+            )
         }
       }
     } else if (length(reference) > 1) is.ref <- is.ref.object <- 1
@@ -4890,7 +4891,11 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
       if (is.ref.object) {
         ref <- reference
       } else {
-        rlang::inform(rlang::format_error_bullets(c("Loading reference file...")))
+        rlang::inform(
+          rlang::format_error_bullets(
+            "Loading reference file..."
+          )
+        )
         ref <- get(load(reference))
       }
       colnames(ref) <- toupper(colnames(ref))
@@ -4901,25 +4906,50 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
       if (!sum(v, na.rm = TRUE)) {
         if (all(c("CHROM", "POS") %in% colnames(df))) {
           df$ind <- paste(df$CHROM, df$POS, sep = ":")
-          rlang::inform(rlang::format_error_bullets("No IDs matching, trying to link through map data..."))
+          rlang::inform(
+            rlang::format_error_bullets(
+              c("No IDs matching, trying to link through map data...")
+            )
+          )
           ref$ind <- paste(ref$CHROM, ref$POS, sep = ":")
           v <- match(df$ind, ref$ind)
           if (sum(!is.na(v)) < (length(v) / 2)) {
-            rlang::inform(rlang::format_error_bullets(c("x" = "Too few variants match between input file and reference data")))
+            rlang::inform(
+              rlang::format_error_bullets(
+                c("x" = "Too few variants match between input file and reference data")
+              )
+            )
             v <- NA
           }
         }
       }
       if (sum(v, na.rm = TRUE)) {
-        rlang::inform(rlang::format_error_bullets(c("i" = paste(sum(!is.na(v)), "of", length(v), "variants found in reference"))))
+        rlang::inform(
+          rlang::format_error_bullets(
+            c("i" = paste(sum(!is.na(v)), "of", length(v), "variants found in reference"))
+          )
+        )
         vv <- take %in% colnames(ref)
         if (sum(!vv)) {
-          rlang::inform(rlang::format_error_bullets(c("i" = paste("Columns that are missing in reference data:", paste(take[!vv], collapse = ", ")))))
+          rlang::inform(
+            rlang::format_error_bullets(
+              c("i" = paste("Columns that are missing in reference data:", paste(take[!vv], collapse = ", ")))
+            )
+          )
           if ("REF" %in% take & !"REF" %in% colnames(ref)) {
-            rlang::inform(rlang::format_error_bullets(c("x" = "Reference alleles not found, effect sizes cannot be linked")))
+            rlang::inform(
+              rlang::format_error_bullets(
+                c("!" = "Reference alleles not found, effect sizes cannot be linked")
+              )
+            )
             df$BETA <- df$EFFECT.ALLELE <- NULL
           }
-          if ("AF" %in% take & !"AF" %in% colnames(ref)) rlang::inform(rlang::format_error_bullets(c("i" = "Allele frequencies not found, some weighted tests will be unavailable")))
+          if ("AF" %in% take & !"AF" %in% colnames(ref)) 
+            rlang::inform(
+              rlang::format_error_bullets(
+                c("!" = "Allele frequencies not found, some weighted tests will be unavailable")
+              )
+            )
         }
         df <- cbind(df, ref[v, take[vv]])
       }
@@ -4943,8 +4973,12 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
     if ("ALT" %in% colnames(df)) {
       v <- unique(c(v, which(df$EFFECT.ALLELE != df$REF & df$EFFECT.ALLELE != df$ALT)))
     }
-    if (sum(v, na.rm = TRUE)) {
-      rlang::inform(rlang::format_error_bullets(c("i" = paste("Effect alleles or REF/ALT alleles do not match reference data for", sum(v), "variant(s)"))))
+    if (sum(v, na.rm = T)) {
+      rlang::inform(
+        rlang::format_error_bullets(
+          c("i" = paste("Effect alleles or REF/ALT alleles do not match reference data for", sum(v), "variant(s)"))
+        )
+      )
       df[v, "BETA"] <- NA
     }
     df[is.na(df$EFFECT.ALLELE) | is.na(df$REF), "BETA"] <- NA
@@ -4955,11 +4989,19 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
       df$EAF[v] <- 1 - df$EAF[v]
       colnames(df)[colnames(df) == "EAF"] <- "AF"
     }
-    rlang::inform(rlang::format_error_bullets(c("i" = paste("Effect sizes recoded for", length(v), "variant(s)"))))
+    rlang::inform(
+      rlang::format_error_bullets(
+        c("i" = paste("Effect sizes recoded for", length(v), "variant(s)"))
+      )
+    )
   }
 
   if (any(df$P == 0)) {
-    rlang::inform(rlang::format_error_bullets(c("i" = "Some P values equal zero, will be assigned to minimum value in the sample")))
+    rlang::inform(
+      rlang::format_error_bullets(
+         c("i" = "Some P values equal zero, will be assigned to minimum value in the sample")
+      )  
+    )
     df$P[df$P == 0] <- min(df$P[df$P > 0])
   }
   df$Z <- qnorm(df$P / 2, lower.tail = FALSE)
@@ -4995,28 +5037,44 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
   if ("AF" %in% colnames(df)) {
     vcf$INFO <- paste0(vcf$INFO, ";AF=", df$AF)
     title <- c(title, '##INFO=<ID=AF,Number=1,Type=Float,Description="Frequency of alternative allele">')
-    rlang::inform(rlang::format_error_bullets(c("v" = "Allele frequencies found and linked")))
+    rlang::inform(
+      rlang::format_error_bullets(
+        c("v" = paste0("Allele frequencies found and linked"))
+      )
+    )
   }
 
   a <- grep("\\bW", colnames(df))
   if (length(a) == 1) {
     vcf$INFO <- paste0(vcf$INFO, ";W=", df[, a])
     title <- c(title, '##INFO=<ID=W,Number=1,Type=Float,Description="Weights">')
-    rlang::inform(rlang::format_error_bullets(c("v" = paste0("User weights ('", colnames(df)[a], "') found and linked"))))
+    rlang::inform(
+      rlang::format_error_bullets(
+        c("v" = paste0("User weights ('", colnames(df)[a], "') found and linked"))
+      )
+    )
   }
 
   a <- grep("\\bANNO", colnames(df), value = TRUE)
   if (length(a) == 1) {
     vcf$INFO <- paste0(vcf$INFO, ";ANNO=", df[, a])
     title <- c(title, '##INFO=<ID=ANNO,Number=1,Type=String,Description="Variants annotations">')
-    rlang::inform(rlang::format_error_bullets(c("v" = paste0("Annotations ('", colnames(df)[a], "') found and linked"))))
+    rlang::inform(
+      rlang::format_error_bullets(
+        c("v" = paste0("Annotations ('", colnames(df)[a], "') found and linked"))
+      )
+    )
   }
 
   a <- grep("\\bPROB", colnames(df), value = TRUE)
   for (an in a) {
     vcf$INFO <- paste0(vcf$INFO, ";", an, "=", df[, as.character(an)])
     title <- c(title, paste0("##INFO=<ID=", an, ",Number=1,Type=Float,Description='", an, "'>"))
-    rlang::inform(rlang::format_error_bullets(c("v" = paste0("Column '", an, "' linked"))))
+    rlang::inform(
+      rlang::format_error_bullets(
+        c("v" = paste0("Column '", an, "' linked"))
+      )
+    )
   }
 
   # write.table(title, fn, col.names = FALSE, row.names = FALSE, quote = FALSE, sep = '\t')
@@ -5034,15 +5092,24 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
     suppressWarnings(write.table(vcf, paste0(ResultDir, "/", fn), row.names = FALSE, quote = FALSE, append = TRUE, sep = "\t"))
   }
 
-  fn.gz <- paste(fn, "gz", sep = ".")
-  # if (file.exists(fn.gz)) system(paste('rm', fn.gz))
-  # system(paste('./bgzip', fn))
-  # system(paste('./tabix -p vcf', fn.gz))
-  # print(paste('File', fn.gz, 'has been created'))
-  if (file.exists(paste0(ResultDir, "/", fn.gz))) system(paste("rm", paste0(ResultDir, "/", fn.gz)))
-  system(paste0(ResultDir, "/", "./bgzip ", ResultDir, "/", fn))
-  system(paste0(ResultDir, "/", "./tabix -p vcf ", ResultDir, "/", fn.gz))
-  rlang::inform(rlang::format_error_bullets(c("v" = paste("File", fn.gz, "has been created"))))
+  # Build full path to input file and its gzipped output
+  vcf_path <- file.path(ResultDir, fn)
+  vcf_gz <- paste0(vcf_path, ".gz")
+
+  # Remove existing gzipped file if it exists
+  if (file.exists(vcf_gz)) file.remove(vcf_gz)
+
+  # Compress the VCF using Rsamtools::bgzip()
+  Rsamtools::bgzip(file = vcf_path, dest = vcf_gz, overwrite = TRUE)
+
+  # Index the gzipped VCF using Rsamtools::indexTabix()
+  Rsamtools::indexTabix(file = vcf_gz, format = "vcf")
+
+  # Confirmation message
+  rlang::inform(
+    rlang::format_error_bullets(
+      c("v" = paste("File", vcf_gz, "has been created and indexed")))
+    ) 
 }
 
 ## Function 98
@@ -7925,14 +7992,14 @@ HDL.rg <-
         a12 <- bhat1 * bhat2
 
         reg <- lm(a11 ~ loop_env$LDsc)
-        h11.ols <- c(summary(reg)$coef[1:2, 1:2] * c(N1, M))
+        h11.ols <- c(summary(reg)$coefficients[1:2, 1:2] * c(N1, M))
 
         reg <- lm(a22 ~ loop_env$LDsc)
-        h22.ols <- c(summary(reg)$coef[1:2, 1:2] * c(N2, M))
+        h22.ols <- c(summary(reg)$coefficients[1:2, 1:2] * c(N2, M))
 
         reg <- lm(a12 ~ loop_env$LDsc)
-        if (N0 > 0) h12.ols <- c(summary(reg)$coef[1:2, 1:2] * c((N0 / p1 / p2), M))
-        if (N0 == 0) h12.ols <- c(summary(reg)$coef[1:2, 1:2] * c(N, M))
+        if (N0 > 0) h12.ols <- c(summary(reg)$coefficients[1:2, 1:2] * c((N0 / p1 / p2), M))
+        if (N0 == 0) h12.ols <- c(summary(reg)$coefficients[1:2, 1:2] * c(N, M))
 
         ##  ................................ weighted LS: use estimated h2
         ## vars from Bulik-Sullivan
@@ -7941,17 +8008,17 @@ HDL.rg <-
         h22v <- (h22.ols[2] * loop_env$LDsc / M + 1 / N2)^2
 
         reg <- lm(a11 ~ loop_env$LDsc, weights = 1 / h11v)
-        h11.wls <- c(summary(reg)$coef[1:2, 1:2] * c(N1, M))
+        h11.wls <- c(summary(reg)$coefficients[1:2, 1:2] * c(N1, M))
 
         reg <- lm(a22 ~ loop_env$LDsc, weights = 1 / h22v)
-        h22.wls <- c(summary(reg)$coef[1:2, 1:2] * c(N2, M))
+        h22.wls <- c(summary(reg)$coefficients[1:2, 1:2] * c(N2, M))
 
         if (N0 > 0) h12v <- sqrt(h11v * h22v) + (h12.ols[2] * loop_env$LDsc / M + p1 * p2 * rho12 / N0)^2
         if (N0 == 0) h12v <- sqrt(h11v * h22v) + (h12.ols[2] * loop_env$LDsc / M)^2
 
         reg <- lm(a12 ~ loop_env$LDsc, weights = 1 / h12v)
-        if (N0 > 0) h12.wls <- c(summary(reg)$coef[1:2, 1:2] * c((N0 / p1 / p2), M))
-        if (N0 == 0) h12.wls <- c(summary(reg)$coef[1:2, 1:2] * c(N, M))
+        if (N0 > 0) h12.wls <- c(summary(reg)$coefficients[1:2, 1:2] * c((N0 / p1 / p2), M))
+        if (N0 == 0) h12.wls <- c(summary(reg)$coefficients[1:2, 1:2] * c(N, M))
 
         ## .................................  likelihood based
         ## ....  estimate h2s
@@ -8819,22 +8886,22 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     a12 <- bhat1 * bhat2
 
     # Unweighted regressions
-    h11.ols <- summary(lm(a11 ~ loop_env$LDsc))$coef[1:2, 1:2] * c(N1, M)
-    h22.ols <- summary(lm(a22 ~ loop_env$LDsc))$coef[1:2, 1:2] * c(N2, M)
+    h11.ols <- summary(lm(a11 ~ loop_env$LDsc))$coefficients[1:2, 1:2] * c(N1, M)
+    h22.ols <- summary(lm(a22 ~ loop_env$LDsc))$coefficients[1:2, 1:2] * c(N2, M)
 
     reg12 <- lm(a12 ~ loop_env$LDsc)
     h12.ols <- if (N0 > 0) {
-      summary(reg12)$coef[1:2, 1:2] * c(N0 / p1 / p2, M)
+      summary(reg12)$coefficients[1:2, 1:2] * c(N0 / p1 / p2, M)
     } else {
-      summary(reg12)$coef[1:2, 1:2] * c(N, M)
+      summary(reg12)$coefficients[1:2, 1:2] * c(N, M)
     }
 
     # Weighted regressions
     h11v <- (h11.ols[2] * loop_env$LDsc / M + 1 / N1)^2
     h22v <- (h22.ols[2] * loop_env$LDsc / M + 1 / N2)^2
 
-    h11.wls <- summary(lm(a11 ~ loop_env$LDsc, weights = 1 / h11v))$coef[1:2, 1:2] * c(N1, M)
-    h22.wls <- summary(lm(a22 ~ loop_env$LDsc, weights = 1 / h22v))$coef[1:2, 1:2] * c(N2, M)
+    h11.wls <- summary(lm(a11 ~ loop_env$LDsc, weights = 1 / h11v))$coefficients[1:2, 1:2] * c(N1, M)
+    h22.wls <- summary(lm(a22 ~ loop_env$LDsc, weights = 1 / h22v))$coefficients[1:2, 1:2] * c(N2, M)
 
     h12v <- sqrt(h11v * h22v) +
       if (N0 > 0) {
@@ -8843,7 +8910,7 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
         (h12.ols[2] * loop_env$LDsc / M)^2
       }
 
-    h12.wls <- summary(lm(a12 ~ loop_env$LDsc, weights = 1 / h12v))$coef[1:2, 1:2] *
+    h12.wls <- summary(lm(a12 ~ loop_env$LDsc, weights = 1 / h12v))$coefficients[1:2, 1:2] *
       if (N0 > 0) c(N0 / p1 / p2, M) else c(N, M)
 
     # Likelihood-based estimation
