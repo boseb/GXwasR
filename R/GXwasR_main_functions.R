@@ -495,11 +495,12 @@ AncestryCheck <-
 #' @importFrom regioneR toGRanges
 #' @importFrom plyranges join_overlap_intersect
 #' @importFrom sumFREGAT SKAT SKATO sumchi ACAT BT PCA FLM simpleM minp
+#' @importFrom rlang inform format_error_bullets
 #'
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
@@ -540,6 +541,7 @@ AncestryCheck <-
 #'   omit_linear_variant
 #' )
 #' }
+
 TestXGene <- function(DataDir,
                       ResultDir = tempdir(),
                       finput,
@@ -581,144 +583,173 @@ TestXGene <- function(DataDir,
                       flip_genotypes = FALSE,
                       omit_linear_variant = FALSE) {
   tryCatch(
-    {
-      if (!checkFiles(DataDir, finput)) {
-        stop("Missing required Plink files in the specified DataDir.")
-      }
+    withCallingHandlers(
+      {
+        if (!checkFiles(DataDir, finput)) {
+          stop("Missing required Plink files in the specified DataDir.")
+        }
 
-      # setupPlink(ResultDir)
+        # setupPlink(ResultDir)
 
-      input.dat <- sumstat[, c("CHROM", "POS", "ID", "A1", "P", "BETA", "EAF")]
-      colnames(input.dat) <- c("CHROM", "POS", "ID", "EA", "P", "BETA", "EAF")
-      ref.data <- sumstat[, c("CHROM", "POS", "ID", "A2", "A1", "EAF")]
-      colnames(ref.data) <-
-        c("CHROM", "POS", "ID", "REF", "ALT", "AF") ## Following convention for reference data
+        input.dat <- sumstat[, c("CHROM", "POS", "ID", "A1", "P", "BETA", "EAF")]
+        colnames(input.dat) <- c("CHROM", "POS", "ID", "EA", "P", "BETA", "EAF")
+        ref.data <- sumstat[, c("CHROM", "POS", "ID", "A2", "A1", "EAF")]
+        colnames(ref.data) <-
+          c("CHROM", "POS", "ID", "REF", "ALT", "AF") ## Following convention for reference data
 
-      if (is.null(ref_data)) {
-        ref_data <- ref.data
-      } else {
-        ref_data <- ref_data
-      }
+        if (is.null(ref_data)) {
+          ref_data <- ref.data
+        } else {
+          ref_data <- ref_data
+        }
 
-      geneTestScoreFile(
-        ResultDir = ResultDir, data = input.dat,
-        reference = ref_data,
-        output.file.prefix = "gene.test.score.file"
-      ) ## use suppressWarnings()
+        geneTestScoreFile(
+          ResultDir = ResultDir, data = input.dat,
+          reference = ref_data,
+          output.file.prefix = "gene.test.score.file"
+        ) ## use suppressWarnings()
 
-      genes <- read.table(paste0(DataDir, "/", gene_file))
-      colnames(genes) <- c(c("gene_name", "X", "chr", "Y", "start", "end"))
-      genes$up_Mb <- genes$start - gene_range
-      genes$down_Mb <- genes$end + gene_range
-      genes.gr <- GenomicRanges::makeGRangesFromDataFrame(genes, keep.extra.columns = T)
+        genes <- read.table(paste0(DataDir, "/", gene_file))
+        colnames(genes) <- c(c("gene_name", "X", "chr", "Y", "start", "end"))
+        genes$up_Mb <- genes$start - gene_range
+        genes$down_Mb <- genes$end + gene_range
+        genes.gr <- GenomicRanges::makeGRangesFromDataFrame(genes, keep.extra.columns = T)
 
-      suppressWarnings(SNPfile <- read.table(
-        file = paste0(DataDir, "/", finput, ".bim"),
-        header = FALSE,
-        # na = "NA",
-        na.strings = "NA"
-      ))
-
-      SNPfile$chr <- SNPfile$V1
-      SNPfile$start <- SNPfile$V4
-      SNPfile$end <- SNPfile$V4
-      SNPfile$SNP <- SNPfile$V2
-      snp_data <- SNPfile[, c(7, 8, 9, 10)]
-      snp.gr <- regioneR::toGRanges(snp_data)
-      gene_snp_intersect <-
-        as.data.frame(plyranges::join_overlap_intersect(genes.gr, snp.gr))
-      rlang::inform(rlang::format_error_bullets(c("i" = paste0(length(unique(
-        gene_snp_intersect$gene_name
-      )), " genes are having ", length(unique(
-        gene_snp_intersect$SNP
-      )), " SNPs"))))
-      gene_snp <- unique(gene_snp_intersect[, c(6, 11)])
-      snpcount <- as.data.frame(table(gene_snp$gene_name))
-
-      g <- as.character(snpcount[, 1])
-      dir.create(path = paste0(ResultDir, "/cormatrix"))
-      rlang::inform(rlang::format_error_bullets("SNP-SNP correlation matrices are being created."))
-
-      snpcorrFun <- function(g) {
-        # g <- gene_snp$gene_name
-        snps <- gene_snp[gene_snp$gene_name == g, 2, drop = FALSE]
-        # print(g)
-        write.table(
-          snps,
-          file = paste0(ResultDir, "/cor_snps.txt"),
-          quote = FALSE,
-          row.names = FALSE,
-          col.names = FALSE,
-          eol = "\r\n"
-        )
-
-        invisible(sys::exec_wait(
-          plink(),
-          args = c(
-            "--bfile",
-            paste0(DataDir, "/", finput),
-            "--r2",
-            "square",
-            "--extract",
-            paste0(ResultDir, "/cor_snps.txt"),
-            "--out",
-            paste0(ResultDir, "/snpcorr"),
-            "--silent"
-          ),
-          std_out = FALSE,
-          std_err = FALSE
+        suppressWarnings(SNPfile <- read.table(
+          file = paste0(file.path(DataDir, finput), ".bim"),
+          header = FALSE,
+          # na = "NA",
+          na.strings = "NA"
         ))
 
-        snpcorr <- as.matrix(read.table(file = paste0(ResultDir, "/snpcorr.ld")))
-        colnames(snpcorr) <- snps$SNP
-        rownames(snpcorr) <- snps$SNP
-        snpcorr <- as.data.frame(snpcorr)
-        save(snpcorr, file = paste0(ResultDir, "/cormatrix/", g, ".RData"))
-        return()
+        SNPfile$chr <- SNPfile$V1
+        SNPfile$start <- SNPfile$V4
+        SNPfile$end <- SNPfile$V4
+        SNPfile$SNP <- SNPfile$V2
+        snp_data <- SNPfile %>% select(.data$chr, .data$start, .data$end, .data$SNP)
+        snp.gr <- regioneR::toGRanges(snp_data)
+        gene_snp_intersect <-
+          as.data.frame(plyranges::join_overlap_intersect(genes.gr, snp.gr))
+        rlang::inform(
+          rlang::format_error_bullets(
+            c("i" = paste0(
+              length(
+                unique(
+                  gene_snp_intersect$gene_name
+                )
+              ), " genes are having ", length(
+                unique(
+                  gene_snp_intersect$SNP
+                )
+              ), " SNPs")
+            )
+          )
+        )
+        gene_snp <- unique(gene_snp_intersect[, c(6, 11)])
+        snpcount <- as.data.frame(table(gene_snp$gene_name))
+
+        g <- as.character(snpcount[, 1])
+        dir.create(path = file.path(ResultDir, "cormatrix"))
+        rlang::inform(rlang::format_error_bullets("SNP-SNP correlation matrices are being created..."))
+
+        snpcorrFun <- function(g) {
+          # g <- gene_snp$gene_name
+          snps <- gene_snp[gene_snp$gene_name == g, 2, drop = FALSE]
+          # print(g)
+          write.table(
+            snps,
+            file = paste0(ResultDir, "/cor_snps.txt"),
+            quote = FALSE,
+            row.names = FALSE,
+            col.names = FALSE,
+            eol = "\r\n"
+          )
+
+          invisible(sys::exec_wait(
+            plink(),
+            args = c(
+              "--bfile",
+              paste0(DataDir, "/", finput),
+              "--r2",
+              "square",
+              "--extract",
+              paste0(ResultDir, "/cor_snps.txt"),
+              "--out",
+              paste0(ResultDir, "/snpcorr"),
+              "--silent"
+            ),
+            std_out = FALSE,
+            std_err = FALSE
+          ))
+
+          snpcorr <- as.matrix(read.table(file = paste0(ResultDir, "/snpcorr.ld")))
+          colnames(snpcorr) <- snps$SNP
+          rownames(snpcorr) <- snps$SNP
+          snpcorr <- as.data.frame(snpcorr)
+          save(snpcorr, file = paste0(ResultDir, "/cormatrix/", g, ".RData"))
+          return()
+        }
+
+        invisible(lapply(g, snpcorrFun))
+        rlang::inform(rlang::format_error_bullets(c('v' ="SNP-SNP correlation matrices are done.")))
+
+        score_file <- paste0(ResultDir, "/gene.test.score.file.vcf.gz")
+        gene.file <- gene_file
+
+        if (is.null(max_gene)) {
+          genes1 <- as.vector(g)
+        } else {
+          maxgene <- max_gene
+          genes1 <- as.vector(g[1:max_gene])
+        }
+
+        if (genebasedTest == "SKAT") {
+          return(runSKAT(
+            score.file = score_file, 
+            gene.file = paste0(DataDir, "/", gene_file), 
+            genes = genes1, 
+            cor.path = paste0(ResultDir, "/cormatrix"), 
+            gene_approximation = gene_approximation, 
+            anno.type = anno_type, 
+            beta.par = beta_par, 
+            weights.function = weights_function, 
+            geno_variance_weights = geno_variance_weights, 
+            kernel_p_method = kernel_p_method, 
+            acc_devies = acc_devies, 
+            lim_devies = lim_devies, 
+            rho = rho, 
+            skato_p_threshold = skato_p_threshold))
+        } else if (genebasedTest == "SKATO") {
+          return(runSKATO(score_file, paste0(DataDir, "/", gene_file), genes1, paste0(ResultDir, "/cormatrix"), anno_type, gene_approximation, beta_par, weights_function, kernel_p_method, acc_devies, lim_devies, rho, skato_p_threshold))
+        } else if (genebasedTest == "sumchi") {
+          return(runSumChi(score_file, paste0(DataDir, "/", gene_file), genes1, paste0(ResultDir, "/cormatrix"), gene_approximation, anno_type, kernel_p_method, acc_devies, lim_devies))
+        } else if (genebasedTest == "ACAT") {
+          return(runACAT(score_file, paste0(DataDir, "/", gene_file), genes1, anno_type, beta_par, weights_function, geno_variance_weights, mac_threshold, sample_size))
+        } else if (genebasedTest == "BT") {
+          return(runBT(score_file, paste0(DataDir, "/", gene_file), genes1, paste0(ResultDir, "/cormatrix"), anno_type, beta_par, weights_function))
+        } else if (genebasedTest == "PCA") {
+          return(runPCA(score_file, paste0(DataDir, "/", gene_file), genes1, paste0(ResultDir, "/cormatrix"), gene_approximation, anno_type, sample_size, beta_par, weights_function, reference_matrix_used, regularize_fun, pca_var_fraction))
+        } else if (genebasedTest == "FLM") {
+          return(runFLM(score_file, paste0(DataDir, "/", gene_file), genes1, paste0(ResultDir, "/cormatrix"), gene_approximation, anno_type, sample_size, beta_par, weights_function, flm_basis_function, flm_num_basis, flm_poly_order, flip_genotypes, omit_linear_variant, reference_matrix_used, regularize_fun))
+        } else if (genebasedTest == "simpleM") {
+          return(runSimpleM(score_file, gene_file, genes1, anno_type, pca_var_fraction))
+        } else if (genebasedTest == "minp") {
+          return(runMinP(score_file, gene_file, genes1, anno_type))
+        }
+      },
+      error = function(e) {
+        message("An error occurred: ", e$message)
+        return(NULL)
+      },
+      warning = function(w) {
+        rlang::inform(
+          rlang::format_error_bullets(
+            c('!' = paste("Warning:", conditionMessage(w)))
+          )
+        )
+        invokeRestart("muffleWarning") 
       }
-
-      invisible(lapply(g, snpcorrFun))
-      rlang::inform(rlang::format_error_bullets(c("v" = "SNP-SNP correlation matrices are done.")))
-
-      score.file <- paste0(ResultDir, "/gene.test.score.file.vcf.gz")
-      gene.file <- gene_file
-
-      # print("line 126")
-
-      if (is.null(max_gene)) {
-        genes1 <- as.vector(g)
-      } else {
-        maxgene <- max_gene
-        genes1 <- as.vector(g[1:max_gene])
-      }
-
-      if (genebasedTest == "SKAT") {
-        return(runSKAT(score_file, paste0(DataDir, "/", gene_file), genes1, paste0(ResultDir, "/cormatrix"), gene_approximation, anno_type, beta_par, weights_function, geno_variance_weights, kernel_p_method, acc_devies, lim_devies, rho, skato_p_threshold))
-      } else if (genebasedTest == "SKATO") {
-        return(runSKATO(score_file, paste0(DataDir, "/", gene_file), genes1, paste0(ResultDir, "/cormatrix"), anno_type, gene_approximation, beta_par, weights_function, kernel_p_method, acc_devies, lim_devies, rho, skato_p_threshold))
-      } else if (genebasedTest == "sumchi") {
-        return(runSumChi(score_file, paste0(DataDir, "/", gene_file), genes1, paste0(ResultDir, "/cormatrix"), gene_approximation, anno_type, kernel_p_method, acc_devies, lim_devies))
-      } else if (genebasedTest == "ACAT") {
-        return(runACAT(score_file, paste0(DataDir, "/", gene_file), genes1, anno_type, beta_par, weights_function, geno_variance_weights, mac_threshold, sample_size))
-      } else if (genebasedTest == "BT") {
-        return(runBT(score_file, paste0(DataDir, "/", gene_file), genes1, paste0(ResultDir, "/cormatrix"), anno_type, beta_par, weights_function))
-      } else if (genebasedTest == "PCA") {
-        return(runPCA(score_file, paste0(DataDir, "/", gene_file), genes1, paste0(ResultDir, "/cormatrix"), gene_approximation, anno_type, sample_size, beta_par, weights_function, reference_matrix_used, regularize_fun, pca_var_fraction))
-      } else if (genebasedTest == "FLM") {
-        return(runFLM(score_file, paste0(DataDir, "/", gene_file), genes1, paste0(ResultDir, "/cormatrix"), gene_approximation, anno_type, sample_size, beta_par, weights_function, flm_basis_function, flm_num_basis, flm_poly_order, flip_genotypes, omit_linear_variant, reference_matrix_used, regularize_fun))
-      } else if (genebasedTest == "simpleM") {
-        return(runSimpleM(score_file, gene_file, genes1, anno_type, pca_var_fraction))
-      } else if (genebasedTest == "minp") {
-        return(runMinP(score_file, gene_file, genes1, anno_type))
-      }
-    },
-    error = function(e) {
-      message("An error occurred: ", e$message)
-      return(NULL)
-    },
-    warning = function(w) {
-      message("Warning: ", w$message)
-    }
+    )
   )
 }
 
@@ -1995,6 +2026,8 @@ MergeRegion <- function(DataDir, ResultDir, finput1, finput2, foutput, use_commo
 #' @param PVbyCHR
 #' Boolean value, `TRUE` or `FALSE` specifying to do the plink to vcf conversion chromosome-wise or not. The default is `TRUE`.
 #'
+#' @importFrom Rsamtools bgzip indexTabix 
+#' 
 #' @return
 #' `NULL`
 #'
@@ -2003,7 +2036,6 @@ MergeRegion <- function(DataDir, ResultDir, finput1, finput2, foutput, use_commo
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' finput <- "GXwasR_example" # Plink file
 #' foutput <- "GXwasR_example1"
 #' DataDir <- system.file("extdata", package = "GXwasR")
@@ -2012,108 +2044,87 @@ MergeRegion <- function(DataDir, ResultDir, finput1, finput2, foutput, use_commo
 #' VtoP <- FALSE
 #' Famfile <- NULL
 #' PVbyCHR <- FALSE
-#' x <- plinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)
-#' }
-plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput, VtoP = FALSE, PtoV = TRUE, Famfile = NULL, PVbyCHR = TRUE) {
-  # Validate inputs
+#' plinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)
+
+plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput, 
+                     VtoP = FALSE, PtoV = TRUE, Famfile = NULL, PVbyCHR = TRUE) {
+  # Validate Inputs
   if (!validateInputForPlinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)) {
     return(NULL)
   }
-
-  tryCatch(
-    {
-      if (PtoV == TRUE) {
-        if (checkFiles(DataDir, finput)) {
-          # setupPlink(ResultDir)
-          
-
-          if (PVbyCHR == FALSE) {
-            executePlinkAd(ResultDir, c(
-              "--bfile", paste0(DataDir, "/", finput),
-              "--recode", "vcf", "--allow-extra-chr",
-              "--out", paste0(ResultDir, "/", foutput, "_vcf"), "--silent"
-            ))
-
-            # Generate vcf.gz file and its index file vcf.gz.tbi
-            utils::download.file(
-              destfile = paste0(ResultDir, "/", "bgzip_tabix.zip"),
-              "https://github.com/boseb/bose_binaries/raw/main/bgzip_tabix.zip", quiet = TRUE,
-            )
-
-            utils::unzip(paste0(ResultDir, "/", "bgzip_tabix.zip"), exdir = ResultDir)
-
-            Sys.chmod(paste0(ResultDir, "/bgzip"), mode = "0777", use_umask = TRUE)
-            # Sys.chmod(paste0(ResultDir,"/tabix"), mode = "0777", use_umask = TRUE)
-            fn <- paste0(foutput, "_vcf.vcf")
-            system(paste0(ResultDir, "/", "./bgzip ", ResultDir, "/", fn))
-          } else {
-            bimfile <- read.table(paste0(DataDir, "/", finput, ".bim"))
-            chrnum <- as.numeric(gsub("chr", "", unique(bimfile$V1)))
-
-            funVCFchr <- function(chrnum) {
-              rlang::inform(rlang::format_error_bullets(c("i" = paste0("Running for chromosome = ", chrnum))))
-              executePlinkAd(ResultDir, c(
-                "--bfile", paste0(DataDir, "/", finput),
-                "--chr", chrnum,
-                "--recode", "vcf", "--allow-extra-chr",
-                "--out", paste0(ResultDir, "/", foutput, "_chr", chrnum), "--silent"
-              ))
-              # Generate vcf.gz file and its index file vcf.gz.tbi
-              utils::download.file(
-                destfile = paste0(ResultDir, "/", "bgzip_tabix.zip"),
-                "https://github.com/boseb/bose_binaries/raw/main/bgzip_tabix.zip", quiet = TRUE,
-              )
-
-              utils::unzip(paste0(ResultDir, "/", "bgzip_tabix.zip"), exdir = ResultDir)
-
-              Sys.chmod(paste0(ResultDir, "/bgzip"), mode = "0777", use_umask = TRUE)
-              fn <- paste0(foutput, "_chr", chrnum, ".vcf")
-              system(paste0(ResultDir, "/", "./bgzip ", ResultDir, "/", fn))
-            }
-            invisible(lapply(chrnum, funVCFchr))
-          }
-
-          removeTempFiles(ResultDir, "bgzip")
-          removeTempFiles(ResultDir, "log")
-          invisible(removeTempFiles(ResultDir, "hh"))
-        } else {
-          stop("There are no Plink files in DataDir. Please specify correct DataDir path with input Plink files.")
-        }
-      } else if (VtoP == TRUE) {
-        if (file.exists(paste0(DataDir, "/", finput, ".vcf"))) {
-          # setupPlink(ResultDir)
-          
-
-          executePlinkAd(ResultDir, c(
-            "--vcf", paste0(DataDir, "/", finput, ".vcf"),
-            "--keep-allele-order", "--allow-extra-chr",
-            "--make-bed", "--const-fid", "1",
-            "--out", paste0(ResultDir, "/", foutput), "--silent"
-          ))
-
-          # Replace the .fam file if necessary
-          if (!is.null(Famfile)) {
-            fam <- read.table(paste0(DataDir, "/", Famfile))
-            write.table(fam, file = paste0(ResultDir, "/", foutput, ".fam"), col.names = FALSE, row.names = FALSE, quote = FALSE)
-          } else {
-            rlang::inform(rlang::format_error_bullets(c("i" = "Famfile is NULL. The generated .fam file will have missing phenotypes.")))
-          }
-        } else {
-          stop("There is missing VCF file in specified DataDir. Please specify correct directory path with input VCF files.")
-        }
+  
+  tryCatch({
+    if (PtoV) {
+      if (!checkFiles(DataDir, finput)) {
+        stop("There are no Plink files in DataDir. Please specify correct DataDir path with input Plink files.")
       }
-
-      rlang::inform(rlang::format_error_bullets(c("v" = paste0("Output files are produced in ResultDir: ", ResultDir))))
-      removeTempFiles(ResultDir, "plink")
-    },
-    error = function(e) {
-      message("An error occurred: ", e$message)
-      return(NULL)
-    },
-    warning = function(w) {
-      message("Warning: ", w$message)
+      
+      convertPlinkToVCF <- function(prefix, chr = NULL) {
+        args <- c("--bfile", file.path(DataDir, finput),
+        "--recode", "vcf", "--allow-extra-chr",
+        "--out", file.path(ResultDir, prefix), "--silent")
+        if (!is.null(chr)) {
+          args <- c(args, "--chr", chr)
+        }
+        executePlinkAd(ResultDir, args)
+        
+        # Compress and index
+        vcf_path <- file.path(ResultDir, paste0(prefix, ".vcf"))
+        vcf_gz_path <- Rsamtools::bgzip(
+          file = vcf_path,
+          dest = paste0(vcf_path, ".gz"),
+          overwrite = TRUE
+        )
+        Rsamtools::indexTabix(vcf_gz_path, format = "vcf")
+      }
+      
+      if (PVbyCHR) {
+        bimfile <- read.table(file.path(DataDir, paste0(finput, ".bim")))
+        chrs <- unique(bimfile$V1)
+        chrs <- gsub("^chr", "", chrs)  # Normalize chromosome names
+        invisible(lapply(chrs, function(chr) {
+          message("Processing chromosome: ", chr)
+          convertPlinkToVCF(paste0(foutput, "_chr", chr), chr)
+        }))
+      } else {
+        convertPlinkToVCF(paste0(foutput, "_vcf"))
+      }
+      removeTempFiles(ResultDir, "log")
+      removeTempFiles(ResultDir, "hh")
     }
-  )
+    
+    if (VtoP) {
+      vcf_file <- file.path(DataDir, paste0(finput, ".vcf"))
+      if (!file.exists(vcf_file)) {
+        stop("VCF file not found in DataDir. Please specify correct directory path with input VCF files.")
+      }
+      
+      executePlinkAd(ResultDir, c(
+        "--vcf", vcf_file,
+        "--keep-allele-order", "--allow-extra-chr",
+        "--make-bed", "--const-fid", "1",
+        "--out", file.path(ResultDir, foutput), "--silent"
+      ))
+      
+      if (!is.null(Famfile)) {
+        fam <- read.table(file.path(DataDir, Famfile))
+        write.table(fam, file = file.path(ResultDir, paste0(foutput, ".fam")),
+        col.names = FALSE, row.names = FALSE, quote = FALSE)
+      } else {
+        message("Famfile is NULL. The generated .fam file will have missing phenotypes.")
+      }
+    }
+    
+    message("Output files are produced in ResultDir: ", ResultDir)
+    removeTempFiles(ResultDir, "plink")
+  },
+  error = function(e) {
+    message("An error occurred: ", e$message)
+    return(NULL)
+  },
+  warning = function(w) {
+    message("Warning: ", w$message)
+  })
 }
 
 
