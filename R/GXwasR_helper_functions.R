@@ -8500,6 +8500,7 @@ HDL.rg <-
 
 
 #' @importFrom foreach %dopar%
+#' @importFrom dplyr row_number
 HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min(gwas1.df$N, gwas2.df$N), output.file = "", numCores = 2,
                             eigen.cut = "automatic", jackknife.df = FALSE, intercept.output = FALSE, fill.missing.N = NULL, lim = exp(-18)) {
   ## Initialize vars used later
@@ -8684,15 +8685,15 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
 
   rho12 <- suppressWarnings(dplyr::inner_join(gwas1.df %>% dplyr::select(.data$SNP, .data$Z), gwas2.df %>% dplyr::select(.data$SNP, .data$Z), by = "SNP") %>%
     dplyr::summarise(x = cor(.data$Z.x, .data$Z.y, use = "complete.obs")) %>% unlist())
-  # counter <- 0
-  # message <- ""
-  num.pieces <- length(unlist(nsnps.list))
+  
   info.pieces.df <- data.frame(
     chr = rep.int(
       names(nsnps.list),
-      unlist(lapply(nsnps.list, length))
+      times = lengths(nsnps.list)
     ),
-    piece = unlist(lapply(X = unlist(lapply(nsnps.list, length)), seq.int, from = 1))
+    piece = unlist(
+      lapply(lengths(nsnps.list), function(n) seq_len(n))
+    )
   )
 
   # Setup workers and Progress Bar
@@ -8735,7 +8736,7 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
 
       if (anyDuplicated(df$SNP)) {
         duplicated_df <- df %>%
-          dplyr::mutate(row.num = seq_len(n())) %>%
+          dplyr::mutate(row.num = dplyr::row_number())
           dplyr::filter(.data$SNP %in% .data$SNP[duplicated(.data$SNP)]) %>%
           dplyr::mutate(SNP_A1_A2 = paste(.data$SNP, .data$A1, .data$A2, sep = "_"))
 
@@ -9061,6 +9062,7 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
           error.message,
           output.file = output.file
         )
+        parallel::stopCluster(cl)
         stop(error.message)
       }
     }
