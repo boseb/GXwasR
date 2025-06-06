@@ -182,7 +182,7 @@ Though this function implicitly performs X-linked gene-based test, it is flexibl
 For the details about the different tests, please follow the associated paper.
 }
 \examples{
-\dontrun{
+\donttest{
 DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"

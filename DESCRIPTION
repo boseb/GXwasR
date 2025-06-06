@@ -60,6 +60,7 @@ Imports:
     rlang,
     foreach,
     Rdpack,
+    Rsamtools,
     cli,
     parallel
 RdMacros: Rdpack
