@@ -227,7 +227,6 @@ AncestryCheck <-
         colnames(S1) <- c("V1", "V2", "V3", "V4", "Sa", "Sb")
         colnames(S3) <- c("V1", "V2", "V3", "V4", "Ra", "Rb")
 
-        # library(data.table)
         S1 <- data.table::as.data.table(S1)
         S3 <- data.table::as.data.table(S3)
         # Using SNP name and chr no. for merging, not using base-pair position

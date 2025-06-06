@@ -60,6 +60,7 @@ Imports:
     rlang,
     foreach,
     Rdpack,
-    cli
+    cli,
+    parallel
 RdMacros: Rdpack
 biocViews: GenomeWideAssociation, LinkageDisequilibrium, VariantDetection, QualityControl, PrincipalComponent

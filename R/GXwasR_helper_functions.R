@@ -27,6 +27,7 @@
 #' @importFrom dplyr filter mutate distinct arrange select case_when summarise
 #' @importFrom rlang inform format_error_bullets
 #' @importFrom cli cli_progress_bar pb_bar pb_percent pb_current pb_total cli_progress_update cli_progress_done
+#' @importFrom parallel clusterCall clusterExport parLapply makeCluster stopCluster
 
 ## PLINK Dependency Check
 verifyPlink <- function() {
@@ -1669,13 +1670,19 @@ FMmain <- function(DataDir, ResultDir, finput, trait, standard_beta, xmodel,
     chunk <- round(nrow(snpfile) / ncores) + 1
     chunks <- round(seq(1, nrow(snpfile), by = chunk), 0)
 
-    #### Parallel computation
+    # Parallel computation
     rlang::inform(rlang::format_error_bullets("Parallel computation is in progress --------->"))
     cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
-
-    invisible(parallel::clusterEvalQ(cl, library(data.table)))
-    invisible(parallel::clusterEvalQ(cl, library(parallel)))
-    parallel::clusterExport(cl = cl, NULL, envir = environment())
+    
+    # Load namespaces quietly on each worker
+    parallel::clusterCall(cl, function() {
+      requireNamespace("data.table", quietly = TRUE)
+      requireNamespace("parallel", quietly = TRUE)
+      NULL
+    })
+    
+    # Export environment objects if needed
+    parallel::clusterExport(cl = cl, varlist = NULL, envir = environment())
 
     allsnpsresults <- data.table::as.data.table(data.table::rbindlist(parallel::parLapply(cl, chunks, paraGwas,
       chunk = chunk, ResultDir = ResultDir,
@@ -1965,15 +1972,20 @@ applyStoufferMethod <- function(pvals, MF.p.corr, MF.zero.sub, MF.na.rm, MF.mc.c
     chunk <- round(nrow(pvals) / ncores) + 1
     chunks <- round(seq(1, nrow(pvals), by = chunk), 0)
 
-    rlang::inform(rlang::format_error_bullets(c("i" = "cluster making started")))
+    rlang::inform(rlang::format_error_bullets(c("i" = "Creating parallel workers...")))
     cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
+    
+    # Load namespaces quietly on each worker
+    parallel::clusterCall(cl, function() {
+      requireNamespace("data.table", quietly = TRUE)
+      requireNamespace("parallel", quietly = TRUE)
+      NULL
+    })
+    
+    rlang::inform("Exporting variables to workers...")
+    parallel::clusterExport(cl = cl, varlist = NULL, envir = environment())
 
-    invisible(parallel::clusterEvalQ(cl, library(data.table)))
-    invisible(parallel::clusterEvalQ(cl, library(parallel)))
-    rlang::inform(rlang::format_error_bullets(c("i" = "cluster export started")))
-    parallel::clusterExport(cl = cl, NULL, envir = environment())
-
-    rlang::inform(rlang::format_error_bullets(c("i" = "cluster making done")))
+    rlang::inform(rlang::format_error_bullets(c("v" = "Cluster is ready for parallel computation.")))
     Pnew <- data.table::as.data.table(data.table::rbindlist(parallel::parLapply(cl, chunks, paraStouffer, chunk = chunk, pvals = pvals, MF.p.corr = MF.p.corr, MF.zero.sub = MF.zero.sub, MF.na.rm = MF.na.rm)))
 
     parallel::stopCluster(cl)
@@ -2283,13 +2295,26 @@ FMcomb_sub <- function(ResultDir, combtest, MF.p.corr,
       rlang::inform(rlang::format_error_bullets("Parallel computation is in progress --------->"))
       cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
 
-      invisible(parallel::clusterEvalQ(cl, library(data.table)))
-      invisible(parallel::clusterEvalQ(cl, library(parallel)))
-      parallel::clusterExport(cl = cl, NULL, envir = environment())
+      parallel::clusterCall(cl, function() {
+        requireNamespace("data.table", quietly = TRUE)
+        requireNamespace("parallel", quietly = TRUE)
+        NULL
+      })
+      rlang::inform(rlang::format_error_bullets("i" = "Exporting relevant variables to worker environments..."))
+      parallel::clusterExport(cl = cl, varlist = NULL, envir = environment())
 
-      Pnew <- data.table::as.data.table(data.table::rbindlist(parallel::parLapply(cl, chunks, paraStouffer, chunk = chunk, pvals = pvals, MF.p.corr = MF.p.corr, MF.zero.sub = MF.zero.sub, MF.na.rm = MF.na.rm)))
-
+      Pnew <- data.table::as.data.table(
+        data.table::rbindlist(
+          parallel::parLapply(
+            cl, chunks, paraStouffer, chunk = chunk, 
+            pvals = pvals, MF.p.corr = MF.p.corr, 
+            MF.zero.sub = MF.zero.sub, 
+            MF.na.rm = MF.na.rm
+          )
+        )
+      )
       parallel::stopCluster(cl)
+      rlang::inform(rlang::format_error_bullets("v" = "Parallel computation complete."))
     }
 
     Result <- cbind(MFWAS1[, 1:5], Pnew[, 3:4])
@@ -2561,11 +2586,16 @@ autoFun <- function(DataDir, ResultDir, finput, sex, standard_beta, covarfile, i
     #### Parallel computation
     rlang::inform(rlang::format_error_bullets("Parallel computation is in progress --------->"))
     cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
-
-    invisible(parallel::clusterEvalQ(cl, library(data.table)))
-    invisible(parallel::clusterEvalQ(cl, library(parallel)))
-    parallel::clusterExport(cl = cl, NULL, envir = environment())
-
+    
+    parallel::clusterCall(cl, function() {
+      requireNamespace("data.table", quietly = TRUE)
+      requireNamespace("parallel", quietly = TRUE)
+      NULL
+    })
+    
+    rlang::inform(rlang::format_error_bullets("i" = "Distributing environment variables to worker nodes..."))
+    parallel::clusterExport(cl = cl, varlist = NULL, envir = environment())
+    
     all_snps_results <- data.table::as.data.table(data.table::rbindlist(parallel::parLapply(cl, chunks, paraGwasAuto,
       chunk = chunk, ResultDir = ResultDir, finput = finput, regress = regress, sexv = sexv,
       standard_b = standard_b, interactionv = interactionv, parameterv = parameterv,
@@ -2987,9 +3017,12 @@ XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
       rlang::inform(rlang::format_error_bullets("Parallel computation is in progress --------->"))
       cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
 
-      invisible(parallel::clusterEvalQ(cl, library(data.table)))
-      invisible(parallel::clusterEvalQ(cl, library(parallel)))
-      parallel::clusterExport(cl = cl, NULL, envir = environment())
+      parallel::clusterCall(cl, function() {
+        requireNamespace("data.table", quietly = TRUE)
+        requireNamespace("parallel", quietly = TRUE)
+        NULL
+      })
+      parallel::clusterExport(cl = cl, varlist = NULL, envir = environment())
 
       Result_pval <- data.table::rbindlist(parallel::parLapply(cl, chunks, xcmaPara, chunk = chunk, Snp = Snp, genosnp = genosnp, P = P, Samp = Samp))
       parallel::stopCluster(cl)
@@ -3017,10 +3050,13 @@ XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
       rlang::inform(rlang::format_error_bullets("Parallel computation is in progress --------->"))
       cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
 
-      invisible(parallel::clusterEvalQ(cl, library(data.table)))
-      invisible(parallel::clusterEvalQ(cl, library(parallel)))
-      invisible(parallel::clusterEvalQ(cl, library(SNPRelate)))
-      parallel::clusterExport(cl = cl, NULL, envir = environment())
+      parallel::clusterCall(cl, function() {
+        requireNamespace("data.table", quietly = TRUE)
+        requireNamespace("parallel", quietly = TRUE)
+        requireNamespace("SNPRelate", quietly = TRUE)
+        NULL
+      })
+      parallel::clusterExport(cl = cl, varlist = NULL, envir = environment())
 
       Result_pval <- data.table::rbindlist(parallel::parLapply(cl, chunks, xcmaParaCovar, chunk = chunk, Snp = Snp, DataDir = DataDir, genosnp = genosnp, P = P, covarfile = covarfile, Samp = Samp))
       parallel::stopCluster(cl)
@@ -3734,7 +3770,6 @@ ChrLength <- function(hg) {
   x <- GenomeInfoDb::getChromInfoFromUCSC(paste0(hg))
   x$size_mb <- x$size / 1000000
   x_mb <- x[1:26, c(1, 5)]
-  # library(stringr)
   x_mb$chrom <- 1:26
   return(x_mb)
 }
