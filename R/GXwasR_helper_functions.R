@@ -4850,7 +4850,7 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
 
   ColNames <- c("ID", "P")
   v <- !ColNames %in% colnames(df)
-  if (sum(v)) stop(paste("Mandatory column(s) missing:", paste(ColNames[v], collapse = ", ")))
+  if (sum(v)) stop("Mandatory column(s) missing:", paste(ColNames[v], collapse = ", "))
 
   df <- df[!is.na(df$P) & !is.na(df$ID), ]
   if (dim(df)[1] == 0) stop("No values assigned for P or ID")
@@ -6199,13 +6199,13 @@ validateInputDataSexDiff <- function(Mfile, Ffile) {
   # Check for existence of required columns in Mfile
   missingColsMfile <- setdiff(requiredColumnsMfile, names(Mfile))
   if (length(missingColsMfile) > 0) {
-    stop(paste("Error: Mfile is missing these columns:", paste(missingColsMfile, collapse = ", ")))
+    stop("Error: Mfile is missing these columns:", paste(missingColsMfile, collapse = ", "))
   }
 
   # Check for existence of required columns in Ffile
   missingColsFfile <- setdiff(requiredColumnsFfile, names(Ffile))
   if (length(missingColsFfile) > 0) {
-    stop(paste("Error: Ffile is missing these columns:", paste(missingColsFfile, collapse = ", ")))
+    stop("Error: Ffile is missing these columns:", paste(missingColsFfile, collapse = ", "))
   }
 
   return(TRUE)
@@ -6235,7 +6235,7 @@ validateInputForQCsnp <- function(DataDir, ResultDir = tempdir(), finput, foutpu
   for (param_name in names(boolean_params)) {
     param_value <- boolean_params[[param_name]]
     if (!is.logical(param_value)) {
-      stop(paste("Error in", param_name, ": Must be a boolean value."))
+      stop("Error in ", param_name, ": Must be a boolean value.")
     }
   }
 
@@ -6244,7 +6244,7 @@ validateInputForQCsnp <- function(DataDir, ResultDir = tempdir(), finput, foutpu
   for (param_name in names(numeric_params)) {
     param_value <- numeric_params[[param_name]]
     if (!is.null(param_value) && (!is.numeric(param_value) || param_value < 0 || param_value > 1)) {
-      stop(paste("Error in", param_name, ": Must be a numeric value between 0 and 1."))
+      stop("Error in ", param_name, ": Must be a numeric value between 0 and 1.")
     }
   }
 
@@ -6485,7 +6485,7 @@ validateInputForComputePRS <- function(DataDir, ResultDir = tempdir(), finput, s
   for (param_name in names(numeric_params)) {
     param_value <- numeric_params[[param_name]]
     if (!is.numeric(param_value) || param_value < 0 || param_value > 1) {
-      stop(paste("Error in", param_name, ": Must be a numeric value between 0 and 1."))
+      stop("Error in ", param_name, ": Must be a numeric value between 0 and 1.")
     }
   }
 
@@ -6621,7 +6621,7 @@ validateInputForSexCheck <- function(DataDir, ResultDir = tempdir(), finput, imp
   for (param_name in names(boolean_params)) {
     param_value <- boolean_params[[param_name]]
     if (!is.logical(param_value)) {
-      stop(paste("Error in", param_name, ": Must be a boolean value."))
+      stop("Error in ", param_name, ": Must be a boolean value.")
     }
   }
 
@@ -6638,7 +6638,7 @@ validateInputForSexCheck <- function(DataDir, ResultDir = tempdir(), finput, imp
   for (param_name in names(numeric_params)) {
     param_value <- numeric_params[[param_name]]
     if (!is.numeric(param_value) || param_value < 0 || param_value > 1) {
-      stop(paste("Error in", param_name, ": Must be a numeric value between 0 and 1."))
+      stop("Error in ", param_name, ": Must be a numeric value between 0 and 1.")
     }
   }
 
@@ -6812,7 +6812,7 @@ validateInputForQCsample <- function(DataDir, ResultDir, finput, foutput, imiss,
   size_params <- list(legend_text_size = legend_text_size, legend_title_size = legend_title_size, axis_text_size = axis_text_size, axis_title_size = axis_title_size, title_size = title_size)
   for (param_name in names(size_params)) {
     if (!is.numeric(size_params[[param_name]]) || size_params[[param_name]] <= 0) {
-      stop(paste0(param_name, " must be a positive integer."))
+      stop(param_name, " must be a positive integer.")
     }
   }
 }
@@ -6900,7 +6900,7 @@ validateInputForMetaGWAS <- function(DataDir, ResultDir, SummData, SNPfile, useS
   for (param_name in names(pval_params)) {
     param_value <- pval_params[[param_name]]
     if (!is.numeric(param_value) || param_value < 0 || param_value > 1) {
-      stop(paste0("Error in ", param_name, ": Must be a numeric value between 0 and 1."))
+      stop("Error in ", param_name, ": Must be a numeric value between 0 and 1.")
     }
   }
 
@@ -6945,7 +6945,7 @@ validateInputForClumpLD <- function(DataDir, finput, SNPdata, ResultDir, clump_p
   for (param_name in names(clump_params)) {
     param_value <- clump_params[[param_name]]
     if (!is.numeric(param_value)) {
-      stop(paste0("Error in ", param_name, ": Must be a numeric value."))
+      stop("Error in ", param_name, ": Must be a numeric value.")
     }
   }
 

@@ -6071,11 +6071,11 @@ SumstatGenCorr <- function(
   LD_path <- reference_paths[[referenceLD]]
 
   if (is.na(LD_path) || !dir.exists(LD_path)) {
-    stop(paste0(
+    stop(
       "The environment variable for '", referenceLD, "' is not set or the directory does not exist.\n",
       "Please set the appropriate environment variable before running this function.\n",
       "Reference data can be obtained from: ", reference_urls[[referenceLD]]
-    ))
+    )
   }
 
   # Compute genetic correlation
