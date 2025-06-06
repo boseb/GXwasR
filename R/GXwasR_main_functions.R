@@ -610,7 +610,7 @@ TestXGene <- function(DataDir,
       colnames(genes) <- c(c("gene_name", "X", "chr", "Y", "start", "end"))
       genes$up_Mb <- genes$start - gene_range
       genes$down_Mb <- genes$end + gene_range
-      genes.gr <- GenomicRanges::makeGRangesFromDataFrame(genes, keep.extra.columns = T)
+      genes.gr <- GenomicRanges::makeGRangesFromDataFrame(genes, keep.extra.columns = TRUE)
 
       suppressWarnings(SNPfile <- read.table(
         file = paste0(DataDir, "/", finput, ".bim"),
@@ -5255,7 +5255,7 @@ FilterAllele <- function(DataDir, ResultDir, finput, foutput) {
       x1 <- bimf[nchar(bimf[, 5]) > 1 | nchar(bimf[, 6]) > 1, , drop = FALSE]
 
       if (nrow(x1) != 0) {
-        write.table(x1$V2, file = paste0(ResultDir, "/snps_multiallelic"), quote = F, col.names = F, row.names = F)
+        write.table(x1$V2, file = paste0(ResultDir, "/snps_multiallelic"), quote = FALSE, col.names = FALSE, row.names = FALSE)
       } else {
         rlang::inform(rlang::format_error_bullets(c("i" = "There is no multi-allelic SNP present in the input dataset.")))
         return()
@@ -5842,8 +5842,8 @@ executePlinkMAF <- function(DataDir, ResultDir, finput) {
           "--out", paste0(ResultDir, "/", foutput),
           "--silent" # Suppress output to standard output
         ),
-        std_out = T,
-        std_err = T
+        std_out = TRUE,
+        std_err = TRUE
       ))
     },
     error = function(e) {
@@ -6149,6 +6149,6 @@ ComputeLD <- function(DataDir, ResultDir, finput, ByCHR = FALSE, CHRnum = NULL, 
     std_out = FALSE,
     std_err = FALSE
   ))
-  snpld <- read.table(paste0(ResultDir, "/snpcorr.ld"), header = T)
+  snpld <- read.table(paste0(ResultDir, "/snpcorr.ld"), header = TRUE)
   return(snpld)
 }

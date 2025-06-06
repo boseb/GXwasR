@@ -392,7 +392,7 @@ createHeterozygosityPlot <- function(hetermiss, hetfail, imissfail, het, imiss, 
 
   # Plotting
   rlang::inform(rlang::format_error_bullets("Plots are initiated."))
-  plot_hetimiss <- ggplot2::ggplot(data = hetermiss, ggplot2::aes(x = with(hetermiss, logF_MISS), y = F, color = with(hetermiss, type), shape = with(hetermiss, shape))) +
+  plot_hetimiss <- ggplot2::ggplot(data = hetermiss, ggplot2::aes(x = with(hetermiss, logF_MISS), y = FALSE, color = with(hetermiss, type), shape = with(hetermiss, shape))) +
     ggplot2::geom_point() +
     ggplot2::scale_shape_manual(values = c(16, 17), guide = "none") +
     ggplot2::scale_color_manual(values = colors) +
@@ -1552,9 +1552,9 @@ paraGwas <- function(
   }
 
   if (trait[1] == "binary") {
-    single_snp_result <- read.table(paste0(ResultDir, "/", chunks, "_ss.assoc.logistic"), header = T)
+    single_snp_result <- read.table(paste0(ResultDir, "/", chunks, "_ss.assoc.logistic"), header = TRUE)
   } else if (trait[1] == "quantitative") {
-    single_snp_result <- read.table(paste0(ResultDir, "/", chunks, "_ss.assoc.linear"), header = T)
+    single_snp_result <- read.table(paste0(ResultDir, "/", chunks, "_ss.assoc.linear"), header = TRUE)
   }
   return(single_snp_result)
 }
@@ -1658,9 +1658,9 @@ FMmain <- function(DataDir, ResultDir, finput, trait, standard_beta, xmodel,
       std_err = FALSE
     ))
     if (trait[1] == "binary") {
-      single_snp_result <- read.table(paste0(ResultDir, "/", xmodel, ".assoc.logistic"), header = T)
+      single_snp_result <- read.table(paste0(ResultDir, "/", xmodel, ".assoc.logistic"), header = TRUE)
     } else if (trait[1] == "quantitative") {
-      single_snp_result <- read.table(paste0(ResultDir, "/", xmodel, ".assoc.linear"), header = T)
+      single_snp_result <- read.table(paste0(ResultDir, "/", xmodel, ".assoc.linear"), header = TRUE)
     }
     allsnpsresults <- unique(single_snp_result)
     save(allsnpsresults, file = paste0(ResultDir, "/allsnpsresults.rda"))
@@ -2478,7 +2478,7 @@ paraGwasAuto <- function(chunks, chunk, ResultDir, finput, regress, sexv, noxsex
     std_err = FALSE
   ))
 
-  single_snp_result <- read.table(paste0(ResultDir, "/", chunks, "_ss.assoc.logistic"), header = T)
+  single_snp_result <- read.table(paste0(ResultDir, "/", chunks, "_ss.assoc.logistic"), header = TRUE)
   single_snp_result <- unique(single_snp_result)
   return(single_snp_result)
 }
@@ -3745,7 +3745,7 @@ GettingGene <- function(gene_file, gene_range, SNP_bimfile, finput) {
   colnames(genes) <- c(c("gene_name", "X", "chr", "Y", "start", "end"))
   genes$up_Mb <- genes$start - gene_range
   genes$down_Mb <- genes$end + gene_range
-  genes.gr <- GenomicRanges::makeGRangesFromDataFrame(genes, keep.extra.columns = T)
+  genes.gr <- GenomicRanges::makeGRangesFromDataFrame(genes, keep.extra.columns = TRUE)
 
   suppressWarnings(SNPfile <- read.table(
     file = paste0(SNP_bimfile, ".bim"),
@@ -4906,7 +4906,7 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
     if ("ALT" %in% colnames(df)) {
       v <- unique(c(v, which(df$EFFECT.ALLELE != df$REF & df$EFFECT.ALLELE != df$ALT)))
     }
-    if (sum(v, na.rm = T)) {
+    if (sum(v, na.rm = TRUE)) {
       rlang::inform(rlang::format_error_bullets(c("i" = paste("Effect alleles or REF/ALT alleles do not match reference data for", sum(v), "variant(s)"))))
       df[v, "BETA"] <- NA
     }
@@ -7622,7 +7622,7 @@ HDL.rg <-
     nsnps.list.imputed <- NULL
 
     if (output.file != "") {
-      if (file.exists(output.file) == T) {
+      if (file.exists(output.file) == TRUE) {
         file.remove(output.file)
       }
     }
@@ -7724,22 +7724,22 @@ HDL.rg <-
       gwas2.df <- dplyr::filter(gwas2.df, !is.na(.data$Z), !is.na(.data$N))
     } else if (fill.missing.N == "min") {
       gwas1.df <- dplyr::filter(gwas1.df, !is.na(.data$Z))
-      gwas1.df$N[is.na(gwas1.df$N)] <- min(gwas1.df$N, na.rm = T)
+      gwas1.df$N[is.na(gwas1.df$N)] <- min(gwas1.df$N, na.rm = TRUE)
 
       gwas2.df <- dplyr::filter(gwas2.df, !is.na(.data$Z))
-      gwas2.df$N[is.na(gwas2.df$N)] <- min(gwas2.df$N, na.rm = T)
+      gwas2.df$N[is.na(gwas2.df$N)] <- min(gwas2.df$N, na.rm = TRUE)
     } else if (fill.missing.N == "max") {
       gwas1.df <- dplyr::filter(gwas1.df, !is.na(.data$Z))
-      gwas1.df$N[is.na(gwas1.df$N)] <- max(gwas1.df$N, na.rm = T)
+      gwas1.df$N[is.na(gwas1.df$N)] <- max(gwas1.df$N, na.rm = TRUE)
 
       gwas2.df <- dplyr::filter(gwas2.df, !is.na(.data$Z))
-      gwas2.df$N[is.na(gwas2.df$N)] <- max(gwas2.df$N, na.rm = T)
+      gwas2.df$N[is.na(gwas2.df$N)] <- max(gwas2.df$N, na.rm = TRUE)
     } else if (fill.missing.N == "median") {
       gwas1.df <- dplyr::filter(gwas1.df, !is.na(.data$Z))
-      gwas1.df$N[is.na(gwas1.df$N)] <- median(gwas1.df$N, na.rm = T)
+      gwas1.df$N[is.na(gwas1.df$N)] <- median(gwas1.df$N, na.rm = TRUE)
 
       gwas2.df <- dplyr::filter(gwas2.df, !is.na(.data$Z))
-      gwas2.df$N[is.na(gwas2.df$N)] <- median(gwas2.df$N, na.rm = T)
+      gwas2.df$N[is.na(gwas2.df$N)] <- median(gwas2.df$N, na.rm = TRUE)
     } else {
       error.message <- "If given, the argument fill.missing.N can only be one of below: 'min', 'max', 'median'."
       log_output(
@@ -8184,7 +8184,7 @@ HDL.rg <-
     h12 <- h12.hdl.use[1]
     rg <- h12.hdl.use[1] / sqrt(h11.hdl.use[1] * h22.hdl.use[1])
 
-    if (intercept.output == T) {
+    if (intercept.output == TRUE) {
       h11.intercept <- h11.hdl.use[2]
       h22.intercept <- h22.hdl.use[2]
       h12.intercept <- h12.hdl.use[2]
@@ -8230,7 +8230,7 @@ HDL.rg <-
     
     cli::cli_progress_bar("Jackknife estimation", total = length(lam.v), format = "{cli::pb_bar} {cli::pb_percent} ({cli::pb_current}/{cli::pb_total})")
     rg.jackknife <- h11.jackknife <- h12.jackknife <- h22.jackknife <- numeric(length(lam.v))
-    if (intercept.output == T) {
+    if (intercept.output == TRUE) {
       h11.intercept.jackknife <- h12.intercept.jackknife <- h22.intercept.jackknife <- numeric(length(lam.v))
     }
     for (i in 1:length(lam.v)) {
@@ -8259,7 +8259,7 @@ HDL.rg <-
       h22.jackknife[i] <- h22.hdl.jackknife[1]
       rg.jackknife[i] <- h12.hdl.jackknife[1] / sqrt(h11.hdl.jackknife[1] * h22.hdl.jackknife[1])
 
-      if (intercept.output == T) {
+      if (intercept.output == TRUE) {
         h11.intercept.jackknife[i] <- h11.hdl.jackknife[2]
         h12.intercept.jackknife[i] <- h12.hdl.jackknife[2]
         h22.intercept.jackknife[i] <- h22.hdl.jackknife[2]
