@@ -360,7 +360,9 @@ removeTempFiles <- function(directory, pattern) {
 copyTempFiles <- function(sourceDir, targetDir, pattern) {
   tempFiles <- list.files(sourceDir, pattern = pattern, full.names = TRUE)
   if (length(tempFiles) > 0) {
-    sapply(tempFiles, function(file) file.copy(file, targetDir))
+    vapply(tempFiles, function(file) file.copy(file, targetDir), logical(1))
+  } else {
+    logical(0)
   }
 }
 
@@ -1805,17 +1807,17 @@ fisher.method.perm <-
       if (is.null(mc.cores)) {
         S.rand <- unlist(lapply(1:B, function(b) {
           ## get non NA p-values from studies contributing to S
-          myp <- sapply(good.p, function(pc) {
+          myp <- vapply(good.p, function(pc) {
             sample(stats::na.exclude(pvals[, pc]), 1)
-          })
+          }, numeric(1))
           fisher.sum(myp)$S
         }))
       } else {
         S.rand <- unlist(parallel::mclapply(1:B, function(b) {
           ## get non NA p-values from studies contributing to S
-          myp <- sapply(good.p, function(pc) {
+          myp <- vapply(good.p, function(pc) {
             sample(stats::na.exclude(pvals[, pc]), 1)
-          })
+          }, numeric(1))
           fisher.sum(myp)$S
         }, mc.cores = mc.cores))
       }
@@ -6934,7 +6936,7 @@ validateInputForClumpLD <- function(DataDir, finput, SNPdata, ResultDir, clump_p
   }
 
   # Validate SNPdata - must be a list of dataframes
-  if (!is.list(SNPdata) || !all(sapply(SNPdata, is.data.frame))) {
+  if (!is.list(SNPdata) || !all(vapply(SNPdata, is.data.frame, logical(1)))) {
     stop("Error in SNPdata: Must be a list of dataframes.")
   }
 
