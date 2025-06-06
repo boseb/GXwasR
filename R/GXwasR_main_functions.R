@@ -3854,7 +3854,6 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' data("GXwasRData")
@@ -3868,7 +3867,6 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
 #' top_snp_pval <- 1e-08
 #' max_top_snps <- 10
 #' chosen_snps_file <- NULL
-#' # chosen_snps_file = "MainSNP"
 #' pval_threshold_manplot <- 1e-05
 #' plotname <- "Meta_Analysis.plot"
 #' x <- MetaGWAS(
@@ -3877,7 +3875,6 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
 #'   plotname = "Meta_Analysis.plot", pval_filter, top_snp_pval, max_top_snps,
 #'   chosen_snps_file = NULL, byCHR, pval_threshold_manplot
 #' )
-#' }
 MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile = NULL,
                      useSNPposition = TRUE,
                      UseA1 = FALSE, GCse = TRUE,
@@ -3910,7 +3907,7 @@ MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile =
         SNPfilev <- SNPfile
       }
       # Write summary data files to ResultDir
-      for (i in 1:length(SummData)) {
+      for (i in seq_along(SummData)) {
         rlang::inform(rlang::format_error_bullets(c("i" = paste0("Processing file number ", i))))
         write.table(SummData[[i]], paste0(ResultDir, "/", "SNPdata_", i), row.names = FALSE, col.names = TRUE, quote = FALSE)
       }
@@ -4194,7 +4191,7 @@ ClumpLD <- function(DataDir, finput, SNPdata, ResultDir = tempdir(),
       # setupPlink(ResultDir)
       
 
-      for (i in 1:length(SNPdata)) {
+      for (i in seq_along(SNPdata)) {
         rlang::inform(rlang::format_error_bullets(paste0("Processing summary statistics ", i)))
         write.table(SNPdata[[i]],
           paste0(ResultDir, "/", "SNPdata_", i),

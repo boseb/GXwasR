@@ -1135,12 +1135,12 @@ gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"), log10
   }
   # Add pvalue threshold line
   if (!missing(tline)) {
-    for (i in 1:length(tline)) {
+    for (i in seq_along(tline)) {
       p1 <- p1 + ggplot2::geom_hline(yintercept = tredline[i], colour = "red")
     }
   }
   if (!missing(bline)) {
-    for (i in 1:length(bline)) {
+    for (i in seq_along(bline)) {
       p2 <- p2 + ggplot2::geom_hline(yintercept = bredline[i], colour = "red")
     }
   }
@@ -2692,8 +2692,8 @@ XCMAX4 <- function(data) {
   infora <- function(estpen, X) {
     l <- dim(X)[2]
     Ia <- matrix(0, nrow = l, ncol = l)
-    for (i in 1:l) {
-      for (j in 1:l) {
+    for (i in seq_len(l)) {
+      for (j in seq_len(l)) {
         Ia[i, j] <- sum(X[, i] * X[, j] * (1 - estpen) * estpen)
       }
     }
@@ -2716,7 +2716,7 @@ XCMAX4 <- function(data) {
     l <- dim(X)[2]
     G <- 2 * Ind_AA + z1 * Ind_Aa + z2 * Ind_AO
     Iba <- NULL
-    for (i in 1:l) {
+    for (i in seq_len(l)) {
       Iba[i] <- sum(X[, i] * G * (1 - estpen) * estpen)
     }
     return(Iba)
@@ -7851,7 +7851,7 @@ HDL.rg <-
     pb <- cli::cli_progress_bar("Estimation", total = num.pieces, format = "{cli::pb_bar} {cli::pb_percent} ({cli::pb_current}/{cli::pb_total})")
     for (chr in names(nsnps.list)) {
       k <- length(nsnps.list[[chr]])
-      for (piece in 1:k) {
+      for (piece in seq_len(k)) {
         ## reference sample ##
 
         LD_rda_file <- LD.files[grep(x = LD.files, pattern = paste0("chr", chr, ".", piece, "[\\._].*rda"))]
@@ -8023,11 +8023,11 @@ HDL.rg <-
     if (eigen.cut == "automatic") {
       eigen.num.v.90 <- eigen.num.v.95 <- eigen.num.v.99 <- c()
       nsnps.v <- unlist(nsnps.list)
-      for (i in 1:length(nsnps.v)) {
+      for (i in seq_along(nsnps.v)) {
         lam.i <- lam.v[[i]]
         eigen.percent <- numeric(length(lam.i))
         temp <- 0
-        for (j in 1:length(lam.i)) {
+        for (j in seq_along(lam.i)) {
           temp <- temp + lam.i[j]
           eigen.percent[j] <- temp / nsnps.v[i]
         }
@@ -8150,11 +8150,11 @@ HDL.rg <-
       eigen.use <- eigen.cut
       eigen.num.v.cut <- c()
       nsnps.v <- unlist(nsnps.list)
-      for (i in 1:length(nsnps.v)) {
+      for (i in seq_along(nsnps.v)) {
         lam.i <- lam.v[[i]]
         eigen.percent <- numeric(length(lam.i))
         temp <- 0
-        for (j in 1:length(lam.i)) {
+        for (j in seq_along(lam.i)) {
           temp <- temp + lam.i[j]
           eigen.percent[j] <- temp / nsnps.v[i]
         }
@@ -8270,7 +8270,7 @@ HDL.rg <-
     if (intercept.output == TRUE) {
       h11.intercept.jackknife <- h12.intercept.jackknife <- h22.intercept.jackknife <- numeric(length(lam.v))
     }
-    for (i in 1:length(lam.v)) {
+    for (i in seq_along(lam.v)) {
       opt <- stats::optim(h11.hdl.use, llfun,
         N = N1, Nref = Nref, lam = unlist(lam.v.use[-i]), bstar = unlist(bstar1.v.use[-i]), M = M.ref,
         lim = lim, method = "L-BFGS-B", lower = c(0, 0), upper = c(1, 10)
@@ -8909,11 +8909,11 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
   if (eigen.cut == "automatic") {
     eigen.num.v.90 <- eigen.num.v.95 <- eigen.num.v.99 <- c()
     nsnps.v <- unlist(nsnps.list)
-    for (i in 1:length(nsnps.v)) {
+    for (i in seq_along(nsnps.v)) {
       lam.i <- lam.v[[i]]
       eigen.percent <- numeric(length(lam.i))
       temp <- 0
-      for (j in 1:length(lam.i)) {
+      for (j in seq_along(lam.i)) {
         temp <- temp + lam.i[j]
         eigen.percent[j] <- temp / nsnps.v[i]
       }
@@ -9036,11 +9036,11 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     eigen.use <- eigen.cut
     eigen.num.v.cut <- c()
     nsnps.v <- unlist(nsnps.list)
-    for (i in 1:length(nsnps.v)) {
+    for (i in seq_along(nsnps.v)) {
       lam.i <- lam.v[[i]]
       eigen.percent <- numeric(length(lam.i))
       temp <- 0
-      for (j in 1:length(lam.i)) {
+      for (j in seq_along(lam.i)) {
         temp <- temp + lam.i[j]
         eigen.percent[j] <- temp / nsnps.v[i]
       }
