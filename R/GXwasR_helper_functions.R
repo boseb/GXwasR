@@ -4973,7 +4973,7 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
     if ("ALT" %in% colnames(df)) {
       v <- unique(c(v, which(df$EFFECT.ALLELE != df$REF & df$EFFECT.ALLELE != df$ALT)))
     }
-    if (sum(v, na.rm = T)) {
+    if (sum(v, na.rm = TRUE)) {
       rlang::inform(
         rlang::format_error_bullets(
           c("i" = paste("Effect alleles or REF/ALT alleles do not match reference data for", sum(v), "variant(s)"))
