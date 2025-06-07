@@ -4,6 +4,18 @@
 \name{Mfile}
 \alias{Mfile}
 \title{Example dataset for MaleWAS}
+\format{
+A data frame with 120 rows and 7 variables:
+\describe{
+\item{SNP}{SNP identifier (rsID); character string}
+\item{CHR}{Chromosome number; integer}
+\item{BP}{Base-pair position (GRCh37 or GRCh38 assumed); integer}
+\item{A1}{Effect allele; character string}
+\item{BETA_M}{Effect size estimate (beta coefficient) for males; numeric}
+\item{SE_M}{Standard error of the male beta estimate; numeric}
+\item{P}{P-value for the association; numeric}
+}
+}
 \description{
 Example dataset for MaleWAS
 }

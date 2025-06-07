@@ -4,6 +4,15 @@
 \name{Example_covarfile}
 \alias{Example_covarfile}
 \title{Example of covariate dataframe}
+\format{
+A data frame with 276 rows and 4 variables:
+\describe{
+\item{FID}{Family ID; character string}
+\item{IID}{Individual ID; character string}
+\item{AGE}{Age of individual; integer}
+\item{testcovar}{Example binary covariate; integer (0/1)}
+}
+}
 \description{
 Example of covariate dataframe
 }

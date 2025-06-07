@@ -4,6 +4,13 @@
 \name{example_data_study_sample_ancestry}
 \alias{example_data_study_sample_ancestry}
 \title{Example of ancestry dataframe of samples}
+\format{
+A data frame with 276 rows and 2 variables:
+\describe{
+\item{V1}{Individual ID; character string}
+\item{V2}{Population ancestry label; character string (e.g., "EUR_GBR")}
+}
+}
 \description{
 Example of ancestry dataframe of samples
 }
