@@ -210,7 +210,7 @@ executePlink <- function(args, ResultDir) {
 ########## Added in 3.0
 analyzePhenotypeData <- function(fam, fam4) {
   No.of.missing.pheno <- nrow(fam[fam$V6 == -9 | fam$V6 == 0, ])
-  rlang::inform(rlang::format_error_bullets(c("i" = paste0("Number of missing phenotypes:", No.of.missing.pheno))))
+  rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of missing phenotypes:", No.of.missing.pheno))))
   No.of.males <- nrow(fam[fam$V5 == 1, ])
   No.of.females <- nrow(fam[fam$V5 == 2, ])
   rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of males:", No.of.males))))
@@ -222,8 +222,8 @@ analyzePhenotypeData <- function(fam, fam4) {
   if (length(unique_pheno) == 2) {
     No.of.cases <- nrow(fam4[fam4$V6 == 2, ])
     No.of.controls <- nrow(fam4[fam4$V6 == 1, ])
-    message <- "This is a case-control data."
-    rlang::inform(rlang::format_error_bullets(message))
+    message <- "This is case-control data"
+    rlang::inform(rlang::format_error_bullets(c("i" = message)))
     ## Updated in 4.0
     rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of cases:", No.of.cases))))
     rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of controls:", No.of.controls))))
