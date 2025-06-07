@@ -4,6 +4,19 @@
 \name{XWAS_Summary_Example}
 \alias{XWAS_Summary_Example}
 \title{Example dataset for XWAS summary statistics}
+\format{
+A data frame with 80 rows and 8 variables:
+\describe{
+\item{CHROM}{Chromosome number (23 for X chromosome); integer}
+\item{POS}{Genomic position (base-pair); integer}
+\item{ID}{SNP identifier (rsID); character string}
+\item{P}{P-value for association; numeric}
+\item{BETA}{Effect size estimate (beta coefficient); numeric}
+\item{A1}{Effect allele; character string}
+\item{A2}{Other allele; character string}
+\item{EAF}{Effect allele frequency; numeric}
+}
+}
 \description{
 Example dataset for XWAS summary statistics
 }
