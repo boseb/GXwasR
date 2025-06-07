@@ -3385,7 +3385,7 @@ QCsample <- function(DataDir,
 #' Boolean value, `TRUE` or `FALSE`, specifying whether to generate Miami plot for stratified XWAS or not.
 #' The default is `TRUE`.
 #'
-#' @return NULL
+#' @return Invisibly returns `NULL`. Generates and saves Miami plots as a side effect.
 #' @export
 #'
 #' @examples
@@ -3431,16 +3431,15 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
         gc(reset = TRUE)
         rlang::inform(rlang::format_error_bullets(c("v" = paste0("Miami plot of stratified XWAS is saved in ", ResultDir))))
       } else {
-        return()
+        return(invisible(NULL))
       }
-      return()
+      return(invisible(NULL))
     },
     error = function(e) {
-      message("An error occurred: ", e$message)
-      return(NULL)
+      rlang::abort("An error occurred: ", e$message)
     },
     warning = function(w) {
-      message("Warning: ", w$message)
+      rlang::warn("Warning: ", w$message)
     }
   )
 }
@@ -5126,9 +5125,11 @@ FilterRegion <-
 #' @param ResultDir A character string for the file path of the plink program to be set up.
 #' @param finput Character string, specifying the prefix of the input PLINK binary files. This file needs to be in DataDir.
 #'
-#' @return NULL
+#' @return This function is called for its side effect: printing summary statistics to the console. It returns `NULL` invisibly.
 #' @export
 #'
+#' @importFrom rlang abort warn
+#' 
 #' @examples
 #' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
@@ -5187,18 +5188,17 @@ PlinkSummary <- function(DataDir, ResultDir = tempdir(), finput) {
       rlang::inform(
         rlang::format_error_bullets(c(
           "i" = paste("Number of chromosomes:", No.of.chr),
-          "i" = paste("Chr:", unique(bim$V1)),
+          " " = paste("  - Chr:", unique(bim$V1)),
           "i" = paste("Total number of SNPs:", No.of.snps),
           "i" = paste("Total number of samples:", No.of.samples)
         )))
-      return(NULL)
+      return(invisible(NULL))
     },
     error = function(e) {
-      message("An error occurred: ", e$message)
-      return(NULL)
+      rlang::abort("An error occurred: ", e$message)
     },
     warning = function(w) {
-      message("Warning: ", w$message)
+      rlang::warn("Warning: ", w$message)
     }
   )
 }
