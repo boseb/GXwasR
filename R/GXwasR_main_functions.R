@@ -2089,7 +2089,6 @@ plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput,
         convertPlinkToVCF(paste0(foutput, "_vcf"))
       }
       removeTempFiles(ResultDir, "log")
-      removeTempFiles(ResultDir, "hh")
     }
     
     if (VtoP) {
@@ -2114,8 +2113,11 @@ plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput,
       }
     }
     
-    message("Output files are produced in ResultDir: ", ResultDir)
-    removeTempFiles(ResultDir, "plink")
+    rlang::inform(
+      format_error_bullets(c(
+        "v" = paste("Output files created in ResultDir:", ResultDir)
+      )
+    ))
   },
   error = function(e) {
     message("An error occurred: ", e$message)
