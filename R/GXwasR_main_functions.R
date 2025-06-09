@@ -5817,12 +5817,10 @@ DummyCovar <- function(DataDir, ResultDir = DataDir, bfile, incovar, outcovar) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' DataDir <- "path/to/data"
-#' ResultDir <- "path/to/results"
-#' finput <- "input_file_base_name"
+#' DataDir <- system.file("extdata", package = "GXwasR")
+#' ResultDir <- tempdir()
+#' finput <- "GXwasR_example"
 #' maf_data <- executePlinkMAF(DataDir, ResultDir, finput)
-#' }
 executePlinkMAF <- function(DataDir, ResultDir, finput) {
   if (!checkFiles(DataDir, finput)) {
     stop("Missing required Plink files in the specified DataDir.")
