@@ -5748,49 +5748,50 @@ Download_reference <- function(refdata, wdir = tempdir()) {
 #' \insertAllCited{}
 #'
 #' @examples
-#' \dontrun{
 #' DataDir <- system.file("extdata", package = "GXwasR")
-#' bfile <- Example_GXwasR
+#' ResultDir <- tempdir()
+#' bfile <- "GXwasR_example"
 #' incovar <- "covarfile_w_pc_age.txt"
 #' outcovar <- "dummycovarfile"
-#' DummyCovar(DataDir = DataDir, bfile = bfile, incovar = incovar, outcovar = outcovar)
-#' }
-DummyCovar <- function(DataDir, bfile, incovar, outcovar) {
-  if (file.exists(paste0(DataDir, "/", bfile, ".bed")) &&
+#' dummy_covars <- DummyCovar(DataDir = DataDir, ResultDir = ResultDir,
+#'                            bfile = bfile, incovar = incovar, 
+#'                            outcovar = outcovar)
+DummyCovar <- function(DataDir, ResultDir = DataDir, bfile, incovar, outcovar) {
+  if (
+    file.exists(paste0(DataDir, "/", bfile, ".bed")) &&
     file.exists(paste0(DataDir, "/", bfile, ".bim")) &&
-    file.exists(paste0(DataDir, "/", bfile, ".fam"))) {
-    # setupPlink(DataDir)
-  } else {
-    writeLines(
-      "There are no Plink files in DataDir.\nPlease specify correct directory path with input Plink files."
-    )
-    # return()
-  }
-
-  invisible(sys::exec_wait(
-    plink(),
-    args = c(
-      "--bed",
-      paste0(DataDir, "/", bfile, ".bed"),
-      "--bim",
-      paste0(DataDir, "/", bfile, ".bim"),
-      "--fam",
-      paste0(DataDir, "/", bfile, ".fam"),
-      "--covar",
-      paste0(DataDir, "/", incovar),
-      "--write-covar",
-      "--dummy-coding",
-      "--out",
-      paste0(DataDir, "/", outcovar),
-      "--silent"
-    ),
+    file.exists(paste0(DataDir, "/", bfile, ".fam"))
+  ) {
+    invisible(
+      sys::exec_wait(
+        plink(),
+        args = c(
+          "--bed",
+          paste0(DataDir, "/", bfile, ".bed"),
+          "--bim",
+          paste0(DataDir, "/", bfile, ".bim"),
+          "--fam",
+          paste0(DataDir, "/", bfile, ".fam"),
+          "--covar",
+          paste0(DataDir, "/", incovar),
+          "--write-covar",
+          "--dummy-coding",
+          "--out",
+          paste0(ResultDir, "/", outcovar),
+          "--silent"
+        ),
     std_out = FALSE,
     std_err = FALSE
-  ))
+  ))} else {
+    stop("There are no Plink files in DataDir.\nPlease specify correct directory path with input Plink files.")
+  }
 
-  x <- read.table(paste0(DataDir, "/", outcovar, ".cov"), header = TRUE)
-  rlang::inform(rlang::format_error_bullets(c("i" = paste0("Covariate file: ", outcovar, ".cov is in ", DataDir))))
-  return(x)
+  if(file.exists(paste0(ResultDir, "/", outcovar, ".cov"))){
+    x <- read.table(paste0(ResultDir, "/", outcovar, ".cov"), header = TRUE)
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0("Covariate file: ", outcovar, ".cov is in ", ResultDir))))
+    return(x)
+  }
+  
 }
 
 
