@@ -1259,7 +1259,6 @@ QCsnp <-
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' precomputedLD <- NULL
@@ -1299,7 +1298,6 @@ QCsnp <-
 #'   IndepSNP_window_size = 50, IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02,
 #'   highLD_regions = highLD_hg19
 #' )
-#' }
 EstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL, precomputedLD = NULL,
                           indepSNPs = NULL, summarystat = NULL, ncores = 2, model = c("LDSC", "GREML"),
                           computeGRM = TRUE, grmfile_name = NULL, byCHR = FALSE,
