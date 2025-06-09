@@ -171,11 +171,12 @@ following \insertCite{Bulik-Sullivan2014,Prive2020}{GXwasR}. For the details, pl
 Prior to using this function, it is recommended to apply QCsnp and QCsample to ensure data quality control.
 }
 \examples{
+data("Summary_Stat_Ex1", package = "GXwasR")
+data("highLD_hg19", package = "GXwasR")
 DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 precomputedLD <- NULL
 finput <- "GXwasR_example"
-data("GXwasRData")
 test.sumstats <- na.omit(Summary_Stat_Ex1[Summary_Stat_Ex1$TEST == "ADD", c(1:4, 6:8)])
 colnames(test.sumstats) <- c("chr", "rsid", "pos", "a1", "n_eff", "beta", "beta_se")
 summarystat <- test.sumstats
@@ -201,6 +202,7 @@ PlotIndepSNP <- TRUE
 IndepSNP_window_size <- 50
 IndepSNP_step_size <- 5
 IndepSNP_r2_threshold <- 0.02
+highLD_regions <- highLD_hg19
 H2 <- EstimateHerit(
   DataDir = DataDir, ResultDir = ResultDir, finput = finput,
   summarystat = NULL, ncores, model = "GREML", byCHR = TRUE, r2_LD = 0,

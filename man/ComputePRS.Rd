@@ -110,10 +110,14 @@ other covariates. Using this function, users have the freedom to experiment with
 test a wide range of various parameter values.
 }
 \examples{
+data("Summary_Stat_Ex1", package = "GXwasR")
+data("Example_phenofile", package = "GXwasR")
+data("Example_covarfile", package = "GXwasR")
+data("Example_pthresoldfile", package = "GXwasR")
+data("highLD_hg19", package = "GXwasR")
 DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
-data("GXwasRData")
 summarystat <- Summary_Stat_Ex1[, c(2, 4, 7, 1, 3, 12)]
 phenofile <- Example_phenofile # Cannot be NULL
 # The interested phenotype column should be labeled as "Pheno1".

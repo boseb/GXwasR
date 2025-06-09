@@ -182,10 +182,10 @@ Though this function implicitly performs X-linked gene-based test, it is flexibl
 For the details about the different tests, please follow the associated paper.
 }
 \examples{
+data("XWAS_Summary_Example", package = "GXwasR")
 DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
-data("GXwasRData")
 sumstat <- XWAS_Summary_Example
 ref_data <- NULL
 gene_file <- "Xlinkedgenes_hg19.txt"

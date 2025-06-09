@@ -120,9 +120,10 @@ i.e., effect size beta. 'This function also calculates weighted Z-score-based p-
 For more information about the algorithms, please see the associated paper.
 }
 \examples{
+data("Summary_Stat_Ex1", package = "GXwasR")
+data("Summary_Stat_Ex2", package = "GXwasR")
 DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
-data("GXwasRData")
 SummData <- list(Summary_Stat_Ex1, Summary_Stat_Ex2)
 SNPfile <- "UniqueLoci"
 useSNPposition <- FALSE

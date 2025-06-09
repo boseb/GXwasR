@@ -92,12 +92,13 @@
 #' @export
 #'
 #' @examples
+#' data("highLD_hg19", package = "GXwasR")
+#' data("example_data_study_sample_ancestry", package = "GXwasR")
 #' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' reference <- "HapMapIII_NCBI36"
-#' data("GXwasRData")
-#' highLD_regions <- GXwasR::highLD_hg19 # See: ?GXwasR::highLD_hg19
+#' highLD_regions <- highLD_hg19 
 #' study_pop <- example_data_study_sample_ancestry # PreimputeEX
 #' studyLD_window_size <- 50
 #' studyLD_step_size <- 5
@@ -499,10 +500,10 @@ AncestryCheck <-
 #' @export
 #'
 #' @examples
+#' data("XWAS_Summary_Example", package = "GXwasR")
 #' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
-#' data("GXwasRData")
 #' sumstat <- XWAS_Summary_Example
 #' ref_data <- NULL
 #' gene_file <- "Xlinkedgenes_hg19.txt"
@@ -788,7 +789,8 @@ TestXGene <- function(DataDir,
 #' @export
 #'
 #' @examples
-#' data("GXwasRData")
+#' data("Mfile", package = "GXwasR")
+#' data("Ffile", package = "GXwasR")
 #' Difftest <- SexDiff(Mfile, Ffile)
 #' significant_snps <- Difftest[Difftest$adjP < 0.05, ] # 9
 SexDiff <- function(Mfile, Ffile) {
@@ -1257,11 +1259,12 @@ QCsnp <-
 #' @export
 #'
 #' @examples
+#' data("Summary_Stat_Ex1", package = "GXwasR")
+#' data("highLD_hg19", package = "GXwasR")
 #' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' precomputedLD <- NULL
 #' finput <- "GXwasR_example"
-#' data("GXwasRData")
 #' test.sumstats <- na.omit(Summary_Stat_Ex1[Summary_Stat_Ex1$TEST == "ADD", c(1:4, 6:8)])
 #' colnames(test.sumstats) <- c("chr", "rsid", "pos", "a1", "n_eff", "beta", "beta_se")
 #' summarystat <- test.sumstats
@@ -1287,6 +1290,7 @@ QCsnp <-
 #' IndepSNP_window_size <- 50
 #' IndepSNP_step_size <- 5
 #' IndepSNP_r2_threshold <- 0.02
+#' highLD_regions <- highLD_hg19
 #' H2 <- EstimateHerit(
 #'   DataDir = DataDir, ResultDir = ResultDir, finput = finput,
 #'   summarystat = NULL, ncores, model = "GREML", byCHR = TRUE, r2_LD = 0,
@@ -1425,10 +1429,10 @@ EstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL, 
 #' @export
 #'
 #' @examples
+#' data("highLD_hg19", package = "GXwasR")
 #' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
-#' data("GXwasRData")
 #' highLD_regions <- highLD_hg19
 #' ld_prunning <- "TRUE"
 #' window_size <- 50
@@ -1700,10 +1704,14 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 #' @export
 #'
 #' @examples
+#' data("Summary_Stat_Ex1", package = "GXwasR")
+#' data("Example_phenofile", package = "GXwasR")
+#' data("Example_covarfile", package = "GXwasR")
+#' data("Example_pthresoldfile", package = "GXwasR")
+#' data("highLD_hg19", package = "GXwasR")
 #' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
-#' data("GXwasRData")
 #' summarystat <- Summary_Stat_Ex1[, c(2, 4, 7, 1, 3, 12)]
 #' phenofile <- Example_phenofile # Cannot be NULL
 #' # The interested phenotype column should be labeled as "Pheno1".
@@ -1741,7 +1749,7 @@ ComputePRS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phen
                        window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary") {
   # Validate inputs
   if (!validateInputForComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize, ldclump, LDreference, clump_p1, clump_p2, clump_r2, clump_kb, byCHR, pthreshold, highLD_regions, ld_prunning, window_size, step_size, r2_threshold, nPC, pheno_type)) {
-    return(NULL)
+    stop("Please validate all inputs")
   }
 
   if (!checkFiles(DataDir, finput)) {
@@ -1906,15 +1914,13 @@ ComputePRS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phen
 #' @export
 #'
 #' @examples
-#'
-#' # Not Run
-#' # DataDir <- system.file("extdata", package = "GXwasR")
-#' # ResultDir <- tempdir()
-#' # finput1 <- "GXwasR_example"
-#' # finput2 <- "GXwasR_example_imputed"
-#' # foutput <- "Test_output"
-#' # Not Run
-#' # y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput,  use_common_snps = TRUE)
+#' DataDir <- system.file("extdata", package = "GXwasR")
+#' ResultDir <- tempdir()
+#' finput1 <- "GXwasR_example"
+#' finput2 <- "GXwasR_example_imputed"
+#' foutput <- "Test_output"
+#' y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput,  use_common_snps = TRUE)
+
 MergeRegion <- function(DataDir, ResultDir, finput1, finput2, foutput, use_common_snps = TRUE) {
   # Validate inputs
   if (!validateInputForMergeRegion(DataDir, ResultDir, finput1, finput2, foutput, use_common_snps)) {
@@ -3385,7 +3391,8 @@ QCsample <- function(DataDir,
 #' @export
 #'
 #' @examples
-#' data("GXwasRData")
+#' data("Ffile", package = "GXwasR")
+#' data("Mfile", package = "GXwasR")
 #' FemaleWAS <- na.omit(Ffile[, c("SNP", "CHR", "BP", "P")])
 #' colnames(FemaleWAS) <- c("SNP", "CHR", "POS", "pvalue")
 #' MaleWAS <- na.omit(Mfile[, c("SNP", "CHR", "BP", "P")])
@@ -3862,9 +3869,10 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
 #' @export
 #'
 #' @examples
+#' data("Summary_Stat_Ex1", package = "GXwasR")
+#' data("Summary_Stat_Ex2", package = "GXwasR")
 #' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
-#' data("GXwasRData")
 #' SummData <- list(Summary_Stat_Ex1, Summary_Stat_Ex2)
 #' SNPfile <- "UniqueLoci"
 #' useSNPposition <- FALSE
@@ -4161,10 +4169,11 @@ MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile =
 #' \insertAllCited{}
 
 #' @examples
+#' data("Summary_Stat_Ex1", package = "GXwasR")
+#' data("Summary_Stat_Ex2", package = "GXwasR")
 #' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
-#' data("GXwasRData")
 #' SNPdata <- list(Summary_Stat_Ex1, Summary_Stat_Ex2)
 #' clump_p1 <- 0.0001
 #' clump_p2 <- 0.001
@@ -4397,9 +4406,9 @@ ClumpLD <- function(DataDir, finput, SNPdata, ResultDir = tempdir(),
 #' @export
 #'
 #' @examples
-#' data("GXwasRData")
-#' colnames(Example_rgdata) <- c("Trait", "Stat", "SE")
+#' data("Example_rgdata", package = "GXwasR")
 #' inputdata <- Example_rgdata
+#' colnames(inputdata) <- c("Trait", "Stat", "SE")
 #' x <- DiffZeroOne(inputdata, FALSE, TRUE)
 DiffZeroOne <- function(inputdata, diffzero = TRUE, diffone = TRUE) {
   validateInputForDiffZeroOne(inputdata, diffzero, diffone)
@@ -4479,7 +4488,7 @@ DiffZeroOne <- function(inputdata, diffzero = TRUE, diffone = TRUE) {
 #' @export
 #'
 #' @examples
-#' data("GXwasRData")
+#' data("Example_h2data", package = "GXwasR")
 #' inputdata <- Example_h2data
 #' x <- SexDiffZscore(inputdata)
 #'
@@ -4614,6 +4623,7 @@ SexDiffZscore <- function(inputdata) {
 #' \insertAllCited{}
 #'
 #' @examples
+#' data("Example_phenofile", package = "GXwasR")
 #' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
@@ -4621,7 +4631,6 @@ SexDiffZscore <- function(inputdata) {
 #' REMLalgo <- 0
 #' nitr <- 3
 #' ncores <- 3
-#' data("GXwasRData")
 #' phenofile <- Example_phenofile # Cannot be NULL
 #' cat_covarfile <- NULL
 #' quant_covarfile <- NULL
@@ -4834,8 +4843,7 @@ GeneticCorrBT <- function(DataDir, ResultDir, finput, byCHR = FALSE,
 #' @export
 #'
 #' @examples
-#'
-#' data("GXwasRData")
+#' data("Regression_Ex", package = "GXwasR")
 #' fdata <- Regression_Ex
 #' fdata$SEX <- as.factor(as.character(fdata$SEX))
 #' response_index <- 1
@@ -4859,7 +4867,7 @@ SexRegress <- function(fdata, regressor_index, response_index) {
 
       # R2 of response is simply calculated as the model R2 minus the null R2
       response.r2 <- model.r2 - null.r2
-      model.result <- summary(model)$coeff[regressor_index, ]
+      model.result <- summary(model)$coefficients[regressor_index, ]
       return(model.result)
     },
     error = function(e) {
@@ -5387,16 +5395,12 @@ FilterAllele <- function(DataDir, ResultDir, finput, foutput) {
 #' \insertAllCited{}
 #'
 #' @examples
-#' data("GXwasRData")
+#' data("Mfile", package = "GXwasR")
+#' data("Ffile", package = "GXwasR")
 #' SumstatMale <- Mfile
 #' colnames(SumstatMale)[3] <- "POS"
 #' SumstatFemale <- Ffile
 #' colnames(SumstatFemale)[3] <- "POS"
-#' # Use the below datasets for tutorial document
-#' # SumstatMale <- Summary_Stat_Ex1
-#' # colnames(SumstatMale)[3]<- "POS"
-#' # SumstatFemale <- Summary_Stat_Ex2
-#' # colnames(SumstatFemale)[3]<- "POS"
 #' PvalComb_Result <- PvalComb(
 #'   SumstatMale = SumstatMale, SumstatFemale = SumstatFemale,
 #'   combtest = "fisher.method", MF.mc.cores = 1, snp_pval = 0.001, plot.jpeg = FALSE,

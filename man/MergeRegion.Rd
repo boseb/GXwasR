@@ -35,15 +35,12 @@ The output plink files will be saved in ResultDir.
 This function combines the two genotype datasets based on either common SNPs or all the SNPs between them.
 }
 \examples{
-
-# Not Run
-# DataDir <- system.file("extdata", package = "GXwasR")
-# ResultDir <- tempdir()
-# finput1 <- "GXwasR_example"
-# finput2 <- "GXwasR_example_imputed"
-# foutput <- "Test_output"
-# Not Run
-# y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput,  use_common_snps = TRUE)
+DataDir <- system.file("extdata", package = "GXwasR")
+ResultDir <- tempdir()
+finput1 <- "GXwasR_example"
+finput2 <- "GXwasR_example_imputed"
+foutput <- "Test_output"
+y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput,  use_common_snps = TRUE)
 }
 \author{
 Banabithi Bose
