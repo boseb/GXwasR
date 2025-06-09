@@ -499,7 +499,6 @@ AncestryCheck <-
 #' @export
 #'
 #' @examples
-#' \donttest{
 #' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
@@ -539,7 +538,6 @@ AncestryCheck <-
 #'   flm_basis_function, flm_num_basis, flm_poly_order, flip_genotypes,
 #'   omit_linear_variant
 #' )
-#' }
 
 TestXGene <- function(DataDir,
                       ResultDir = tempdir(),
