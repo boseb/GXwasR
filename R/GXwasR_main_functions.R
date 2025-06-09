@@ -492,6 +492,7 @@ AncestryCheck <-
 #' \insertAllCited{}
 #'
 #' @importFrom GenomicRanges makeGRangesFromDataFrame
+#' @importFrom magrittr %>%
 #' @importFrom regioneR toGRanges
 #' @importFrom plyranges join_overlap_intersect
 #' @importFrom sumFREGAT SKAT SKATO sumchi ACAT BT PCA FLM simpleM minp
