@@ -1297,7 +1297,7 @@ prsFun <- function(pthreshold, ResultDir, DataDir, finput, clumpExtract, clumpSN
     prs.r2 <- summary(model)$r.squared - summary(null_model)$r.squared
   }
 
-  prs.coef <- summary(model)$coeff["SCORE", ]
+  prs.coef <- summary(model)$coefficients["SCORE", ]
   prs.result <- rbind(data.frame(pthreshold, R2 = prs.r2, P = prs.coef[4], BETA = prs.coef[1], SE = prs.coef[2]))
   colnames(prs.result) <- c("Threshold", "R2", "P", "BETA", "SE")
 
@@ -7608,9 +7608,13 @@ executePlinkChrFilter <- function(ResultDir, DataDir, finput, filterCHR, foutput
 ## Added in 3.0
 removeFiles <- function(fileNames, directory) {
   for (fileName in fileNames) {
-    file.remove(file.path(directory, fileName))
+    filePath <- file.path(directory, fileName)
+    if (file.exists(filePath)) {
+      file.remove(filePath)
+    }
   }
 }
+
 
 removeFiles1 <- function(fileNames) {
   for (fileName in fileNames) {

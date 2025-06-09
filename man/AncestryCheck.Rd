@@ -91,12 +91,13 @@ in CGRCh37. Both study and reference datasets should be of the same genome build
 datasets to the same build.
 }
 \examples{
+data("highLD_hg19", package = "GXwasR")
+data("example_data_study_sample_ancestry", package = "GXwasR")
 DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 reference <- "HapMapIII_NCBI36"
-data("GXwasRData")
-highLD_regions <- GXwasR::highLD_hg19 # See: ?GXwasR::highLD_hg19
+highLD_regions <- highLD_hg19 
 study_pop <- example_data_study_sample_ancestry # PreimputeEX
 studyLD_window_size <- 50
 studyLD_step_size <- 5
