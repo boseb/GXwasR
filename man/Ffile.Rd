@@ -4,6 +4,18 @@
 \name{Ffile}
 \alias{Ffile}
 \title{Example dataset for FemaleWAS}
+\format{
+A data frame with 120 rows and 7 variables:
+\describe{
+\item{SNP}{SNP identifier (rsID); character string}
+\item{CHR}{Chromosome number; integer}
+\item{BP}{Base-pair position (GRCh37 or GRCh38 assumed); integer}
+\item{A1}{Effect allele; character string}
+\item{BETA_F}{Effect size estimate (beta coefficient) for females; numeric}
+\item{SE_F}{Standard error of the female beta estimate; numeric}
+\item{P}{P-value for the association; numeric}
+}
+}
 \description{
 Example dataset for FemaleWAS
 }

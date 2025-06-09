@@ -61,6 +61,7 @@ Imports:
     foreach,
     Rdpack,
     Rsamtools,
-    cli
+    cli,
+    parallel
 RdMacros: Rdpack
 biocViews: GenomeWideAssociation, LinkageDisequilibrium, VariantDetection, QualityControl, PrincipalComponent
