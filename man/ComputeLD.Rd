@@ -27,10 +27,8 @@ This function computes linkage disequilibrium (LD) statistics for SNP data using
 SNPs or within specific chromosomes.
 }
 \examples{
-\donttest{
-ComputeLD(
+snpld <- ComputeLD(
   DataDir = system.file("extdata", package = "GXwasR"), ResultDir = tempdir(),
   finput = "GXwasR_example", ByCHR = TRUE, CHRnum = 1, r2_LD = 0.2
 )
-}
 }

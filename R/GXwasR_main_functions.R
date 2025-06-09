@@ -6124,12 +6124,11 @@ SumstatGenCorr <- function(
 #' @export
 #'
 #' @examples
-#' \donttest{
-#' ComputeLD(
+#' snpld <- ComputeLD(
 #'   DataDir = system.file("extdata", package = "GXwasR"), ResultDir = tempdir(),
 #'   finput = "GXwasR_example", ByCHR = TRUE, CHRnum = 1, r2_LD = 0.2
 #' )
-#' }
+
 ComputeLD <- function(DataDir, ResultDir, finput, ByCHR = FALSE, CHRnum = NULL, r2_LD) {
   if (ByCHR == FALSE) {
     chr <- NULL
