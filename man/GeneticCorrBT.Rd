@@ -104,7 +104,6 @@ following \insertCite{Yang2011,Lee2012}{GXwasR}. If users want, this function gi
 correlation chromosome-wise.
 }
 \examples{
-\dontrun{
 DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
@@ -130,7 +129,6 @@ genetic_correlation <- GeneticCorrBT(
   partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
   cripticut = 0.025, minMAF = NULL, maxMAF = NULL, excludeResidual = TRUE, ncores = ncores
 )
-}
 }
 \references{
 \insertAllCited{}
