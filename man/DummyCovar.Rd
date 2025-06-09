@@ -9,6 +9,8 @@ DummyCovar(DataDir, ResultDir = DataDir, bfile, incovar, outcovar)
 \arguments{
 \item{DataDir}{A character string for the file path of the input PLINK binary files.}
 
+\item{ResultDir}{A character string for the file path where all output files will be stored. The default is \code{tempdir()}.}
+
 \item{bfile}{Character string, specifying the prefix of the input PLINK binary files for which covariate file will be generated.}
 
 \item{incovar}{Character string, specifying the prefix of the input covariate file. First two columns will be, FID (i.e., Family ID) and IID (i.e.,

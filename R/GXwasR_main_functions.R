@@ -5726,6 +5726,9 @@ Download_reference <- function(refdata, wdir = tempdir()) {
 #'
 #' @param DataDir
 #' A character string for the file path of the input PLINK binary files.
+#' 
+#' @param ResultDir
+#' A character string for the file path where all output files will be stored. The default is `tempdir()`.
 #'
 #' @param bfile
 #' Character string, specifying the prefix of the input PLINK binary files for which covariate file will be generated.
