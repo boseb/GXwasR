@@ -171,7 +171,6 @@ following \insertCite{Bulik-Sullivan2014,Prive2020}{GXwasR}. For the details, pl
 Prior to using this function, it is recommended to apply QCsnp and QCsample to ensure data quality control.
 }
 \examples{
-\dontrun{
 DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 precomputedLD <- NULL
@@ -211,7 +210,6 @@ H2 <- EstimateHerit(
   IndepSNP_window_size = 50, IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02,
   highLD_regions = highLD_hg19
 )
-}
 }
 \references{
 \insertAllCited{}

@@ -120,7 +120,6 @@ i.e., effect size beta. 'This function also calculates weighted Z-score-based p-
 For more information about the algorithms, please see the associated paper.
 }
 \examples{
-\dontrun{
 DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 data("GXwasRData")
@@ -134,7 +133,6 @@ pval_filter <- "R"
 top_snp_pval <- 1e-08
 max_top_snps <- 10
 chosen_snps_file <- NULL
-# chosen_snps_file = "MainSNP"
 pval_threshold_manplot <- 1e-05
 plotname <- "Meta_Analysis.plot"
 x <- MetaGWAS(
@@ -143,7 +141,6 @@ x <- MetaGWAS(
   plotname = "Meta_Analysis.plot", pval_filter, top_snp_pval, max_top_snps,
   chosen_snps_file = NULL, byCHR, pval_threshold_manplot
 )
-}
 }
 \references{
 \insertAllCited{}

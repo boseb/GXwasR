@@ -4,6 +4,19 @@
 \name{Regression_Ex}
 \alias{Regression_Ex}
 \title{Example dataset for regression}
+\format{
+A data frame with 276 rows and 8 variables:
+\describe{
+\item{SCORE}{Polygenic score; numeric}
+\item{SEX}{Sex coded as 1 (male) or 2 (female); integer}
+\item{PC1}{First ancestry principal component; numeric}
+\item{PC2}{Second ancestry principal component; numeric}
+\item{PC3}{Third ancestry principal component; numeric}
+\item{PC4}{Fourth ancestry principal component; numeric}
+\item{PC5}{Fifth ancestry principal component; numeric}
+\item{PC6}{Sixth ancestry principal component; numeric}
+}
+}
 \description{
 Example dataset for regression
 }
