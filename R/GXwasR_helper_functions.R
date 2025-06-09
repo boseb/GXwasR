@@ -3984,7 +3984,7 @@ PlotHeritability <- function(Hdata, miMAF, maMAF, plotjpeg, plotname, ResultDir)
 computeMAFRange <- function(DataDir, ResultDir, finput, minMAF, maxMAF) {
   if (is.null(minMAF) | is.null(maxMAF)) {
     # Compute min and max MAF using Plink
-    plink_exec_path <- paste0(ResultDir, "/plink")
+    plink_exec_path <- plink()
     args <- c("--bfile", paste0(DataDir, "/", finput), "--freq", "--out", paste0(ResultDir, "/MAF"), "--silent")
 
     invisible(sys::exec_wait(plink_exec_path, args = args, std_out = FALSE, std_err = FALSE))
@@ -4139,7 +4139,7 @@ processLDSCModel <- function(DataDir, ResultDir, finput, precomputedLD, IndepSNP
       result2 <- merge(result1, chr_mb, by.y = "chrom", by.x = "chromosome")
       colnames(result2) <- c("chromosome", "snp_proportion", "no.of.genes", "no.of.proteins", "Intercept", "Int_SE", "Variance", "SE", "Source", "size_mb")
       # create plot with regression line, regression equation, Pearson correlation and p-value.
-      suppressWarnings(PlotHeritability(Hdata = result2, miMAF = miMAF, maMAF = maMAF, plotjpeg = plotjpeg, plotname = plotname))
+      suppressWarnings(PlotHeritability(Hdata = result2, miMAF = miMAF, maMAF = maMAF, plotjpeg = plotjpeg, plotname = plotname, ResultDir = ResultDir))
 
       result3 <- result2
       colnames(result3) <- c("Chromosome", "SNP_proportion", "No.of.genes", "No.of.proteins", "Intercept", "Int_SE", "Variance", "SE", "Source", "Size_mb")
@@ -4310,7 +4310,7 @@ processGREMLModel <- function(DataDir, ResultDir, finput, byCHR, autosome, Xsome
       result2 <- merge(result1, chr_mb, by.y = "chrom", by.x = "chromosome")
 
       # create plot with regression line, regression equation, Pearson correlation and p-value.
-      suppressWarnings(PlotHeritability(Hdata = result2, miMAF = miMAF, maMAF = maMAF, plotjpeg = plotjpeg, plotname = plotname))
+      suppressWarnings(PlotHeritability(Hdata = result2, miMAF = miMAF, maMAF = maMAF, plotjpeg = plotjpeg, plotname = plotname, ResultDir = ResultDir))
 
       result3 <- merge(result, chr_mb, by.y = "chrom", by.x = "chromosome")
       result3 <- result3[, c(1:4, 8, 5:7)]
