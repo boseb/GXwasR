@@ -3613,10 +3613,10 @@ ComputeREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100
   } else {
     rlang::inform(rlang::format_error_bullets(c(
       "x" = "Convergence issue occurred, please:", 
-      " " = "verify the model used", 
-      " " = "set byCHR = TRUE", 
-      " " = "set different options", 
-      " " = "verify SNP partitioning or quality of the data")))
+      " " = "- verify the model used", 
+      " " = "- set byCHR = TRUE", 
+      " " = "- set different options", 
+      " " = "- verify SNP partitioning or quality of the data")))
 
     log_file <- paste0(ResultDir, "/", chr, "test_reml.log")
 
@@ -3731,10 +3731,10 @@ ComputeREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 1
   } else {
     rlang::inform(rlang::format_error_bullets(c(
       "x" = "Convergence issue occurred, please:", 
-      " " = "verify the model used", 
-      " " = "set byCHR = TRUE", 
-      " " = "set different options", 
-      " " = "verify SNP partitioning or quality of the data")))
+      " " = "- verify the model used", 
+      " " = "- set byCHR = TRUE", 
+      " " = "- set different options", 
+      " " = "- verify SNP partitioning or quality of the data")))
 
     log_file <- paste0(ResultDir, "/test_reml.log")
 
@@ -4671,9 +4671,9 @@ ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr 
     rlang::inform(rlang::format_error_bullets(c("i" = grep("Note: to constrain", readLines(paste0(ResultDir, "/", chr, "test_bireml.log")), value = TRUE))))
     rlang::inform(rlang::format_error_bullets(c(
       "x" = "Convergence issue occurred, please:", 
-      " " = "set byCHR = TRUE", 
-      " " = "set different options", 
-      " " = "verify SNP partitioning or quality of the data")))
+      " " = "- set byCHR = TRUE", 
+      " " = "- set different options", 
+      " " = "- verify SNP partitioning or quality of the data")))
     rlang::inform(rlang::format_error_bullets(c("i" = "The result will be provided for the last iteration.")))
     message("\n")
     # if(grep("Error", readLines(paste0(ResultDir,"/",chr,"test_bireml.log")), value = TRUE) == 0){
@@ -4784,9 +4784,9 @@ ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nit
     rlang::inform(rlang::format_error_bullets(c("i" = grep("Note: to constrain", readLines(paste0(ResultDir, "/test_bireml.log")), value = TRUE))))
     rlang::inform(rlang::format_error_bullets(c(
       "x" = "Convergence issue occurred, please:", 
-      " " = "set byCHR = TRUE", 
-      " " = "set different options", 
-      " " = "verify SNP partitioning or quality of the data")))
+      " " = "- set byCHR = TRUE", 
+      " " = "- set different options", 
+      " " = "- verify SNP partitioning or quality of the data")))
     rlang::inform(rlang::format_error_bullets(c("i" = "The result will be provided for the last iteration.")))
     message("\n")
     # x <- as.data.frame(t(x1))

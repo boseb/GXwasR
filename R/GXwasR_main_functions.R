@@ -4618,7 +4618,6 @@ SexDiffZscore <- function(inputdata) {
 #' \insertAllCited{}
 #'
 #' @examples
-#' \dontrun{
 #' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
@@ -4644,7 +4643,6 @@ SexDiffZscore <- function(inputdata) {
 #'   partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
 #'   cripticut = 0.025, minMAF = NULL, maxMAF = NULL, excludeResidual = TRUE, ncores = ncores
 #' )
-#' }
 GeneticCorrBT <- function(DataDir, ResultDir, finput, byCHR = FALSE,
                           REMLalgo = c(0, 1, 2), nitr = 100, phenofile, cat_covarfile = NULL, quant_covarfile = NULL,
                           computeGRM = TRUE, grmfile_name = NULL,
@@ -4795,13 +4793,10 @@ GeneticCorrBT <- function(DataDir, ResultDir, finput, byCHR = FALSE,
 
           # Gather files matching the patterns
           patterns <- c("bireml", "grm", "test", "gcta", "GCphenofile", "multi_GRMs.txt")
-          files_to_remove <- unlist(lapply(patterns, function(pattern) {
-            list.files(ResultDir, pattern = patterns, full.names = TRUE)
-          }))
-
-          # Use removeFiles helper function to delete the files
-          file.remove(files_to_remove, showWarnings = FALSE)
-          # removeFiles(files_to_remove, ResultDir)
+          patterns_regex <- paste0(patterns, collapse = "|")
+          files_to_remove <- list.files(ResultDir, pattern = patterns_regex, full.names = TRUE)
+          # Remove Files
+          invisible(file.remove(files_to_remove))
 
           return(result)
         }
@@ -5639,7 +5634,7 @@ FilterSNP <- function(DataDir, ResultDir, finput, foutput, SNPvec, extract = FAL
 #' @export
 #' @examples
 #' \dontrun{
-#' Download_reference("ThousandGenome", "path/to/your/directory")
+#' Download_reference("ThousandGenome", tempdir())
 #' Download_reference("HapMapIII_NCBI36", tempdir())
 #' }
 Download_reference <- function(refdata, wdir = tempdir()) {
