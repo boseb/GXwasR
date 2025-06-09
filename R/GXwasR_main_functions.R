@@ -5899,12 +5899,10 @@ executePlinkMAF <- function(DataDir, ResultDir, finput) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' DataDir <- "path/to/data"
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
-#' finput <- "dataset_prefix"
+#' finput <- "GXwasR_example"
 #' prunedSNPs <- LDPrune(DataDir, finput, ResultDir, 50, 5, 0.2)
-#' }
 LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, step_size = 5, r2_threshold = 0.2) {
   # Validate input parameters
   validateInputForLDPrune(DataDir, finput, ResultDir, window_size, step_size, r2_threshold)
