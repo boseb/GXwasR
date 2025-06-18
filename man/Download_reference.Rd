@@ -20,7 +20,7 @@ Currently supports 'HapMapIII_NCBI36' and 'ThousandGenome'.
 }
 \examples{
 \dontrun{
-Download_reference("ThousandGenome", "path/to/your/directory")
+Download_reference("ThousandGenome", tempdir())
 Download_reference("HapMapIII_NCBI36", tempdir())
 }
 }

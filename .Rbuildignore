@@ -4,7 +4,13 @@
 ^CODE_OF_CONDUCT\.md$
 ^INSTALL\.txt$
 ^plink.*\.zip$
+^gcta\.zip$
+^gcta-.*\.zip$
+^gcta_extracted$
 ^\.github$
+^\.vscode$
+^GXwasR-package\.Rd$
+^logo
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
