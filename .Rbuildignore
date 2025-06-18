@@ -11,3 +11,6 @@
 ^\.vscode$
 ^GXwasR-package\.Rd$
 ^logo
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
