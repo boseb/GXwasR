@@ -4,6 +4,15 @@
 \name{Example_phenofile}
 \alias{Example_phenofile}
 \title{Example dataset for phenotype file}
+\format{
+A data frame with 276 rows and 4 variables:
+\describe{
+\item{FID}{Family ID; character string}
+\item{IID}{Individual ID; character string}
+\item{Pheno1}{Example phenotype 1; integer (e.g., case/control status)}
+\item{Pheno2}{Example phenotype 2; numeric (e.g., quantitative trait)}
+}
+}
 \description{
 Example dataset for phenotype file
 }

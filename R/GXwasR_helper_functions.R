@@ -2,7 +2,7 @@
 # GXwasR helper functions
 #' @author Banabithi Bose
 #' @importFrom stats na.omit median qchisq binomial dnorm glm na.exclude p.adjust pchisq pnorm lm pt qnorm setNames
-#' @importFrom utils download.file read.table unzip write.table untar txtProgressBar
+#' @importFrom utils download.file read.table unzip write.table untar txtProgressBar setTxtProgressBar
 #' @importFrom qqman manhattan qq
 #' @importFrom grDevices dev.off jpeg
 #' @importFrom poolr stouffer bonferroni
@@ -25,35 +25,72 @@
 #' @importFrom ggrepel geom_text_repel
 #' @importFrom BiocStyle html_document
 #' @importFrom dplyr filter mutate distinct arrange select case_when summarise
+#' @importFrom rlang inform format_error_bullets
+#' @importFrom cli cli_progress_bar pb_bar pb_percent pb_current pb_total cli_progress_update cli_progress_done
+#' @importFrom parallel clusterCall clusterExport parLapply makeCluster stopCluster
 
 ## PLINK Dependency Check
 verifyPlink <- function() {
-  os_type <- Sys.info()[["sysname"]]
+  os_type <- detect_os_type()
+
+  # Helper to determine if the found plink binary is the bioinformatics version
+  is_bioinformatics_plink <- function(plink_path) {
+    out <- tryCatch(
+      {
+        system2(plink_path, "--version", stdout = TRUE, stderr = TRUE)
+      },
+      error = function(e) {
+        character()
+      }
+    )
+    if (length(out) == 0) {
+      return(FALSE)
+    }
+    
+    has_plink_signature <- any(grepl("^PLINK v[0-9.]+", out))
+    is_not_putty <- !any(grepl("plink:|Release|PuTTY|Build platform", out, ignore.case = TRUE))
+    
+    has_plink_signature && is_not_putty
+  }
+
   # 1. Check PLINK_PATH environment variable
   env_path <- Sys.getenv("PLINK_PATH", unset = NA)
   if (!is.na(env_path)) {
     resolved_env_path <- normalizePath(env_path, mustWork = FALSE)
-    if (file.exists(resolved_env_path)) {
+    if (file.exists(resolved_env_path) && is_bioinformatics_plink(resolved_env_path)) {
       return(resolved_env_path)
-    } else {
-      message("PLINK_PATH is set but file does not exist: ", resolved_env_path)
+    } else if (file.exists(resolved_env_path)) {
+      message("PLINK_PATH is set but points to a non-bioinformatics 'plink' binary: ", resolved_env_path)
     }
   }
 
   # 2. Check system path via Sys.which
   sys_path <- Sys.which("plink")
   # On Windows, check for `.exe` if missing
-  if (os_type == "Windows" && !grepl("\\.exe$", sys_path, ignore.case = TRUE)) {
+  if (os_type == "windows" && !grepl("\\.exe$", sys_path, ignore.case = TRUE)) {
     sys_path <- paste0(sys_path, ".exe")
   }
   # Normalize and check existence
   resolved_sys_path <- normalizePath(sys_path, mustWork = FALSE)
   if (nzchar(resolved_sys_path) && file.exists(resolved_sys_path)) {
-    return(resolved_sys_path)
+    if (is_bioinformatics_plink(resolved_sys_path)) {
+      return(resolved_sys_path)
+    } else {
+      message("System 'plink' found at ", resolved_sys_path, ", but it does not appear to be the bioinformatics version.")
+    }
   }
-  
+
   # 3. Failure message
-  stop("PLINK binary not found. Please install PLINK and/or set the PLINK_PATH environment variable.")
+  rlang::abort(
+    message = rlang::format_error_bullets(c(
+      "PLINK binary not found.",
+      "x" = "Attempted to locate the 'PLINK_PATH' environment variable and 'plink' in system PATH.",
+      "i" = "Ensure PLINK is available and executable (bioinformatics version).",
+      "i" = "You can permanently set the path to 'plink' by running:",
+      " " = "usethis::edit_r_environ()  # then add a line like: PLINK_PATH=/full/path/to/plink")
+    ),
+    class = "plink_not_found"
+  )
 }
 
 
@@ -138,7 +175,7 @@ MFsplitPlink <- function(DataDir, ResultDir, finput, foutput, sex, xplink = FALS
     ))
   }
 
-  print("Stratified test is running")
+  rlang::inform(rlang::format_error_bullets("Stratified test is running"))
 }
 
 ## Function 3
@@ -173,11 +210,11 @@ executePlink <- function(args, ResultDir) {
 ########## Added in 3.0
 analyzePhenotypeData <- function(fam, fam4) {
   No.of.missing.pheno <- nrow(fam[fam$V6 == -9 | fam$V6 == 0, ])
-  print(paste0("Number of missing phenotypes:", No.of.missing.pheno))
+  rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of missing phenotypes:", No.of.missing.pheno))))
   No.of.males <- nrow(fam[fam$V5 == 1, ])
   No.of.females <- nrow(fam[fam$V5 == 2, ])
-  print(paste0("Number of males:", No.of.males))
-  print(paste0("Number of females:", No.of.females))
+  rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of males:", No.of.males))))
+  rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of females:", No.of.females))))
 
 
   unique_pheno <- unique(fam4$V6)
@@ -185,36 +222,36 @@ analyzePhenotypeData <- function(fam, fam4) {
   if (length(unique_pheno) == 2) {
     No.of.cases <- nrow(fam4[fam4$V6 == 2, ])
     No.of.controls <- nrow(fam4[fam4$V6 == 1, ])
-    message <- "This is a case-control data."
-    print(message)
+    message <- "This is case-control data"
+    rlang::inform(rlang::format_error_bullets(c("i" = message)))
     ## Updated in 4.0
-    print(paste0("Number of cases:", No.of.cases))
-    print(paste0("Number of controls:", No.of.controls))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of cases:", No.of.cases))))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of controls:", No.of.controls))))
 
     ## Updated in 5.0
     if (No.of.males != 0) {
       M <- fam[fam$V5 == 1, ]
       No.of.cases.in.males <- nrow(M[M$V6 == 2, ])
       No.of.controls.in.males <- nrow(M[M$V6 == 1, ])
-      print(paste0("Number of cases in males:", No.of.cases.in.males))
-      print(paste0("Number of controls in males:", No.of.controls.in.males))
+      rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of cases in males:", No.of.cases.in.males))))
+      rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of controls in males:", No.of.controls.in.males))))
     }
     if (No.of.females != 0) {
       PF <- fam[fam$V5 == 2, ]
       No.of.cases.in.females <- nrow(PF[PF$V6 == 2, ])
       No.of.controls.in.females <- nrow(PF[PF$V6 == 1, ])
-      print(paste0("Number of cases in females:", No.of.cases.in.females))
-      print(paste0("Number of controls in females:", No.of.controls.in.females))
+      rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of cases in females:", No.of.cases.in.females))))
+      rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of controls in females:", No.of.controls.in.females))))
     }
   } else if (length(unique_pheno) == 1 && unique_pheno != -9) {
-    message <- paste0("This dataset contains a single trait value: ", unique_pheno)
-    print(message)
+    message <- paste("This dataset contains a single trait value:", unique_pheno)
+    rlang::inform(rlang::format_error_bullets(message))
   } else if (unique(fam$V6) == -9) {
     message <- "This dataset contains missing trait values for all samples."
-    print(message)
+    rlang::inform(rlang::format_error_bullets(message))
   } else {
     message <- "This dataset contains quantitative trait value."
-    print(message)
+    rlang::inform(rlang::format_error_bullets(message))
   }
 }
 
@@ -309,7 +346,7 @@ removeTempFiles <- function(directory, pattern) {
   if (length(tempFiles) > 0) {
     suppressWarnings(file.remove(tempFiles))
   } else {
-    print(paste("No files found with pattern:", pattern, "in directory:", directory))
+    rlang::inform(rlang::format_error_bullets(c("x" = paste("No files found with pattern:", pattern, "in directory:", directory))))
   }
 
   # Reset the sink to stop redirecting the output to the file
@@ -323,7 +360,9 @@ removeTempFiles <- function(directory, pattern) {
 copyTempFiles <- function(sourceDir, targetDir, pattern) {
   tempFiles <- list.files(sourceDir, pattern = pattern, full.names = TRUE)
   if (length(tempFiles) > 0) {
-    sapply(tempFiles, function(file) file.copy(file, targetDir))
+    vapply(tempFiles, function(file) file.copy(file, targetDir), logical(1))
+  } else {
+    logical(0)
   }
 }
 
@@ -355,8 +394,8 @@ createHeterozygosityPlot <- function(hetermiss, hetfail, imissfail, het, imiss, 
   hetermiss$shape <- as.factor(hetermiss$shape)
 
   # Plotting
-  print("Plots are initiated.")
-  plot_hetimiss <- ggplot2::ggplot(data = hetermiss, ggplot2::aes(x = with(hetermiss, logF_MISS), y = F, color = with(hetermiss, type), shape = with(hetermiss, shape))) +
+  rlang::inform(rlang::format_error_bullets("Plots are initiated."))
+  plot_hetimiss <- ggplot2::ggplot(data = hetermiss, ggplot2::aes(x = with(hetermiss, logF_MISS), y = FALSE, color = with(hetermiss, type), shape = with(hetermiss, shape))) +
     ggplot2::geom_point() +
     ggplot2::scale_shape_manual(values = c(16, 17), guide = "none") +
     ggplot2::scale_color_manual(values = colors) +
@@ -393,7 +432,7 @@ processAmbiguousSamples <- function(DataDir, ResultDir, finput, fam1) {
   executePlink(pruneArgs, ResultDir)
 
   fam2 <- nrow(read.table(paste0(ResultDir, "/", "FINPUT", ".fam"), header = FALSE))
-  print(paste0("No. of ambiguous samples filtered out: ", fam1 - fam2))
+  rlang::inform(rlang::format_error_bullets(c("i" = paste0("Number of ambiguous samples filtered out: ", fam1 - fam2))))
 
   copyTempFiles(ResultDir, DataDir, "FINPUT")
   "FINPUT"
@@ -420,7 +459,7 @@ filterSamples <- function(DataDir, ResultDir, finput, failed_het_imiss, filterSa
       "--silent"
     )
     executePlink(excludeSamplesArgs, ResultDir)
-    print("Samples are flagged for missingness and heterogygosity threshold.")
+    rlang::inform(rlang::format_error_bullets("Samples are flagged for missingness and heterogygosity threshold."))
   }
 }
 
@@ -428,20 +467,20 @@ filterSamples <- function(DataDir, ResultDir, finput, failed_het_imiss, filterSa
 ######### Added in 3.0
 printSampleFilterResults <- function(imissfail, hetfail, failed_het_imiss) {
   if (nrow(imissfail) == 0) {
-    print("No. of samples filtered/flagged for missingness: 0")
+    rlang::inform(rlang::format_error_bullets(c("i" = "No. of samples filtered/flagged for missingness: 0")))
   } else {
-    print(paste0("No. of samples filtered/flagged for missingness: ", length(unique(imissfail$IID))))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0("No. of samples filtered/flagged for missingness: ", length(unique(imissfail$IID))))))
   }
 
   if (nrow(hetfail) == 0) {
-    print("No. of samples filtered/flagged for heterozygosity: 0")
+    rlang::inform(rlang::format_error_bullets(c("i" = "No. of samples filtered/flagged for heterozygosity: 0")))
   } else {
-    print(paste0("No. of samples filtered/flagged for heterozygosity threshold: ", length(unique(hetfail$IID))))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0("No. of samples filtered/flagged for heterozygosity threshold: ", length(unique(hetfail$IID))))))
   }
   if (nrow(failed_het_imiss) == 0) {
-    print("No. of samples filtered for missingness and heterozygosity: 0")
+    rlang::inform(rlang::format_error_bullets(c("i" = "No. of samples filtered for missingness and heterozygosity: 0")))
   } else {
-    print(paste0("No. of samples filtered/flagged for missingness and heterozygosity: ", length(unique(failed_het_imiss$IID))))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0("No. of samples filtered/flagged for missingness and heterozygosity: ", length(unique(failed_het_imiss$IID))))))
   }
 }
 
@@ -455,7 +494,7 @@ processIBDData <- function(IBD, IBDmatrix, ResultDir, foutput, filterSample) {
     # Optionally save the entire IBD matrix
     if (IBDmatrix) {
       executePlinkForIBD(ResultDir, NULL, "Entire_ibd")
-      print("Entire IBD matrix 'Entire_ibd.genome' saved in ResultDir.")
+      rlang::inform(rlang::format_error_bullets(c("v" = "Entire IBD matrix 'Entire_ibd.genome' saved in ResultDir.")))
     }
 
     # Read filtered IBD data
@@ -578,10 +617,10 @@ setPlinkFlags <- function(maf, geno, hwe, hweCase, hweControl) {
 
   if (!is.null(hwe)) {
     if (!is.null(hweControl)) {
-      print("Since hwe is not NULL, hweControl should be NULL. Setting hweControl = NULL implicitly.")
+      rlang::inform(rlang::format_error_bullets(c("i" = "Since hwe is not NULL, hweControl should be NULL. Setting hweControl = NULL implicitly.")))
       hweControl <- NULL
     } else if (!is.null(hweCase)) {
-      print("Since hwe is not NULL, hweCase should be NULL. Setting hweCase = NULL implicitly.")
+      rlang::inform(rlang::format_error_bullets(c("i" = "Since hwe is not NULL, hweCase should be NULL. Setting hweCase = NULL implicitly.")))
       hweCase <- NULL
     }
     HWE <- "--hwe"
@@ -655,11 +694,11 @@ applyFiltersWithPlink <- function(ResultDir, DataDir, finput, MAF, maf, GENO, ge
 
   # Check if the file exists and print relevant messages
   if (file.exists(paste0(ResultDir, "/filtered_temp1.bed"))) {
-    print("Thresholds for maf, geno and hwe worked.")
+    rlang::inform(rlang::format_error_bullets(c("v" = "Thresholds for maf, geno and hwe worked.")))
     logContents <- readLines(paste0(ResultDir, "/filtered_temp1.log"))
-    print(grep("variants removed", logContents, value = TRUE))
+    rlang::inform(rlang::format_error_bullets(c("i" = grep("variants removed", logContents, value = TRUE))))
   } else {
-    print("Error applying thresholds or file not found.")
+    rlang::inform(rlang::format_error_bullets(c("x" = "Error applying thresholds or file not found.")))
     executePlinkAd(ResultDir, args = c(
       "--bfile", paste0(DataDir, "/", finput),
       "--make-bed",
@@ -702,7 +741,7 @@ applyCaseControlFilters <- function(ResultDir, fam4, casecontrol, HWECase, hweCa
     nextFile <- "filtered_temp2"
   } else {
     if (length(unique(fam4$V6)) == 1) {
-      print("There is no case-control status in the plink files. Setting casecontrol = FALSE implicitly.")
+      rlang::inform(rlang::format_error_bullets(c("i" = "There is no case-control status in the plink files. Setting casecontrol = FALSE implicitly.")))
       casecontrol <- FALSE
     } else {
       casecontrol <- FALSE
@@ -718,8 +757,8 @@ applyCaseControlFilters <- function(ResultDir, fam4, casecontrol, HWECase, hweCa
       "--silent"
     ))
   } else {
-    print("Something went wrong.")
-    print(grep("Error", readLines(paste0(ResultDir, "/", nextFile, ".log")), value = TRUE))
+    rlang::inform(rlang::format_error_bullets(c("x" = "Something went wrong.")))
+    rlang::inform(rlang::format_error_bullets(c("x" = grep("Error", readLines(paste0(ResultDir, "/", nextFile, ".log")), value = TRUE))))
   }
 
   return(casecontrol)
@@ -732,9 +771,9 @@ printHWEMessages <- function(ResultDir, logFilePath, context) {
   if (file.exists(paste0(ResultDir, logFilePath))) {
     logContents <- readLines(paste0(ResultDir, logFilePath))
     message <- paste0(context, ", ", stringr::str_sub(grep("Hardy-Weinberg", logContents, value = TRUE), 7))
-    print(message)
+    rlang::inform(rlang::format_error_bullets(message))
   } else {
-    print(paste0(context, " log file not found."))
+    rlang::inform(rlang::format_error_bullets(c("x" = paste0(context, " log file not found."))))
   }
 }
 
@@ -751,7 +790,7 @@ handleMonomorphicSNPs <- function(monomorphicSNPs, mmSNPs, ResultDir) {
     exclude <- NULL
     excludemono <- NULL
     if (monomorphicSNPs == TRUE || nrow(mmSNPs) != 0) {
-      print("There are no monomorphic SNPs.")
+      rlang::inform(rlang::format_error_bullets(c("i" = "There are no monomorphic SNPs.")))
     }
   }
 
@@ -875,7 +914,7 @@ handleCaseControlFiltering <- function(ResultDir, casecontrol, dmissX, dmissAuto
       chrfilter <- "--not-chr"
       chrv <- 23
     } else {
-      print("Filtering for differential missingness between cases and controls is turned off.")
+      rlang::inform(rlang::format_error_bullets(c("i" = "Filtering for differential missingness between cases and controls is turned off.")))
     }
 
     if (caldiffmiss) {
@@ -894,7 +933,7 @@ handleCaseControlFiltering <- function(ResultDir, casecontrol, dmissX, dmissAuto
 
     applySNPmissCCFilter(ResultDir, SNPmissCC, diffmissFilter, foutput)
   } else {
-    print("No filter based on differential missingness will be applied.")
+    rlang::inform(rlang::format_error_bullets(c("i" = "No filter based on differential missingness will be applied.")))
 
     executePlinkAd(ResultDir, args = c(
       "--bfile", paste0(ResultDir, "/filtered_temp4_processed"), # TEST
@@ -942,7 +981,7 @@ applySNPmissCCFilter <- function(ResultDir, SNPmissCC, diffmissFilter, foutput) 
       "--silent"
     ))
   } else {
-    print("No SNP with differential missingness between cases and controls.")
+    rlang::inform(rlang::format_error_bullets(c("i" = "No SNP with differential missingness between cases and controls.")))
     executePlinkAd(ResultDir, args = c(
       # "--bfile", paste0(ResultDir, "/filtered_temp4"),
       "--bfile", paste0(ResultDir, "/filtered_temp4_processed"), ## TEST
@@ -1096,19 +1135,19 @@ gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"), log10
   }
   # Add pvalue threshold line
   if (!missing(tline)) {
-    for (i in 1:length(tline)) {
+    for (i in seq_along(tline)) {
       p1 <- p1 + ggplot2::geom_hline(yintercept = tredline[i], colour = "red")
     }
   }
   if (!missing(bline)) {
-    for (i in 1:length(bline)) {
+    for (i in seq_along(bline)) {
       p2 <- p2 + ggplot2::geom_hline(yintercept = bredline[i], colour = "red")
     }
   }
   # Annotate
   if (!missing(annotate_p)) {
     if (!requireNamespace(c("ggrepel"), quietly = TRUE) == TRUE) {
-      print("Consider installing 'ggrepel' for improved text annotation")
+      rlang::inform(rlang::format_error_bullets("Consider installing 'ggrepel' for improved text annotation"))
       p1 <- p1 + ggplot2::geom_text(data = d_order[d_order$pvalue < annotate_p[1] & d_order$Location == "Top", ], ggplot2::aes(.data$pos_index, .data$pval, label = .data$SNP))
       p2 <- p2 + ggplot2::geom_text(data = d_order[d_order$pvalue < annotate_p[2] & d_order$Location == "Bottom", ], ggplot2::aes(.data$pos_index, .data$pval, label = .data$SNP))
     } else {
@@ -1118,7 +1157,7 @@ gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"), log10
   }
   if (!missing(annotate_snp)) {
     if (!requireNamespace(c("ggrepel"), quietly = TRUE) == TRUE) {
-      print("Consider installing 'ggrepel' for improved text annotation")
+      rlang::inform(rlang::format_error_bullets("Consider installing 'ggrepel' for improved text annotation"))
       p1 <- p1 + ggplot2::geom_text(data = d_order[d_order$SNP %in% annotate_snp & d_order$Location == "Top", ], ggplot2::aes(.data$pos_index, .data$pval, label = .data$SNP))
       p2 <- p2 + ggplot2::geom_text(data = d_order[d_order$SNP %in% annotate_snp & d_order$Location == "Bottom", ], ggplot2::aes(.data$pos_index, .data$pval, label = .data$SNP))
     } else {
@@ -1133,7 +1172,7 @@ gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"), log10
   # Format
   if (chrblocks == TRUE) {
     if (freey == TRUE) {
-      print("Sorry, drawing chrblocks with freey=TRUE is currently unsupported and will be ignored.")
+      rlang::inform(rlang::format_error_bullets("Sorry, drawing chrblocks with freey=TRUE is currently unsupported and will be ignored."))
     } else {
       p1 <- p1 + ggplot2::theme(axis.text.x = ggplot2::element_text(vjust = 1), axis.ticks.x = ggplot2::element_blank()) + ggplot2::ylim(c(yaxismin1, yaxismax1))
       p2 <- p2 + ggplot2::scale_y_reverse(limits = c(yaxismax2, yaxismin2)) + ggplot2::theme(axis.text.x = ggplot2::element_blank(), axis.ticks.x = ggplot2::element_blank())
@@ -1150,7 +1189,7 @@ gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"), log10
   p1 <- p1 + ggplot2::guides(fill = "none", color = "none")
   p2 <- p2 + ggplot2::guides(fill = "none", color = "none")
   # Save
-  print(paste0("Saving plot to ", file, ".", type))
+  rlang::inform(rlang::format_error_bullets(c("i" = paste0("Saving plot to ", file, ".", type))))
   p <- gridExtra::grid.arrange(gridExtra::arrangeGrob(p1, top = toptitle), gridExtra::arrangeGrob(p2, bottom = bottomtitle), padding = 0, heights = c(hgtratio, 1 - hgtratio))
   ggplot2::ggsave(p, filename = paste0(file, ".", type), dpi = res, units = "in", height = hgt, width = wi)
   return(p)
@@ -1186,7 +1225,7 @@ preparePhenotypeData <- function(phenofile, nPC, DataDir, ResultDir, finput, hig
     colnames(GP) <- c("FID", "IID", paste0("PC", 1:nPC))
     return(GP)
   } else {
-    print("Parameter 'nPC' is either zero or negative. Genetic PC will not be computed.")
+    rlang::inform(rlang::format_error_bullets(c("i" = "Parameter 'nPC' is either zero or negative. Genetic PC will not be computed.")))
     return(phenotype[, 1:2])
   }
 }
@@ -1213,8 +1252,8 @@ computeNullModel <- function(pheno, pheno_type) {
 ## Function 40
 ######### Added in 3.0
 prsFun <- function(pthreshold, ResultDir, DataDir, finput, clumpExtract, clumpSNP, pheno, pheno_type, null_model) {
-  print(pthreshold)
-  print(paste0("Computing PRS for threshold ", pthreshold))
+  rlang::inform(rlang::format_error_bullets(c("i" = pthreshold)))
+  rlang::inform(rlang::format_error_bullets(paste0("Computing PRS for threshold ", pthreshold)))
 
   pt <- data.table::as.data.table(cbind(pthreshold, 0, pthreshold))
   colnames(pt) <- c("Threshold", "Lowerbound", "UpperBound")
@@ -1428,7 +1467,7 @@ FMsub <- function(ResultDir, plot.jpeg, plotname, snp_pval, annotateTopSnp, sugg
         suppressWarnings(qqman::manhattan(XWAS_ADD_X, ylim = c(0, uplim), suggestiveline = suggestiveline, genomewideline = genomewideline, annotatePval = snp_pval, annotateTop = annotateTopSnp, main = "Manhattan plot of XWAS"))
         suppressWarnings(qqman::qq(XWAS_ADD_X$P, main = paste0(("Q-Q plot of XWAS p-values with GIF = "), round(lamdaGC1, 3))))
       } else {
-        print("X-chromosome may not be present.")
+        rlang::inform(rlang::format_error_bullets(c("i" = "X-chromosome may not be present.")))
       }
 
       gc(reset = TRUE)
@@ -1447,14 +1486,14 @@ FMsub <- function(ResultDir, plot.jpeg, plotname, snp_pval, annotateTopSnp, sugg
         suppressWarnings(qqman::manhattan(XWAS_ADD_X, ylim = c(0, uplim), suggestiveline = suggestiveline, genomewideline = genomewideline, annotatePval = snp_pval, annotateTop = annotateTopSnp, main = "Manhattan plot of XWAS"))
         suppressWarnings(qqman::qq(XWAS_ADD_X$P, main = paste0(("Q-Q plot of XWAS p-values with GIF = "), round(lamdaGC1, 3))))
       } else {
-        print("X-chromosome association betas may not be present.")
+        rlang::inform(rlang::format_error_bullets(c("i" = "X-chromosome association betas may not be present.")))
       }
       gc(reset = TRUE)
     }
 
     return(na.omit(XWAS))
   } else if (file.exists(paste0(ResultDir, "/", "allsnpsresults.rda"))[1] == FALSE) {
-    print(paste0("GWAS cannot be performed. Check the log file in ResultDir for checking the error."))
+    rlang::inform(rlang::format_error_bullets(c("x" = paste0("GWAS cannot be performed. Check the log file in ResultDir details."))))
   }
 }
 
@@ -1465,7 +1504,7 @@ paraGwas <- function(
     interactionv, parameterv, Inphenocovv, covar, covarv,
     snpfile) {
   ## Chunkfile create
-  print(paste0("Chunk index processing: ", chunks))
+  rlang::inform(rlang::format_error_bullets(paste0("Chunk index processing: ", chunks)))
   if (nrow(snpfile) >= (chunks + chunk)) {
     snp_names <- snpfile$V2[chunks:(chunks + chunk)]
   } else {
@@ -1516,9 +1555,9 @@ paraGwas <- function(
   }
 
   if (trait[1] == "binary") {
-    single_snp_result <- read.table(paste0(ResultDir, "/", chunks, "_ss.assoc.logistic"), header = T)
+    single_snp_result <- read.table(paste0(ResultDir, "/", chunks, "_ss.assoc.logistic"), header = TRUE)
   } else if (trait[1] == "quantitative") {
-    single_snp_result <- read.table(paste0(ResultDir, "/", chunks, "_ss.assoc.linear"), header = T)
+    single_snp_result <- read.table(paste0(ResultDir, "/", chunks, "_ss.assoc.linear"), header = TRUE)
   }
   return(single_snp_result)
 }
@@ -1594,7 +1633,7 @@ FMmain <- function(DataDir, ResultDir, finput, trait, standard_beta, xmodel,
   }
 
   if (ncores == 0) {
-    print("If you want parallel computation, please provide non-zero value for argument ncores.")
+    rlang::inform(rlang::format_error_bullets("If you want parallel computation, please provide non-zero value for argument ncores."))
     invisible(sys::exec_wait(
       plink(),
       args = c(
@@ -1622,9 +1661,9 @@ FMmain <- function(DataDir, ResultDir, finput, trait, standard_beta, xmodel,
       std_err = FALSE
     ))
     if (trait[1] == "binary") {
-      single_snp_result <- read.table(paste0(ResultDir, "/", xmodel, ".assoc.logistic"), header = T)
+      single_snp_result <- read.table(paste0(ResultDir, "/", xmodel, ".assoc.logistic"), header = TRUE)
     } else if (trait[1] == "quantitative") {
-      single_snp_result <- read.table(paste0(ResultDir, "/", xmodel, ".assoc.linear"), header = T)
+      single_snp_result <- read.table(paste0(ResultDir, "/", xmodel, ".assoc.linear"), header = TRUE)
     }
     allsnpsresults <- unique(single_snp_result)
     save(allsnpsresults, file = paste0(ResultDir, "/allsnpsresults.rda"))
@@ -1633,13 +1672,19 @@ FMmain <- function(DataDir, ResultDir, finput, trait, standard_beta, xmodel,
     chunk <- round(nrow(snpfile) / ncores) + 1
     chunks <- round(seq(1, nrow(snpfile), by = chunk), 0)
 
-    #### Parallel computation
-    print("Parallel computation is in progress --------->")
+    # Parallel computation
+    rlang::inform(rlang::format_error_bullets("Parallel computation is in progress --------->"))
     cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
-
-    invisible(parallel::clusterEvalQ(cl, library(data.table)))
-    invisible(parallel::clusterEvalQ(cl, library(parallel)))
-    parallel::clusterExport(cl = cl, NULL, envir = environment())
+    
+    # Load namespaces quietly on each worker
+    parallel::clusterCall(cl, function() {
+      requireNamespace("data.table", quietly = TRUE)
+      requireNamespace("parallel", quietly = TRUE)
+      NULL
+    })
+    
+    # Export environment objects if needed
+    parallel::clusterExport(cl = cl, varlist = NULL, envir = environment())
 
     allsnpsresults <- data.table::as.data.table(data.table::rbindlist(parallel::parLapply(cl, chunks, paraGwas,
       chunk = chunk, ResultDir = ResultDir,
@@ -1762,17 +1807,17 @@ fisher.method.perm <-
       if (is.null(mc.cores)) {
         S.rand <- unlist(lapply(1:B, function(b) {
           ## get non NA p-values from studies contributing to S
-          myp <- sapply(good.p, function(pc) {
+          myp <- vapply(good.p, function(pc) {
             sample(stats::na.exclude(pvals[, pc]), 1)
-          })
+          }, numeric(1))
           fisher.sum(myp)$S
         }))
       } else {
         S.rand <- unlist(parallel::mclapply(1:B, function(b) {
           ## get non NA p-values from studies contributing to S
-          myp <- sapply(good.p, function(pc) {
+          myp <- vapply(good.p, function(pc) {
             sample(stats::na.exclude(pvals[, pc]), 1)
-          })
+          }, numeric(1))
           fisher.sum(myp)$S
         }, mc.cores = mc.cores))
       }
@@ -1929,19 +1974,24 @@ applyStoufferMethod <- function(pvals, MF.p.corr, MF.zero.sub, MF.na.rm, MF.mc.c
     chunk <- round(nrow(pvals) / ncores) + 1
     chunks <- round(seq(1, nrow(pvals), by = chunk), 0)
 
-    print("cluster making started")
+    rlang::inform(rlang::format_error_bullets(c("i" = "Creating parallel workers...")))
     cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
+    
+    # Load namespaces quietly on each worker
+    parallel::clusterCall(cl, function() {
+      requireNamespace("data.table", quietly = TRUE)
+      requireNamespace("parallel", quietly = TRUE)
+      NULL
+    })
+    
+    rlang::inform("Exporting variables to workers...")
+    parallel::clusterExport(cl = cl, varlist = NULL, envir = environment())
 
-    invisible(parallel::clusterEvalQ(cl, library(data.table)))
-    invisible(parallel::clusterEvalQ(cl, library(parallel)))
-    print("cluster export started")
-    parallel::clusterExport(cl = cl, NULL, envir = environment())
-
-    print("cluster making done")
+    rlang::inform(rlang::format_error_bullets(c("v" = "Cluster is ready for parallel computation.")))
     Pnew <- data.table::as.data.table(data.table::rbindlist(parallel::parLapply(cl, chunks, paraStouffer, chunk = chunk, pvals = pvals, MF.p.corr = MF.p.corr, MF.zero.sub = MF.zero.sub, MF.na.rm = MF.na.rm)))
 
     parallel::stopCluster(cl)
-    print("clusters stopped.")
+    rlang::inform(rlang::format_error_bullets(c("i" = "clusters stopped.")))
   }
   return(Pnew)
 }
@@ -1980,7 +2030,7 @@ generateGWASPlots <- function(plot.jpeg, plotname, FemaleWAS, MaleWAS, gwas.t2, 
       sink() # This line resets the output redirection
     }
 
-    print("Miami plot of stratified GWAS is saved in working directory.")
+    rlang::inform(rlang::format_error_bullets(c("v" = "Miami plot of stratified GWAS is saved in working directory.")))
     gc(reset = TRUE)
 
     if (nrow(gwas.t2) != 0 && nrow(gwas.b2) != 0) {
@@ -2006,9 +2056,9 @@ generateGWASPlots <- function(plot.jpeg, plotname, FemaleWAS, MaleWAS, gwas.t2, 
         sink() # This line resets the output redirection
       }
 
-      print("Miami plot of stratified XWAS is saved in working directory.")
+      rlang::inform(rlang::format_error_bullets(c("v" = "Miami plot of stratified XWAS is saved in working directory.")))
     } else {
-      print("Miami plot for stratified XWAS cannot be drawn.")
+      rlang::inform(rlang::format_error_bullets(c("x" = "Miami plot for stratified XWAS cannot be drawn.")))
     }
     gc(reset = TRUE)
 
@@ -2023,18 +2073,18 @@ generateGWASPlots <- function(plot.jpeg, plotname, FemaleWAS, MaleWAS, gwas.t2, 
       uplim <- -log10(min(XWAS_ADD_X1$P)) + 1
       suppressWarnings(qqman::manhattan(XWAS_ADD_X1, ylim = c(0, uplim), suggestiveline = suggestiveline, genomewideline = genomewideline, annotatePval = snp_pval, annotateTop = annotateTopSnp, main = "Manhattan plot of male-female combined XWAS"))
     } else {
-      print("There may not be any X chromosome in the data.")
+      rlang::inform(rlang::format_error_bullets(c("i" = "There may not be any X chromosome in the data.")))
     }
     gc(reset = TRUE)
     if (sum(Result1$P) == nrow(Result1)) {
-      print("All adjusted p values are 1, qq plot cannot be created.")
+      rlang::inform(rlang::format_error_bullets(c("x" = "All adjusted p values are 1, qq plot cannot be created.")))
     } else {
       suppressWarnings(qqman::qq(Result1$P, main = paste0(("Q-Q plot of GWAS male-female combined with GIF = "), round(lamdaGC, 3))))
       gc(reset = TRUE)
     }
 
     if (sum(XWAS_ADD_X1$P) == nrow(XWAS_ADD_X1)) {
-      print("All adjusted p values are 1, qq plot cannot be created.")
+      rlang::inform(rlang::format_error_bullets(c("x" = "All adjusted p values are 1, qq plot cannot be created.")))
     } else {
       suppressWarnings(qqman::qq(XWAS_ADD_X1$P, main = paste0(("Q-Q plot of XWAS male-female combined p-values with GIF = "), lamdaGC1)))
     }
@@ -2098,7 +2148,7 @@ generateGWASPlots <- function(plot.jpeg, plotname, FemaleWAS, MaleWAS, gwas.t2, 
     gc(reset = TRUE)
 
     if (sum(Result1$P) == nrow(Result1)) {
-      print("All adjusted p values are 1, qq plot cannot be created.")
+      rlang::inform(rlang::format_error_bullets(c("x" = "All adjusted p values are 1, qq plot cannot be created.")))
     } else {
       gc(reset = TRUE)
       suppressWarnings(qqman::qq(Result1$P, main = paste0(("Q-Q plot of male-female combined GWAS with GIF = "), round(lamdaGC, 3))))
@@ -2106,7 +2156,7 @@ generateGWASPlots <- function(plot.jpeg, plotname, FemaleWAS, MaleWAS, gwas.t2, 
     }
 
     if (sum(XWAS_ADD_X1$P) == nrow(XWAS_ADD_X1)) {
-      print("All adjusted p values are 1, qq plot cannot be created.")
+      rlang::inform(rlang::format_error_bullets(c("x" = "All adjusted p values are 1, qq plot cannot be created.")))
     } else {
       gc(reset = TRUE)
       qqman::qq(XWAS_ADD_X1$P, main = paste0(("Q-Q plot of male-female combined XWAS with GIF = "), round(lamdaGC1, 3)))
@@ -2170,7 +2220,7 @@ createPlots <- function(ResultDir, plotname, FemaleWAS, MaleWAS, gwas.t2, gwas.b
       sink() # This line resets the output redirection
     }
   } else {
-    print("Miami plot for stratified XWAS cannot be drawn.")
+    rlang::inform(rlang::format_error_bullets(c("x" = "Miami plot for stratified XWAS cannot be drawn.")))
   }
 
   # Manhattan plot
@@ -2182,21 +2232,21 @@ createPlots <- function(ResultDir, plotname, FemaleWAS, MaleWAS, gwas.t2, gwas.b
     uplim <- -log10(min(XWAS_ADD_X$P, na.rm = TRUE)) + 1
     suppressWarnings(qqman::manhattan(XWAS_ADD_X, ylim = c(0, uplim), suggestiveline = suggestiveline, genomewideline = genomewideline, annotatePval = snp_pval, annotateTop = annotateTopSnp, main = "Manhattan plot of male-female combined XWAS"))
   } else {
-    print("There may not be any X chromosome in the data.")
+    rlang::inform(rlang::format_error_bullets(c("i" = "There may not be any X chromosome in the data.")))
   }
 
   # QQ plot
   if (sum(Result$P, na.rm = TRUE) != nrow(Result)) {
     suppressWarnings(qqman::qq(Result$P, main = paste0("Q-Q plot of GWAS male-female combined with GIF = ", round(lamdaGC, 3))))
   } else {
-    print("All adjusted p values are 1, qq plot cannot be created.")
+    rlang::inform(rlang::format_error_bullets(c("x" = "All adjusted p values are 1, qq plot cannot be created.")))
   }
 
   # QQ plot for XWAS
   if (sum(XWAS_ADD_X$P, na.rm = TRUE) != nrow(XWAS_ADD_X)) {
     suppressWarnings(qqman::qq(XWAS_ADD_X$P, main = paste0("Q-Q plot of XWAS male-female combined p-values with GIF = ", round(lamdaGC1, 3))))
   } else {
-    print("All adjusted p values are 1, qq plot cannot be created.")
+    rlang::inform(rlang::format_error_bullets(c("x" = "All adjusted p values are 1, qq plot cannot be created.")))
   }
 
   if (plot.jpeg[1] == TRUE) {
@@ -2244,16 +2294,29 @@ FMcomb_sub <- function(ResultDir, combtest, MF.p.corr,
       chunks <- round(seq(1, nrow(pvals), by = chunk), 0)
 
       #### Parallel computation
-      print("Parallel computation is in progress --------->")
+      rlang::inform(rlang::format_error_bullets("Parallel computation is in progress --------->"))
       cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
 
-      invisible(parallel::clusterEvalQ(cl, library(data.table)))
-      invisible(parallel::clusterEvalQ(cl, library(parallel)))
-      parallel::clusterExport(cl = cl, NULL, envir = environment())
+      parallel::clusterCall(cl, function() {
+        requireNamespace("data.table", quietly = TRUE)
+        requireNamespace("parallel", quietly = TRUE)
+        NULL
+      })
+      rlang::inform(rlang::format_error_bullets("i" = "Exporting relevant variables to worker environments..."))
+      parallel::clusterExport(cl = cl, varlist = NULL, envir = environment())
 
-      Pnew <- data.table::as.data.table(data.table::rbindlist(parallel::parLapply(cl, chunks, paraStouffer, chunk = chunk, pvals = pvals, MF.p.corr = MF.p.corr, MF.zero.sub = MF.zero.sub, MF.na.rm = MF.na.rm)))
-
+      Pnew <- data.table::as.data.table(
+        data.table::rbindlist(
+          parallel::parLapply(
+            cl, chunks, paraStouffer, chunk = chunk, 
+            pvals = pvals, MF.p.corr = MF.p.corr, 
+            MF.zero.sub = MF.zero.sub, 
+            MF.na.rm = MF.na.rm
+          )
+        )
+      )
       parallel::stopCluster(cl)
+      rlang::inform(rlang::format_error_bullets("v" = "Parallel computation complete."))
     }
 
     Result <- cbind(MFWAS1[, 1:5], Pnew[, 3:4])
@@ -2321,7 +2384,7 @@ FMcomb_sub <- function(ResultDir, combtest, MF.p.corr,
 
 
   # Call to the helper function for plotting
-  print("Plots are initiated.")
+  rlang::inform(rlang::format_error_bullets(c("i" = "Plots are initiated.")))
   createPlots(ResultDir, plotname, FemaleWAS, MaleWAS, gwas.t2, gwas.b2, Result, XWAS_ADD_X, snp_pval, suggestiveline, genomewideline, annotateTopSnp, lamdaGC, lamdaGC1, plot.jpeg)
 
   gc(reset = TRUE)
@@ -2396,7 +2459,7 @@ FMcomb <-
     CombinedWAS <- na.omit(CombinedWAS)
     save(CombinedWAS, file = paste0(ResultDir, "/", "CombinedWAS.Rda"))
     gc(reset = TRUE)
-    print(paste0("Three dataframes such as, CombinedWAS, MaleWAS and FemaleWAS are produced in", ResultDir))
+    rlang::inform(rlang::format_error_bullets(paste0("Three dataframes such as, CombinedWAS, MaleWAS and FemaleWAS are produced in", ResultDir)))
     return(list(CombinedWAS = CombinedWAS, MaleWAS = MaleWAS, FemaleWAS = FemaleWAS))
   }
 
@@ -2442,7 +2505,7 @@ paraGwasAuto <- function(chunks, chunk, ResultDir, finput, regress, sexv, noxsex
     std_err = FALSE
   ))
 
-  single_snp_result <- read.table(paste0(ResultDir, "/", chunks, "_ss.assoc.logistic"), header = T)
+  single_snp_result <- read.table(paste0(ResultDir, "/", chunks, "_ss.assoc.logistic"), header = TRUE)
   single_snp_result <- unique(single_snp_result)
   return(single_snp_result)
 }
@@ -2523,13 +2586,18 @@ autoFun <- function(DataDir, ResultDir, finput, sex, standard_beta, covarfile, i
     chunks <- round(seq(1, nrow(snpfile), by = chunk), 0)
 
     #### Parallel computation
-    print("Parallel computation is in progress --------->")
+    rlang::inform(rlang::format_error_bullets("Parallel computation is in progress --------->"))
     cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
-
-    invisible(parallel::clusterEvalQ(cl, library(data.table)))
-    invisible(parallel::clusterEvalQ(cl, library(parallel)))
-    parallel::clusterExport(cl = cl, NULL, envir = environment())
-
+    
+    parallel::clusterCall(cl, function() {
+      requireNamespace("data.table", quietly = TRUE)
+      requireNamespace("parallel", quietly = TRUE)
+      NULL
+    })
+    
+    rlang::inform(rlang::format_error_bullets("i" = "Distributing environment variables to worker nodes..."))
+    parallel::clusterExport(cl = cl, varlist = NULL, envir = environment())
+    
     all_snps_results <- data.table::as.data.table(data.table::rbindlist(parallel::parLapply(cl, chunks, paraGwasAuto,
       chunk = chunk, ResultDir = ResultDir, finput = finput, regress = regress, sexv = sexv,
       standard_b = standard_b, interactionv = interactionv, parameterv = parameterv,
@@ -2557,7 +2625,7 @@ autoFun <- function(DataDir, ResultDir, finput, sex, standard_beta, covarfile, i
       )
     return(XWAS)
   } else if (file.exists(paste0(ResultDir, "/", fl))[1] == FALSE) {
-    print(paste0("AutosomeWAS cannot be performed. Check the ", stringr::str_sub(fl, 1, 5), "log file in DataDir for checking the error."))
+    rlang::inform(rlang::format_error_bullets(paste0(c("x" = "AutosomeWAS cannot be performed. Check the ", stringr::str_sub(fl, 1, 5), "log file in DataDir for details."))))
   }
 }
 
@@ -2624,8 +2692,8 @@ XCMAX4 <- function(data) {
   infora <- function(estpen, X) {
     l <- dim(X)[2]
     Ia <- matrix(0, nrow = l, ncol = l)
-    for (i in 1:l) {
-      for (j in 1:l) {
+    for (i in seq_len(l)) {
+      for (j in seq_len(l)) {
         Ia[i, j] <- sum(X[, i] * X[, j] * (1 - estpen) * estpen)
       }
     }
@@ -2648,7 +2716,7 @@ XCMAX4 <- function(data) {
     l <- dim(X)[2]
     G <- 2 * Ind_AA + z1 * Ind_Aa + z2 * Ind_AO
     Iba <- NULL
-    for (i in 1:l) {
+    for (i in seq_len(l)) {
       Iba[i] <- sum(X[, i] * G * (1 - estpen) * estpen)
     }
     return(Iba)
@@ -2948,12 +3016,15 @@ XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
 
       #### Parallel computation
       gc(reset = TRUE)
-      print("Parallel computation is in progress --------->")
+      rlang::inform(rlang::format_error_bullets("Parallel computation is in progress --------->"))
       cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
 
-      invisible(parallel::clusterEvalQ(cl, library(data.table)))
-      invisible(parallel::clusterEvalQ(cl, library(parallel)))
-      parallel::clusterExport(cl = cl, NULL, envir = environment())
+      parallel::clusterCall(cl, function() {
+        requireNamespace("data.table", quietly = TRUE)
+        requireNamespace("parallel", quietly = TRUE)
+        NULL
+      })
+      parallel::clusterExport(cl = cl, varlist = NULL, envir = environment())
 
       Result_pval <- data.table::rbindlist(parallel::parLapply(cl, chunks, xcmaPara, chunk = chunk, Snp = Snp, genosnp = genosnp, P = P, Samp = Samp))
       parallel::stopCluster(cl)
@@ -2968,7 +3039,7 @@ XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
   } else {
     DataDir <- DataDir
     covarfile <- covarfile
-    print("Running GWAScxci model for X chromosome.")
+    rlang::inform(rlang::format_error_bullets("Running GWAScxci model for X chromosome."))
 
     if (ncores == 0) {
       Result_pval <- data.table::rbindlist(lapply(Snp, XCMAX4_data2, DataDir = DataDir, genosnp = genosnp, P = P, Samp = Samp, covarfile = covarfile))
@@ -2978,13 +3049,16 @@ XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
 
       #### Parallel computation
       gc(reset = TRUE)
-      print("Parallel computation is in progress --------->")
+      rlang::inform(rlang::format_error_bullets("Parallel computation is in progress --------->"))
       cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
 
-      invisible(parallel::clusterEvalQ(cl, library(data.table)))
-      invisible(parallel::clusterEvalQ(cl, library(parallel)))
-      invisible(parallel::clusterEvalQ(cl, library(SNPRelate)))
-      parallel::clusterExport(cl = cl, NULL, envir = environment())
+      parallel::clusterCall(cl, function() {
+        requireNamespace("data.table", quietly = TRUE)
+        requireNamespace("parallel", quietly = TRUE)
+        requireNamespace("SNPRelate", quietly = TRUE)
+        NULL
+      })
+      parallel::clusterExport(cl = cl, varlist = NULL, envir = environment())
 
       Result_pval <- data.table::rbindlist(parallel::parLapply(cl, chunks, xcmaParaCovar, chunk = chunk, Snp = Snp, DataDir = DataDir, genosnp = genosnp, P = P, covarfile = covarfile, Samp = Samp))
       parallel::stopCluster(cl)
@@ -3005,7 +3079,7 @@ XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
   }
 
   ## Performing Autosome WAS
-  print("Running GWAScxci model for autosome.")
+  rlang::inform(rlang::format_error_bullets("Running GWAScxci model for autosome."))
   XWAS_2 <- autoFun(
     DataDir = DataDir, ResultDir = ResultDir, finput = "FilteredX", sex = sex, standard_beta = standard_beta,
     covarfile = covarfile, interaction = interaction,
@@ -3059,9 +3133,9 @@ XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
 
     GXWAS <- XWAS
     save(GXWAS, file = paste0(ResultDir, "/GXWAS_XCGA.Rda"))
-    print(paste0("A dataframe named GXWAS_XCGA.Rda is saved in ", ResultDir))
+    rlang::inform(rlang::format_error_bullets(c("v" = paste0("A dataframe named GXWAS_XCGA.Rda is saved in ", ResultDir))))
   } else if (file.exists(paste0(ResultDir, "/", "XChrRun.assoc.logistic")) == FALSE) {
-    print("XWAS cannot be performed. Check the XChrRun.log file for checking the error.")
+    rlang::inform(rlang::format_error_bullets(c("x" = "XWAS cannot be performed. Check the XChrRun.log file for details.")))
   }
 
   return(GXWAS)
@@ -3171,12 +3245,12 @@ ComputeLDSC <- function(summarystat, precomputedLD, LDSC_blocks, chi2_thr1, chi2
   S1S2 <- merge(S1, S2, by = c("CHR", "SNP"))
 
   if (byCHR == FALSE) {
-    print(paste0("Percentage of overlapping SNPs from original summary statistics with precomputed LD matrix based on chromosome, position and SNP id: ", round(length(unique(S1S2$SNP)) / length(unique(S1$SNP)), 2) * 100, "%"))
-    print("Please check whether this percentage makes sense considering the genome build of summary statistics and precomputed LD matrix.")
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0("Percentage of overlapping SNPs from original summary statistics with precomputed LD matrix based on chromosome, position and SNP id: ", round(length(unique(S1S2$SNP)) / length(unique(S1$SNP)), 2) * 100, "%"))))
+    rlang::inform(rlang::format_error_bullets("Please check whether this percentage makes sense considering the genome build of summary statistics and precomputed LD matrix."))
   } else {
     S1chr <- unique(S1$CHR)
-    print(paste0("For chromosome ", S1chr, " percentage of overlapping SNPs from original summary statistics with precomputed LD matrix based on chromosome, position and SNP id: ", round(length(unique(S1S2$SNP)) / length(unique(S1$SNP)), 2) * 100, "%"))
-    print("Please check whether this percentage makes sense considering the genome build of summary statistics and precomputed LD matrix.")
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0("For chromosome ", S1chr, " percentage of overlapping SNPs from original summary statistics with precomputed LD matrix based on chromosome, position and SNP id: ", round(length(unique(S1S2$SNP)) / length(unique(S1$SNP)), 2) * 100, "%"))))
+    rlang::inform(rlang::format_error_bullets("Please check whether this percentage makes sense considering the genome build of summary statistics and precomputed LD matrix."))
   }
 
   if (round(length(unique(S1S2$SNP)) / length(unique(S1$SNP)), 2) * 100 != 0) {
@@ -3197,7 +3271,7 @@ ComputeLDSC <- function(summarystat, precomputedLD, LDSC_blocks, chi2_thr1, chi2
 ## Function 71
 ## Verify GCTA
 verifyGCTA <- function() {
-  os_type <- Sys.info()[["sysname"]]
+  os_type <- detect_os_type()
   # 1. Check GCTA_PATH environment variable
   env_path <- Sys.getenv("GCTA_PATH", unset = NA)
   if (!is.na(env_path)) {
@@ -3212,7 +3286,7 @@ verifyGCTA <- function() {
   # 2. Check system path via Sys.which
   sys_path <- Sys.which("gcta64")
   # On Windows, check for `.exe` if missing
-  if (os_type == "Windows" && !grepl("\\.exe$", sys_path, ignore.case = TRUE)) {
+  if (os_type == "windows" && !grepl("\\.exe$", sys_path, ignore.case = TRUE)) {
     sys_path <- paste0(sys_path, ".exe")
   }
   # Normalize and check existence
@@ -3222,7 +3296,16 @@ verifyGCTA <- function() {
   }
   
   # 3. Failure message
-  stop("GCTA binary not found. Please install GCTA and/or set the GCTA_PATH environment variable.")
+  rlang::abort(
+    message = rlang::format_error_bullets(c(
+      "GCTA binary not found.",
+      "x" = "Attempted to locate the 'GCTA_PATH' environment variable and 'gcta64' in system PATH.",
+      "i" = "Ensure GCTA is available and executable.",
+      "i" = "You can permanently set the path to 'gcta64' by running:",
+      " " = "usethis::edit_r_environ()  # then add a line like: GCTA_PATH=/full/path/to/gcta64")
+    ),
+    class = "gcta_not_found"
+  )
 }
 
 gcta <- function(){
@@ -3278,135 +3361,111 @@ executeGCTA <- function(ResultDir, args) {
 }
 
 ## Function 73
-ComputeGRMauto <- function(DataDir, ResultDir, finput, partGRM, nGRM, cripticut, minMAF = NULL, maxMAF = NULL, ByCHR = FALSE, CHRnum = NULL, ncores = ncores) {
-  if (ByCHR == FALSE) {
-    chr <- NULL
-    CHRnum <- NULL
-    autosome <- "--autosome"
-  } else {
-    chr <- "--chr"
-    CHRnum <- CHRnum
-    autosome <- NULL
-  }
+ComputeGRMauto <- function(DataDir, ResultDir, finput, partGRM, nGRM, cripticut,
+  minMAF = NULL, maxMAF = NULL,
+  ByCHR = FALSE, CHRnum = NULL, ncores = ncores) {
+  
+  autosome <- if (!ByCHR) "--autosome" else NULL
+  chr <- if (ByCHR) "--chr" else NULL
+  
+  minmaf <- if (!is.null(minMAF)) "--maf" else NULL
+  minmafval <- minMAF
 
-  if (is.null(maxMAF)) {
-    maxmaf <- NULL
-    maxmafval <- NULL
-  } else {
-    maxmaf <- "--max-maf"
-    maxmafval <- maxMAF
-  }
+  maxmaf <- if (!is.null(maxMAF) && is.null(minMAF)) "--max-maf" else NULL
+  maxmafval <- if (is.null(minMAF)) maxMAF else NULL
 
-  if (is.null(minMAF)) {
-    minmaf <- NULL
-    minmafval <- NULL
-    maxmaf <- NULL
-    maxmafval <- NULL
-  } else {
-    minmaf <- "--maf"
-    minmafval <- minMAF
-  }
+  grmcutoff <- if (cripticut != 0) "--grm-cutoff" else NULL
+  crip <- if (cripticut != 0) cripticut else NULL
 
-  if (cripticut == 0) {
-    grmcutoff <- NULL
-    crip <- NULL
-  } else {
-    grmcutoff <- "--grm-cutoff"
-    crip <- cripticut
-  }
+  base_args <- c(
+    "--bfile", file.path(DataDir, finput),
+    autosome,
+    chr, CHRnum,
+    minmaf, minmafval,
+    maxmaf, maxmafval,
+    grmcutoff, crip,
+    "--thread-num", ncores
+  )
 
-  if (partGRM == FALSE) {
-    args <- c(
-      "--bfile", paste0(DataDir, "/", finput),
-      autosome,
-      chr, CHRnum,
-      minmaf, minmafval,
-      maxmaf, maxmafval,
-      grmcutoff, crip,
-      "--thread-num", ncores,
-      "--make-grm",
-      "--out", paste0(ResultDir, "/GXwasR")
-    )
+  if (!partGRM) {
+    args <- c(base_args, "--make-grm", "--out", file.path(ResultDir, "GXwasR"))
     executeGCTA(ResultDir, args)
-
-    if (file.exists(paste0(ResultDir, "/GXwasR.grm.id"))) {
-      if (ByCHR == FALSE) {
-        print(grep("GRM has been saved", readLines(paste0(ResultDir, "/GXwasR.log")), value = TRUE))
-        print(grep("Number of SNPs in each pair", readLines(paste0(ResultDir, "/GXwasR.log")), value = TRUE))
+    
+    grm_id <- file.path(ResultDir, "GXwasR.grm.id")
+    if (file.exists(grm_id)) {
+      if (!ByCHR) {
+        log_lines <- readLines(file.path(ResultDir, "GXwasR.log"))
+        rlang::inform(rlang::format_error_bullets(c(
+          "v" = grep("GRM has been saved", log_lines, value = TRUE),
+          "i" = grep("Number of SNPs in each pair", log_lines, value = TRUE)
+        )))
+        message("\n")
       } else {
-        # List of file extensions to copy and rename
         file_extensions <- c("grm.id", "grm.bin", "grm.N.bin")
-
-        # Loop through the file extensions and copy/rename each file
         for (ext in file_extensions) {
-          original_file <- file.path(ResultDir, paste0("GXwasR.", ext))
-          new_file <- file.path(ResultDir, paste0("Chr", CHRnum, "_GXwasR.", ext))
-          file.copy(from = original_file, to = new_file)
+          file.copy(
+            from = file.path(ResultDir, paste0("GXwasR.", ext)),
+            to = file.path(ResultDir, paste0("Chr", CHRnum, "_GXwasR.", ext))
+          )
         }
       }
     } else {
-      print("No GRM is created.")
+      rlang::inform(rlang::format_error_bullets(c("i" = "No GRM was created.")))
     }
   } else {
     partGRMfun <- function(i) {
       args <- c(
-        "--bfile", paste0(DataDir, "/", finput),
-        autosome,
-        chr, CHRnum,
-        minmaf, minmafval,
-        maxmaf, maxmafval,
-        grmcutoff,
-        crip,
-        "--make-grm-part",
-        nGRM,
-        i, # Part number
-        "--thread-num", ncores,
-        "--out", paste0(ResultDir, "/GXwasR")
+        base_args,
+        "--make-grm-part", nGRM, i,
+        "--out", file.path(ResultDir, "GXwasR")
       )
-
-      # Execute GCTA with the specified arguments
       executeGCTA(ResultDir, args)
     }
-
-    i <- 1:nGRM
-    lapply(i, partGRMfun)
-
-    OS <- Sys.info()["sysname"]
-
-    if (OS == "Linux" | OS == "Mac") {
-      system(paste0("cat ", ResultDir, "/", "GXwasR.part_", nGRM, "_*.grm.id > ", ResultDir, "/GXwasR.grm.id"))
-      system(paste0("cat ", ResultDir, "/", "GXwasR.part_", nGRM, "_*.grm.bin > ", ResultDir, "/GXwasR.bin"))
-      system(paste0("cat ", ResultDir, "/", "GXwasR.part_", nGRM, "_*.grm.N.bin > ", ResultDir, "/GXwasR.N.bin"))
-
-
-      #####
-      if (file.exists(paste0(ResultDir, "/GXwasR.grm.id"))) {
-        if (ByCHR == FALSE) {
-          print(grep("Partitioned GRM has been saved", readLines(paste0(ResultDir, "/GXwasR.log")), value = TRUE))
-          print(grep("Number of SNPs in each pair", readLines(paste0(ResultDir, "/GXwasR.log")), value = TRUE))
-        } else {
-          # List of file extensions to copy and rename
-          file_extensions <- c("grm.id", "grm.bin", "grm.N.bin")
-
-          # Loop through the file extensions and copy/rename each file
-          for (ext in file_extensions) {
-            original_file <- file.path(ResultDir, paste0("GXwasR.", ext))
-            new_file <- file.path(ResultDir, paste0("Chr", CHRnum, "_GXwasR.", ext))
-            file.copy(from = original_file, to = new_file)
-          }
+    
+    lapply(seq_len(nGRM), partGRMfun)
+    
+    os_type <- detect_os_type()
+    grm_parts <- c("grm.id", "grm.bin", "grm.N.bin")
+    
+    for (ext in grm_parts) {
+      input_pattern <- file.path(ResultDir, paste0("GXwasR.part_", nGRM, "_*", ext))
+      output_file <- file.path(ResultDir, paste0("GXwasR.", ext))
+      
+      if (os_type == "unix") {
+        system2("cat", args = input_pattern, stdout = output_file)
+      } else if (os_type == "windows") {
+        copy_cmd <- paste0("copy /b ", input_pattern, " ", output_file)
+        system2("cmd.exe", args = c("/c", copy_cmd))
+      } else {
+        rlang::warn(paste("Unsupported OS type for merging GRM files:", os_type))
+      }
+    }
+    
+    merged_id <- file.path(ResultDir, "GXwasR.grm.id")
+    if (file.exists(merged_id)) {
+      if (!ByCHR) {
+        log_path <- file.path(ResultDir, "GXwasR.log")
+        if (file.exists(log_path)) {
+          log_lines <- readLines(log_path)
+          rlang::inform(rlang::format_error_bullets(c(
+            "i" = grep("Partitioned GRM has been saved", log_lines, value = TRUE),
+            "i" = grep("Number of SNPs in each pair", log_lines, value = TRUE)
+          )))
+          message("\n")
         }
       } else {
-        print("No GRM is created.")
+        file_extensions <- c("grm.id", "grm.bin", "grm.N.bin")
+        for (ext in file_extensions) {
+          file.copy(
+            from = file.path(ResultDir, paste0("GXwasR.", ext)),
+            to = file.path(ResultDir, paste0("Chr", CHRnum, "_GXwasR.", ext))
+          )
+        }
       }
-
-      #####
-    } else if (OS == "Windows") {
-      # copy /b test.part_3_*.grm.id test.grm.id
-      # copy /b test.part_3_*.grm.bin test.grm.bin
-      # copy /b test.part_3_*.grm.N.bin test.grm.N.bin
+    } else {
+      rlang::inform("No GRM was created.")
     }
   }
-
   ## Compute GRM: GRM is calculated using the equation sum{[(xij - 2pi)*(xik - 2pi)] / [2pi(1-pi)]} as described in Yang et al. 2010 Nat Genet.
 }
 
@@ -3414,7 +3473,6 @@ ComputeGRMauto <- function(DataDir, ResultDir, finput, partGRM, nGRM, cripticut,
 ComputeGRMX <- function(DataDir, ResultDir, finput, partGRM, nGRM, minMAF = NULL, maxMAF = NULL, ncores = ncores) {
   ## Removing PAR regions and adding it to autosomes, PAR = chr 24 in .bim file.
 
-
   if (is.null(maxMAF)) {
     maxmaf <- NULL
     maxmafval <- NULL
@@ -3432,59 +3490,66 @@ ComputeGRMX <- function(DataDir, ResultDir, finput, partGRM, nGRM, minMAF = NULL
     minmaf <- "--maf"
     minmafval <- minMAF
   }
+
   if (partGRM == FALSE) {
     args <- c(
-      "--bfile", paste0(DataDir, "/", finput),
+      "--bfile", file.path(DataDir, finput),
       minmaf, minmafval,
       maxmaf, maxmafval,
       "--thread-num", ncores,
       "--make-grm-xchr",
-      "--out", paste0(ResultDir, "/xGXwasR")
+      "--out", file.path(ResultDir, "xGXwasR")
     )
 
-    # Execute GCTA with the specified arguments for X chromosome GRM
     executeGCTA(ResultDir, args)
-    if (file.exists(paste0(ResultDir, "/xGXwasR.grm.id"))) {
-      print(grep("GRM has been saved", readLines(paste0(ResultDir, "/xGXwasR.log")), value = TRUE))
-      print(grep("Number of SNPs in each pair", readLines(paste0(ResultDir, "/xGXwasR.log")), value = TRUE))
+
+    if (file.exists(file.path(ResultDir, "xGXwasR.grm.id"))) {
+      log_lines <- readLines(file.path(ResultDir, "xGXwasR.log"))
+      rlang::inform(rlang::format_error_bullets(c(
+        "v" = grep("GRM has been saved", log_lines, value = TRUE),
+        "i" = grep("Number of SNPs in each pair", log_lines, value = TRUE)
+      )))
+      message("\n")
     } else {
-      print("GRM is not created.")
+      rlang::inform(rlang::format_error_bullets(c("i" = "No GRM was created.")))
     }
+
   } else {
-    partGRM <- function(i) {
+    partGRM_fn <- function(i) {
       args <- c(
-        "--bfile", paste0(DataDir, "/", finput),
+        "--bfile", file.path(DataDir, finput),
         minmaf, minmafval,
         maxmaf, maxmafval,
-        "--make-grm-xchr-part",
-        nGRM,
-        i, # Part number for X chromosome GRM
+        "--make-grm-xchr-part", nGRM, i,
         "--thread-num", ncores,
-        "--out", paste0(ResultDir, "/xGXwasR")
+        "--out", file.path(ResultDir, "xGXwasR")
       )
-
-      # Execute GCTA with the specified arguments for X chromosome part
       executeGCTA(ResultDir, args)
     }
 
-    i <- 1:nGRM
-    lapply(i, partGRM)
+    lapply(seq_len(nGRM), partGRM_fn)
 
-    OS <- Sys.info()["sysname"]
+    os_type <- detect_os_type()
+    grm_parts <- c("grm.id", "grm.bin", "grm.N.bin")
 
-    if (OS == "Linux" | OS == "Mac") {
-      system(paste0("cat ", ResultDir, "/", "xGXwasR.part_", nGRM, "_*.grm.id > ", ResultDir, "/xGXwasR.grm.id"))
-      system(paste0("cat ", ResultDir, "/", "xGXwasR.part_", nGRM, "_*.grm.bin > ", ResultDir, "/xGXwasR.grm.bin"))
-      system(paste0("cat ", ResultDir, "/", "xGXwasR.part_", nGRM, "_*.grm.N.bin > ", ResultDir, "/xGXwasR.grm.N.bin"))
-    } else if (OS == "Windows") {
-      # copy /b test.part_3_*.grm.id test.grm.id
-      # copy /b test.part_3_*.grm.bin test.grm.bin
-      # copy /b test.part_3_*.grm.N.bin test.grm.N.bin
+    for (ext in grm_parts) {
+      input_pattern <- file.path(ResultDir, paste0("xGXwasR.part_", nGRM, "_*", ext))
+      output_file <- file.path(ResultDir, paste0("xGXwasR.", ext))
+
+      if (os_type == "unix") {
+        system2("cat", args = input_pattern, stdout = output_file)
+      } else if (os_type == "windows") {
+        cmd <- paste0("copy /b ", input_pattern, " ", output_file)
+        system2("cmd.exe", args = c("/c", cmd))
+      } else {
+        rlang::warn(paste("Unsupported OS for merging GRM files:", os_type))
+      }
     }
   }
 
   ## Compute GRM: GRM is calculated using the equation sum{[(xij - 2pi)*(xik - 2pi)] / [2pi(1-pi)]} as described in Yang et al. 2010 Nat Genet.
 }
+
 
 
 ## Function 75
@@ -3546,20 +3611,34 @@ ComputeREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100
     resultREML <- na.omit(data.table::fread(paste0(ResultDir, "/", chr, "test_reml.hsq"), fill = TRUE))
     return(resultREML)
   } else {
-    print("Convergence issue occurs, please check the models, use byCHR = TRUE, check different options, SNP partitioning or quality of the data")
+    rlang::inform(rlang::format_error_bullets(c(
+      "x" = "Convergence issue occurred, please:", 
+      " " = "- verify the model used", 
+      " " = "- set byCHR = TRUE", 
+      " " = "- set different options", 
+      " " = "- verify SNP partitioning or quality of the data")))
 
     log_file <- paste0(ResultDir, "/", chr, "test_reml.log")
 
     if (file.exists(log_file)) {
       lines <- readLines(log_file)
       start_line <- grep("Reading IDs", lines)
-
+    
       if (length(start_line) > 0) {
-        cat(lines[start_line:length(lines)], sep = "\n")
+        message_lines <- lines[start_line:length(lines)]
+        rlang::inform(
+          rlang::format_error_bullets(c(
+            "Log output from 'Reading IDs':",
+            setNames(message_lines, rep("*", length(message_lines)))
+          ))
+        )
       } else {
-        cat("The specified starting line was not found in the log file.\n")
+        rlang::inform("The specified starting line ('Reading IDs') was not found in the log file.")
       }
+    } else {
+      rlang::inform("Log file not found.")
     }
+    
 
     resultREML <- data.frame(Source = NA, Variance = NA, SE = NA)
     return(resultREML)
@@ -3573,7 +3652,7 @@ ComputeREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100
 ## Function 76
 ComputeREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile = NULL, GE = FALSE, cat_covarfile = NULL, quant_covarfile = NULL,
                              prevalence = 0.01, grmfile = "multi_GRMs.txt", computeGRM = FALSE, grmfile_name = NULL, ncores = 2) {
-  print(paste("computeGRM is set to:", computeGRM))
+  rlang::inform(rlang::format_error_bullets(c("i" = paste("computeGRM is set to:", computeGRM))))
 
   if (is.null(phenofile)) {
     pheno <- NULL
@@ -3609,13 +3688,13 @@ ComputeREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 1
 
   ## Create multi_GRMs.txt in ResultDir
   if (isTRUE(computeGRM)) {
-    print("Creating multi_GRMs.txt because computeGRM is TRUE")
+    rlang::inform(rlang::format_error_bullets("Creating multi_GRMs.txt because computeGRM is TRUE"))
 
     fileConn <- file(paste0(ResultDir, "/multi_GRMs.txt"))
     writeLines(c(paste0(ResultDir, "/GXwasR"), paste0(ResultDir, "/xGXwasR")), fileConn)
     close(fileConn)
   } else {
-    print("computeGRM is FALSE, checking grmfile_name")
+    rlang::inform(rlang::format_error_bullets("computeGRM is FALSE, checking grmfile_name"))
 
     if (is.null(grmfile_name)) {
       stop("grmfile_name must be provided if computeGRM is FALSE")
@@ -3642,27 +3721,43 @@ ComputeREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 1
       "--thread-num", ncores,
       "--out", paste0(ResultDir, "/", "test_reml")
     ),
-    std_out = FALSE,
-    std_err = FALSE
+    std_out = TRUE,
+    std_err = TRUE
   ))
 
   if (file.exists(paste0(ResultDir, "/test_reml.hsq"))) {
     resultREML <- na.omit(data.table::fread(paste0(ResultDir, "/test_reml.hsq"), fill = TRUE))
     return(resultREML)
   } else {
-    print("Convergence issue occurs, please check the models, use byCHR = TRUE, check different options, SNP partitioning or quality of the data")
+    rlang::inform(rlang::format_error_bullets(c(
+      "x" = "Convergence issue occurred, please:", 
+      " " = "- verify the model used", 
+      " " = "- set byCHR = TRUE", 
+      " " = "- set different options", 
+      " " = "- verify SNP partitioning or quality of the data")))
 
     log_file <- paste0(ResultDir, "/test_reml.log")
 
     suppressWarnings(if (file.exists(log_file)) {
-      lines <- readLines(log_file)
-      start_line <- grep("Reading IDs", lines)
-
-      if (length(start_line) > 0) {
-        cat(lines[start_line:length(lines)], sep = "\n")
+      if (file.exists(log_file)) {
+        lines <- readLines(log_file)
+        start_line <- grep("Reading IDs", lines)
+      
+        if (length(start_line) > 0) {
+          message_lines <- lines[start_line:length(lines)]
+          rlang::inform(
+            rlang::format_error_bullets(c(
+              "Log output from 'Reading IDs':",
+              setNames(message_lines, rep("*", length(message_lines)))
+            ))
+          )
+        } else {
+          rlang::inform("The specified starting line ('Reading IDs') was not found in the log file.")
+        }
       } else {
-        cat("The specified starting line was not found in the log file.\n")
+        rlang::inform("Log file not found.")
       }
+      
     })
 
     resultREML <- data.frame(Source = NA, Variance = NA, SE = NA)
@@ -3677,7 +3772,6 @@ ChrLength <- function(hg) {
   x <- GenomeInfoDb::getChromInfoFromUCSC(paste0(hg))
   x$size_mb <- x$size / 1000000
   x_mb <- x[1:26, c(1, 5)]
-  # library(stringr)
   x_mb$chrom <- 1:26
   return(x_mb)
 }
@@ -3688,7 +3782,7 @@ GettingGene <- function(gene_file, gene_range, SNP_bimfile, finput) {
   colnames(genes) <- c(c("gene_name", "X", "chr", "Y", "start", "end"))
   genes$up_Mb <- genes$start - gene_range
   genes$down_Mb <- genes$end + gene_range
-  genes.gr <- GenomicRanges::makeGRangesFromDataFrame(genes, keep.extra.columns = T)
+  genes.gr <- GenomicRanges::makeGRangesFromDataFrame(genes, keep.extra.columns = TRUE)
 
   suppressWarnings(SNPfile <- read.table(
     file = paste0(SNP_bimfile, ".bim"),
@@ -3705,11 +3799,11 @@ GettingGene <- function(gene_file, gene_range, SNP_bimfile, finput) {
   gene_snp_intersect <-
     as.data.frame(plyranges::join_overlap_intersect(genes.gr, snp.gr))
 
-  print(paste0(length(unique(
+  rlang::inform(rlang::format_error_bullets(c("i" = paste0(length(unique(
     gene_snp_intersect$gene_name
   )), " genes are having ", length(unique(
     gene_snp_intersect$SNP
-  )), " SNPs"))
+  )), " SNPs"))))
   gene_snp <- unique(gene_snp_intersect[, c(6, 11)])
   snpcount <- as.data.frame(table(gene_snp$gene_name))
 }
@@ -3881,7 +3975,7 @@ PlotHeritability <- function(Hdata, miMAF, maMAF, plotjpeg, plotname, ResultDir)
     )))
     dev.off()
 
-    print(paste0("Plots are saved in ", ResultDir, " with name ", plotname, ".jpeg"))
+    rlang::inform(rlang::format_error_bullets(c("v" = paste0("Plots are saved in ", ResultDir, " with name ", plotname, ".jpeg"))))
   }
 }
 
@@ -3890,7 +3984,7 @@ PlotHeritability <- function(Hdata, miMAF, maMAF, plotjpeg, plotname, ResultDir)
 computeMAFRange <- function(DataDir, ResultDir, finput, minMAF, maxMAF) {
   if (is.null(minMAF) | is.null(maxMAF)) {
     # Compute min and max MAF using Plink
-    plink_exec_path <- paste0(ResultDir, "/plink")
+    plink_exec_path <- plink()
     args <- c("--bfile", paste0(DataDir, "/", finput), "--freq", "--out", paste0(ResultDir, "/MAF"), "--silent")
 
     invisible(sys::exec_wait(plink_exec_path, args = args, std_out = FALSE, std_err = FALSE))
@@ -3944,7 +4038,7 @@ processLDSCModel <- function(DataDir, ResultDir, finput, precomputedLD, IndepSNP
         chi2_thr1 = chi2_thr1, chi2_thr2 = chi2_thr2, intercept = intercept, ncores = ncores, byCHR = byCHR
       )
     } else {
-      print("For LDSC model, please supply pre-computed LD scores as a dataframe in the 'precomputedLD' argument.")
+      rlang::inform(rlang::format_error_bullets(c("i" = "For LDSC model, please supply pre-computed LD scores as a dataframe in the 'precomputedLD' argument.")))
     }
 
     herit_result <- data.table::as.data.table(t(as.data.frame(result)))
@@ -3970,28 +4064,28 @@ processLDSCModel <- function(DataDir, ResultDir, finput, precomputedLD, IndepSNP
 
       if (PlotIndepSNP == TRUE) {
         if (is.null(precomputedLD)) {
-          print("For LDSC model precomputedLD cannot be NULL.")
+          rlang::inform(rlang::format_error_bullets(c("x" = "For LDSC model precomputedLD cannot be NULL.")))
         } else {
           chrsummarystat <- summarystat[summarystat$chr == chromosome, ]
 
           if (!is.null(IndepSNPs)) {
             bimfile1 <- merge(IndepSNPs, chrsummarystat, by = "rsid")
           } else {
-            print("IndepSNPs needed to be supplied else all SNPs are being used.")
+            rlang::inform(rlang::format_error_bullets(c("i" = "IndepSNPs needed to be supplied else all SNPs are being used.")))
 
             bimfile1 <- summarystat[summarystat$chr == chromosome, ]
           }
         }
       } else {
         if (is.null(precomputedLD)) {
-          print("For LDSC model precomputedLD cannot be NULL.")
+          rlang::inform(rlang::format_error_bullets(c("x" = "For LDSC model precomputedLD cannot be NULL.")))
         } else {
           bimfile1 <- summarystat[summarystat$chr == chromosome, ]
         }
       }
 
       if (is.null(precomputedLD)) {
-        print("For LDSC model precomputedLD cannot be NULL.")
+        rlang::inform(rlang::format_error_bullets(c("x" = "For LDSC model precomputedLD cannot be NULL.")))
       } else {
         snp_proportion <- round(length(unique(bimfile1$rsid)) / length(unique(summarystat$rsid)), 2)
       }
@@ -3999,10 +4093,10 @@ processLDSCModel <- function(DataDir, ResultDir, finput, precomputedLD, IndepSNP
       ## Getting number of genes and proteins
       GP <- GeneProtein(ResultDir = ResultDir, hg = hg, chromosome = chromosome)
 
-      print(paste0("Processing chromosome ", chromosome))
+      rlang::inform(paste0("Processing chromosome ", chromosome))
 
       if (is.null(precomputedLD)) {
-        print("For LDSC model, please supply pre-computed LD scores as a dataframe in the 'precomputedLD' argument.")
+        rlang::inform(rlang::format_error_bullets(c("x" = "For LDSC model, please supply pre-computed LD scores as a dataframe in the 'precomputedLD' argument.")))
       } else {
         result1 <- ComputeLDSC(
           summarystat = bimfile1, precomputedLD = precomputedLD, LDSC_blocks = LDSC_blocks,
@@ -4033,7 +4127,7 @@ processLDSCModel <- function(DataDir, ResultDir, finput, precomputedLD, IndepSNP
     result <- data.table::rbindlist(lapply(chrnum, chrwiseLD), fill = TRUE)
     x <- na.omit(result)
     if (nrow(x) < 3) {
-      print("Not enough data points for plots.")
+      rlang::inform(rlang::format_error_bullets(c("x" = "Not enough data points for plots.")))
       result1 <- result[, 1:9]
       result2 <- na.omit(result1)
       colnames(result2) <- c("chromosome", "snp_proportion", "no.of.genes", "no.of.proteins", "Intercept", "Int_SE", "Variance", "SE", "Source")
@@ -4045,7 +4139,7 @@ processLDSCModel <- function(DataDir, ResultDir, finput, precomputedLD, IndepSNP
       result2 <- merge(result1, chr_mb, by.y = "chrom", by.x = "chromosome")
       colnames(result2) <- c("chromosome", "snp_proportion", "no.of.genes", "no.of.proteins", "Intercept", "Int_SE", "Variance", "SE", "Source", "size_mb")
       # create plot with regression line, regression equation, Pearson correlation and p-value.
-      suppressWarnings(PlotHeritability(Hdata = result2, miMAF = miMAF, maMAF = maMAF, plotjpeg = plotjpeg, plotname = plotname))
+      suppressWarnings(PlotHeritability(Hdata = result2, miMAF = miMAF, maMAF = maMAF, plotjpeg = plotjpeg, plotname = plotname, ResultDir = ResultDir))
 
       result3 <- result2
       colnames(result3) <- c("Chromosome", "SNP_proportion", "No.of.genes", "No.of.proteins", "Intercept", "Int_SE", "Variance", "SE", "Source", "Size_mb")
@@ -4098,7 +4192,7 @@ processGREMLModel <- function(DataDir, ResultDir, finput, byCHR, autosome, Xsome
           partGRM = partGRM, nGRM = nGRM, minMAF = minMAF, maxMAF = maxMAF, ncores = ncores
         )
       } else {
-        print("Skipping GRM computation.")
+        rlang::inform(rlang::format_error_bullets(c("i" = "Skipping GRM computation.")))
       }
       ## Compute REML
       herit_result <- ComputeREMLmulti(
@@ -4127,7 +4221,7 @@ processGREMLModel <- function(DataDir, ResultDir, finput, byCHR, autosome, Xsome
 
       return(herit_result)
     } else {
-      print("Autosome and Xsome cannot be set as FALSE together.")
+      rlang::inform(rlang::format_error_bullets(c("x" = "Autosome and Xsome cannot both be set as FALSE.")))
     }
   } else {
     bimfile <- read.table(paste0(DataDir, "/", finput, ".bim"))
@@ -4156,7 +4250,7 @@ processGREMLModel <- function(DataDir, ResultDir, finput, byCHR, autosome, Xsome
       ## Getting number of genes and proteins
       GP <- GeneProtein(ResultDir = ResultDir, hg = hg, chromosome = chromosome)
 
-      print(paste0("Processing chromosome ", chromosome))
+      rlang::inform(paste0("Processing chromosome ", chromosome))
 
       if (chromosome == 23) {
         if (computeGRM == TRUE) {
@@ -4207,7 +4301,7 @@ processGREMLModel <- function(DataDir, ResultDir, finput, byCHR, autosome, Xsome
 
     x <- na.omit(result)
     if (nrow(x) < 3) {
-      print("Not enough data points for plots.")
+      rlang::inform(rlang::format_error_bullets(c("x" = "Not enough data points for plots.")))
       return(result)
     } else {
       result1 <- result[result$Source == "V(G)/Vp", ]
@@ -4216,7 +4310,7 @@ processGREMLModel <- function(DataDir, ResultDir, finput, byCHR, autosome, Xsome
       result2 <- merge(result1, chr_mb, by.y = "chrom", by.x = "chromosome")
 
       # create plot with regression line, regression equation, Pearson correlation and p-value.
-      suppressWarnings(PlotHeritability(Hdata = result2, miMAF = miMAF, maMAF = maMAF, plotjpeg = plotjpeg, plotname = plotname))
+      suppressWarnings(PlotHeritability(Hdata = result2, miMAF = miMAF, maMAF = maMAF, plotjpeg = plotjpeg, plotname = plotname, ResultDir = ResultDir))
 
       result3 <- merge(result, chr_mb, by.y = "chrom", by.x = "chromosome")
       result3 <- result3[, c(1:4, 8, 5:7)]
@@ -4388,7 +4482,7 @@ allForestplot <- function(i, MR2, Sbeta) {
 ## Added in 3.0
 ## Apply Genomic Control
 getGCse <- function(SummData, ResultDir) {
-  print("Applying study-specific genomic control.")
+  rlang::inform(rlang::format_error_bullets(c("i" = "Applying study-specific genomic control.")))
   s1 <- read.table(paste0(ResultDir, "/", SummData), header = TRUE)
 
   # From p-values, calculate chi-squared statistic
@@ -4419,7 +4513,7 @@ adjustPvalThreshold <- function(top_snp_pval, MR, pval_filter) {
   )
   if (top_snp_pval < min_pval) {
     adjusted_pval <- min_pval * 100
-    print(paste0("Minimum p-value is higher than provided threshold. Using ", adjusted_pval))
+    rlang::inform(rlang::format_error_bullets("i" = (paste0("Minimum p-value is higher than provided threshold. Using ", adjusted_pval))))
     return(adjusted_pval)
   } else {
     return(top_snp_pval)
@@ -4445,7 +4539,7 @@ metaFun <- function(DataDir, ResultDir, SummData, CHR, chromosome, nomap, UseA1v
   # setupPlink(ResultDir)
   chromosomev <- chromosome
 
-  print(paste0("Processing chromosome ", chromosomev))
+  rlang::inform(paste0("Processing chromosome ", chromosomev))
 
   invisible(sys::exec_wait(
     plink(),
@@ -4479,7 +4573,7 @@ generatePlots <- function(MRfiltered, Sbeta, ResultDir, plotname, useSNPposition
   # Determine the number of SNPs to plot
   numSNPs <- min(length(unique(MRfiltered$SNP)), 10)
   if (length(unique(MRfiltered$SNP)) > 10) {
-    print("Maximum 10 Forest plots of 10 chosen SNPs will be drawn in the plot window. For all other Forest plots, please check ResultDir.")
+    rlang::inform(rlang::format_error_bullets(c("i" = "Maximum 10 Forest plots of 10 chosen SNPs will be drawn in the plot window. For all other Forest plots, please check ResultDir.")))
   }
 
   # Generate Forest plots
@@ -4559,7 +4653,8 @@ ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr 
     matched_lines <- grep(pattern, lines, value = TRUE)
 
     if (length(matched_lines) > 0) {
-      x1 <- read.table(text = matched_lines)
+      cleaned_lines <- sub("\\s*\\(.*\\)$", "", matched_lines)
+      x1 <- read.table(text = cleaned_lines)
       colnames(x1) <- NULL
       rownames(x1) <- NULL
       x <- as.data.frame(t(x1))
@@ -4572,10 +4667,15 @@ ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr 
     # colnames(x1)<- NULL
     # rownames(x1)<- NULL
     # print(x1)
-    print(grep("Error", readLines(paste0(ResultDir, "/", chr, "test_bireml.log")), value = TRUE))
-    print(grep("Note: to constrain", readLines(paste0(ResultDir, "/", chr, "test_bireml.log")), value = TRUE))
-    print("Convergence problem occurs, please try byCHR = TRUE, check different options, SNP partitioning or ensure the quality of the input data.")
-    print("The result will be provided for the last iteration.")
+    rlang::inform(rlang::format_error_bullets(c("x" = grep("Error", readLines(paste0(ResultDir, "/", chr, "test_bireml.log")), value = TRUE))))
+    rlang::inform(rlang::format_error_bullets(c("i" = grep("Note: to constrain", readLines(paste0(ResultDir, "/", chr, "test_bireml.log")), value = TRUE))))
+    rlang::inform(rlang::format_error_bullets(c(
+      "x" = "Convergence issue occurred, please:", 
+      " " = "- set byCHR = TRUE", 
+      " " = "- set different options", 
+      " " = "- verify SNP partitioning or quality of the data")))
+    rlang::inform(rlang::format_error_bullets(c("i" = "The result will be provided for the last iteration.")))
+    message("\n")
     # if(grep("Error", readLines(paste0(ResultDir,"/",chr,"test_bireml.log")), value = TRUE) == 0){
     #   x <- data.frame(Source = NA, Variance = NA, SE = NA)
     #   print("Segmentation fault from GCTA 1.94.1.")
@@ -4591,7 +4691,7 @@ ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr 
 ## Function 96
 ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile, cat_covarfile = NULL,
                                   quant_covarfile = NULL, grmfile = "multi_GRMs.txt", excludeResidual = c("FALSE", "TRUE"), computeGRM = FALSE, grmfile_name = NULL, ncores = 2) {
-  print(paste("computeGRM is set to:", computeGRM))
+  rlang::inform(rlang::format_error_bullets(c("i" = paste("computeGRM is set to:", computeGRM))))
 
   if (excludeResidual == "FALSE") {
     ExResi <- NULL
@@ -4620,13 +4720,13 @@ ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nit
   # close(fileConn)
   ## Create multi_GRMs.txt in ResultDir
   if (isTRUE(computeGRM)) {
-    print("Creating multi_GRMs.txt because computeGRM is TRUE")
+    rlang::inform(rlang::format_error_bullets(c("i" = "Creating multi_GRMs.txt because computeGRM is TRUE")))
 
     fileConn <- file(paste0(ResultDir, "/multi_GRMs.txt"))
     writeLines(c(paste0(ResultDir, "/GXwasR"), paste0(ResultDir, "/xGXwasR")), fileConn)
     close(fileConn)
   } else {
-    print("computeGRM is FALSE, checking grmfile_name")
+    rlang::inform(rlang::format_error_bullets(c("i" = "computeGRM is FALSE, checking grmfile_name")))
 
     if (is.null(grmfile_name)) {
       stop("grmfile_name must be provided if computeGRM is FALSE")
@@ -4665,7 +4765,8 @@ ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nit
     matched_lines <- grep(pattern, lines, value = TRUE)
 
     if (length(matched_lines) > 0) {
-      x1 <- read.table(text = matched_lines)
+      cleaned_lines <- sub("\\s*\\(.*\\)$", "", matched_lines)
+      x1 <- read.table(text = cleaned_lines)
       colnames(x1) <- NULL
       rownames(x1) <- NULL
       x <- as.data.frame(t(x1))
@@ -4679,10 +4780,15 @@ ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nit
     # colnames(x1)<- NULL
     # rownames(x1)<- NULL
     # print(x1)
-    print(grep("Error", readLines(paste0(ResultDir, "/test_bireml.log")), value = TRUE))
-    print(grep("Note: to constrain", readLines(paste0(ResultDir, "/test_bireml.log")), value = TRUE))
-    print("Convergence problem occurs, please try byCHR = TRUE, check different options, SNP partitioning or ensure the quality of the input data.")
-    print("The result will be provided for the last iteration.")
+    rlang::inform(rlang::format_error_bullets(c("x" = grep("Error", readLines(paste0(ResultDir, "/test_bireml.log")), value = TRUE))))
+    rlang::inform(rlang::format_error_bullets(c("i" = grep("Note: to constrain", readLines(paste0(ResultDir, "/test_bireml.log")), value = TRUE))))
+    rlang::inform(rlang::format_error_bullets(c(
+      "x" = "Convergence issue occurred, please:", 
+      " " = "- set byCHR = TRUE", 
+      " " = "- set different options", 
+      " " = "- verify SNP partitioning or quality of the data")))
+    rlang::inform(rlang::format_error_bullets(c("i" = "The result will be provided for the last iteration.")))
+    message("\n")
     # x <- as.data.frame(t(x1))
     # x <- x[-1,]
     # colnames(x) <- c("Source", "Variance","SE")
@@ -4693,24 +4799,7 @@ ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nit
 ## Function 97
 # sumFREGAT (2017-2022) Gulnara R. Svishcheva & Nadezhda M. Belonogova, ICG SB RAS
 geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.RData", output.file.prefix) {
-  OS <- Sys.info()["sysname"]
-  if (OS == "Windows") {
-    print("Currently this function maynot work on Windows as bgzip and tabix for windows are down. Pleas use linux environment.")
 
-    utils::download.file(
-      destfile = paste0(ResultDir, "/", "bgzip_tabix.zip"),
-      "https://github.com/boseb/bose_binaries/raw/main/bgzip_tabix.zip", mode = "wb", quiet = TRUE,
-    )
-  } else {
-    utils::download.file(
-      destfile = paste0(ResultDir, "/", "bgzip_tabix.zip"),
-      "https://github.com/boseb/bose_binaries/raw/main/bgzip_tabix.zip", quiet = TRUE,
-    )
-  }
-  utils::unzip(paste0(ResultDir, "/", "bgzip_tabix.zip"), exdir = ResultDir)
-
-  Sys.chmod(paste0(ResultDir, "/bgzip"), mode = "0777", use_umask = TRUE)
-  Sys.chmod(paste0(ResultDir, "/tabix"), mode = "0777", use_umask = TRUE)
   # 'CHROM', 'POS', 'ID', 'EA', 'P', 'BETA', 'EAF'
   if (length(data) == 1) {
     input.file <- data
@@ -4744,7 +4833,7 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
 
   ColNames <- c("ID", "P")
   v <- !ColNames %in% colnames(df)
-  if (sum(v)) stop(paste("Mandatory column(s) missing:", paste(ColNames[v], collapse = ", ")))
+  if (sum(v)) stop("Mandatory column(s) missing:", paste(ColNames[v], collapse = ", "))
 
   df <- df[!is.na(df$P) & !is.na(df$ID), ]
   if (dim(df)[1] == 0) stop("No values assigned for P or ID")
@@ -4752,7 +4841,12 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
   ColNames <- c("CHROM", "POS", "EAF")
   v <- !ColNames %in% colnames(df)
   take <- ColNames[v]
-  if (sum(v)) print(paste("Columns that are missing and will be looked for in reference data:", paste(take, collapse = ", ")))
+  if (sum(v)) 
+    rlang::inform(
+      rlang::format_error_bullets(
+        c("i" = paste("Columns that are missing and will be looked for in reference data:", paste(take, collapse = ", ")))
+      )
+    )
   take[take == "EAF"] <- "AF"
 
   if ("BETA" %in% colnames(df)) {
@@ -4762,10 +4856,18 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
       colnames(df)[which(colnames(df) == "ALT")] <- "ALT0"
       take <- c(take, "REF", "ALT")
     } else {
-      print("Effect allele column not found, effect sizes cannot be linked")
+      rlang::inform(
+        rlang::format_error_bullets(
+          c("x" = "Effect allele column not found, effect sizes cannot be linked")
+        )
+      )
     }
   } else {
-    print("Effect sizes (beta) column not found")
+    rlang::inform(
+      rlang::format_error_bullets(
+        c("x" = "Effect sizes (beta) column not found")
+      )
+    )
   }
   if (length(take) > 0) {
     is.ref <- 0
@@ -4775,7 +4877,12 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
         if (file.exists(reference)) {
           is.ref <- 1
         } else {
-          if (reference != "") print("Reference file not found! Please download it from https://mga.bionet.nsc.ru/sumFREGAT/ref1KG.MAC5.EUR_AF.RData to use 1000 Genome Reference correlation matrices")
+          if (reference != "") 
+            rlang::inform(
+              rlang::format_error_bullets(
+                c("x" = "Reference file not found! Please download it from https://mga.bionet.nsc.ru/sumFREGAT/ref1KG.MAC5.EUR_AF.RData to use 1000 Genome Reference correlation matrices")
+              )
+            )
         }
       }
     } else if (length(reference) > 1) is.ref <- is.ref.object <- 1
@@ -4784,7 +4891,11 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
       if (is.ref.object) {
         ref <- reference
       } else {
-        print("Loading reference file...")
+        rlang::inform(
+          rlang::format_error_bullets(
+            "Loading reference file..."
+          )
+        )
         ref <- get(load(reference))
       }
       colnames(ref) <- toupper(colnames(ref))
@@ -4795,25 +4906,50 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
       if (!sum(v, na.rm = TRUE)) {
         if (all(c("CHROM", "POS") %in% colnames(df))) {
           df$ind <- paste(df$CHROM, df$POS, sep = ":")
-          print("No IDs matching, trying to link through map data...")
+          rlang::inform(
+            rlang::format_error_bullets(
+              c("No IDs matching, trying to link through map data...")
+            )
+          )
           ref$ind <- paste(ref$CHROM, ref$POS, sep = ":")
           v <- match(df$ind, ref$ind)
           if (sum(!is.na(v)) < (length(v) / 2)) {
-            print("Too few variants match between input file and reference data")
+            rlang::inform(
+              rlang::format_error_bullets(
+                c("x" = "Too few variants match between input file and reference data")
+              )
+            )
             v <- NA
           }
         }
       }
       if (sum(v, na.rm = TRUE)) {
-        print(paste(sum(!is.na(v)), "of", length(v), "variants found in reference"))
+        rlang::inform(
+          rlang::format_error_bullets(
+            c("i" = paste(sum(!is.na(v)), "of", length(v), "variants found in reference"))
+          )
+        )
         vv <- take %in% colnames(ref)
         if (sum(!vv)) {
-          print(paste("Columns that are missing in reference data:", paste(take[!vv], collapse = ", ")))
+          rlang::inform(
+            rlang::format_error_bullets(
+              c("i" = paste("Columns that are missing in reference data:", paste(take[!vv], collapse = ", ")))
+            )
+          )
           if ("REF" %in% take & !"REF" %in% colnames(ref)) {
-            print("Reference alleles not found, effect sizes cannot be linked")
+            rlang::inform(
+              rlang::format_error_bullets(
+                c("!" = "Reference alleles not found, effect sizes cannot be linked")
+              )
+            )
             df$BETA <- df$EFFECT.ALLELE <- NULL
           }
-          if ("AF" %in% take & !"AF" %in% colnames(ref)) print("Allele frequencies not found, some weighted tests will be unavailable")
+          if ("AF" %in% take & !"AF" %in% colnames(ref)) 
+            rlang::inform(
+              rlang::format_error_bullets(
+                c("!" = "Allele frequencies not found, some weighted tests will be unavailable")
+              )
+            )
         }
         df <- cbind(df, ref[v, take[vv]])
       }
@@ -4837,8 +4973,12 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
     if ("ALT" %in% colnames(df)) {
       v <- unique(c(v, which(df$EFFECT.ALLELE != df$REF & df$EFFECT.ALLELE != df$ALT)))
     }
-    if (sum(v, na.rm = T)) {
-      print(paste("Effect alleles or REF/ALT alleles do not match reference data for", sum(v), "variant(s)"))
+    if (sum(v, na.rm = TRUE)) {
+      rlang::inform(
+        rlang::format_error_bullets(
+          c("i" = paste("Effect alleles or REF/ALT alleles do not match reference data for", sum(v), "variant(s)"))
+        )
+      )
       df[v, "BETA"] <- NA
     }
     df[is.na(df$EFFECT.ALLELE) | is.na(df$REF), "BETA"] <- NA
@@ -4849,11 +4989,19 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
       df$EAF[v] <- 1 - df$EAF[v]
       colnames(df)[colnames(df) == "EAF"] <- "AF"
     }
-    print(paste("Effect sizes recoded for", length(v), "variant(s)"))
+    rlang::inform(
+      rlang::format_error_bullets(
+        c("i" = paste("Effect sizes recoded for", length(v), "variant(s)"))
+      )
+    )
   }
 
   if (any(df$P == 0)) {
-    print("Some P values equal zero, will be assigned to minimum value in the sample")
+    rlang::inform(
+      rlang::format_error_bullets(
+         c("i" = "Some P values equal zero, will be assigned to minimum value in the sample")
+      )  
+    )
     df$P[df$P == 0] <- min(df$P[df$P > 0])
   }
   df$Z <- qnorm(df$P / 2, lower.tail = FALSE)
@@ -4889,28 +5037,44 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
   if ("AF" %in% colnames(df)) {
     vcf$INFO <- paste0(vcf$INFO, ";AF=", df$AF)
     title <- c(title, '##INFO=<ID=AF,Number=1,Type=Float,Description="Frequency of alternative allele">')
-    print(paste0("Allele frequencies found and linked"))
+    rlang::inform(
+      rlang::format_error_bullets(
+        c("v" = paste0("Allele frequencies found and linked"))
+      )
+    )
   }
 
   a <- grep("\\bW", colnames(df))
   if (length(a) == 1) {
     vcf$INFO <- paste0(vcf$INFO, ";W=", df[, a])
     title <- c(title, '##INFO=<ID=W,Number=1,Type=Float,Description="Weights">')
-    print(paste0("User weights ('", colnames(df)[a], "') found and linked"))
+    rlang::inform(
+      rlang::format_error_bullets(
+        c("v" = paste0("User weights ('", colnames(df)[a], "') found and linked"))
+      )
+    )
   }
 
   a <- grep("\\bANNO", colnames(df), value = TRUE)
   if (length(a) == 1) {
     vcf$INFO <- paste0(vcf$INFO, ";ANNO=", df[, a])
     title <- c(title, '##INFO=<ID=ANNO,Number=1,Type=String,Description="Variants annotations">')
-    print(paste0("Annotations ('", colnames(df)[a], "') found and linked"))
+    rlang::inform(
+      rlang::format_error_bullets(
+        c("v" = paste0("Annotations ('", colnames(df)[a], "') found and linked"))
+      )
+    )
   }
 
   a <- grep("\\bPROB", colnames(df), value = TRUE)
   for (an in a) {
     vcf$INFO <- paste0(vcf$INFO, ";", an, "=", df[, as.character(an)])
     title <- c(title, paste0("##INFO=<ID=", an, ",Number=1,Type=Float,Description='", an, "'>"))
-    print(paste0("Column '", an, "' linked"))
+    rlang::inform(
+      rlang::format_error_bullets(
+        c("v" = paste0("Column '", an, "' linked"))
+      )
+    )
   }
 
   # write.table(title, fn, col.names = FALSE, row.names = FALSE, quote = FALSE, sep = '\t')
@@ -4928,15 +5092,24 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
     suppressWarnings(write.table(vcf, paste0(ResultDir, "/", fn), row.names = FALSE, quote = FALSE, append = TRUE, sep = "\t"))
   }
 
-  fn.gz <- paste(fn, "gz", sep = ".")
-  # if (file.exists(fn.gz)) system(paste('rm', fn.gz))
-  # system(paste('./bgzip', fn))
-  # system(paste('./tabix -p vcf', fn.gz))
-  # print(paste('File', fn.gz, 'has been created'))
-  if (file.exists(paste0(ResultDir, "/", fn.gz))) system(paste("rm", paste0(ResultDir, "/", fn.gz)))
-  system(paste0(ResultDir, "/", "./bgzip ", ResultDir, "/", fn))
-  system(paste0(ResultDir, "/", "./tabix -p vcf ", ResultDir, "/", fn.gz))
-  print(paste("File", fn.gz, "has been created"))
+  # Build full path to input file and its gzipped output
+  vcf_path <- file.path(ResultDir, fn)
+  vcf_gz <- paste0(vcf_path, ".gz")
+
+  # Remove existing gzipped file if it exists
+  if (file.exists(vcf_gz)) file.remove(vcf_gz)
+
+  # Compress the VCF using Rsamtools::bgzip()
+  Rsamtools::bgzip(file = vcf_path, dest = vcf_gz, overwrite = TRUE)
+
+  # Index the gzipped VCF using Rsamtools::indexTabix()
+  Rsamtools::indexTabix(file = vcf_gz, format = "vcf")
+
+  # Confirmation message
+  rlang::inform(
+    rlang::format_error_bullets(
+      c("v" = paste("File", vcf_gz, "has been created and indexed")))
+    ) 
 }
 
 ## Function 98
@@ -5297,15 +5470,15 @@ filterATGCSNPs <- function(DataDir, ResultDir, finput, reference) {
 
   # Print Messages
   if (nrow(study_SNP) == 0) {
-    print("No SNP had 'A-T' and 'G-C' in study data.")
+    rlang::inform(rlang::format_error_bullets("No SNP had 'A-T' and 'G-C' in study data."))
   } else {
-    print(paste0(nrow(study_SNP), " SNPs had 'A-T' and 'G-C' in study data. These SNPs were removed."))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0(nrow(study_SNP), " SNPs had 'A-T' and 'G-C' in study data. These SNPs were removed."))))
   }
 
   if (nrow(ref_SNP) == 0) {
-    print("No SNP had 'A-T' and 'G-C' in reference data.")
+    rlang::inform(rlang::format_error_bullets("No SNP had 'A-T' and 'G-C' in reference data."))
   } else {
-    print(paste0(nrow(ref_SNP), " SNPs were 'A-T' and 'G-C' in reference data. These SNPs were removed."))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0(nrow(ref_SNP), " SNPs were 'A-T' and 'G-C' in reference data. These SNPs were removed."))))
   }
 }
 
@@ -5315,7 +5488,7 @@ executePlinkForUnfilteredData <- function(DataDir, ResultDir, finput, reference)
   executePlinkAd(ResultDir, c("--bfile", paste0(DataDir, "/", finput), "--make-bed", "--out", paste0(ResultDir, "/filtered_study_temp2"), "--silent"))
   executePlinkAd(ResultDir, c("--bfile", paste0(ResultDir, "/", reference), "--make-bed", "--out", paste0(ResultDir, "/filtered_ref_temp2"), "--silent"))
 
-  print("A-T and C-G SNPs recommended to remove from both the reference and study data set by setting filterSNP == TRUE")
+  rlang::inform(rlang::format_error_bullets("A-T and C-G SNPs recommended to remove from both the reference and study data set by setting filterSNP == TRUE"))
 }
 
 ## Function 105
@@ -5334,7 +5507,7 @@ findCommonSNPs <- function(ResultDir) {
     # if (nrow(common_snps) == 0){
     stop("No common SNPs found between study and reference data. This analysis cannot be done.")
   } else {
-    print(paste0("No. of. overlapping SNPs between study and reference data using chromosme ID and position:", length(common_snps)))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0("Number of overlapping SNPs between study and reference data using chromosme ID and position:", length(common_snps)))))
   }
 
   # Updated in final
@@ -5560,9 +5733,12 @@ mergeDatasetsAndPerformPCA <- function(ResultDir) {
   removeTempFiles(ResultDir, "filtered_ref_temp7")
 
   if (file.exists(paste0(ResultDir, "/study_ref_merge.eigenvec"))) {
-    print("PCA done.")
+    rlang::inform(rlang::format_error_bullets(c("v" = "PCA done.")))
   } else {
-    print("PCA cannot be computed. Please check whether you have sufficient number of overlapping SNPs between study and reference data, too many missing genotypes in study data or closely related individuals, hence GRM cannot be extracted.")
+    rlang::inform(
+      rlang::format_error_bullets(c(
+        "x" = "PCA cannot be computed.",
+        "i" = "Please check whether you have sufficient number of overlapping SNPs between study and reference data. There are too many missing genotypes in study data or closely related individuals so GRM cannot be extracted.")))
     stop("Ancestry check cannot be performed since PCA cannot be computed")
   }
 }
@@ -5709,11 +5885,11 @@ reportAlleleFlips <- function(snp_allele_flips, ResultDir) {
   snp_allele_flips_count <- length(unique(snp_allele_flips))
 
   if (snp_allele_flips_count == 0) {
-    print("No allele flips between study and reference data.")
+    rlang::inform(rlang::format_error_bullets(c("i" = "No allele flips between study and reference data.")))
   } else {
-    print(paste0(snp_allele_flips_count, " allele flips identified between study and reference data."))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0(snp_allele_flips_count, " allele flips identified between study and reference data."))))
     mergebim <- read.table(paste0(ResultDir, "/study_ref_merge.bim"))
-    print(paste0(length(unique(mergebim$V2)), " SNPs were finally retained in study and reference data after correcting for position mismatch and allele flips."))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0(length(unique(mergebim$V2)), " SNPs were finally retained in study and reference data after correcting for position mismatch and allele flips."))))
   }
 }
 
@@ -5872,18 +6048,18 @@ detectOutliers <- function(tab, ResultDir, DataDir, finput, outlier, outlierOf, 
       file = paste0(ResultDir, "/Outlier_ancestry"),
       quote = FALSE, row.names = FALSE, col.names = FALSE, eol = "\r\n", sep = " "
     )
-    print(paste0(nrow(unique(Outlier_samples_fam)), " samples are outliers of selected reference population."))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0(nrow(unique(Outlier_samples_fam)), " samples are outliers of selected reference population."))))
   } else {
-    print("There is no outlier sample.")
+    rlang::inform(rlang::format_error_bullets(c("x" = "There is no outlier sample.")))
   }
 
   ## Added in 5.0
   # Report non-outlier results for selected reference population
   Sample_Ref_Pop <- na.omit(study_pop[study_pop$Assigned_Pop_ZScore == outlierOf, ])
   if (nrow(Sample_Ref_Pop) != 0) {
-    print(paste0(length(unique(Sample_Ref_Pop[, 1])), " samples are NOT outliers of selected reference population."))
+    rlang::inform(rlang::format_error_bullets(c("i" = paste0(length(unique(Sample_Ref_Pop[, 1])), " samples are NOT outliers of selected reference population."))))
   } else {
-    print("There are no non-outlier samples.")
+    rlang::inform(rlang::format_error_bullets(c("x" = "There are no non-outlier samples.")))
   }
 
   # Prepare Outlier_samples1
@@ -6090,13 +6266,13 @@ validateInputDataSexDiff <- function(Mfile, Ffile) {
   # Check for existence of required columns in Mfile
   missingColsMfile <- setdiff(requiredColumnsMfile, names(Mfile))
   if (length(missingColsMfile) > 0) {
-    stop(paste("Error: Mfile is missing these columns:", paste(missingColsMfile, collapse = ", ")))
+    stop("Error: Mfile is missing these columns:", paste(missingColsMfile, collapse = ", "))
   }
 
   # Check for existence of required columns in Ffile
   missingColsFfile <- setdiff(requiredColumnsFfile, names(Ffile))
   if (length(missingColsFfile) > 0) {
-    stop(paste("Error: Ffile is missing these columns:", paste(missingColsFfile, collapse = ", ")))
+    stop("Error: Ffile is missing these columns:", paste(missingColsFfile, collapse = ", "))
   }
 
   return(TRUE)
@@ -6126,7 +6302,7 @@ validateInputForQCsnp <- function(DataDir, ResultDir = tempdir(), finput, foutpu
   for (param_name in names(boolean_params)) {
     param_value <- boolean_params[[param_name]]
     if (!is.logical(param_value)) {
-      stop(paste("Error in", param_name, ": Must be a boolean value."))
+      stop("Error in ", param_name, ": Must be a boolean value.")
     }
   }
 
@@ -6135,7 +6311,7 @@ validateInputForQCsnp <- function(DataDir, ResultDir = tempdir(), finput, foutpu
   for (param_name in names(numeric_params)) {
     param_value <- numeric_params[[param_name]]
     if (!is.null(param_value) && (!is.numeric(param_value) || param_value < 0 || param_value > 1)) {
-      stop(paste("Error in", param_name, ": Must be a numeric value between 0 and 1."))
+      stop("Error in ", param_name, ": Must be a numeric value between 0 and 1.")
     }
   }
 
@@ -6376,7 +6552,7 @@ validateInputForComputePRS <- function(DataDir, ResultDir = tempdir(), finput, s
   for (param_name in names(numeric_params)) {
     param_value <- numeric_params[[param_name]]
     if (!is.numeric(param_value) || param_value < 0 || param_value > 1) {
-      stop(paste("Error in", param_name, ": Must be a numeric value between 0 and 1."))
+      stop("Error in ", param_name, ": Must be a numeric value between 0 and 1.")
     }
   }
 
@@ -6512,7 +6688,7 @@ validateInputForSexCheck <- function(DataDir, ResultDir = tempdir(), finput, imp
   for (param_name in names(boolean_params)) {
     param_value <- boolean_params[[param_name]]
     if (!is.logical(param_value)) {
-      stop(paste("Error in", param_name, ": Must be a boolean value."))
+      stop("Error in ", param_name, ": Must be a boolean value.")
     }
   }
 
@@ -6529,7 +6705,7 @@ validateInputForSexCheck <- function(DataDir, ResultDir = tempdir(), finput, imp
   for (param_name in names(numeric_params)) {
     param_value <- numeric_params[[param_name]]
     if (!is.numeric(param_value) || param_value < 0 || param_value > 1) {
-      stop(paste("Error in", param_name, ": Must be a numeric value between 0 and 1."))
+      stop("Error in ", param_name, ": Must be a numeric value between 0 and 1.")
     }
   }
 
@@ -6703,7 +6879,7 @@ validateInputForQCsample <- function(DataDir, ResultDir, finput, foutput, imiss,
   size_params <- list(legend_text_size = legend_text_size, legend_title_size = legend_title_size, axis_text_size = axis_text_size, axis_title_size = axis_title_size, title_size = title_size)
   for (param_name in names(size_params)) {
     if (!is.numeric(size_params[[param_name]]) || size_params[[param_name]] <= 0) {
-      stop(paste0(param_name, " must be a positive integer."))
+      stop(param_name, " must be a positive integer.")
     }
   }
 }
@@ -6791,7 +6967,7 @@ validateInputForMetaGWAS <- function(DataDir, ResultDir, SummData, SNPfile, useS
   for (param_name in names(pval_params)) {
     param_value <- pval_params[[param_name]]
     if (!is.numeric(param_value) || param_value < 0 || param_value > 1) {
-      stop(paste0("Error in ", param_name, ": Must be a numeric value between 0 and 1."))
+      stop("Error in ", param_name, ": Must be a numeric value between 0 and 1.")
     }
   }
 
@@ -6827,7 +7003,7 @@ validateInputForClumpLD <- function(DataDir, finput, SNPdata, ResultDir, clump_p
   }
 
   # Validate SNPdata - must be a list of dataframes
-  if (!is.list(SNPdata) || !all(sapply(SNPdata, is.data.frame))) {
+  if (!is.list(SNPdata) || !all(vapply(SNPdata, is.data.frame, logical(1)))) {
     stop("Error in SNPdata: Must be a list of dataframes.")
   }
 
@@ -6836,7 +7012,7 @@ validateInputForClumpLD <- function(DataDir, finput, SNPdata, ResultDir, clump_p
   for (param_name in names(clump_params)) {
     param_value <- clump_params[[param_name]]
     if (!is.numeric(param_value)) {
-      stop(paste0("Error in ", param_name, ": Must be a numeric value."))
+      stop("Error in ", param_name, ": Must be a numeric value.")
     }
   }
 
@@ -7137,12 +7313,12 @@ setFilterParameters <- function(CHRX, CHRY, filterCHR, regionfile, filterPAR, fi
   }
 
   if (!is.null(fch) && !is.null(rf)) {
-    print("filterCHR and regionfile, cannot be in effect together.")
+    rlang::inform(rlang::format_error_bullets(c("x" = "filterCHR and regionfile, cannot be used together.")))
     return()
   } else if (!is.null(fch) && (filterPAR == TRUE | filterXTR == TRUE | filterAmpliconic == TRUE)) {
-    print("filterCHR cannot be in effect with other filters such as PAR, XTR, Ampliconic. Other filters were implicitly FALSE.")
+    rlang::inform(rlang::format_error_bullets(c("x" = "filterCHR cannot be used with other filters such as PAR, XTR, Ampliconic. Other filters were implicitly FALSE.")))
   } else if (!is.null(rf) && (filterPAR == TRUE | filterXTR == TRUE | filterAmpliconic == TRUE)) {
-    print("regionfile cannot be in effect with other filters such as PAR, XTR, Ampliconic. Other filters were implicitly FALSE.")
+    rlang::inform(rlang::format_error_bullets(c("x" = "regionfile cannot be used with other filters such as PAR, XTR, Ampliconic. Other filters were implicitly FALSE.")))
   }
 
   return(list(CHRX = CHRX, fch = fch, rf = rf))
@@ -7184,10 +7360,12 @@ processRegionFilter <- function(x, filterPAR, filterXTR, filterAmpliconic, Resul
     if (file.exists(paste0(ResultDir, "/", foutput, "_par_region.bim"))) {
       par_snps <- read.table(paste0(ResultDir, "/", foutput, "_par_region.bim"))
       colnames(par_snps) <- c("CHR", "SNP", "START", "END", "A1", "A2")
-      print(paste0("PAR SNPs:", length(unique(par_snps$SNP))))
+      rlang::inform(rlang::format_error_bullets(c("i" = paste0("PAR SNPs:", length(unique(par_snps$SNP))))))
     } else {
-      print("There is no PAR region in the input data. Argument filterPAR cannot set to be TRUE.")
-      print("Changing it as filterPAR = FALSE")
+      rlang::inform(
+        rlang::format_error_bullets(c(
+          "x" = "There is no PAR region in the input data. Argument filterPAR cannot set to be TRUE.",
+          "i" = "Changing filterPAR to FALSE")))
       filterPAR <- FALSE
       par_snps <- NULL
     }
@@ -7229,10 +7407,13 @@ processRegionFilter <- function(x, filterPAR, filterXTR, filterAmpliconic, Resul
     if (file.exists(paste0(ResultDir, "/", foutput, "_xtr_region.bim"))) {
       xtr_snps <- read.table(paste0(ResultDir, "/", foutput, "_xtr_region.bim"))
       colnames(xtr_snps) <- c("CHR", "SNP", "START", "END", "A1", "A2")
-      print(paste0("XTR SNPs:", length(unique(xtr_snps$SNP))))
+      rlang::inform(rlang::format_error_bullets(c("i" = paste0("XTR SNPs:", length(unique(xtr_snps$SNP))))))
     } else {
-      print("There is no XTR region in the input data. Argument filterXTR cannot set to be TRUE.")
-      print("Changing it as filterXTR = FALSE")
+      rlang::inform(
+        rlang::format_error_bullets(c(
+          "x" = "There is no XTR region in the input data. Argument filterXTR cannot set to be TRUE.",
+          "i" = "Changing filterXTR to FALSE"
+        )))
       filterXTR <- FALSE
       xtr_snps <- NULL
     }
@@ -7275,10 +7456,13 @@ processRegionFilter <- function(x, filterPAR, filterXTR, filterAmpliconic, Resul
     if (file.exists(paste0(ResultDir, "/", foutput, "_ampliconic_region.bim"))) {
       ampliconic_snps <- read.table(paste0(ResultDir, "/", foutput, "_ampliconic_region.bim"))
       colnames(ampliconic_snps) <- c("CHR", "SNP", "START", "END", "A1", "A2")
-      print(paste0("Ampliconic SNPs:", length(unique(ampliconic_snps$SNP))))
+      rlang::inform(rlang::format_error_bullets(c("i" = paste0("Ampliconic SNPs:", length(unique(ampliconic_snps$SNP))))))
     } else {
-      print("There is no ampliconic region in the input data. Argument filterAmpliconic cannot set to be TRUE.")
-      print("Changing it as filterAmpliconic = FALSE")
+      rlang::inform(
+        rlang::format_error_bullets(c(
+          "x" = "There is no ampliconic region in the input data. Argument filterAmpliconic cannot set to be TRUE.",
+          "i" = "Changing filterAmpliconic to FALSE"
+        )))
       filterAmpliconic <- FALSE
       ampliconic_snps <- NULL
     }
@@ -7542,21 +7726,24 @@ HDL.rg <-
     nsnps.list.imputed <- NULL
 
     if (output.file != "") {
-      if (file.exists(output.file) == T) {
-        system(paste0("rm ", output.file))
+      if (file.exists(output.file) == TRUE) {
+        file.remove(output.file)
       }
     }
     time.start <- date()
-    cat("Analysis starts on", time.start, "\n")
-    if (output.file != "") {
-      cat("Analysis starts on", time.start, "\n", file = output.file, append = T)
-    }
+    rlang::inform(paste("Analysis starts on", time.start))
+    # Write to file if specified
+    log_output(
+      paste("Analysis starts on", time.start), 
+      output.file = output.file
+    )
 
     if (eigen.cut != "automatic" && is.na(as.numeric(eigen.cut))) {
       error.message <- "The input of eigen.cut has to be 'automatic' or a number between 0 and 1. \n"
-      if (output.file != "") {
-        cat(error.message, file = output.file, append = T)
-      }
+      log_output(
+        error.message, 
+        output.file = output.file
+      )
       stop(error.message)
     }
 
@@ -7574,9 +7761,10 @@ HDL.rg <-
       if (is.null(names(nsnps.list))) names(nsnps.list) <- as.character(1:length(nsnps.list))
     } else {
       error.message <- "It seems this directory does not contain all files needed for HDL. Please check your LD.path again. The current version of HDL only supports pre-computed LD reference panels."
-      if (output.file != "") {
-        cat(error.message, file = output.file, append = T)
-      }
+      log_output(
+        error.message, 
+        output.file = output.file
+      )
       stop(error.message)
     }
 
@@ -7591,19 +7779,21 @@ HDL.rg <-
     if (!("Z" %in% colnames(gwas1.df))) {
       if (("b" %in% colnames(gwas1.df)) && ("se" %in% colnames(gwas1.df))) {
         if (abs(median(gwas1.df$b) - 1) < 0.1) {
-          cat("Taking log(b) in GWAS 1 because b is likely to be OR instead of log(OR). \n")
-          if (output.file != "") {
-            cat("Taking log(b) in GWAS 1 because b is likely to be OR instead of log(OR). \n", file = output.file, append = T)
-          }
+          rlang::inform(rlang::format_error_bullets(c("i" = "Taking log(b) in GWAS 1 because b is likely to be OR instead of log(OR).")))
+          log_output(
+            "Taking log(b) in GWAS 1 because b is likely to be OR instead of log(OR).", 
+            output.file = output.file
+          )
           gwas1.df$Z <- log(gwas1.df$b) / gwas1.df$se
         } else {
           gwas1.df$Z <- gwas1.df$b / gwas1.df$se
         }
       } else {
         error.message <- "Z is not available in GWAS 1, meanwhile either b or se is missing. Please check."
-        if (output.file != "") {
-          cat(error.message, file = output.file, append = T)
-        }
+        log_output(
+          error.message,
+          output.file = output.file
+        )
         stop(error.message)
       }
     }
@@ -7611,19 +7801,21 @@ HDL.rg <-
     if (!("Z" %in% colnames(gwas2.df))) {
       if (("b" %in% colnames(gwas2.df)) && ("se" %in% colnames(gwas2.df))) {
         if (abs(median(gwas2.df$b) - 1) < 0.1) {
-          cat("Taking log(b) in GWAS 2 because b is likely to be OR instead of log(OR). \n")
-          if (output.file != "") {
-            cat("Taking log(b) in GWAS 2 because b is likely to be OR instead of log(OR). \n", file = output.file, append = T)
-          }
+          rlang::inform(rlang::format_error_bullets(c("i" = "Taking log(b) in GWAS 2 because b is likely to be OR instead of log(OR).")))
+          log_output(
+            "Taking log(b) in GWAS 2 because b is likely to be OR instead of log(OR).",
+            output.file = output.file
+          )
           gwas2.df$Z <- log(gwas2.df$b) / gwas2.df$se
         } else {
           gwas2.df$Z <- gwas2.df$b / gwas2.df$se
         }
       } else {
         error.message <- "Z is not available in GWAS 2, meanwhile either b or se is missing. Please check."
-        if (output.file != "") {
-          cat(error.message, file = output.file, append = T)
-        }
+        log_output(
+          error.message,
+          output.file = output.file
+        )
         stop(error.message)
       }
     }
@@ -7636,27 +7828,28 @@ HDL.rg <-
       gwas2.df <- dplyr::filter(gwas2.df, !is.na(.data$Z), !is.na(.data$N))
     } else if (fill.missing.N == "min") {
       gwas1.df <- dplyr::filter(gwas1.df, !is.na(.data$Z))
-      gwas1.df$N[is.na(gwas1.df$N)] <- min(gwas1.df$N, na.rm = T)
+      gwas1.df$N[is.na(gwas1.df$N)] <- min(gwas1.df$N, na.rm = TRUE)
 
       gwas2.df <- dplyr::filter(gwas2.df, !is.na(.data$Z))
-      gwas2.df$N[is.na(gwas2.df$N)] <- min(gwas2.df$N, na.rm = T)
+      gwas2.df$N[is.na(gwas2.df$N)] <- min(gwas2.df$N, na.rm = TRUE)
     } else if (fill.missing.N == "max") {
       gwas1.df <- dplyr::filter(gwas1.df, !is.na(.data$Z))
-      gwas1.df$N[is.na(gwas1.df$N)] <- max(gwas1.df$N, na.rm = T)
+      gwas1.df$N[is.na(gwas1.df$N)] <- max(gwas1.df$N, na.rm = TRUE)
 
       gwas2.df <- dplyr::filter(gwas2.df, !is.na(.data$Z))
-      gwas2.df$N[is.na(gwas2.df$N)] <- max(gwas2.df$N, na.rm = T)
+      gwas2.df$N[is.na(gwas2.df$N)] <- max(gwas2.df$N, na.rm = TRUE)
     } else if (fill.missing.N == "median") {
       gwas1.df <- dplyr::filter(gwas1.df, !is.na(.data$Z))
-      gwas1.df$N[is.na(gwas1.df$N)] <- median(gwas1.df$N, na.rm = T)
+      gwas1.df$N[is.na(gwas1.df$N)] <- median(gwas1.df$N, na.rm = TRUE)
 
       gwas2.df <- dplyr::filter(gwas2.df, !is.na(.data$Z))
-      gwas2.df$N[is.na(gwas2.df$N)] <- median(gwas2.df$N, na.rm = T)
+      gwas2.df$N[is.na(gwas2.df$N)] <- median(gwas2.df$N, na.rm = TRUE)
     } else {
       error.message <- "If given, the argument fill.missing.N can only be one of below: 'min', 'max', 'median'."
-      if (output.file != "") {
-        cat(error.message, file = output.file, append = T)
-      }
+      log_output(
+        error.message,
+        output.file = output.file
+      )
       stop(error.message)
     }
 
@@ -7665,32 +7858,46 @@ HDL.rg <-
     k1.percent <- paste("(", round(100 * k1 / length(snps.name.list), 2), "%)", sep = "")
     k2.percent <- paste("(", round(100 * k2 / length(snps.name.list), 2), "%)", sep = "")
 
-    cat(k1.0 - k1, "SNPs were removed in GWAS 1 due to missing N or missing test statistic. \n")
-    cat(k2.0 - k2, "SNPs were removed in GWAS 2 due to missing N or missing test statistic. \n")
-    if (output.file != "") {
-      cat(k1.0 - k1, " SNPs were removed in GWAS 1 due to missing N or missing test statistic. \n", file = output.file, append = T)
-      cat(k2.0 - k2, " SNPs were removed in GWAS 2 due to missing N or missing test statistic. \n", file = output.file, append = T)
-    }
+    snp_remove_gwas1 <- paste(k1.0 - k1, "SNPs were removed in GWAS 1 due to missing N or missing test statistic.")
+    snp_remove_gwas2 <- paste(k2.0 - k2, "SNPs were removed in GWAS 2 due to missing N or missing test statistic.")
+    rlang::inform(
+      rlang::format_error_bullets(c(
+        "i" = snp_remove_gwas1,
+        "i" = snp_remove_gwas2
+      ))
+    )
+    log_output(
+      snp_remove_gwas1, snp_remove_gwas2,
+      output.file = output.file
+    )
 
-    cat(k1, "out of", length(snps.name.list), k1.percent, "SNPs in reference panel are available in GWAS 1. \n")
-    cat(k2, "out of", length(snps.name.list), k2.percent, "SNPs in reference panel are available in GWAS 2. \n")
-    if (output.file != "") {
-      cat(k1, "out of", length(snps.name.list), k1.percent, "SNPs in reference panel are available in GWAS 1. \n", file = output.file, append = T)
-      cat(k2, "out of", length(snps.name.list), k2.percent, "SNPs in reference panel are available in GWAS 2. \n", file = output.file, append = T)
-    }
+    snp_ref_panel_gwas1 <- paste(k1, "out of", length(snps.name.list), k1.percent, "SNPs in reference panel are available in GWAS 1.")
+    snp_ref_panel_gwas2 <- paste(k2, "out of", length(snps.name.list), k2.percent, "SNPs in reference panel are available in GWAS 2.")
+    rlang::inform(
+      rlang::format_error_bullets(c(
+        "i" = snp_ref_panel_gwas1,
+        "i" = snp_ref_panel_gwas2
+      ))
+    )
+    log_output(
+      snp_ref_panel_gwas1, snp_ref_panel_gwas2,
+      output.file = output.file
+    )
     if (k1 < length(snps.name.list) * 0.99) {
-      error.message <- "Warning: More than 1% SNPs in reference panel are missed in GWAS 1. This may generate bias in estimation. Please make sure that you are using the correct reference panel. \n"
-      if (output.file != "") {
-        cat(error.message, file = output.file, append = T)
-      }
-      cat(error.message)
+      error.message <- "Warning: More than 1% SNPs in reference panel are missed in GWAS 1. This may generate bias in estimation. Please make sure that you are using the correct reference panel."
+      log_output(
+        error.message,
+        output.file = output.file
+      )
+      rlang::inform(rlang::format_error_bullets(c("!" = error.message)))
     }
     if (k2 < length(snps.name.list) * 0.99) {
-      error.message <- "Warning: More than 1% SNPs in reference panel are missed in GWAS 2. This may generate bias in estimation. Please make sure that you are using the correct reference panel. \n"
-      if (output.file != "") {
-        cat(error.message, file = output.file, append = T)
-      }
-      cat(error.message)
+      error.message <- "Warning: More than 1% SNPs in reference panel are missed in GWAS 2. This may generate bias in estimation. Please make sure that you are using the correct reference panel."
+      log_output(
+        error.message,
+        output.file = output.file
+      )
+      rlang::inform(rlang::format_error_bullets(c("!" = error.message)))
     }
 
     ## stats
@@ -7707,17 +7914,17 @@ HDL.rg <-
 
     bstar1.v <- bstar2.v <- lam.v <- list()
     HDL11.df <- HDL12.df <- HDL22.df <- names.row <- NULL
-    counter <- 0
-    message <- ""
     num.pieces <- length(unlist(nsnps.list))
+    pb <- cli::cli_progress_bar("Estimation", total = num.pieces, format = "{cli::pb_bar} {cli::pb_percent} ({cli::pb_current}/{cli::pb_total})")
     for (chr in names(nsnps.list)) {
       k <- length(nsnps.list[[chr]])
-      for (piece in 1:k) {
+      for (piece in seq_len(k)) {
         ## reference sample ##
 
         LD_rda_file <- LD.files[grep(x = LD.files, pattern = paste0("chr", chr, ".", piece, "[\\._].*rda"))]
         LD_bim_file <- LD.files[grep(x = LD.files, pattern = paste0("chr", chr, ".", piece, "[\\._].*bim"))]
-        load(file = paste(LD.path, LD_rda_file, sep = "/"))
+        loop_env <- new.env() ## Create Environment to hold vars
+        load(file = paste(LD.path, LD_rda_file, sep = "/"), loop_env)
         snps.ref.df <- read.table(paste(LD.path, LD_bim_file, sep = "/"))
 
         colnames(snps.ref.df) <- c("chr", "id", "non", "pos", "A1", "A2")
@@ -7774,7 +7981,7 @@ HDL.rg <-
         idx.sign2 <- A2.gwas2 == A2.ref[names(A2.gwas2)]
         bhat2.raw <- bhat2.raw * (2 * as.numeric(idx.sign2) - 1)
 
-        M <- length(LDsc)
+        M <- length(loop_env$LDsc)
         bhat1 <- bhat2 <- numeric(M)
         names(bhat1) <- names(bhat2) <- snps.ref
         bhat1[names(bhat1.raw)] <- bhat1.raw
@@ -7784,49 +7991,49 @@ HDL.rg <-
         a22 <- bhat2**2
         a12 <- bhat1 * bhat2
 
-        reg <- lm(a11 ~ LDsc)
-        h11.ols <- c(summary(reg)$coef[1:2, 1:2] * c(N1, M))
+        reg <- lm(a11 ~ loop_env$LDsc)
+        h11.ols <- c(summary(reg)$coefficients[1:2, 1:2] * c(N1, M))
 
-        reg <- lm(a22 ~ LDsc)
-        h22.ols <- c(summary(reg)$coef[1:2, 1:2] * c(N2, M))
+        reg <- lm(a22 ~ loop_env$LDsc)
+        h22.ols <- c(summary(reg)$coefficients[1:2, 1:2] * c(N2, M))
 
-        reg <- lm(a12 ~ LDsc)
-        if (N0 > 0) h12.ols <- c(summary(reg)$coef[1:2, 1:2] * c((N0 / p1 / p2), M))
-        if (N0 == 0) h12.ols <- c(summary(reg)$coef[1:2, 1:2] * c(N, M))
+        reg <- lm(a12 ~ loop_env$LDsc)
+        if (N0 > 0) h12.ols <- c(summary(reg)$coefficients[1:2, 1:2] * c((N0 / p1 / p2), M))
+        if (N0 == 0) h12.ols <- c(summary(reg)$coefficients[1:2, 1:2] * c(N, M))
 
         ##  ................................ weighted LS: use estimated h2
         ## vars from Bulik-Sullivan
 
-        h11v <- (h11.ols[2] * LDsc / M + 1 / N1)^2
-        h22v <- (h22.ols[2] * LDsc / M + 1 / N2)^2
+        h11v <- (h11.ols[2] * loop_env$LDsc / M + 1 / N1)^2
+        h22v <- (h22.ols[2] * loop_env$LDsc / M + 1 / N2)^2
 
-        reg <- lm(a11 ~ LDsc, weights = 1 / h11v)
-        h11.wls <- c(summary(reg)$coef[1:2, 1:2] * c(N1, M))
+        reg <- lm(a11 ~ loop_env$LDsc, weights = 1 / h11v)
+        h11.wls <- c(summary(reg)$coefficients[1:2, 1:2] * c(N1, M))
 
-        reg <- lm(a22 ~ LDsc, weights = 1 / h22v)
-        h22.wls <- c(summary(reg)$coef[1:2, 1:2] * c(N2, M))
+        reg <- lm(a22 ~ loop_env$LDsc, weights = 1 / h22v)
+        h22.wls <- c(summary(reg)$coefficients[1:2, 1:2] * c(N2, M))
 
-        if (N0 > 0) h12v <- sqrt(h11v * h22v) + (h12.ols[2] * LDsc / M + p1 * p2 * rho12 / N0)^2
-        if (N0 == 0) h12v <- sqrt(h11v * h22v) + (h12.ols[2] * LDsc / M)^2
+        if (N0 > 0) h12v <- sqrt(h11v * h22v) + (h12.ols[2] * loop_env$LDsc / M + p1 * p2 * rho12 / N0)^2
+        if (N0 == 0) h12v <- sqrt(h11v * h22v) + (h12.ols[2] * loop_env$LDsc / M)^2
 
-        reg <- lm(a12 ~ LDsc, weights = 1 / h12v)
-        if (N0 > 0) h12.wls <- c(summary(reg)$coef[1:2, 1:2] * c((N0 / p1 / p2), M))
-        if (N0 == 0) h12.wls <- c(summary(reg)$coef[1:2, 1:2] * c(N, M))
+        reg <- lm(a12 ~ loop_env$LDsc, weights = 1 / h12v)
+        if (N0 > 0) h12.wls <- c(summary(reg)$coefficients[1:2, 1:2] * c((N0 / p1 / p2), M))
+        if (N0 == 0) h12.wls <- c(summary(reg)$coefficients[1:2, 1:2] * c(N, M))
 
         ## .................................  likelihood based
         ## ....  estimate h2s
-        bstar1 <- crossprod(V, bhat1) ##
-        bstar2 <- crossprod(V, bhat2) ##
+        bstar1 <- crossprod(loop_env$V, bhat1) ##
+        bstar2 <- crossprod(loop_env$V, bhat2) ##
 
         opt <- stats::optim(c(h11.wls[2], 1), llfun,
-          N = N1, Nref = Nref, lam = lam, bstar = bstar1, M = M,
+          N = N1, Nref = Nref, lam = loop_env$lam, bstar = bstar1, M = M,
           lim = lim, method = "L-BFGS-B", lower = c(0, 0), upper = c(1, 10)
         )
 
         h11.hdl <- opt$par
 
         opt <- stats::optim(c(h22.wls[2], 1), llfun,
-          N = N2, Nref = Nref, lam = lam, bstar = bstar2, M = M,
+          N = N2, Nref = Nref, lam = loop_env$lam, bstar = bstar2, M = M,
           lim = lim, method = "L-BFGS-B", lower = c(0, 0), upper = c(1, 10)
         )
         h22.hdl <- opt$par
@@ -7834,7 +8041,7 @@ HDL.rg <-
         opt <- stats::optim(c(h12.wls[2], rho12), llfun.gcov.part.2,
           h11 = h11.hdl, h22 = h22.hdl,
           rho12 = rho12, M = M, N1 = N1, N2 = N2, N0 = N0, Nref = Nref,
-          lam0 = lam, lam1 = lam, lam2 = lam,
+          lam0 = loop_env$lam, lam1 = loop_env$lam, lam2 = loop_env$lam,
           bstar1 = bstar1, bstar2 = bstar2,
           lim = lim, method = "L-BFGS-B", lower = c(-1, -10), upper = c(1, 10)
         )
@@ -7846,17 +8053,13 @@ HDL.rg <-
 
         bstar1.v <- c(bstar1.v, list(bstar1))
         bstar2.v <- c(bstar2.v, list(bstar2))
-        lam.v <- c(lam.v, list(lam))
+        lam.v <- c(lam.v, list(loop_env$lam))
 
-        ## Report progress ##
-        counter <- counter + 1
-        value <- round(counter / num.pieces * 100)
-        backspaces <- paste(rep("\b", nchar(message)), collapse = "")
-        message <- paste("Estimation is ongoing ... ", value, "%", sep = "", collapse = "")
-        cat(backspaces, message, sep = "")
+        ## Update progress ##
+        cli::cli_progress_update()
       }
     }
-    cat("\n")
+    cli::cli_progress_done()
     rownames(HDL11.df) <- rownames(HDL22.df) <- rownames(HDL12.df) <- names.row
 
     h1_2 <- sum(HDL11.df[, 1])
@@ -7864,12 +8067,13 @@ HDL.rg <-
     gen.cov <- sum(HDL12.df[, 1])
 
     ##### Estimated likelihood for h12 + h11, h22 independent #####
-    cat("\n")
-    cat("Integrating piecewise results \n")
-    if (output.file != "") {
-      cat("\n", file = output.file, append = T)
-      cat("Integrating piecewise results \n", file = output.file, append = T)
-    }
+    message("\n")
+    rlang::inform("Integrating piecewise results")
+    log_output(
+      "",
+      "Integrating piecewise results",
+      output.file = output.file
+    )
     M.ref <- sum(unlist(nsnps.list))
     eigen_select.fun <- function(x, k) {
       return(x[1:k])
@@ -7886,11 +8090,11 @@ HDL.rg <-
     if (eigen.cut == "automatic") {
       eigen.num.v.90 <- eigen.num.v.95 <- eigen.num.v.99 <- c()
       nsnps.v <- unlist(nsnps.list)
-      for (i in 1:length(nsnps.v)) {
+      for (i in seq_along(nsnps.v)) {
         lam.i <- lam.v[[i]]
         eigen.percent <- numeric(length(lam.i))
         temp <- 0
-        for (j in 1:length(lam.i)) {
+        for (j in seq_along(lam.i)) {
           temp <- temp + lam.i[j]
           eigen.percent[j] <- temp / nsnps.v[i]
         }
@@ -8013,11 +8217,11 @@ HDL.rg <-
       eigen.use <- eigen.cut
       eigen.num.v.cut <- c()
       nsnps.v <- unlist(nsnps.list)
-      for (i in 1:length(nsnps.v)) {
+      for (i in seq_along(nsnps.v)) {
         lam.i <- lam.v[[i]]
         eigen.percent <- numeric(length(lam.i))
         temp <- 0
-        for (j in 1:length(lam.i)) {
+        for (j in seq_along(lam.i)) {
           temp <- temp + lam.i[j]
           eigen.percent[j] <- temp / nsnps.v[i]
         }
@@ -8071,10 +8275,11 @@ HDL.rg <-
         )
         k <- k + 1
         if (k > length(starting.value.v)) {
-          error.message <- "Algorithm failed to converge after trying different initial values. \n"
-          if (output.file != "") {
-            cat(error.message, file = output.file, append = T)
-          }
+          error.message <- "Algorithm failed to converge after trying different initial values."
+          log_output(
+            error.message,
+            output.file = output.file
+          )
           stop(error.message)
         }
       }
@@ -8083,7 +8288,7 @@ HDL.rg <-
     h12 <- h12.hdl.use[1]
     rg <- h12.hdl.use[1] / sqrt(h11.hdl.use[1] * h22.hdl.use[1])
 
-    if (intercept.output == T) {
+    if (intercept.output == TRUE) {
       h11.intercept <- h11.hdl.use[2]
       h22.intercept <- h22.hdl.use[2]
       h12.intercept <- h12.hdl.use[2]
@@ -8099,48 +8304,40 @@ HDL.rg <-
       }
     }
 
-    cat("\n")
-    cat("Point estimates: \n")
-    cat(
-      "Heritability of phenotype 1: ",
-      output(h11),
-      "\n"
+    rlang::inform("Point estimates:")
+    rlang::inform(
+      rlang::format_error_bullets(c(
+        "*" = paste("Heritability of phenotype 1: ", output(h11)),
+        "*" = paste("Heritability of phenotype 2: ", output(h22)), 
+        "*" = paste("Genetic Covariance: ", output(h12)),
+        "*" = paste("Genetic Correlation: ", output(rg))
+      ))
     )
-    cat(
-      "Heritability of phenotype 2: ",
-      output(h22),
-      "\n"
-    )
-    cat(
-      "Genetic Covariance: ",
-      output(h12),
-      "\n"
-    )
-    cat(
-      "Genetic Correlation: ",
-      output(rg),
-      "\n"
-    )
+    
     if (h11 == 0 | h22 == 0) {
-      cat("Warning: Heritability of one trait was estimated to be 0, which may be due to:
-          1) The true heritability is very small;
-          2) The sample size is too small;
-          3) Many SNPs in the chosen reference panel are missing in the GWAS;
-          4) There is a severe mismatch between the GWAS population and the population for computing the reference panel")
+      rlang::inform(
+        rlang::format_error_bullets(c(
+          "!" = "Warning: Heritability of one trait was estimated to be 0, which may be due to:",
+          " " = "1) The true heritability is very small;",
+          " " = "2) The sample size is too small;",
+          " " = "3) Many SNPs in the chosen reference panel are missing in the GWAS;",
+          " " = "4) There is a severe mismatch between the GWAS population and the population for computing the reference panel"
+        ))
+      )
     }
-    cat("\n")
 
-    cat("Continuing computing standard error with jackknife \n")
-    if (output.file != "") {
-      cat("Continuing computing standard error with jackknife \n", file = output.file, append = T)
-    }
-    counter <- 0
-    message <- ""
+    rlang::inform(rlang::format_error_bullets(c("i" = "Continuing computing standard error with jackknife")))
+    log_output(
+      "Continuing computing standard error with jackknife",
+      output.file = output.file
+    )
+    
+    cli::cli_progress_bar("Jackknife estimation", total = length(lam.v), format = "{cli::pb_bar} {cli::pb_percent} ({cli::pb_current}/{cli::pb_total})")
     rg.jackknife <- h11.jackknife <- h12.jackknife <- h22.jackknife <- numeric(length(lam.v))
-    if (intercept.output == T) {
+    if (intercept.output == TRUE) {
       h11.intercept.jackknife <- h12.intercept.jackknife <- h22.intercept.jackknife <- numeric(length(lam.v))
     }
-    for (i in 1:length(lam.v)) {
+    for (i in seq_along(lam.v)) {
       opt <- stats::optim(h11.hdl.use, llfun,
         N = N1, Nref = Nref, lam = unlist(lam.v.use[-i]), bstar = unlist(bstar1.v.use[-i]), M = M.ref,
         lim = lim, method = "L-BFGS-B", lower = c(0, 0), upper = c(1, 10)
@@ -8166,19 +8363,16 @@ HDL.rg <-
       h22.jackknife[i] <- h22.hdl.jackknife[1]
       rg.jackknife[i] <- h12.hdl.jackknife[1] / sqrt(h11.hdl.jackknife[1] * h22.hdl.jackknife[1])
 
-      if (intercept.output == T) {
+      if (intercept.output == TRUE) {
         h11.intercept.jackknife[i] <- h11.hdl.jackknife[2]
         h12.intercept.jackknife[i] <- h12.hdl.jackknife[2]
         h22.intercept.jackknife[i] <- h22.hdl.jackknife[2]
       }
 
-      ## Report progress ##
-      counter <- counter + 1
-      value <- round(counter / length(lam.v) * 100)
-      backspaces <- paste(rep("\b", nchar(message)), collapse = "")
-      message <- paste("Progress... ", value, "%", sep = "", collapse = "")
-      cat(backspaces, message, sep = "")
+      ## Update progress ##
+      cli::cli_progress_update()
     }
+    cli::cli_progress_done()
     rg.jackknife <- rg.jackknife[!is.infinite(rg.jackknife)]
     h11.se <- sqrt(mean((h11.jackknife - mean(h11.jackknife))^2) * (length(h11.jackknife) - 1))
     h12.se <- sqrt(mean((h12.jackknife - mean(h12.jackknife))^2) * (length(h12.jackknife) - 1))
@@ -8221,76 +8415,52 @@ HDL.rg <-
     }
 
     end.time <- date()
-    cat("\n")
-    cat("\n")
-    cat(
-      "Heritability of phenotype 1: ",
-      output(h11),
-      paste0("(", output(h11.se), ") \n")
+    message("\n")
+    rlang::inform(
+      rlang::format_error_bullets(c(
+        paste("Heritability of phenotype 1:", output(h11), "(", output(h11.se), ")"),
+        paste("Heritability of phenotype 2:", output(h22), "(", output(h22.se), ")"),
+        paste("Genetic Covariance:", output(h12), "(", output(h12.se), ")"),
+        paste("Genetic Correlation:", output(rg), "(", output(rg.se), ")"),
+        paste("P:", p.out)
+      ))
     )
-    cat(
-      "Heritability of phenotype 2: ",
-      output(h22),
-      paste0("(", output(h22.se), ") \n")
-    )
-    cat(
-      "Genetic Covariance: ",
-      output(h12),
-      paste0("(", output(h12.se), ") \n")
-    )
-    cat(
-      "Genetic Correlation: ",
-      output(rg),
-      paste0("(", output(rg.se), ") \n")
-    )
-    cat("P: ", p.out, "\n")
     if (h11 == 0 | h22 == 0) {
-      cat("Warning: Heritability of one trait was estimated to be 0, which may be due to:
-          1) The true heritability is very small;
-          2) The sample size is too small;
-          3) Many SNPs in the chosen reference panel are missing in the GWAS.")
+      rlang::inform(
+        rlang::format_error_bullets(c(
+          "!" = "Warning: Heritability of one trait was estimated to be 0, which may be due to:",
+          " " = "1) The true heritability is very small;",
+          " " = "2) The sample size is too small;",
+          " " = "3) Many SNPs in the chosen reference panel are missing in the GWAS."
+        ))
+      )
     }
-    cat("\n")
-    cat("Analysis finished at", end.time, "\n")
+    message("\n")
+    rlang::inform(paste("Analysis finished at", end.time))
 
-    if (output.file != "") {
-      cat("\n", file = output.file, append = TRUE)
-      cat("\n", file = output.file, append = TRUE)
-      cat("Heritability of phenotype 1: ",
-        output(h11),
-        paste0("(", output(h11.se), ") \n"),
-        file = output.file, append = TRUE
-      )
-      cat("Heritability of phenotype 2: ",
-        output(h22),
-        paste0("(", output(h22.se), ") \n"),
-        file = output.file, append = TRUE
-      )
-      cat("Genetic Covariance: ",
-        output(h12),
-        paste0("(", output(h12.se), ") \n"),
-        file = output.file, append = TRUE
-      )
-      cat("Genetic Correlation: ",
-        output(rg),
-        paste0("(", output(rg.se), ") \n"),
-        file = output.file, append = TRUE
-      )
-      cat("P: ", p.out, "\n", file = output.file, append = TRUE)
-      if (h11 == 0 | h22 == 0) {
-        cat("Warning: Heritability of one trait was estimated to be 0, which may be due to:
-            1) The true heritability is very low;
-            2) The sample size of the GWAS is too small;
-            3) Many SNPs in the chosen reference panel are absent in the GWAS;
-            4) There is a severe mismatch between the GWAS population and the population for computing the reference panel", file = output.file, append = TRUE)
-      }
-      cat("\n", file = output.file, append = TRUE)
-      cat("Analysis finished at", end.time, "\n", file = output.file, append = TRUE)
-      cat("The results were saved to", output.file)
-      cat("\n")
-      cat("The results were saved to", output.file, file = output.file, append = TRUE)
-      cat("\n", file = output.file, append = TRUE)
-    }
+    log_output(
+      "",
+      paste("Heritability of phenotype 1:", output(h11), "(", output(h11.se), ")"),
+      paste("Heritability of phenotype 2:", output(h22), "(", output(h22.se), ")"),
+      paste("Genetic Covariance:", output(h12), "(", output(h12.se), ")"),
+      paste("Genetic Correlation:", output(rg), "(", output(rg.se), ")"),
+      paste("P:", p.out),
+      output.file = output.file
+    )
+
+    log_output(
+      "",
+      paste("Warning: Heritability of one trait was estimated to be 0, which may be due to:
+          1) The true heritability is very low;
+          2) The sample size of the GWAS is too small;
+          3) Many SNPs in the chosen reference panel are absent in the GWAS;
+          4) There is a severe mismatch between the GWAS population and the population for computing the reference panel"),
+      paste("Analysis finished at", end.time),
+      paste("The results were saved to", output.file),
+      output.file = output.file
+    )
+
+      if(nzchar(output.file)) rlang::inform(rlang::format_error_bullets(c("v" = "The results were saved to", output.file)))
 
     if (jackknife.df == TRUE) {
       jackknife.df <- rbind(h11.jackknife, h22.jackknife, h12.jackknife, rg.jackknife)
@@ -8434,34 +8604,37 @@ HDL.rg <-
 
 
 #' @importFrom foreach %dopar%
+#' @importFrom dplyr row_number
 HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min(gwas1.df$N, gwas2.df$N), output.file = "", numCores = 2,
                             eigen.cut = "automatic", jackknife.df = FALSE, intercept.output = FALSE, fill.missing.N = NULL, lim = exp(-18)) {
   ## Initialize vars used later
   snps.list.imputed.vector <- NULL
   nsnps.list.imputed <- NULL
 
-  # library(dplyr)
   if (!requireNamespace("doSNOW", quietly = TRUE)) {
     stop("Package doSNOW was not found. Please install it first.")
   }
 
   if (output.file != "") {
     if (file.exists(output.file) == TRUE) {
-      system(paste0("rm ", output.file))
+      file.remove(output.file)
     }
   }
 
   time.start <- date()
-  cat("Analysis starts on", time.start, "\n")
-  if (output.file != "") {
-    cat("Analysis starts on", time.start, "\n", file = output.file, append = TRUE)
-  }
+  rlang::inform(paste("Analysis starts on", time.start))
+  # Write to file if specified
+  log_output(
+    paste("Analysis starts on", time.start),
+    output.file = output.file
+  )
 
   if (eigen.cut != "automatic" && is.na(as.numeric(eigen.cut))) {
     error.message <- "The input of eigen.cut has to be 'automatic' or a number between 0 and 1. \n"
-    if (output.file != "") {
-      cat(error.message, file = output.file, append = TRUE)
-    }
+    log_output(
+      error.message,
+      output.file = output.file
+    )
     stop(error.message)
   }
 
@@ -8479,9 +8652,10 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     if (is.null(names(nsnps.list))) names(nsnps.list) <- as.character(1:length(nsnps.list))
   } else {
     error.message <- "It seems this directory does not contain all files needed for HDL. Please check your LD.path again. The current version of HDL only supports pre-computed LD reference panels."
-    if (output.file != "") {
-      cat(error.message, file = output.file, append = TRUE)
-    }
+    log_output(
+      error.message,
+      output.file = output.file
+    )
     stop(error.message)
   }
 
@@ -8496,19 +8670,21 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
   if (!("Z" %in% colnames(gwas1.df))) {
     if (("b" %in% colnames(gwas1.df)) && ("se" %in% colnames(gwas1.df))) {
       if (abs(median(gwas1.df$b) - 1) < 0.1) {
-        cat("Taking log(b) in GWAS 1 because b is likely to be OR instead of log(OR). \n")
-        if (output.file != "") {
-          cat("Taking log(b) in GWAS 1 because b is likely to be OR instead of log(OR). \n", file = output.file, append = TRUE)
-        }
+        rlang::inform(rlang::format_error_bullets(c("i" = "Taking log(b) in GWAS 1 because b is likely to be OR instead of log(OR).")))
+        log_output(
+          "Taking log(b) in GWAS 1 because b is likely to be OR instead of log(OR).",
+          output.file = output.file
+        )
         gwas1.df$Z <- log(gwas1.df$b) / gwas1.df$se
       } else {
         gwas1.df$Z <- gwas1.df$b / gwas1.df$se
       }
     } else {
       error.message <- "Z is not available in GWAS 1, meanwhile either b or se is missing. Please check."
-      if (output.file != "") {
-        cat(error.message, file = output.file, append = TRUE)
-      }
+      log_output(
+        error.message,
+        output.file = output.file
+      )
       stop(error.message)
     }
   }
@@ -8516,19 +8692,21 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
   if (!("Z" %in% colnames(gwas2.df))) {
     if (("b" %in% colnames(gwas2.df)) && ("se" %in% colnames(gwas2.df))) {
       if (abs(median(gwas2.df$b) - 1) < 0.1) {
-        cat("Taking log(b) in GWAS 2 because b is likely to be OR instead of log(OR). \n")
-        if (output.file != "") {
-          cat("Taking log(b) in GWAS 2 because b is likely to be OR instead of log(OR). \n", file = output.file, append = TRUE)
-        }
+        rlang::inform(rlang::format_error_bullets(c("i" = "Taking log(b) in GWAS 2 because b is likely to be OR instead of log(OR).")))
+        log_output(
+          "Taking log(b) in GWAS 2 because b is likely to be OR instead of log(OR).",
+          output.file = output.file
+        )
         gwas2.df$Z <- log(gwas2.df$b) / gwas2.df$se
       } else {
         gwas2.df$Z <- gwas2.df$b / gwas2.df$se
       }
     } else {
       error.message <- "Z is not available in GWAS 2, meanwhile either b or se is missing. Please check."
-      if (output.file != "") {
-        cat(error.message, file = output.file, append = TRUE)
-      }
+      log_output(
+        error.message,
+        output.file = output.file
+      )
       stop(error.message)
     }
   }
@@ -8559,9 +8737,10 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     gwas2.df$N[is.na(gwas2.df$N)] <- median(gwas2.df$N, na.rm = TRUE)
   } else {
     error.message <- "If given, the argument fill.missing.N can only be one of below: 'min', 'max', 'median'."
-    if (output.file != "") {
-      cat(error.message, file = output.file, append = TRUE)
-    }
+    log_output(
+      error.message,
+      output.file = output.file
+    )
     stop(error.message)
   }
 
@@ -8570,25 +8749,33 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
   k1.percent <- paste("(", round(100 * k1 / length(snps.name.list), 2), "%)", sep = "")
   k2.percent <- paste("(", round(100 * k2 / length(snps.name.list), 2), "%)", sep = "")
 
-  cat(k1, "out of", length(snps.name.list), k1.percent, "SNPs in reference panel are available in GWAS 1.", " \n")
-  cat(k2, "out of", length(snps.name.list), k2.percent, "SNPs in reference panel are available in GWAS 2.", " \n")
-  if (output.file != "") {
-    cat(k1, "out of", length(snps.name.list), k1.percent, "SNPs in reference panel are available in GWAS 1.", " \n", file = output.file, append = TRUE)
-    cat(k2, "out of", length(snps.name.list), k2.percent, "SNPs in reference panel are available in GWAS 2.", " \n", file = output.file, append = TRUE)
-  }
+  snp_ref_panel_gwas1 <- paste(k1, "out of", length(snps.name.list), k1.percent, "SNPs in reference panel are available in GWAS 1.")
+  snp_ref_panel_gwas2 <- paste(k2, "out of", length(snps.name.list), k2.percent, "SNPs in reference panel are available in GWAS 2.")
+  rlang::inform(
+    rlang::format_error_bullets(c(
+      "i" = snp_ref_panel_gwas1,
+      "i" = snp_ref_panel_gwas2
+    ))
+  )
+  log_output(
+    snp_ref_panel_gwas1, snp_ref_panel_gwas2,
+    output.file = output.file
+  )
   if (k1 < length(snps.name.list) * 0.99) {
-    error.message <- "Warning: More than 1% SNPs in reference panel are missed in GWAS 1. This may generate bias in estimation. Please make sure that you are using correct reference panel.  \n"
-    if (output.file != "") {
-      cat(error.message, file = output.file, append = TRUE)
-    }
-    cat(error.message)
+    error.message <- "Warning: More than 1% SNPs in reference panel are missed in GWAS 1. This may generate bias in estimation. Please make sure that you are using the correct reference panel."
+    log_output(
+      error.message,
+      output.file = output.file
+    )
+    rlang::inform(rlang::format_error_bullets(c("!" = error.message)))
   }
   if (k2 < length(snps.name.list) * 0.99) {
-    error.message <- "Warning: More than 1% SNPs in reference panel are missed in GWAS 2. This may generate bias in estimation. Please make sure that you are using correct reference panel.  \n"
-    if (output.file != "") {
-      cat(error.message, file = output.file, append = TRUE)
-    }
-    cat(error.message)
+    error.message <- "Warning: More than 1% SNPs in reference panel are missed in GWAS 2. This may generate bias in estimation. Please make sure that you are using the correct reference panel."
+    log_output(
+      error.message,
+      output.file = output.file
+    )
+    rlang::inform(rlang::format_error_bullets(c("!" = error.message)))
   }
 
   ## stats
@@ -8602,165 +8789,159 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
 
   rho12 <- suppressWarnings(dplyr::inner_join(gwas1.df %>% dplyr::select(.data$SNP, .data$Z), gwas2.df %>% dplyr::select(.data$SNP, .data$Z), by = "SNP") %>%
     dplyr::summarise(x = cor(.data$Z.x, .data$Z.y, use = "complete.obs")) %>% unlist())
-  # counter <- 0
-  # message <- ""
-  num.pieces <- length(unlist(nsnps.list))
+  
   info.pieces.df <- data.frame(
     chr = rep.int(
       names(nsnps.list),
-      unlist(lapply(nsnps.list, length))
+      times = lengths(nsnps.list)
     ),
-    piece = unlist(lapply(X = unlist(lapply(nsnps.list, length)), seq.int, from = 1))
+    piece = unlist(
+      lapply(lengths(nsnps.list), function(n) seq_len(n))
+    )
   )
 
+  # Setup workers and Progress Bar
   workers <- rep("localhost", times = numCores)
   cl <- parallel::makeCluster(workers)
   doSNOW::registerDoSNOW(cl)
-  pb <- utils::txtProgressBar(max = num.pieces, style = 3)
-  progress <- function(n) utils::setTxtProgressBar(pb, n)
+
+  pb <- txtProgressBar(min = 0, max = nrow(info.pieces.df), style = 3)
+  progress <- function(n) setTxtProgressBar(pb, n)
   opts <- list(progress = progress)
-  HDL.res.pieces.list <- foreach::foreach(i = 1:nrow(info.pieces.df), .options.snow = opts) %dopar% {
+
+  # Export necessary functions/operators to the foreach environment
+  HDL.res.pieces.list <- foreach::foreach(
+    i = 1:nrow(info.pieces.df),
+    .packages = c("dplyr"),
+    .options.snow = opts,
+    .export = c(
+      "%>%",
+      "llfun", "llfun.gcov.part.2"
+    )
+  ) %dopar% {
     chr <- info.pieces.df[i, "chr"]
     piece <- info.pieces.df[i, "piece"]
     ## reference sample ##
-
+    # Locate files and load LD environment
     LD_rda_file <- LD.files[grep(x = LD.files, pattern = paste0("chr", chr, ".", piece, "[\\._].*rda"))]
     LD_bim_file <- LD.files[grep(x = LD.files, pattern = paste0("chr", chr, ".", piece, "[\\._].*bim"))]
-    load(file = paste(LD.path, LD_rda_file, sep = "/"))
-    snps.ref.df <- read.table(paste(LD.path, LD_bim_file, sep = "/"))
+    loop_env <- new.env() ## Create Environment to hold vars
+    load(file = file.path(LD.path, LD_rda_file), envir = loop_env)
+    snps.ref.df <- read.table(file.path(LD.path, LD_bim_file))
 
     colnames(snps.ref.df) <- c("chr", "id", "non", "pos", "A1", "A2")
     snps.ref <- snps.ref.df$id
-    A2.ref <- snps.ref.df$A2
-    names(A2.ref) <- snps.ref
+    A2.ref <- setNames(snps.ref.df$A2, snps.ref)
+    ## Clean: Check if there are multiallelic or duplicated SNPs
+    clean_subset <- function(gwas_df, A2.ref, snps.ref) {
+      df <- gwas_df %>%
+        dplyr::filter(.data$SNP %in% snps.ref) %>%
+        dplyr::distinct(.data$SNP, .data$A1, .data$A2, .keep_all = TRUE)
 
-    gwas1.df.subset <- gwas1.df %>%
-      dplyr::filter(.data$SNP %in% snps.ref) %>%
-      dplyr::distinct(.data$SNP, .data$A1, .data$A2, .keep_all = TRUE)
+      if (anyDuplicated(df$SNP)) {
+        duplicated_df <- df %>%
+          dplyr::mutate(row.num = dplyr::row_number())
+          dplyr::filter(.data$SNP %in% .data$SNP[duplicated(.data$SNP)]) %>%
+          dplyr::mutate(SNP_A1_A2 = paste(.data$SNP, .data$A1, .data$A2, sep = "_"))
 
-    ## Check if there are multiallelic or duplicated SNPs
-    if (any(duplicated(gwas1.df.subset$SNP)) == TRUE) {
-      gwas1.df.subset.duplicated <- gwas1.df.subset %>%
-        dplyr::mutate(row.num = 1:n()) %>%
-        dplyr::filter(.data$SNP == .data$SNP[duplicated(.data$SNP)]) %>%
-        dplyr::mutate(SNP_A1_A2 = paste(.data$SNP, .data$A1, .data$A2, sep = "_"))
-      snps.ref.df.duplicated <- snps.ref.df %>%
-        dplyr::filter(.data$id %in% gwas1.df.subset.duplicated$SNP)
-      SNP_A1_A2.valid <- c(
-        paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A1, snps.ref.df.duplicated$A2, sep = "_"),
-        paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A2, snps.ref.df.duplicated$A1, sep = "_")
-      )
-      row.remove <- gwas1.df.subset.duplicated %>%
-        dplyr::filter(!(.data$SNP_A1_A2 %in% SNP_A1_A2.valid)) %>%
-        dplyr::select(.data$row.num) %>%
-        unlist()
-      gwas1.df.subset <- gwas1.df.subset[-row.remove, ]
+        ref_dup <- snps.ref.df %>%
+          dplyr::filter(.data$id %in% duplicated_df$SNP)
+
+        valid <- c(
+          paste(ref_dup$id, ref_dup$A1, ref_dup$A2, sep = "_"),
+          paste(ref_dup$id, ref_dup$A2, ref_dup$A1, sep = "_")
+        )
+
+        rows_to_remove <- duplicated_df %>%
+          dplyr::filter(!(.data$SNP_A1_A2 %in% valid)) %>%
+          dplyr::pull(.data$row.num)
+
+        df <- df[-rows_to_remove, ]
+      }
+
+      df
     }
 
-    bhat1.raw <- gwas1.df.subset[, "Z"] / sqrt(gwas1.df.subset[, "N"])
-    A2.gwas1 <- gwas1.df.subset[, "A2"]
-    names(bhat1.raw) <- names(A2.gwas1) <- gwas1.df.subset$SNP
-    idx.sign1 <- A2.gwas1 == A2.ref[names(A2.gwas1)]
-    bhat1.raw <- bhat1.raw * (2 * as.numeric(idx.sign1) - 1)
+    gwas1.df.subset <- clean_subset(gwas1.df, A2.ref, snps.ref)
+    gwas2.df.subset <- clean_subset(gwas2.df, A2.ref, snps.ref)
 
-    gwas2.df.subset <- gwas2.df %>%
-      dplyr::filter(.data$SNP %in% snps.ref) %>%
-      dplyr::distinct(.data$SNP, .data$A1, .data$A2, .keep_all = TRUE)
-
-    ## Check if there are multiallelic or duplicated SNPs
-    if (any(duplicated(gwas2.df.subset$SNP)) == TRUE) {
-      gwas2.df.subset.duplicated <- gwas2.df.subset %>%
-        dplyr::mutate(row.num = 1:n()) %>%
-        dplyr::filter(.data$SNP == .data$SNP[duplicated(.data$SNP)]) %>%
-        dplyr::mutate(SNP_A1_A2 = paste(.data$SNP, .data$A1, .data$A2, sep = "_"))
-      snps.ref.df.duplicated <- snps.ref.df %>%
-        dplyr::filter(.data$id %in% gwas2.df.subset.duplicated$SNP)
-      SNP_A1_A2.valid <- c(
-        paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A1, snps.ref.df.duplicated$A2, sep = "_"),
-        paste(snps.ref.df.duplicated$id, snps.ref.df.duplicated$A2, snps.ref.df.duplicated$A1, sep = "_")
-      )
-      row.remove <- gwas2.df.subset.duplicated %>%
-        dplyr::filter(!(.data$SNP_A1_A2 %in% SNP_A1_A2.valid)) %>%
-        dplyr::select(.data$row.num) %>%
-        unlist()
-      gwas2.df.subset <- gwas2.df.subset[-row.remove, ]
+    calc_bhat <- function(df, A2.ref) {
+      bhat <- df$Z / sqrt(df$N)
+      A2 <- df$A2
+      names(bhat) <- names(A2) <- df$SNP
+      bhat * (2 * as.numeric(A2 == A2.ref[names(A2)]) - 1)
     }
-    bhat2.raw <- gwas2.df.subset[, "Z"] / sqrt(gwas2.df.subset[, "N"])
-    A2.gwas2 <- gwas2.df.subset[, "A2"]
-    names(bhat2.raw) <- names(A2.gwas2) <- gwas2.df.subset$SNP
-    idx.sign2 <- A2.gwas2 == A2.ref[names(A2.gwas2)]
-    bhat2.raw <- bhat2.raw * (2 * as.numeric(idx.sign2) - 1)
 
-    M <- length(LDsc)
+    bhat1.raw <- calc_bhat(gwas1.df.subset, A2.ref)
+    bhat2.raw <- calc_bhat(gwas2.df.subset, A2.ref)
+
+    M <- length(loop_env$LDsc)
     bhat1 <- bhat2 <- numeric(M)
     names(bhat1) <- names(bhat2) <- snps.ref
     bhat1[names(bhat1.raw)] <- bhat1.raw
     bhat2[names(bhat2.raw)] <- bhat2.raw
 
-    a11 <- bhat1**2
-    a22 <- bhat2**2
+    a11 <- bhat1^2
+    a22 <- bhat2^2
     a12 <- bhat1 * bhat2
 
-    reg <- lm(a11 ~ LDsc)
-    h11.ols <- c(summary(reg)$coef[1:2, 1:2] * c(N1, M))
+    # Unweighted regressions
+    h11.ols <- summary(lm(a11 ~ loop_env$LDsc))$coefficients[1:2, 1:2] * c(N1, M)
+    h22.ols <- summary(lm(a22 ~ loop_env$LDsc))$coefficients[1:2, 1:2] * c(N2, M)
 
-    reg <- lm(a22 ~ LDsc)
-    h22.ols <- c(summary(reg)$coef[1:2, 1:2] * c(N2, M))
+    reg12 <- lm(a12 ~ loop_env$LDsc)
+    h12.ols <- if (N0 > 0) {
+      summary(reg12)$coefficients[1:2, 1:2] * c(N0 / p1 / p2, M)
+    } else {
+      summary(reg12)$coefficients[1:2, 1:2] * c(N, M)
+    }
 
-    reg <- lm(a12 ~ LDsc)
-    if (N0 > 0) h12.ols <- c(summary(reg)$coef[1:2, 1:2] * c((N0 / p1 / p2), M))
-    if (N0 == 0) h12.ols <- c(summary(reg)$coef[1:2, 1:2] * c(N, M))
+    # Weighted regressions
+    h11v <- (h11.ols[2] * loop_env$LDsc / M + 1 / N1)^2
+    h22v <- (h22.ols[2] * loop_env$LDsc / M + 1 / N2)^2
 
-    ## weighted LS: use estimated h2
-    ## vars from Bulik-Sullivan
+    h11.wls <- summary(lm(a11 ~ loop_env$LDsc, weights = 1 / h11v))$coefficients[1:2, 1:2] * c(N1, M)
+    h22.wls <- summary(lm(a22 ~ loop_env$LDsc, weights = 1 / h22v))$coefficients[1:2, 1:2] * c(N2, M)
 
-    h11v <- (h11.ols[2] * LDsc / M + 1 / N1)^2
-    h22v <- (h22.ols[2] * LDsc / M + 1 / N2)^2
+    h12v <- sqrt(h11v * h22v) +
+      if (N0 > 0) {
+        (h12.ols[2] * loop_env$LDsc / M + p1 * p2 * rho12 / N0)^2
+      } else {
+        (h12.ols[2] * loop_env$LDsc / M)^2
+      }
 
-    reg <- lm(a11 ~ LDsc, weights = 1 / h11v)
-    h11.wls <- c(summary(reg)$coef[1:2, 1:2] * c(N1, M))
+    h12.wls <- summary(lm(a12 ~ loop_env$LDsc, weights = 1 / h12v))$coefficients[1:2, 1:2] *
+      if (N0 > 0) c(N0 / p1 / p2, M) else c(N, M)
 
-    reg <- lm(a22 ~ LDsc, weights = 1 / h22v)
-    h22.wls <- c(summary(reg)$coef[1:2, 1:2] * c(N2, M))
+    # Likelihood-based estimation
+    bstar1 <- crossprod(loop_env$V, bhat1)
+    bstar2 <- crossprod(loop_env$V, bhat2)
 
-    if (N0 > 0) h12v <- sqrt(h11v * h22v) + (h12.ols[2] * LDsc / M + p1 * p2 * rho12 / N0)^2
-    if (N0 == 0) h12v <- sqrt(h11v * h22v) + (h12.ols[2] * LDsc / M)^2
-
-    reg <- lm(a12 ~ LDsc, weights = 1 / h12v)
-    if (N0 > 0) h12.wls <- c(summary(reg)$coef[1:2, 1:2] * c((N0 / p1 / p2), M))
-    if (N0 == 0) h12.wls <- c(summary(reg)$coef[1:2, 1:2] * c(N, M))
-
-    ## likelihood based
-    ## estimate h2s
-    bstar1 <- crossprod(V, bhat1)
-    bstar2 <- crossprod(V, bhat2)
-
-    opt <- stats::optim(c(h11.wls[2], 1), llfun,
-      N = N1, Nref = Nref, lam = lam, bstar = bstar1, M = M,
+    h11.hdl <- stats::optim(
+      c(h11.wls[2], 1), llfun,
+      N = N1, Nref = Nref, lam = loop_env$lam, bstar = bstar1, M = M,
       lim = lim, method = "L-BFGS-B", lower = c(0, 0), upper = c(1, 10)
-    )
-    h11.hdl <- opt$par
+    )$par
 
-    opt <- stats::optim(c(h22.wls[2], 1), llfun,
-      N = N2, Nref = Nref, lam = lam, bstar = bstar2, M = M,
+    h22.hdl <- stats::optim(
+      c(h22.wls[2], 1), llfun,
+      N = N2, Nref = Nref, lam = loop_env$lam, bstar = bstar2, M = M,
       lim = lim, method = "L-BFGS-B", lower = c(0, 0), upper = c(1, 10)
-    )
-    h22.hdl <- opt$par
+    )$par
 
-    opt <- stats::optim(c(h12.wls[2], rho12), llfun.gcov.part.2,
-      h11 = h11.hdl, h22 = h22.hdl,
-      rho12 = rho12, M = M, N1 = N1, N2 = N2, N0 = N0, Nref = Nref,
-      lam0 = lam, lam1 = lam, lam2 = lam,
-      bstar1 = bstar1, bstar2 = bstar2,
-      lim = lim, method = "L-BFGS-B", lower = c(-1, -10), upper = c(1, 10)
-    )
-    h12.hdl <- opt$par
-
-    c(list(h11.hdl[1]), list(h22.hdl[1]), list(h12.hdl[1]), list(bstar1), list(bstar2), list(lam))
+    h12.hdl <- stats::optim(
+      c(h12.wls[2], rho12), llfun.gcov.part.2,
+      h11 = h11.hdl, h22 = h22.hdl, rho12 = rho12, M = M,
+      N1 = N1, N2 = N2, N0 = N0, Nref = Nref,
+      lam0 = loop_env$lam, lam1 = loop_env$lam, lam2 = loop_env$lam,
+      bstar1 = bstar1, bstar2 = bstar2, lim = lim,
+      method = "L-BFGS-B", lower = c(-1, -10), upper = c(1, 10)
+    )$par
+    list(h11.hdl[1], h22.hdl[1], h12.hdl[1], bstar1, bstar2, loop_env$lam)
   }
   close(pb)
 
-  cat("\n")
+  message("\n")
 
   h1_2 <- sum(unlist(lapply(HDL.res.pieces.list, FUN = "[[", 1)))
   h2_2 <- sum(unlist(lapply(HDL.res.pieces.list, FUN = "[[", 2)))
@@ -8772,12 +8953,13 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
 
   ##### Estimated likelihood for h12 + h11,h22 independent #####
 
-  cat("\n")
-  cat("Integrating piecewise results \n")
-  if (output.file != "") {
-    cat("\n", file = output.file, append = TRUE)
-    cat("Integrating piecewise results \n", file = output.file, append = TRUE)
-  }
+  message("\n")
+  rlang::inform("Integrating piecewise results")
+  log_output(
+    "", 
+    "Integrating piecewise results",
+    output.file = output.file
+  )
   M.ref <- sum(unlist(nsnps.list))
   eigen_select.fun <- function(x, k) {
     return(x[1:k])
@@ -8794,11 +8976,11 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
   if (eigen.cut == "automatic") {
     eigen.num.v.90 <- eigen.num.v.95 <- eigen.num.v.99 <- c()
     nsnps.v <- unlist(nsnps.list)
-    for (i in 1:length(nsnps.v)) {
+    for (i in seq_along(nsnps.v)) {
       lam.i <- lam.v[[i]]
       eigen.percent <- numeric(length(lam.i))
       temp <- 0
-      for (j in 1:length(lam.i)) {
+      for (j in seq_along(lam.i)) {
         temp <- temp + lam.i[j]
         eigen.percent[j] <- temp / nsnps.v[i]
       }
@@ -8921,11 +9103,11 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     eigen.use <- eigen.cut
     eigen.num.v.cut <- c()
     nsnps.v <- unlist(nsnps.list)
-    for (i in 1:length(nsnps.v)) {
+    for (i in seq_along(nsnps.v)) {
       lam.i <- lam.v[[i]]
       eigen.percent <- numeric(length(lam.i))
       temp <- 0
-      for (j in 1:length(lam.i)) {
+      for (j in seq_along(lam.i)) {
         temp <- temp + lam.i[j]
         eigen.percent[j] <- temp / nsnps.v[i]
       }
@@ -8979,10 +9161,12 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
       )
       k <- k + 1
       if (k > length(starting.value.v)) {
-        error.message <- "Algorithm failed to converge after trying different initial values. \n"
-        if (output.file != "") {
-          cat(error.message, file = output.file, append = TRUE)
-        }
+        error.message <- "Algorithm failed to converge after trying different initial values."
+        log_output(
+          error.message,
+          output.file = output.file
+        )
+        parallel::stopCluster(cl)
         stop(error.message)
       }
     }
@@ -9007,46 +9191,46 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     }
   }
 
-  cat("\n")
-  cat("Point estimates: \n")
-  cat(
-    "Heritability of phenotype 1: ",
-    output(h11),
-    "\n"
-  )
-  cat(
-    "Heritability of phenotype 2: ",
-    output(h22),
-    "\n"
-  )
-  cat(
-    "Genetic Covariance: ",
-    output(h12),
-    "\n"
-  )
-  cat(
-    "Genetic Correlation: ",
-    output(rg),
-    "\n"
-  )
-  if (h11 == 0 | h22 == 0) {
-    cat("Warning: Heritability of one trait was estimated to be 0, which may be due to:
-        1) The true heritability is very small;
-        2) The sample size is too small;
-        3) Many SNPs in the chosen reference panel are missing in the GWAS;
-        4) There is a severe mismatch between the GWAS population and the population for computing reference panel.")
-  }
-  cat("\n")
+  rlang::inform("Point estimates:")
+    rlang::inform(
+      rlang::format_error_bullets(c(
+        "*" = paste("Heritability of phenotype 1: ", output(h11)),
+        "*" = paste("Heritability of phenotype 2: ", output(h22)), 
+        "*" = paste("Genetic Covariance: ", output(h12)),
+        "*" = paste("Genetic Correlation: ", output(rg))
+      ))
+    )
+    
+    if (h11 == 0 | h22 == 0) {
+      rlang::inform(
+        rlang::format_error_bullets(c(
+          "!" = "Warning: Heritability of one trait was estimated to be 0, which may be due to:",
+          " " = "1) The true heritability is very small;",
+          " " = "2) The sample size is too small;",
+          " " = "3) Many SNPs in the chosen reference panel are missing in the GWAS;",
+          " " = "4) There is a severe mismatch between the GWAS population and the population for computing the reference panel"
+        ))
+      )
+    }
 
-  cat("Continuing computing standard error with jackknife \n")
-  if (output.file != "") {
-    cat("Continuing computing standard error with jackknife \n", file = output.file, append = TRUE)
-  }
+    rlang::inform(rlang::format_error_bullets(c("i" = "Continuing computing standard error with jackknife")))
+    log_output(
+      "Continuing computing standard error with jackknife",
+      output.file = output.file
+    )
 
-  pb <- txtProgressBar(max = num.pieces, style = 3)
+  pb <- txtProgressBar(min = 0, max = nrow(info.pieces.df), style = 3)
   opts <- list(progress = progress)
 
-  HDL.res.jackknife.list <- foreach::foreach(i = 1:length(lam.v), .options.snow = opts) %dopar% {
+  HDL.res.jackknife.list <- foreach::foreach(
+    i = 1:length(lam.v), 
+    .options.snow = opts,
+    .export = c(
+      "%>%", 
+      "llfun", "llfun.gcov.part.2"
+    )
+    ) %dopar% {
+    # Optimization steps
     opt <- stats::optim(h11.hdl.use, llfun,
       N = N1, Nref = Nref, lam = unlist(lam.v.use[-i]), bstar = unlist(bstar1.v.use[-i]), M = M.ref,
       lim = lim, method = "L-BFGS-B", lower = c(0, 0), upper = c(1, 10)
@@ -9067,6 +9251,7 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
       lim = lim, method = "L-BFGS-B", lower = c(-1, -10), upper = c(1, 10)
     )
     h12.hdl.jackknife <- opt$par
+    # Output
     if (intercept.output) {
       c(
         h11.hdl.jackknife[1], h22.hdl.jackknife[1], h12.hdl.jackknife[1],
@@ -9133,76 +9318,52 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
   }
 
   end.time <- date()
-  cat("\n")
-  cat("\n")
-  cat(
-    "Heritability of phenotype 1: ",
-    output(h11),
-    paste0("(", output(h11.se), ") \n")
+  message("\n")
+  rlang::inform(
+    rlang::format_error_bullets(c(
+      paste("Heritability of phenotype 1:", output(h11), "(", output(h11.se), ")"),
+      paste("Heritability of phenotype 2:", output(h22), "(", output(h22.se), ")"),
+      paste("Genetic Covariance:", output(h12), "(", output(h12.se), ")"),
+      paste("Genetic Correlation:", output(rg), "(", output(rg.se), ")"),
+      paste("P:", p.out)
+    ))
   )
-  cat(
-    "Heritability of phenotype 2: ",
-    output(h22),
-    paste0("(", output(h22.se), ") \n")
-  )
-  cat(
-    "Genetic Covariance: ",
-    output(h12),
-    paste0("(", output(h12.se), ") \n")
-  )
-  cat(
-    "Genetic Correlation: ",
-    output(rg),
-    paste0("(", output(rg.se), ") \n")
-  )
-  cat("P: ", p.out, "\n")
   if (h11 == 0 | h22 == 0) {
-    cat("Warning: Heritability of one trait was estimated to be 0, which may be due to:
-        1) The true heritability is very small;
-        2) The sample size of the GWAS is too small;
-        3) Many SNPs in the chosen reference panel are missing in the GWAS.")
+    rlang::inform(
+      rlang::format_error_bullets(c(
+        "!" = "Warning: Heritability of one trait was estimated to be 0, which may be due to:",
+        " " = "1) The true heritability is very small;",
+        " " = "2) The sample size is too small;",
+        " " = "3) Many SNPs in the chosen reference panel are missing in the GWAS."
+      ))
+    )
   }
-  cat("\n")
-  cat("Analysis finished at", end.time, "\n")
+  message("\n")
+  rlang::inform(paste("Analysis finished at", end.time))
 
-  if (output.file != "") {
-    cat("\n", file = output.file, append = TRUE)
-    cat("\n", file = output.file, append = TRUE)
-    cat("Heritability of phenotype 1: ",
-      output(h11),
-      paste0("(", output(h11.se), ") \n"),
-      file = output.file, append = TRUE
-    )
-    cat("Heritability of phenotype 2: ",
-      output(h22),
-      paste0("(", output(h22.se), ") \n"),
-      file = output.file, append = TRUE
-    )
-    cat("Genetic Covariance: ",
-      output(h12),
-      paste0("(", output(h12.se), ") \n"),
-      file = output.file, append = TRUE
-    )
-    cat("Genetic Correlation: ",
-      output(rg),
-      paste0("(", output(rg.se), ") \n"),
-      file = output.file, append = TRUE
-    )
-    cat("P: ", p.out, "\n", file = output.file, append = TRUE)
-    if (h11 == 0 | h22 == 0) {
-      cat("Warning: Heritability of one trait was estimated to be 0, which may be due to:
-          1) The true heritability is very low;
-          2) The sample size of the GWAS is too small;
-          3) Many SNPs in the chosen reference panel are missing in the GWAS;
-          4) There is a severe mismatch between the GWAS population and the population for computing reference panel", file = output.file, append = TRUE)
-    }
-    cat("\n", file = output.file, append = TRUE)
-    cat("Analysis finished at", end.time, "\n", file = output.file, append = TRUE)
-    cat("The results were saved to", output.file)
-    cat("\n")
-    cat("The results were saved to", output.file, file = output.file, append = TRUE)
-    cat("\n", file = output.file, append = TRUE)
-  }
+  log_output(
+    "",
+    paste("Heritability of phenotype 1:", output(h11), "(", output(h11.se), ")"),
+    paste("Heritability of phenotype 2:", output(h22), "(", output(h22.se), ")"),
+    paste("Genetic Covariance:", output(h12), "(", output(h12.se), ")"),
+    paste("Genetic Correlation:", output(rg), "(", output(rg.se), ")"),
+    paste("P:", p.out),
+    output.file = output.file
+  )
+
+  log_output(
+    "",
+    paste("Warning: Heritability of one trait was estimated to be 0, which may be due to:
+        1) The true heritability is very low;
+        2) The sample size of the GWAS is too small;
+        3) Many SNPs in the chosen reference panel are absent in the GWAS;
+        4) There is a severe mismatch between the GWAS population and the population for computing the reference panel"),
+    paste("Analysis finished at", end.time),
+    paste("The results were saved to", output.file),
+    output.file = output.file
+  )
+
+  if(nzchar(output.file)) rlang::inform(rlang::format_error_bullets(c("v" = "The results were saved to", output.file)))
 
   if (jackknife.df == TRUE) {
     jackknife.df <- rbind(h11.jackknife, h22.jackknife, h12.jackknife, rg.jackknife)

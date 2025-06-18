@@ -4,6 +4,16 @@
 \name{Example_h2data}
 \alias{Example_h2data}
 \title{Example dataset for h2 estimation between male and female for eight different traits}
+\format{
+A data frame with 8 rows and 5 variables:
+\describe{
+\item{ID}{Trait identifier; character string (e.g., "ADHD", "AFB")}
+\item{Fstat}{Estimated heritability statistic for females; numeric}
+\item{Fse}{Standard error for female heritability estimate; numeric}
+\item{Mstat}{Estimated heritability statistic for males; numeric}
+\item{Mse}{Standard error for male heritability estimate; numeric}
+}
+}
 \description{
 Example dataset for h2 estimation between male and female for eight different traits
 }

@@ -2,3 +2,4 @@
 
 /.quarto/
 docs
+.vscode/settings.json
