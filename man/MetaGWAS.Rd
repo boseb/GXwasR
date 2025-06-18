@@ -137,10 +137,10 @@ chosen_snps_file <- NULL
 pval_threshold_manplot <- 1e-05
 plotname <- "Meta_Analysis.plot"
 x <- MetaGWAS(
-  DataDir = DataDir, SummData = SummData, ResultDir = ResultDir,
-  SNPfile = NULL, useSNPposition = TRUE, UseA1 = UseA1, GCse = GCse,
-  plotname = "Meta_Analysis.plot", pval_filter, top_snp_pval, max_top_snps,
-  chosen_snps_file = NULL, byCHR, pval_threshold_manplot
+    DataDir = DataDir, SummData = SummData, ResultDir = ResultDir,
+    SNPfile = NULL, useSNPposition = TRUE, UseA1 = UseA1, GCse = GCse,
+    plotname = "Meta_Analysis.plot", pval_filter, top_snp_pval, max_top_snps,
+    chosen_snps_file = NULL, byCHR, pval_threshold_manplot
 )
 }
 \references{

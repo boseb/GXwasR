@@ -65,8 +65,8 @@ r2_threshold <- 0.02
 countPC <- 20
 ## Genetic PC
 GP <- ComputeGeneticPC(
-  DataDir = DataDir, ResultDir = ResultDir,
-  finput = finput, highLD_regions = highLD_hg19, countPC = 20
+    DataDir = DataDir, ResultDir = ResultDir,
+    finput = finput, highLD_regions = highLD_hg19, countPC = 20
 )
 }
 \references{
