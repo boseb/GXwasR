@@ -204,13 +204,13 @@ IndepSNP_step_size <- 5
 IndepSNP_r2_threshold <- 0.02
 highLD_regions <- highLD_hg19
 H2 <- EstimateHerit(
-  DataDir = DataDir, ResultDir = ResultDir, finput = finput,
-  summarystat = NULL, ncores, model = "GREML", byCHR = TRUE, r2_LD = 0,
-  LDSC_blocks = 20, REMLalgo = 0, nitr = 100, cat_covarfile = NULL, quant_covarfile = NULL,
-  prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
-  cripticut = 0.025, minMAF = NULL, maxMAF = NULL, hg = "hg19", PlotIndepSNP = TRUE,
-  IndepSNP_window_size = 50, IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02,
-  highLD_regions = highLD_hg19
+    DataDir = DataDir, ResultDir = ResultDir, finput = finput,
+    summarystat = NULL, ncores, model = "GREML", byCHR = TRUE, r2_LD = 0,
+    LDSC_blocks = 20, REMLalgo = 0, nitr = 100, cat_covarfile = NULL, quant_covarfile = NULL,
+    prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
+    cripticut = 0.025, minMAF = NULL, maxMAF = NULL, hg = "hg19", PlotIndepSNP = TRUE,
+    IndepSNP_window_size = 50, IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02,
+    highLD_regions = highLD_hg19
 )
 }
 \references{

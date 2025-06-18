@@ -40,7 +40,7 @@ ResultDir <- tempdir()
 finput1 <- "GXwasR_example"
 finput2 <- "GXwasR_example_imputed"
 foutput <- "Test_output"
-y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput,  use_common_snps = TRUE)
+y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput, use_common_snps = TRUE)
 }
 \author{
 Banabithi Bose

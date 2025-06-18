@@ -137,10 +137,10 @@ nPC <- 6 # We can incorporate PCs into our PRS analysis to account for populatio
 pheno_type <- "binary"
 
 PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile,
-  effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2,
-  clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions,
-  ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6,
-  pheno_type = "binary"
+    effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2,
+    clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions,
+    ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6,
+    pheno_type = "binary"
 )
 
 ## This table shows 10 samples with phenotype, covariates and a PRS column.

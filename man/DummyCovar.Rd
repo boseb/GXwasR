@@ -33,9 +33,11 @@ ResultDir <- tempdir()
 bfile <- "GXwasR_example"
 incovar <- "covarfile_w_pc_age.txt"
 outcovar <- "dummycovarfile"
-dummy_covars <- DummyCovar(DataDir = DataDir, ResultDir = ResultDir,
-                           bfile = bfile, incovar = incovar, 
-                           outcovar = outcovar)
+dummy_covars <- DummyCovar(
+    DataDir = DataDir, ResultDir = ResultDir,
+    bfile = bfile, incovar = incovar,
+    outcovar = outcovar
+)
 }
 \references{
 \insertAllCited{}
