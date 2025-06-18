@@ -119,15 +119,15 @@ MFsplitPlink <- function(DataDir, ResultDir, finput, foutput, sex, xplink = FALS
       plink(),
       args = c(
         "--bed",
-        paste0(DataDir, "/", finput, ".bed"),
+        normalizePath(file.path(DataDir, paste0(finput, ".bed")), mustWork = FALSE),
         "--bim",
-        paste0(DataDir, "/", finput, ".bim"),
+        normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE),
         "--fam",
-        paste0(DataDir, "/", finput, ".fam"),
+        normalizePath(file.path(DataDir, paste0(finput, ".fam"))), mustWork = FALSE,
         paste0("--filter-", sex),
         "--make-bed",
         "--out",
-        paste0(ResultDir, "/", foutput),
+        normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
         "--silent"
       ),
       std_out = FALSE,
@@ -138,16 +138,16 @@ MFsplitPlink <- function(DataDir, ResultDir, finput, foutput, sex, xplink = FALS
       plink(),
       args = c(
         "--bed",
-        paste0(DataDir, "/", finput, ".bed"),
+        normalizePath(file.path(DataDir, paste0(finput, ".bed")), mustWork = FALSE),
         "--bim",
-        paste0(DataDir, "/", finput, ".bim"),
+        normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE),
         "--fam",
-        paste0(DataDir, "/", finput, ".fam"),
+        normalizePath(file.path(DataDir, paste0(finput, ".fam")), mustWork = FALSE),
         paste0("--filter-", sex),
         "--chr", 23,
         "--make-bed",
         "--out",
-        paste0(ResultDir, "/", foutput),
+        normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
         "--silent"
       ),
       std_out = FALSE,
@@ -158,16 +158,16 @@ MFsplitPlink <- function(DataDir, ResultDir, finput, foutput, sex, xplink = FALS
       plink(),
       args = c(
         "--bed",
-        paste0(DataDir, "/", finput, ".bed"),
+        normalizePath(file.path(DataDir, paste0(finput, ".bed")), mustWork = FALSE),
         "--bim",
-        paste0(DataDir, "/", finput, ".bim"),
+        normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE),
         "--fam",
-        paste0(DataDir, "/", finput, ".fam"),
+        normalizePath(file.path(DataDir, paste0(finput, ".fam")), mustWork = FALSE),
         paste0("--filter-", sex),
         "--not-chr", 23,
         "--make-bed",
         "--out",
-        paste0(ResultDir, "/", foutput),
+        normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
         "--silent"
       ),
       std_out = FALSE,
@@ -422,16 +422,16 @@ createHeterozygosityPlot <- function(hetermiss, hetfail, imissfail, het, imiss, 
 ######### Added in 3.0
 processAmbiguousSamples <- function(DataDir, ResultDir, finput, fam1) {
   pruneArgs <- c(
-    "--bfile", paste0(DataDir, "/", finput),
+    "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
     "--prune",
     "--must-have-sex",
     "--make-bed",
-    "--out", paste0(ResultDir, "/", "FINPUT"),
+    "--out", normalizePath(file.path(ResultDir, "FINPUT"), mustWork = FALSE),
     "--silent"
   )
   executePlink(pruneArgs, ResultDir)
 
-  fam2 <- nrow(read.table(paste0(ResultDir, "/", "FINPUT", ".fam"), header = FALSE))
+  fam2 <- nrow(read.table(normalizePath(file.path(ResultDir, paste0("FINPUT", ".fam")), mustWork = FALSE), header = FALSE))
   rlang::inform(rlang::format_error_bullets(c("i" = paste0("Number of ambiguous samples filtered out: ", fam1 - fam2))))
 
   copyTempFiles(ResultDir, DataDir, "FINPUT")
@@ -443,19 +443,19 @@ processAmbiguousSamples <- function(DataDir, ResultDir, finput, fam1) {
 filterSamples <- function(DataDir, ResultDir, finput, failed_het_imiss, filterSample) {
   if (filterSample == TRUE) {
     excludeSamplesArgs <- c(
-      "--bfile", paste0(DataDir, "/", finput),
-      "--remove", paste0(ResultDir, "/", "failed_het_imiss"),
+      "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
+      "--remove", normalizePath(file.path(ResultDir, "failed_het_imiss"), mustWork = FALSE),
       "--allow-no-sex", ## Adding in 4.0
       "--make-bed",
-      "--out", paste0(ResultDir, "/", "foutput"),
+      "--out", normalizePath(file.path(ResultDir, "foutput"), mustWork = FALSE),
       "--silent"
     )
     executePlink(excludeSamplesArgs, ResultDir)
   } else if (filterSample == FALSE) {
     excludeSamplesArgs <- c(
-      "--bfile", paste0(DataDir, "/", finput),
+      "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
       "--make-bed",
-      "--out", paste0(ResultDir, "/", "foutput"),
+      "--out", normalizePath(file.path(ResultDir, "foutput"), mustWork = FALSE),
       "--silent"
     )
     executePlink(excludeSamplesArgs, ResultDir)
@@ -522,20 +522,20 @@ processIBDData <- function(IBD, IBDmatrix, ResultDir, foutput, filterSample) {
 executePlinkForIBD <- function(ResultDir, IBD, outFileName) {
   ####### Added in final version #######
   executePlinkAd(ResultDir, c(
-    "--bfile", paste0(ResultDir, "/foutput"),
+    "--bfile", normalizePath(file.path(ResultDir, "foutput"), mustWork = FALSE),
     "--indep-pairwise", 50, 5, 0.02, # We made these as hard thresholds.
     "--allow-no-sex", ## Adding in 4.0
-    "--out", paste0(ResultDir, "/foutput"),
+    "--out", normalizePath(file.path(ResultDir, "foutput"), mustWork = FALSE),
     "--silent"
   ))
 
   # Extract pruned SNPs based on the .prune.in file
   executePlinkAd(ResultDir, c(
-    "--bfile", paste0(ResultDir, "/foutput"), # Original data
-    "--extract", paste0(ResultDir, "/foutput.prune.in"), # Use pruned SNP list
+    "--bfile", normalizePath(file.path(ResultDir, "foutput"), mustWork = FALSE), # Original data
+    "--extract", normalizePath(file.path(ResultDir, "foutput.prune.in"), mustWork = FALSE), # Use pruned SNP list
     "--allow-no-sex",
     "--make-bed",
-    "--out", paste0(ResultDir, "/foutput1"),
+    "--out", normalizePath(file.path(ResultDir, "foutput1"), mustWork = FALSE),
     "--silent" # Final file with pruned SNPs
   ))
 
@@ -543,9 +543,9 @@ executePlinkForIBD <- function(ResultDir, IBD, outFileName) {
 
 
   ibdArgs <- c(
-    "--bfile", paste0(ResultDir, "/", "foutput1"),
+    "--bfile", normalizePath(file.path(ResultDir, "foutput1"), mustWork = FALSE),
     "--genome",
-    "--out", paste0(ResultDir, "/", outFileName),
+    "--out", normalizePath(file.path(ResultDir, outFileName), mustWork = FALSE),
     "--silent"
   )
   if (!is.null(IBD)) {
@@ -557,7 +557,7 @@ executePlinkForIBD <- function(ResultDir, IBD, outFileName) {
 ## Function 20
 ######### Added in 3.0
 readIBDData <- function(ResultDir, fileName) {
-  data.table::fread(paste0(ResultDir, "/", fileName), select = c("IID1", "IID2", "PI_HAT"))
+  data.table::fread(normalizePath(file.path(ResultDir, fileName), mustWork = FALSE), select = c("IID1", "IID2", "PI_HAT"))
 }
 
 ## Function 21
@@ -565,7 +565,7 @@ readIBDData <- function(ResultDir, fileName) {
 identifyFailedSamplesFromIBD <- function(ibd, ResultDir) {
   failedSamples <- unique(c(ibd$IID1, ibd$IID2))
   if (length(failedSamples) > 0) {
-    famData <- read.table(paste0(ResultDir, "/", "foutput", ".fam"))
+    famData <- read.table(normalizePath(file.path(ResultDir, paste0("foutput", ".fam")), mustWork = FALSE))
     famData[famData$V2 %in% failedSamples, 1:2]
   } else {
     NULL
@@ -576,11 +576,23 @@ identifyFailedSamplesFromIBD <- function(ibd, ResultDir) {
 ######### Added in 3.0
 updatePlinkFilesWithIBDFilter <- function(ResultDir, foutput, failed_ibd) {
   if (!is.null(failed_ibd)) {
-    write.table(failed_ibd, file = paste0(ResultDir, "/samples_failed_ibd"), quote = FALSE, row.names = FALSE, col.names = FALSE)
-    removeSamplesArgs <- c("--bed", paste0(ResultDir, "/", "foutput", ".bed"), "--bim", paste0(ResultDir, "/", "foutput", ".bim"), "--fam", paste0(ResultDir, "/", "foutput", ".fam"), "--remove", paste0(ResultDir, "/samples_failed_ibd"), "--allow-no-sex", "--make-bed", "--out", paste0(ResultDir, "/", foutput), "--silent")
+    write.table(failed_ibd, file = normalizePath(file.path(ResultDir, "samples_failed_ibd"), mustWork = FALSE), quote = FALSE, row.names = FALSE, col.names = FALSE)
+    removeSamplesArgs <- c(
+      "--bed", normalizePath(file.path(ResultDir, paste0("foutput", ".bed")), mustWork = FALSE), 
+      "--bim", normalizePath(file.path(ResultDir, paste0("foutput", ".bim")), mustWork = FALSE), 
+      "--fam", normalizePath(file.path(ResultDir, paste0("foutput", ".fam")), mustWork = FALSE), 
+      "--remove", normalizePath(file.path(ResultDir, "/samples_failed_ibd"), mustWork = FALSE), 
+      "--allow-no-sex", "--make-bed", 
+      "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE), 
+      "--silent")
     executePlink(removeSamplesArgs, ResultDir)
   } else {
-    removeSamplesArgs <- c("--bed", paste0(ResultDir, "/", "foutput", ".bed"), "--bim", paste0(ResultDir, "/", "foutput", ".bim"), "--fam", paste0(ResultDir, "/", "foutput", ".fam"), "--make-bed", "--out", paste0(ResultDir, "/", foutput), "--silent")
+    removeSamplesArgs <- c(
+      "--bed", normalizePath(file.path(ResultDir, paste0("foutput", ".bed")), mustWork = FALSE), 
+      "--bim", normalizePath(file.path(ResultDir, paste0("foutput", ".bim")), mustWork = FALSE), 
+      "--fam", normalizePath(file.path(ResultDir, paste0("foutput", ".fam")), mustWork = FALSE), 
+      "--make-bed", "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE), 
+      "--silent")
     executePlink(removeSamplesArgs, ResultDir)
   }
 }
@@ -588,7 +600,11 @@ updatePlinkFilesWithIBDFilter <- function(ResultDir, foutput, failed_ibd) {
 ## Function 23
 ######### Added in 3.0
 executeMakeBed <- function(ResultDir, foutput) {
-  makeBedArgs <- c("--bfile", paste0(ResultDir, "/", "foutput"), "--make-bed", "--out", paste0(ResultDir, "/", foutput), "--silent")
+  makeBedArgs <- c(
+    "--bfile", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE), 
+    "--make-bed", 
+    "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE), 
+    "--silent")
   executePlink(makeBedArgs, ResultDir)
 }
 
@@ -650,7 +666,7 @@ setPlinkFlags <- function(maf, geno, hwe, hweCase, hweControl) {
 ######### Added in 3.0
 # Helper Function to Remove Ambiguous SNPs
 removeAmbiguousSNPs <- function(DataDir, ResultDir, finput) {
-  bimFilePath <- paste0(DataDir, "/", finput, ".bim")
+  bimFilePath <- normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE)
   study <- read.table(file = bimFilePath, stringsAsFactors = FALSE)
 
   # Identifying Ambiguous SNPs
@@ -666,11 +682,16 @@ removeAmbiguousSNPs <- function(DataDir, ResultDir, finput) {
   study_SNP <- rbind(study_AT, study_TA, study_GC, study_CG, study_indel1, study_indel2)
 
   # Write Ambiguous SNPs to a file
-  outputFile <- paste0(ResultDir, "/study_SNP")
+  outputFile <- normalizePath(file.path(ResultDir, "study_SNP"), mustWork = FALSE)
   write.table(study_SNP, file = outputFile, quote = FALSE, row.names = FALSE, col.names = FALSE, eol = "\r\n", sep = " ")
 
   # Remove Ambiguous SNPs using PLINK
-  executePlinkAd(ResultDir, args = c("--bfile", paste0(DataDir, "/", finput), "--exclude", outputFile, "--allow-no-sex", "--make-bed", "--out", paste0(ResultDir, "/NoAmbiguousSNP"), "--silent"))
+  executePlinkAd(ResultDir, args = c(
+    "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE), 
+    "--exclude", outputFile, "--allow-no-sex", 
+    "--make-bed",
+    "--out", normalizePath(file.path(ResultDir, "NoAmbiguousSNP"), mustWork = FALSE), 
+    "--silent"))
 
   # Return the count of removed SNPs
   return(nrow(study_SNP))
@@ -682,27 +703,27 @@ removeAmbiguousSNPs <- function(DataDir, ResultDir, finput) {
 applyFiltersWithPlink <- function(ResultDir, DataDir, finput, MAF, maf, GENO, geno, HWE, hwe) {
   # Execute PLINK command
   executePlinkAd(ResultDir, args = c(
-    "--bfile", paste0(ResultDir, "/NoAmbiguousSNP"),
+    "--bfile", normalizePath(file.path(ResultDir, "NoAmbiguousSNP"), mustWork = FALSE),
     MAF, maf,
     GENO, geno,
     HWE, hwe,
     "--allow-no-sex",
     "--make-bed",
-    "--out", paste0(ResultDir, "/filtered_temp1"),
+    "--out", normalizePath(file.path(ResultDir, "filtered_temp1"), mustWork = FALSE),
     "--silent"
   ))
 
   # Check if the file exists and print relevant messages
-  if (file.exists(paste0(ResultDir, "/filtered_temp1.bed"))) {
+  if (file.exists(normalizePath(file.path(ResultDir, "filtered_temp1.bed"), mustWork = FALSE))) {
     rlang::inform(rlang::format_error_bullets(c("v" = "Thresholds for maf, geno and hwe worked.")))
-    logContents <- readLines(paste0(ResultDir, "/filtered_temp1.log"))
+    logContents <- readLines(normalizePath(file.path(ResultDir, "filtered_temp1.log"), mustWork = FALSE))
     rlang::inform(rlang::format_error_bullets(c("i" = grep("variants removed", logContents, value = TRUE))))
   } else {
     rlang::inform(rlang::format_error_bullets(c("x" = "Error applying thresholds or file not found.")))
     executePlinkAd(ResultDir, args = c(
-      "--bfile", paste0(DataDir, "/", finput),
+      "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
       "--make-bed",
-      "--out", paste0(ResultDir, "/filtered_temp1"),
+      "--out", normalizePath(file.path(ResultDir, "filtered_temp1"), mustWork = FALSE),
       "--silent"
     ))
   }
@@ -717,20 +738,20 @@ applyCaseControlFilters <- function(ResultDir, fam4, casecontrol, HWECase, hweCa
   if (length(unique(fam4$V6)) >= 2 && casecontrol) {
     # Filter for cases
     executePlinkAd(ResultDir, args = c(
-      "--bfile", paste0(ResultDir, "/filtered_temp1"),
+      "--bfile", normalizePath(file.path(ResultDir, "filtered_temp1"), mustWork = FALSE),
       "--filter-cases", HWECase, hweCase,
       "--allow-no-sex",
-      "--make-bed", "--out", paste0(ResultDir, "/filtered_temp_hwe_case_filtered"),
+      "--make-bed", "--out", normalizePath(file.path(ResultDir, "filtered_temp_hwe_case_filtered"), mustWork = FALSE),
       "--silent"
     ))
     printHWEMessages(ResultDir, "/filtered_temp_hwe_case_filtered.log", "In cases")
 
     # Filter for controls
     executePlinkAd(ResultDir, args = c(
-      "--bfile", paste0(ResultDir, "/filtered_temp1"),
+      "--bfile", normalizePath(file.path(ResultDir, "/filtered_temp1"), mustWork = FALSE),
       "--filter-controls", HWECon, hweControl,
       "--allow-no-sex",
-      "--make-bed", "--out", paste0(ResultDir, "/filtered_temp_hwe_control_filtered"),
+      "--make-bed", "--out", normalizePath(file.path(ResultDir, "filtered_temp_hwe_control_filtered"), mustWork = FALSE),
       "--silent"
     ))
     printHWEMessages(ResultDir, "/filtered_temp_hwe_control_filtered.log", "In controls")
@@ -749,16 +770,16 @@ applyCaseControlFilters <- function(ResultDir, fam4, casecontrol, HWECase, hweCa
   }
 
   # Processing for monomorphic SNPs
-  if (file.exists(paste0(ResultDir, "/", nextFile, ".bed"))) {
+  if (file.exists(normalizePath(file.path(ResultDir, paste0(nextFile, ".bed")), mustWork = FALSE))) {
     executePlinkAd(ResultDir, args = c(
-      "--bfile", paste0(ResultDir, "/", nextFile),
+      "--bfile", normalizePath(file.path(ResultDir, nextFile), mustWork = FALSE),
       "--freq", "--make-bed", "--allow-no-sex",
-      "--out", paste0(ResultDir, "/filtered_temp4"),
+      "--out", normalizePath(file.path(ResultDir, "filtered_temp4"), mustWork = FALSE),
       "--silent"
     ))
   } else {
     rlang::inform(rlang::format_error_bullets(c("x" = "Something went wrong.")))
-    rlang::inform(rlang::format_error_bullets(c("x" = grep("Error", readLines(paste0(ResultDir, "/", nextFile, ".log")), value = TRUE))))
+    rlang::inform(rlang::format_error_bullets(c("x" = grep("Error", readLines(normalizePath(file.path(ResultDir, paste0(nextFile, ".log")), mustWork = FALSE)), value = TRUE))))
   }
 
   return(casecontrol)
@@ -768,8 +789,8 @@ applyCaseControlFilters <- function(ResultDir, fam4, casecontrol, HWECase, hweCa
 ######### Added in 3.0
 # Helper function to print HWE messages from log files
 printHWEMessages <- function(ResultDir, logFilePath, context) {
-  if (file.exists(paste0(ResultDir, logFilePath))) {
-    logContents <- readLines(paste0(ResultDir, logFilePath))
+  if (file.exists(normalizePath(file.path(ResultDir, logFilePath), mustWork = FALSE))) {
+    logContents <- readLines(normalizePath(file.path(ResultDir, logFilePath), mustWork = FALSE))
     message <- paste0(context, ", ", stringr::str_sub(grep("Hardy-Weinberg", logContents, value = TRUE), 7))
     rlang::inform(rlang::format_error_bullets(message))
   } else {
@@ -784,7 +805,7 @@ handleMonomorphicSNPs <- function(monomorphicSNPs, mmSNPs, ResultDir) {
   if (monomorphicSNPs == TRUE && nrow(mmSNPs) != 0) {
     mmSNP1 <- mmSNPs$SNP
     exclude <- "--exclude"
-    excludemono <- paste0(ResultDir, "/monomorphicSNPs")
+    excludemono <- normalizePath(file.path(ResultDir, "monomorphicSNPs"), mustWork = FALSE)
   } else {
     mmSNP1 <- NULL
     exclude <- NULL
@@ -809,7 +830,7 @@ handleLDPruning <- function(ld_prunning, highLD_regions, ResultDir, window_size,
     ##
     if (!is.null(highLD_regions)) {
       # Write high LD regions to a temporary file
-      tempFile <- paste0(ResultDir, "/highLD_regions_temp")
+      tempFile <- normalizePath(file.path(ResultDir, "highLD_regions_temp"), mustWork = FALSE)
       write.table(highLD_regions, file = tempFile, quote = FALSE, row.names = FALSE, col.names = FALSE)
       highLD_regions <- tempFile
     } else {
@@ -834,17 +855,6 @@ handleLDPruning <- function(ld_prunning, highLD_regions, ResultDir, window_size,
 
 ## Function 32
 executePlinkWithParams <- function(ResultDir, filtered_temp, exclude, excludemono, excluderange, highLD_regions, indep, window_size, step_size, r2_threshold) {
-  # TEST
-  # executePlinkAd(ResultDir, args = c(
-  #   "--bfile", paste0(ResultDir, "/", filtered_temp),
-  #   exclude, excludemono, excluderange, highLD_regions,
-  #   indep, window_size, step_size, r2_threshold,
-  #   "--make-bed",
-  #   "--allow-no-sex",
-  #   "--out", paste0(ResultDir, "/", filtered_temp, "_processed"),
-  #   "--silent"
-  # ))
-  ###
   if (is.null(excluderange)) {
     range <- NULL
   } else {
@@ -852,44 +862,36 @@ executePlinkWithParams <- function(ResultDir, filtered_temp, exclude, excludemon
   }
 
   executePlinkAd(ResultDir, args = c(
-    "--bfile", paste0(ResultDir, "/", filtered_temp),
+    "--bfile", normalizePath(file.path(ResultDir, filtered_temp), mustWork = FALSE),
     exclude, excludemono, excluderange, range, highLD_regions,
     "--make-bed",
     "--allow-no-sex",
-    "--out", paste0(ResultDir, "/", filtered_temp, "dummy_processed"),
+    "--out", normalizePath(file.path(ResultDir, paste0(filtered_temp, "dummy_processed")), mustWork = FALSE),
     "--silent"
   ))
 
   if (is.null(indep)) {
-    # executePlinkAd(ResultDir, args = c(
-    #   "--bfile", paste0(ResultDir, "/", filtered_temp, "dummy_processed"),
-    #   indep, window_size, step_size, r2_threshold,
-    #   "--allow-no-sex",
-    #   "--out", paste0(ResultDir, "/", filtered_temp, "pruned_processed")
-    #   #"--silent"
-    # ))
     # Extract prunned snps
     executePlinkAd(ResultDir, args = c(
-      "--bfile", paste0(ResultDir, "/", filtered_temp, "dummy_processed"),
-      # "--extract",paste0(ResultDir, "/", filtered_temp, "pruned_processed.prune.in"),
+      "--bfile", normalizePath(file.path(ResultDir, paste0(filtered_temp, "dummy_processed")), mustWork = FALSE),
       "--make-bed",
-      "--out", paste0(ResultDir, "/", filtered_temp, "_processed"),
+      "--out", normalizePath(file.path(ResultDir, paste0(filtered_temp, "_processed")), mustWork = FALSE),
       "--silent"
     ))
   } else {
     executePlinkAd(ResultDir, args = c(
-      "--bfile", paste0(ResultDir, "/", filtered_temp, "dummy_processed"),
+      "--bfile", normalizePath(file.path(ResultDir, paste0(filtered_temp, "dummy_processed")), mustWork = FALSE),
       indep, window_size, step_size, r2_threshold,
       "--allow-no-sex",
-      "--out", paste0(ResultDir, "/", filtered_temp, "pruned_processed"),
+      "--out", normalizePath(file.path(ResultDir, paste0(filtered_temp, "pruned_processed")), mustWork = FALSE),
       "--silent"
     ))
     # Extract prunned snps
     executePlinkAd(ResultDir, args = c(
-      "--bfile", paste0(ResultDir, "/", filtered_temp, "dummy_processed"),
-      "--extract", paste0(ResultDir, "/", filtered_temp, "pruned_processed.prune.in"),
+      "--bfile", normalizePath(file.path(ResultDir, paste0(filtered_temp, "dummy_processed")), mustWork = FALSE),
+      "--extract", normalizePath(file.path(ResultDir, paste0(filtered_temp, "pruned_processed.prune.in")), mustWork = FALSE),
       "--make-bed",
-      "--out", paste0(ResultDir, "/", filtered_temp, "_processed"),
+      "--out", normalizePath(file.path(ResultDir, paste0(filtered_temp, "_processed")), mustWork = FALSE),
       "--silent"
     ))
   }
@@ -919,11 +921,11 @@ handleCaseControlFiltering <- function(ResultDir, casecontrol, dmissX, dmissAuto
 
     if (caldiffmiss) {
       executePlinkAd(ResultDir, args = c(
-        "--bfile", paste0(ResultDir, "/filtered_temp4_processed"), ## TEST
+        "--bfile", normalizePath(file.path(ResultDir, "filtered_temp4_processed"), mustWork = FALSE), 
         chrfilter, chrv,
         "--test-missing", "--adjust",
         "--make-bed", "--allow-no-sex",
-        "--out", paste0(ResultDir, "/filtered_temp_casecontrol")
+        "--out", normalizePath(file.path(ResultDir, "filtered_temp_casecontrol"), mustWork = FALSE)
         # "--silent"
       ))
 
@@ -936,9 +938,9 @@ handleCaseControlFiltering <- function(ResultDir, casecontrol, dmissX, dmissAuto
     rlang::inform(rlang::format_error_bullets(c("i" = "No filter based on differential missingness will be applied.")))
 
     executePlinkAd(ResultDir, args = c(
-      "--bfile", paste0(ResultDir, "/filtered_temp4_processed"), # TEST
+      "--bfile", normalizePath(file.path(ResultDir, "filtered_temp4_processed"), mustWork = FALSE), # TEST
       "--make-bed", "--allow-no-sex",
-      "--out", paste0(ResultDir, "/", foutput),
+      "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
       "--silent"
     ))
   }
@@ -950,7 +952,7 @@ handleCaseControlFiltering <- function(ResultDir, casecontrol, dmissX, dmissAuto
 ######### Added in 3.0
 # Helper function to process differential missingness results
 processDifferentialMissingnessResults <- function(ResultDir) {
-  filePath <- paste0(ResultDir, "/filtered_temp_casecontrol.missing.adjusted")
+  filePath <- normalizePath(file.path(ResultDir, "filtered_temp_casecontrol.missing.adjusted"), mustWork = FALSE)
   if (file.exists(filePath)) {
     ccmissing <- read.table(filePath, header = TRUE, sep = "")
     diffmiss <- 0.05 / length(unique(ccmissing$SNP))
@@ -968,26 +970,24 @@ applySNPmissCCFilter <- function(ResultDir, SNPmissCC, diffmissFilter, foutput) 
   if (!is.null(SNPmissCC) && diffmissFilter) {
     write.table(
       SNPmissCC,
-      file = paste0(ResultDir, "/SNPdifCallrate"),
+      file = normalizePath(file.path(ResultDir, "SNPdifCallrate"), mustWork = FALSE),
       quote = FALSE, row.names = FALSE, col.names = FALSE, eol = "\r\n", sep = " "
     )
     executePlinkAd(ResultDir, args = c(
-      # "--bfile", paste0(ResultDir, "/filtered_temp4"),
-      "--bfile", paste0(ResultDir, "/filtered_temp4_processed"), ## TEST
-      "--exclude", paste0(ResultDir, "/SNPdifCallrate"),
+      "--bfile", normalizePath(file.path(ResultDir, "filtered_temp4_processed"), mustWork = FALSE), ## TEST
+      "--exclude", normalizePath(file.path(ResultDir, "SNPdifCallrate"), mustWork = FALSE),
       "--allow-no-sex",
       "--make-bed",
-      "--out", paste0(ResultDir, "/", foutput),
+      "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
       "--silent"
     ))
   } else {
     rlang::inform(rlang::format_error_bullets(c("i" = "No SNP with differential missingness between cases and controls.")))
     executePlinkAd(ResultDir, args = c(
-      # "--bfile", paste0(ResultDir, "/filtered_temp4"),
-      "--bfile", paste0(ResultDir, "/filtered_temp4_processed"), ## TEST
+      "--bfile", normalizePath(file.path(ResultDir, "filtered_temp4_processed"), mustWork = FALSE), ## TEST
       "--allow-no-sex",
       "--make-bed",
-      "--out", paste0(ResultDir, "/", foutput),
+      "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
       "--silent"
     ))
   }
@@ -1203,9 +1203,9 @@ performLDClumping <- function(ldclump, DataDir, ResultDir, LDreference, summarys
       clump_p1 = clump_p1, clump_p2 = clump_p2, clump_r2 = clump_r2, clump_kb = clump_kb, byCHR = byCHR
     )
 
-    write.table(clumpedResult$SNP, file = paste0(ResultDir, "/", "Valid.SNP"), quote = FALSE, row.names = FALSE)
+    write.table(clumpedResult$SNP, file = normalizePath(file.path(ResultDir, "Valid.SNP"), mustWork = FALSE), quote = FALSE, row.names = FALSE)
 
-    return(list(clumpExtract = "--extract", clumpSNP = paste0(ResultDir, "/", "Valid.SNP")))
+    return(list(clumpExtract = "--extract", clumpSNP = normalizePath(file.path(ResultDir, "Valid.SNP"), mustWork = FALSE)))
   } else {
     return(list(clumpExtract = NULL, clumpSNP = NULL))
   }
@@ -1257,33 +1257,24 @@ prsFun <- function(pthreshold, ResultDir, DataDir, finput, clumpExtract, clumpSN
 
   pt <- data.table::as.data.table(cbind(pthreshold, 0, pthreshold))
   colnames(pt) <- c("Threshold", "Lowerbound", "UpperBound")
-  write.table(pt, file = paste0(ResultDir, "/range_list"), quote = FALSE, row.names = FALSE)
+  write.table(pt, file = normalizePath(file.path(ResultDir, "range_list"), mustWork = FALSE), quote = FALSE, row.names = FALSE)
 
-  ######
-  # x1 <-  read.table(paste0(DataDir, "/", finput,".bim"))
-  # x2 <- read.table(paste0(ResultDir, "/","prssummarystat"),header = TRUE)
-  # x3 <- merge(x2,x1,by.x = "SNP",by.y ="V2")
-  # x4 <- x3[,1:ncol(x2)]
-  # write.table(paste0(ResultDir, "/","prssummarystat"),quote=FALSE, row.names=FALSE)
-  # SNP.pvalue <- unique(x4[,c("SNP","P")])
-  # write.table(SNP.pvalue, file=paste0(ResultDir,"/","SNP.pvalue"), quote=FALSE, row.names=FALSE)
-  ######
   invisible(sys::exec_wait(
     plink(),
     args = c(
-      "--bfile", paste0(DataDir, "/", finput),
-      "--score", paste0(ResultDir, "/", "prssummarystat"), 1, 2, 3, "header",
-      "--q-score-range", paste0(ResultDir, "/range_list"), paste0(ResultDir, "/", "SNP.pvalue"),
+      "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
+      "--score", normalizePath(file.path(ResultDir, "prssummarystat"), mustWork = FALSE), 1, 2, 3, "header",
+      "--q-score-range", normalizePath(file.path(ResultDir, "range_list"), mustWork = FALSE), normalizePath(file.path(ResultDir, "SNP.pvalue"), mustWork = FALSE),
       clumpExtract, clumpSNP,
       "--out",
-      paste0(ResultDir, "/", "PRS"),
+      normalizePath(file.path(ResultDir, "PRS"), mustWork = FALSE),
       "--silent"
     ),
     std_out = FALSE,
     std_err = FALSE
   ))
 
-  prs <- read.table(paste0(ResultDir, "/", "PRS.", pthreshold, ".profile"), header = TRUE)
+  prs <- read.table(normalizePath(file.path(ResultDir, paste0("PRS.", pthreshold, ".profile")), mustWork = FALSE), header = TRUE)
   pheno.prs <- merge(pheno, prs[, c("FID", "IID", "SCORE")], by = c("FID", "IID"))
 
   if (pheno_type == "binary") {
@@ -1410,7 +1401,7 @@ createBinaryPhenotypePlots <- function(dat, p1, p2) {
 Run_newcovarfile <- function(DataDir, ResultDir, covarfile, covartest) {
   # covarfile <- "covarfile.txt"
   covarfile1 <-
-    as.data.frame(read.table(paste0(DataDir, "/", covarfile),
+    as.data.frame(read.table(normalizePath(file.path(DataDir, covarfile), mustWork = FALSE),
       stringsAsFactors = FALSE,
       header = TRUE
     ))
@@ -1419,7 +1410,7 @@ Run_newcovarfile <- function(DataDir, ResultDir, covarfile, covartest) {
 
   write.table(
     covarfile,
-    file = paste0(ResultDir, "/", "newcovarfile.txt"),
+    file = normalizePath(file.path(ResultDir, "newcovarfile.txt"), mustWork = FALSE),
     quote = FALSE,
     row.names = FALSE,
     col.names = TRUE,
@@ -1431,9 +1422,9 @@ Run_newcovarfile <- function(DataDir, ResultDir, covarfile, covartest) {
 ## Function 45
 ## Updated in 3.0
 FMsub <- function(ResultDir, plot.jpeg, plotname, snp_pval, annotateTopSnp, suggestiveline, genomewideline) {
-  if (file.exists(paste0(ResultDir, "/allsnpsresults.rda"))[1] == TRUE) {
+  if (file.exists(normalizePath(file.path(ResultDir, "allsnpsresults.rda"), mustWork = FALSE))[1] == TRUE) {
     allsnpsresults <- NULL
-    load(paste0(ResultDir, "/allsnpsresults.rda"))
+    load(normalizePath(file.path(ResultDir, "allsnpsresults.rda"), mustWork = FALSE))
     XWAS <- data.table::as.data.table(allsnpsresults)
     gc(reset = TRUE)
     XWAS <- na.omit(XWAS)
@@ -1450,7 +1441,7 @@ FMsub <- function(ResultDir, plot.jpeg, plotname, snp_pval, annotateTopSnp, sugg
 
     if (plot.jpeg[1] == TRUE) {
       options(bitmapType = "cairo")
-      grDevices::jpeg(paste0(ResultDir, "/", plotname, ".jpeg"),
+      grDevices::jpeg(normalizePath(file.path(ResultDir, paste0(plotname, ".jpeg")), mustWork = FALSE),
         width = 20,
         height = 10,
         units = "in",
@@ -1492,7 +1483,7 @@ FMsub <- function(ResultDir, plot.jpeg, plotname, snp_pval, annotateTopSnp, sugg
     }
 
     return(na.omit(XWAS))
-  } else if (file.exists(paste0(ResultDir, "/", "allsnpsresults.rda"))[1] == FALSE) {
+  } else if (file.exists(normalizePath(file.path(ResultDir, "allsnpsresults.rda"), mustWork = FALSE))[1] == FALSE) {
     rlang::inform(rlang::format_error_bullets(c("x" = paste0("GWAS cannot be performed. Check the log file in ResultDir details."))))
   }
 }
@@ -1511,10 +1502,10 @@ paraGwas <- function(
     snp_names <- snpfile$V2[chunks:nrow(snpfile)]
   }
   ## Create snps with chunk
-  write.table(snp_names, file = paste0(ResultDir, "/", chunks, "_snps"), quote = FALSE, row.names = FALSE, col.names = FALSE)
+  write.table(snp_names, file = normalizePath(file.path(ResultDir, paste0(chunks, "_snps")), mustWork = FALSE), quote = FALSE, row.names = FALSE, col.names = FALSE)
   # Make plink bedfiles for this SNP in DataDir
 
-  file_path <- paste0(ResultDir, "/sink_file.txt")
+  file_path <- normalizePath(file.path(ResultDir, "sink_file.txt"), mustWork = FALSE)
 
   # Create an empty file (if it doesn't exist)
   if (!file.exists(file_path)) {
@@ -1527,9 +1518,9 @@ paraGwas <- function(
     plink(),
     args = c(
       "--bfile",
-      paste0(DataDir, "/", finput),
+      normalizePath(file.path(DataDir, finput), mustWork = FALSE),
       "--extract",
-      paste0(ResultDir, "/", chunks, "_snps"),
+      normalizePath(file.path(ResultDir, paste0(chunks, "_snps")), mustWork = FALSE),
       "--xchr-model",
       modelv,
       "--freq",
@@ -1542,7 +1533,7 @@ paraGwas <- function(
       covar,
       covarv,
       "--out",
-      paste0(ResultDir, "/", chunks, "_ss"),
+      normalizePath(file.path(ResultDir, chunks, "_ss")),
       "--silent"
     ),
     std_out = FALSE,
@@ -1555,9 +1546,9 @@ paraGwas <- function(
   }
 
   if (trait[1] == "binary") {
-    single_snp_result <- read.table(paste0(ResultDir, "/", chunks, "_ss.assoc.logistic"), header = TRUE)
+    single_snp_result <- read.table(normalizePath(file.path(ResultDir, paste0(chunks, "_ss.assoc.logistic")), mustWork = FALSE), header = TRUE)
   } else if (trait[1] == "quantitative") {
-    single_snp_result <- read.table(paste0(ResultDir, "/", chunks, "_ss.assoc.linear"), header = TRUE)
+    single_snp_result <- read.table(normalizePath(file.path(ResultDir, paste0(chunks, "_ss.assoc.linear")), mustWork = FALSE), header = TRUE)
   }
   return(single_snp_result)
 }
@@ -1606,12 +1597,17 @@ FMmain <- function(DataDir, ResultDir, finput, trait, standard_beta, xmodel,
     covartest <- NULL
   } else {
     if (covartest == "ALL") {
-      invisible(file.copy(paste0(DataDir, "/", list(covarfile)), ResultDir))
+      invisible(
+        file.copy(
+          from = normalizePath(file.path(DataDir, list(covarfile)), mustWork = FALSE), 
+          to = normalizePath(ResultDir)
+        )
+      )
 
-      covarfile <- paste0(ResultDir, "/", covarfile)
+      covarfile <- normalizePath(file.path(ResultDir, covarfile), mustWork = FALSE)
     } else if (covartest != "ALL" & !is.null(covarfile)) {
       Run_newcovarfile(DataDir = DataDir, ResultDir = ResultDir, covarfile = covarfile, covartest = covartest)
-      covarfile <- paste0(ResultDir, "/newcovarfile.txt")
+      covarfile <- normalizePath(file.path(ResultDir, "newcovarfile.txt"), mustWork = FALSE)
     }
     covar <- "--covar"
     covarv <- covarfile
@@ -1638,7 +1634,7 @@ FMmain <- function(DataDir, ResultDir, finput, trait, standard_beta, xmodel,
       plink(),
       args = c(
         "--bfile",
-        paste0(DataDir, "/", finput),
+        normalizePath(file.path(DataDir, finput), mustWork = FALSE),
         "--xchr-model",
         modelv,
         "--freq",
@@ -1654,21 +1650,21 @@ FMmain <- function(DataDir, ResultDir, finput, trait, standard_beta, xmodel,
         covar,
         covarv,
         "--out",
-        paste0(ResultDir, "/", xmodel),
+        normalizePath(file.path(ResultDir, xmodel), mustWork = FALSE),
         "--silent"
       ),
       std_out = FALSE,
       std_err = FALSE
     ))
     if (trait[1] == "binary") {
-      single_snp_result <- read.table(paste0(ResultDir, "/", xmodel, ".assoc.logistic"), header = TRUE)
+      single_snp_result <- read.table(normalizePath(file.path(ResultDir, paste0(xmodel, ".assoc.logistic")), mustWork = FALSE), header = TRUE)
     } else if (trait[1] == "quantitative") {
-      single_snp_result <- read.table(paste0(ResultDir, "/", xmodel, ".assoc.linear"), header = TRUE)
+      single_snp_result <- read.table(normalizePath(file.path(ResultDir, paste0(xmodel, ".assoc.linear")), mustWork = FALSE), header = TRUE)
     }
     allsnpsresults <- unique(single_snp_result)
-    save(allsnpsresults, file = paste0(ResultDir, "/allsnpsresults.rda"))
+    save(allsnpsresults, file = normalizePath(file.path(ResultDir, "allsnpsresults.rda"), mustWork = FALSE))
   } else {
-    snpfile <- read.table(paste0(DataDir, "/", finput, ".bim"))
+    snpfile <- read.table(normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE))
     chunk <- round(nrow(snpfile) / ncores) + 1
     chunks <- round(seq(1, nrow(snpfile), by = chunk), 0)
 
@@ -1694,7 +1690,7 @@ FMmain <- function(DataDir, ResultDir, finput, trait, standard_beta, xmodel,
       Inphenocovv = Inphenocovv, covar = covar, covarv = covarv, snpfile = snpfile
     )))
     allsnpsresults <- unique(allsnpsresults)
-    save(allsnpsresults, file = paste0(ResultDir, "/allsnpsresults.rda"))
+    save(allsnpsresults, file = normalizePath(file.path(ResultDir, "allsnpsresults.rda"), mustWork = FALSE))
 
     parallel::stopCluster(cl)
   }
@@ -2009,7 +2005,7 @@ generateGWASPlots <- function(plot.jpeg, plotname, FemaleWAS, MaleWAS, gwas.t2, 
     )
     graphics::par(mfrow = c(2, 2))
 
-    file_path <- paste0(ResultDir, "/sink_file.txt")
+    file_path <- normalizePath(file.path(ResultDir, "sink_file.txt"), mustWork = FALSE)
 
     # Create an empty file (if it doesn't exist)
     if (!file.exists(file_path)) {
@@ -2034,7 +2030,7 @@ generateGWASPlots <- function(plot.jpeg, plotname, FemaleWAS, MaleWAS, gwas.t2, 
     gc(reset = TRUE)
 
     if (nrow(gwas.t2) != 0 && nrow(gwas.b2) != 0) {
-      file_path <- paste0(ResultDir, "/sink_file.txt")
+      file_path <- normalizePath(file.path(ResultDir, "sink_file.txt"), mustWork = FALSE)
 
       # Create an empty file (if it doesn't exist)
       if (!file.exists(file_path)) {
@@ -2047,7 +2043,7 @@ generateGWASPlots <- function(plot.jpeg, plotname, FemaleWAS, MaleWAS, gwas.t2, 
       suppressWarnings(gmirror(
         top = gwas.t2, bottom = gwas.b2, tline = snp_pval, bline = snp_pval,
         toptitle = "XWAS of females", bottomtitle = "XWAS of males",
-        highlight_p = c(snp_pval, snp_pval), highlighter = "green", chrblocks = TRUE, file = paste0(ResultDir, "/", "Stratified_XWAS")
+        highlight_p = c(snp_pval, snp_pval), highlighter = "green", chrblocks = TRUE, file = normalizePath(file.path(ResultDir, "Stratified_XWAS"), mustWork = FALSE)
       ))
 
 
@@ -2095,7 +2091,7 @@ generateGWASPlots <- function(plot.jpeg, plotname, FemaleWAS, MaleWAS, gwas.t2, 
     # graphics::par(mfrow = c(2, 2))
     gc(reset = TRUE)
 
-    file_path <- paste0(ResultDir, "/sink_file.txt")
+    file_path <- normalizePath(file.path(ResultDir, "sink_file.txt"), mustWork = FALSE)
 
     # Create an empty file (if it doesn't exist)
     if (!file.exists(file_path)) {
@@ -2108,7 +2104,7 @@ generateGWASPlots <- function(plot.jpeg, plotname, FemaleWAS, MaleWAS, gwas.t2, 
     print(suppressWarnings(gmirror(
       top = FemaleWAS, bottom = MaleWAS, tline = snp_pval, bline = snp_pval,
       toptitle = "GWAS of females", bottomtitle = "GWAS of males",
-      highlight_p = c(snp_pval, snp_pval), highlighter = "green", chrblocks = TRUE, file = paste0(ResultDir, "/", "Stratified_GWAS")
+      highlight_p = c(snp_pval, snp_pval), highlighter = "green", chrblocks = TRUE, file = normalizePath(file.path(ResultDir, "Stratified_GWAS"), mustWork = FALSE)
     )))
 
     # Reset the sink to stop redirecting the output to the file
@@ -2118,7 +2114,7 @@ generateGWASPlots <- function(plot.jpeg, plotname, FemaleWAS, MaleWAS, gwas.t2, 
 
     gc(reset = TRUE)
 
-    file_path <- paste0(ResultDir, "/sink_file.txt")
+    file_path <- normalizePath(file.path(ResultDir, "sink_file.txt"), mustWork = FALSE)
 
     # Create an empty file (if it doesn't exist)
     if (!file.exists(file_path)) {
@@ -2131,7 +2127,7 @@ generateGWASPlots <- function(plot.jpeg, plotname, FemaleWAS, MaleWAS, gwas.t2, 
     print(suppressWarnings(gmirror(
       top = gwas.t2, bottom = gwas.b2, tline = snp_pval, bline = snp_pval,
       toptitle = "XWAS of females", bottomtitle = "XWAS of males",
-      highlight_p = c(snp_pval, snp_pval), highlighter = "green", chrblocks = TRUE, file = paste0(ResultDir, "/", "Stratified_XWAS")
+      highlight_p = c(snp_pval, snp_pval), highlighter = "green", chrblocks = TRUE, file = normalizePath(file.path(ResultDir, "Stratified_XWAS"), mustWork = FALSE)
     )))
     # Reset the sink to stop redirecting the output to the file
     if (sink.number() > 0) {
@@ -2172,12 +2168,12 @@ generateGWASPlots <- function(plot.jpeg, plotname, FemaleWAS, MaleWAS, gwas.t2, 
 createPlots <- function(ResultDir, plotname, FemaleWAS, MaleWAS, gwas.t2, gwas.b2, Result, XWAS_ADD_X, snp_pval, suggestiveline, genomewideline, annotateTopSnp, lamdaGC, lamdaGC1, plot.jpeg) {
   if (plot.jpeg[1] == TRUE) {
     options(bitmapType = "cairo")
-    grDevices::jpeg(paste0(ResultDir, "/", plotname, ".jpeg"), width = 20, height = 10, units = "in", res = 300)
+    grDevices::jpeg(normalizePath(file.path(ResultDir, paste0(plotname, ".jpeg")), mustWork = FALSE), width = 20, height = 10, units = "in", res = 300)
     graphics::par(mfrow = c(2, 2))
   }
 
   # Stratified GWAS plot
-  file_path <- paste0(ResultDir, "/sink_file.txt")
+  file_path <- normalizePath(file.path(ResultDir, "sink_file.txt"), mustWork = FALSE)
 
   # Create an empty file (if it doesn't exist)
   if (!file.exists(file_path)) {
@@ -2190,7 +2186,7 @@ createPlots <- function(ResultDir, plotname, FemaleWAS, MaleWAS, gwas.t2, gwas.b
   print(suppressWarnings(gmirror(
     top = FemaleWAS, bottom = MaleWAS, tline = snp_pval, bline = snp_pval,
     toptitle = "GWAS of females", bottomtitle = "GWAS of males",
-    highlight_p = c(snp_pval, snp_pval), highlighter = "green", chrblocks = TRUE, file = paste0(ResultDir, "/", "Stratified_GWAS")
+    highlight_p = c(snp_pval, snp_pval), highlighter = "green", chrblocks = TRUE, file = normalizePath(file.path(ResultDir, "Stratified_GWAS"), mustWork = FALSE)
   )))
 
   # Reset the sink to stop redirecting the output to the file
@@ -2199,7 +2195,7 @@ createPlots <- function(ResultDir, plotname, FemaleWAS, MaleWAS, gwas.t2, gwas.b
   }
 
   if (nrow(gwas.t2) != 0 && nrow(gwas.b2) != 0) {
-    file_path <- paste0(ResultDir, "/sink_file.txt")
+    file_path <- normalizePath(file.path(ResultDir, "sink_file.txt"), mustWork = FALSE)
 
     # Create an empty file (if it doesn't exist)
     if (!file.exists(file_path)) {
@@ -2212,7 +2208,7 @@ createPlots <- function(ResultDir, plotname, FemaleWAS, MaleWAS, gwas.t2, gwas.b
     print(suppressWarnings(gmirror(
       top = gwas.t2, bottom = gwas.b2, tline = snp_pval, bline = snp_pval,
       toptitle = "XWAS of females", bottomtitle = "XWAS of males",
-      highlight_p = c(snp_pval, snp_pval), highlighter = "green", chrblocks = TRUE, file = paste0(ResultDir, "/", "Stratified_XWAS")
+      highlight_p = c(snp_pval, snp_pval), highlighter = "green", chrblocks = TRUE, file = normalizePath(file.path(ResultDir, "Stratified_XWAS"), mustWork = FALSE)
     )))
 
     # Reset the sink to stop redirecting the output to the file
@@ -2268,10 +2264,10 @@ FMcomb_sub <- function(ResultDir, combtest, MF.p.corr,
                        suggestiveline,
                        genomewideline,
                        ncores) {
-  load(paste0(ResultDir, "/MaleWAS.Rda"))
+  load(normalizePath(file.path(ResultDir, "MaleWAS.Rda"), mustWork = FALSE))
   MaleWAS <- data.table::as.data.table(MaleWAS)
   gc(reset = TRUE)
-  load(paste0(ResultDir, "/FemaleWAS.Rda"))
+  load(normalizePath(file.path(ResultDir, "FemaleWAS.Rda"), mustWork = FALSE))
   FemaleWAS <- data.table::as.data.table(FemaleWAS)
   gc(reset = TRUE)
   MFWAS <- merge(FemaleWAS, MaleWAS, by = c("SNP", "A1", "TEST"))
@@ -2420,7 +2416,7 @@ FMcomb <-
     gc(reset = TRUE)
     # Here DataDir becomes ResultDir, need to put the covarfile always in ResultDir by copying
     if (!is.null(covarfile)) {
-      invisible(file.copy(paste0(DataDir, "/", list(covarfile)), ResultDir))
+      invisible(file.copy(normalizePath(file.path(DataDir, list(covarfile)), mustWork = FALSE), ResultDir))
     } else {
       covarfile <- covarfile
     }
@@ -2431,7 +2427,7 @@ FMcomb <-
     )
     gc(reset = TRUE)
     MaleWAS <- na.omit(MaleWAS)
-    save(MaleWAS, file = paste0(ResultDir, "/MaleWAS.Rda"))
+    save(MaleWAS, file = normalizePath(file.path(ResultDir, "MaleWAS.Rda"), mustWork = FALSE))
     gc(reset = TRUE)
     FemaleWAS <- FMmain(
       DataDir = ResultDir, ResultDir = ResultDir, finput = "finput.female", trait = trait, standard_beta = standard_beta, xmodel = xmodel,
@@ -2439,7 +2435,7 @@ FMcomb <-
     )
     gc(reset = TRUE)
     FemaleWAS <- na.omit(FemaleWAS)
-    save(FemaleWAS, file = paste0(ResultDir, "/FemaleWAS.Rda"))
+    save(FemaleWAS, file = normalizePath(file.path(ResultDir, "FemaleWAS.Rda"), mustWork = FALSE))
 
     CombinedWAS <- FMcomb_sub(
       ResultDir = ResultDir, combtest = combtest, MF.p.corr = MF.p.corr,
@@ -2457,7 +2453,7 @@ FMcomb <-
     )
     gc(reset = TRUE)
     CombinedWAS <- na.omit(CombinedWAS)
-    save(CombinedWAS, file = paste0(ResultDir, "/", "CombinedWAS.Rda"))
+    save(CombinedWAS, file = normalizePath(file.path(ResultDir, "CombinedWAS.Rda"), mustWork = FALSE))
     gc(reset = TRUE)
     rlang::inform(rlang::format_error_bullets(paste0("Three dataframes such as, CombinedWAS, MaleWAS and FemaleWAS are produced in", ResultDir)))
     return(list(CombinedWAS = CombinedWAS, MaleWAS = MaleWAS, FemaleWAS = FemaleWAS))
@@ -2475,16 +2471,16 @@ paraGwasAuto <- function(chunks, chunk, ResultDir, finput, regress, sexv, noxsex
     snp_names <- snpfile$V2[chunks:nrow(snpfile)]
   }
 
-  write.table(snp_names, file = paste0(ResultDir, "/", chunks, "_snps"), quote = FALSE, row.names = FALSE, col.names = FALSE)
+  write.table(snp_names, file = normalizePath(file.path(ResultDir, paste0(chunks, "_snps")), mustWork = FALSE), quote = FALSE, row.names = FALSE, col.names = FALSE)
 
   # make plink bedfiles for this SNP in DataDir
   invisible(sys::exec_wait(
     plink(),
     args = c(
       "--bfile",
-      paste0(ResultDir, "/", finput),
+      normalizePath(file.path(ResultDir, finput), mustWork = FALSE),
       "--extract",
-      paste0(ResultDir, "/", chunks, "_snps"),
+      normalizePath(file.path(ResultDir, paste0(chunks, "_snps")), mustWork = FALSE),
       "--freq",
       "--ci", 0.95,
       regress,
@@ -2498,14 +2494,14 @@ paraGwasAuto <- function(chunks, chunk, ResultDir, finput, regress, sexv, noxsex
       covar,
       covarv,
       "--out",
-      paste0(ResultDir, "/", chunks, "_ss"),
+      normalizePath(file.path(ResultDir, paste0(chunks, "_ss")), mustWork = FALSE),
       "--silent"
     ),
     std_out = FALSE,
     std_err = FALSE
   ))
 
-  single_snp_result <- read.table(paste0(ResultDir, "/", chunks, "_ss.assoc.logistic"), header = TRUE)
+  single_snp_result <- read.table(normalizePath(file.path(ResultDir, paste0(chunks, "_ss.assoc.logistic")), mustWork = FALSE), header = TRUE)
   single_snp_result <- unique(single_snp_result)
   return(single_snp_result)
 }
@@ -2529,12 +2525,12 @@ autoFun <- function(DataDir, ResultDir, finput, sex, standard_beta, covarfile, i
   } else {
     if (covartest == "ALL") {
       ## Copy covarfile to ResultDir
-      invisible(file.copy(paste0(DataDir, "/", list(covarfile)), ResultDir))
+      invisible(file.copy(normalizePath(file.path(DataDir, list(covarfile)),  mustWork = FALSE), normalizePath(file.path(ResultDir), mustWork = FALSE)))
 
-      covarfile <- paste0(ResultDir, "/", covarfile)
+      covarfile <- normalizePath(file.path(ResultDir, covarfile), mustWork = FALSE)
     } else if (covartest != "ALL" & !is.null(covarfile)) {
       Run_newcovarfile(DataDir = DataDir, ResultDir = ResultDir, covarfile = covarfile, covartest = covartest)
-      covarfile <- paste0(ResultDir, "/newcovarfile.txt")
+      covarfile <- normalizePath(file.path(ResultDir, "newcovarfile.txt"), mustWork = FALSE)
     }
     covar <- "--covar"
     covarv <- covarfile
@@ -2560,7 +2556,7 @@ autoFun <- function(DataDir, ResultDir, finput, sex, standard_beta, covarfile, i
       plink(),
       args = c(
         "--bfile",
-        paste0(ResultDir, "/", finput),
+        normalizePath(file.path(ResultDir, finput), mustWork = FALSE),
         "--freq",
         "--ci", 0.95,
         regress,
@@ -2574,14 +2570,14 @@ autoFun <- function(DataDir, ResultDir, finput, sex, standard_beta, covarfile, i
         covar,
         covarv,
         "--out",
-        paste0(ResultDir, "/", "AutoWAS"),
+        normalizePath(file.path(ResultDir, "AutoWAS"), mustWork = FALSE),
         "--silent"
       ),
       std_out = FALSE,
       std_err = FALSE
     ))
   } else {
-    snpfile <- read.table(paste0(ResultDir, "/", finput, ".bim"))
+    snpfile <- read.table(normalizePath(file.path(ResultDir, paste0(finput, ".bim")), mustWork = FALSE))
     chunk <- round(nrow(snpfile) / ncores) + 1
     chunks <- round(seq(1, nrow(snpfile), by = chunk), 0)
 
@@ -2607,24 +2603,28 @@ autoFun <- function(DataDir, ResultDir, finput, sex, standard_beta, covarfile, i
 
     parallel::stopCluster(cl)
 
-    write.table(all_snps_results, file = paste0(ResultDir, "/", "AutoWAS", ".assoc.logistic"), quote = FALSE, row.names = FALSE, col.names = TRUE, eol = "\r\n", sep = " ")
+    write.table(
+      all_snps_results, 
+      file = normalizePath(file.path(ResultDir, "AutoWAS.assoc.logistic"), mustWork = FALSE), 
+      quote = FALSE, row.names = FALSE, col.names = TRUE, eol = "\r\n", sep = " "
+    )
     rm(all_snps_results)
-    ftemp <- list.files(paste0(ResultDir, "/"), pattern = paste0(chunks, "_ss"))
-    invisible(file.remove(paste0(ResultDir, "/", ftemp)))
-    ftemp <- list.files(paste0(ResultDir, "/"), pattern = paste0(chunks, "_snps"))
-    invisible(file.remove(paste0(ResultDir, "/", ftemp)))
+    ftemp <- list.files(normalizePath(file.path(ResultDir), mustWork = FALSE), pattern = paste0(chunks, "_ss"))
+    invisible(file.remove(normalizePath(file.path(ResultDir, ftemp), mustWork = FALSE)))
+    ftemp <- list.files(normalizePath(file.path(ResultDir), mustWork = FALSE), pattern = paste0(chunks, "_snps"))
+    invisible(file.remove(normalizePath(file.path(ResultDir, ftemp), mustWork = FALSE)))
   }
   fl <- paste0("AutoWAS", ".assoc.logistic")
 
-  if (file.exists(paste0(ResultDir, "/", fl))[1] == TRUE) {
+  if (file.exists(normalizePath(file.path(ResultDir, fl), mustWork = FALSE))[1] == TRUE) {
     XWAS <-
       read.table(
-        file = paste0(ResultDir, "/", fl),
+        file = normalizePath(file.path(ResultDir, fl), mustWork = FALSE),
         stringsAsFactors = FALSE,
         header = TRUE
       )
     return(XWAS)
-  } else if (file.exists(paste0(ResultDir, "/", fl))[1] == FALSE) {
+  } else if (file.exists(normalizePath(file.path(ResultDir, fl), mustWork = FALSE))[1] == FALSE) {
     rlang::inform(rlang::format_error_bullets(paste0(c("x" = "AutosomeWAS cannot be performed. Check the ", stringr::str_sub(fl, 1, 5), "log file in DataDir for details."))))
   }
 }
@@ -2634,7 +2634,7 @@ autoFun <- function(DataDir, ResultDir, finput, sex, standard_beta, covarfile, i
 createPlotsXCMA <- function(XWAS_ADD, XWAS_ADD_X, ResultDir, plotname, snp_pval, lamdaGC, lamdaGC1, suggestiveline, genomewideline, annotateTopSnp, plot.jpeg) {
   if (plot.jpeg[1] == TRUE) {
     options(bitmapType = "cairo")
-    grDevices::jpeg(paste0(ResultDir, "/", plotname, ".jpeg"), width = 20, height = 10, units = "in", res = 300)
+    grDevices::jpeg(normalizePath(file.path(ResultDir, paste0(plotname, ".jpeg")), mustWork = FALSE), width = 20, height = 10, units = "in", res = 300)
     graphics::par(mfrow = c(2, 2))
   } else {
     par(mar = c(1, 1, 1, 1))
@@ -2882,7 +2882,7 @@ xcmaPara <- function(chunks, chunk, Snp, genosnp, P, Samp) {
 ## with covariate file
 XCMAX4_data2 <- function(Snp, DataDir, genosnp, P, covarfile, Samp) {
   covarfile1 <- read.table(
-    file = paste0(DataDir, "/", covarfile),
+    file = normalizePath(file.path(DataDir, covarfile), mustWork = FALSE),
     stringsAsFactors = FALSE,
     header = TRUE
   )
@@ -2934,22 +2934,26 @@ prepareData <- function(DataDir, ResultDir, finput) {
   # Separate X chromosome data
   invisible(sys::exec_wait(
     plink(),
-    args = c("--bfile", paste0(DataDir, "/", finput), "--chr", 23, "--make-bed", "--out", paste0(ResultDir, "/", "XPLINK"), "--silent"),
+    args = c(
+      "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE), "--chr", 23, 
+      "--make-bed", "--out", normalizePath(file.path(ResultDir, "XPLINK"), mustWork = FALSE), "--silent"),
     std_out = FALSE, std_err = FALSE
   ))
 
   # Separate autosomal data
   invisible(sys::exec_wait(
     plink(),
-    args = c("--bfile", paste0(DataDir, "/", finput), "--not-chr", 23, "--make-bed", "--out", paste0(ResultDir, "/", "FilteredX"), "--silent"),
+    args = c(
+      "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE), "--not-chr", 23, 
+      "--make-bed", "--out", normalizePath(file.path(ResultDir, "FilteredX"), mustWork = FALSE), "--silent"),
     std_out = FALSE, std_err = FALSE
   ))
 
   # File paths for the GDS conversion
-  bedfile <- paste0(ResultDir, "/", "XPLINK.bed")
-  famfile <- paste0(ResultDir, "/", "XPLINK.fam")
-  bimfile <- paste0(ResultDir, "/", "XPLINK.bim")
-  gdsfile <- paste0(ResultDir, "/", "IPCgeno.gdsX")
+  bedfile <- normalizePath(file.path(ResultDir, "XPLINK.bed"), mustWork = FALSE)
+  famfile <- normalizePath(file.path(ResultDir, "XPLINK.fam"), mustWork = FALSE)
+  bimfile <- normalizePath(file.path(ResultDir, "XPLINK.bim"), mustWork = FALSE)
+  gdsfile <- normalizePath(file.path(ResultDir, "IPCgeno.gdsX"), mustWork = FALSE)
 
   # Convert PLINK files to GDS format
   gdsfileCreated <- SNPRelate::snpgdsBED2GDS(bedfile, famfile, bimfile, gdsfile)
@@ -2975,7 +2979,7 @@ XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
                     annotateTopSnp, suggestiveline = suggestiveline, genomewideline = genomewideline,
                     ncores = ncores) {
   # Prepare data and get necessary files
-  file_path <- paste0(ResultDir, "/sink_file.txt")
+  file_path <- normalizePath(file.path(ResultDir, "sink_file.txt"), mustWork = FALSE)
 
   # Create an empty file (if it doesn't exist)
   if (!file.exists(file_path)) {
@@ -3072,7 +3076,7 @@ XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
     Result_pval$L95 <- "NA"
     Result_pval$U95 <- "NA"
     Xchr_Result_pval <- Result_pval
-    save(Xchr_Result_pval, file = paste0(ResultDir, "/Xchr_Result_pval.Rda"))
+    save(Xchr_Result_pval, file = normalizePath(file.path(ResultDir, "Xchr_Result_pval.Rda"), mustWork = FALSE))
 
     rm(Xchr_Result_pval)
     gc(reset = TRUE)
@@ -3091,22 +3095,22 @@ XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
     plink(),
     args = c(
       "--bfile",
-      paste0(ResultDir, "/", "XPLINK"),
+      normalizePath(file.path(ResultDir, "XPLINK"), mustWork = FALSE),
       "--logistic",
       "beta",
       "intercept", "--ci", 0.95,
       "--out",
-      paste0(ResultDir, "/", "XChrRun"),
+      normalizePath(file.path(ResultDir, "XChrRun"), mustWork = FALSE),
       "--silent"
     ),
     std_out = FALSE,
     std_err = FALSE
   ))
 
-  if (file.exists(paste0(ResultDir, "/", "XChrRun.assoc.logistic")) == TRUE) {
+  if (file.exists(normalizePath(file.path(ResultDir, "XChrRun.assoc.logistic"), mustWork = FALSE)) == TRUE) {
     XWAS_3 <-
       read.table(
-        file = paste0(ResultDir, "/", "XChrRun.assoc.logistic"),
+        file = normalizePath(file.path(ResultDir, "XChrRun.assoc.logistic"), mustWork = FALSE),
         stringsAsFactors = FALSE,
         header = TRUE
       )
@@ -3132,74 +3136,15 @@ XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
     createPlotsXCMA(XWAS_ADD, XWAS_ADD_X, ResultDir, plotname, snp_pval, lamdaGC, lamdaGC1, suggestiveline, genomewideline, annotateTopSnp, plot.jpeg)
 
     GXWAS <- XWAS
-    save(GXWAS, file = paste0(ResultDir, "/GXWAS_XCGA.Rda"))
+    save(GXWAS, file = normalizePath(file.path(ResultDir, "GXWAS_XCGA.Rda"), mustWork = FALSE))
     rlang::inform(rlang::format_error_bullets(c("v" = paste0("A dataframe named GXWAS_XCGA.Rda is saved in ", ResultDir))))
-  } else if (file.exists(paste0(ResultDir, "/", "XChrRun.assoc.logistic")) == FALSE) {
+  } else if (file.exists(normalizePath(file.path(ResultDir, "XChrRun.assoc.logistic"), mustWork = FALSE)) == FALSE) {
     rlang::inform(rlang::format_error_bullets(c("x" = "XWAS cannot be performed. Check the XChrRun.log file for details.")))
   }
 
   return(GXWAS)
 }
 
-
-# ## Function 69
-# ComputeLD <- function(DataDir, ResultDir, finput, ByCHR = FALSE, CHRnum = NULL, r2_LD) {
-#   if (ByCHR == FALSE) {
-#     chr <- NULL
-#     CHRnum <- NULL
-#   } else {
-#     chr <- "--chr"
-#     CHRnum <- CHRnum
-#   }
-#   invisible(sys::exec_wait(
-#     paste0(ResultDir, "/", "./plink"),
-#     args = c(
-#       "--bfile",
-#       paste0(DataDir, "/", finput),
-#       chr, CHRnum,
-#       "--r2",
-#       "--ld-window-r2", r2_LD,
-#       "--out",
-#       paste0(ResultDir, "/", "snpcorr"),
-#       "--silent"
-#     ),
-#     std_out = FALSE,
-#     std_err = FALSE
-#   ))
-#   snpld <- read.table(paste0(ResultDir, "/snpcorr.ld"), header = T)
-#   return(snpld)
-# }
-
-## Function 70
-# ComputeLDSC <- function(snpld, test.df_beta, ncores, LDSC_blocks){
-#
-#   snps1 <- data.table::data.table(intersect(unique(snpld[["SNP_A"]]), unique(test.df_beta[["rsid"]])))
-#   colnames(snps1) <- "SNP"
-#   snps2 <- data.table::data.table(intersect(unique(snpld[["SNP_B"]]), unique(test.df_beta[["rsid"]])))
-#   colnames(snps2) <- "SNP"
-#   snps <- data.table::data.table(intersect(unique(snps1[["SNP"]]),unique(snps2[["SNP"]])))
-#   colnames(snps) <- "SNP"
-#   snpld1 <- as.data.frame(snpld)
-#   snpld1 <- merge(snpld,snps, by.x = "SNP_A",by.y="SNP")
-#   snpld1 <- merge(snpld1,snps, by.x = "SNP_B",by.y="SNP")
-#
-#   snpld1 <- snpld1[,c(2,1,7)]
-#   finalsnp <- data.table::as.data.table(snpld1[["SNP_A"]])
-#   colnames(finalsnp) <- "SNP"
-#   test.df_beta <- data.table::as.data.table(test.df_beta)
-#   test.df_beta <- unique(merge(test.df_beta,finalsnp,by.x = "rsid",by.y = "SNP"))
-#
-#   snpld1 = transform(snpld1, SNP_A= factor(SNP_A),SNP_B = factor(SNP_B))
-#   test.corr0 = Matrix::sparseMatrix(as.integer(snpld1$SNP_A), as.integer(snpld1$SNP_B), x = snpld1$R2)
-#   colnames(test.corr0) = levels(snpld1$SNP_B)
-#   rownames(test.corr0) = levels(snpld1$SNP_A)
-#
-#   test.df_beta1 <- test.df_beta[,c("beta","beta_se","n_eff")]
-#   result <- bigsnpr::snp_ldsc2(test.corr0, test.df_beta1, blocks = LDSC_blocks, intercept = NULL, ncores = ncores)
-#   ## If there is negative h2, then make it 0. Discuss.
-#   return(result)
-#
-# }
 ## Function 70
 ComputeLDSC2 <- function(snpld, test.df_beta, ncores, LDSC_blocks) {
   snps1 <- data.table::data.table(intersect(unique(snpld[["SNP_A"]]), unique(test.df_beta[["rsid"]])))
@@ -3328,7 +3273,7 @@ executeGCTA <- function(ResultDir, args) {
       stdout_dest <- ifelse(.Platform$OS.type == "windows", "NUL", "/dev/null")
       stderr_dest <- stdout_dest # Redirecting stderr to the same null device
 
-      file_path <- paste0(ResultDir, "/sink_file.txt")
+      file_path <- normalizePath(file.path(ResultDir, "sink_file.txt"), mustWork = FALSE)
 
       # Create an empty file (if it doesn't exist)
       if (!file.exists(file_path)) {
@@ -3493,18 +3438,18 @@ ComputeGRMX <- function(DataDir, ResultDir, finput, partGRM, nGRM, minMAF = NULL
 
   if (partGRM == FALSE) {
     args <- c(
-      "--bfile", file.path(DataDir, finput),
+      "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
       minmaf, minmafval,
       maxmaf, maxmafval,
       "--thread-num", ncores,
       "--make-grm-xchr",
-      "--out", file.path(ResultDir, "xGXwasR")
+      "--out", normalizePath(file.path(ResultDir, "xGXwasR"), mustWork = FALSE)
     )
 
     executeGCTA(ResultDir, args)
 
-    if (file.exists(file.path(ResultDir, "xGXwasR.grm.id"))) {
-      log_lines <- readLines(file.path(ResultDir, "xGXwasR.log"))
+    if (file.exists(normalizePath(file.path(ResultDir, "xGXwasR.grm.id"), mustWork = FALSE))) {
+      log_lines <- readLines(normalizePath(file.path(ResultDir, "xGXwasR.log"), mustWork = FALSE))
       rlang::inform(rlang::format_error_bullets(c(
         "v" = grep("GRM has been saved", log_lines, value = TRUE),
         "i" = grep("Number of SNPs in each pair", log_lines, value = TRUE)
@@ -3517,12 +3462,12 @@ ComputeGRMX <- function(DataDir, ResultDir, finput, partGRM, nGRM, minMAF = NULL
   } else {
     partGRM_fn <- function(i) {
       args <- c(
-        "--bfile", file.path(DataDir, finput),
+        "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
         minmaf, minmafval,
         maxmaf, maxmafval,
         "--make-grm-xchr-part", nGRM, i,
         "--thread-num", ncores,
-        "--out", file.path(ResultDir, "xGXwasR")
+        "--out", normalizePath(file.path(ResultDir, "xGXwasR"), mustWork = FALSE)
       )
       executeGCTA(ResultDir, args)
     }
@@ -3533,8 +3478,8 @@ ComputeGRMX <- function(DataDir, ResultDir, finput, partGRM, nGRM, minMAF = NULL
     grm_parts <- c("grm.id", "grm.bin", "grm.N.bin")
 
     for (ext in grm_parts) {
-      input_pattern <- file.path(ResultDir, paste0("xGXwasR.part_", nGRM, "_*", ext))
-      output_file <- file.path(ResultDir, paste0("xGXwasR.", ext))
+      input_pattern <- normalizePath(file.path(ResultDir, paste0("xGXwasR.part_", nGRM, "_*", ext)), mustWork = FALSE)
+      output_file <- normalizePath(file.path(ResultDir, paste0("xGXwasR.", ext)), mustWork = FALSE)
 
       if (os_type == "unix") {
         system2("cat", args = input_pattern, stdout = output_file)
@@ -3576,7 +3521,7 @@ ComputeREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100
     catcovarval <- NULL
   } else {
     catcovar <- "--ccovar"
-    catcovarval <- paste0(DataDir, "/", cat_covarfile)
+    catcovarval <- normalizePath(file.path(DataDir, cat_covarfile), mustWork = FALSE)
   }
 
   if (is.null(quant_covarfile)) {
@@ -3584,7 +3529,7 @@ ComputeREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100
     quantcovarval <- NULL
   } else {
     quantcovar <- "--qcovar"
-    quantcovarval <- paste0(DataDir, "/", quant_covarfile)
+    quantcovarval <- normalizePath(file.path(DataDir, quant_covarfile), mustWork = FALSE)
   }
 
   # Constructing the arguments for the GCTA command
@@ -3592,23 +3537,23 @@ ComputeREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100
     "--reml",
     "--reml-alg", REMLalgo,
     "--reml-maxit", nitr,
-    "--grm", paste0(ResultDir, "/", grmfile),
-    pheno, paste0(ResultDir, "/", phenofile),
+    "--grm", normalizePath(file.path(ResultDir, grmfile), mustWork = FALSE),
+    pheno, normalizePath(file.path(ResultDir, phenofile), mustWork = FALSE),
     preval, prevalval,
     catcovar, catcovarval,
     quantcovar, quantcovarval,
     "--reml-no-lrt",
     # "--reml-no-constrain",
     "--thread-num", ncores,
-    "--out", paste0(ResultDir, "/", chr, "test_reml")
+    "--out", normalizePath(file.path(ResultDir, paste0(chr, "test_reml")), mustWork = FALSE)
   )
 
   # Executing GCTA with the specified arguments
   executeGCTA(ResultDir, args)
 
 
-  if (file.exists(paste0(ResultDir, "/", chr, "test_reml.hsq"))) {
-    resultREML <- na.omit(data.table::fread(paste0(ResultDir, "/", chr, "test_reml.hsq"), fill = TRUE))
+  if (file.exists(normalizePath(file.path(ResultDir, paste0(chr, "test_reml.hsq")), mustWork = FALSE))) {
+    resultREML <- na.omit(data.table::fread(normalizePath(file.path(ResultDir, paste0(chr, "test_reml.hsq")), mustWork = FALSE), fill = TRUE))
     return(resultREML)
   } else {
     rlang::inform(rlang::format_error_bullets(c(
@@ -3618,7 +3563,7 @@ ComputeREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100
       " " = "- set different options", 
       " " = "- verify SNP partitioning or quality of the data")))
 
-    log_file <- paste0(ResultDir, "/", chr, "test_reml.log")
+    log_file <- normalizePath(file.path(ResultDir, paste0(chr, "test_reml.log")), mustWork = TRUE)
 
     if (file.exists(log_file)) {
       lines <- readLines(log_file)
@@ -3675,7 +3620,7 @@ ComputeREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 1
     catcovarval <- NULL
   } else {
     catcovar <- "--ccovar"
-    catcovarval <- paste0(DataDir, "/", cat_covarfile)
+    catcovarval <- normalizePath(file.path(DataDir, cat_covarfile), mustWork = FALSE)
   }
 
   if (is.null(quant_covarfile)) {
@@ -3683,15 +3628,15 @@ ComputeREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 1
     quantcovarval <- NULL
   } else {
     quantcovar <- "--qcovar"
-    quantcovarval <- paste0(DataDir, "/", quant_covarfile)
+    quantcovarval <- normalizePath(file.path(DataDir, quant_covarfile), mustWork = FALSE)
   }
 
   ## Create multi_GRMs.txt in ResultDir
   if (isTRUE(computeGRM)) {
     rlang::inform(rlang::format_error_bullets("Creating multi_GRMs.txt because computeGRM is TRUE"))
 
-    fileConn <- file(paste0(ResultDir, "/multi_GRMs.txt"))
-    writeLines(c(paste0(ResultDir, "/GXwasR"), paste0(ResultDir, "/xGXwasR")), fileConn)
+    fileConn <- file(normalizePath(file.path(ResultDir, "multi_GRMs.txt"), mustWork = FALSE))
+    writeLines(c(normalizePath(file.path(ResultDir, "GXwasR"), mustWork = FALSE), normalizePath(file.path(ResultDir, "xGXwasR"), mustWork = FALSE)), fileConn)
     close(fileConn)
   } else {
     rlang::inform(rlang::format_error_bullets("computeGRM is FALSE, checking grmfile_name"))
@@ -3700,8 +3645,8 @@ ComputeREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 1
       stop("grmfile_name must be provided if computeGRM is FALSE")
     }
 
-    fileConn <- file(paste0(ResultDir, "/multi_GRMs.txt"))
-    writeLines(c(paste0(ResultDir, "/", grmfile_name), paste0(ResultDir, "/x", grmfile_name)), fileConn)
+    fileConn <- file(normalizePath(file.path(ResultDir, "multi_GRMs.txt"), mustWork = FALSE))
+    writeLines(c(normalizePath(file.path(ResultDir, grmfile_name)), mustWork = FALSE), normalizePath(file.path(ResultDir, paste0("x", grmfile_name)), mustWork = FALSE), fileConn)
     close(fileConn)
   }
 
@@ -3711,22 +3656,22 @@ ComputeREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 1
       "--reml",
       "--reml-alg", REMLalgo,
       "--reml-maxit", nitr,
-      "--mgrm", paste0(ResultDir, "/", "multi_GRMs.txt"),
-      pheno, paste0(ResultDir, "/", phenofile),
+      "--mgrm", normalizePath(file.path(ResultDir, "multi_GRMs.txt"), mustWork = FALSE),
+      pheno, normalizePath(file.path(ResultDir, phenofile), mustWork = FALSE),
       preval, prevalval,
       catcovar, catcovarval,
       quantcovar, quantcovarval,
       "--reml-no-lrt",
       # "--reml-no-constrain",
       "--thread-num", ncores,
-      "--out", paste0(ResultDir, "/", "test_reml")
+      "--out", normalizePath(file.path(ResultDir, "test_reml"), mustWork = FALSE)
     ),
     std_out = TRUE,
     std_err = TRUE
   ))
 
-  if (file.exists(paste0(ResultDir, "/test_reml.hsq"))) {
-    resultREML <- na.omit(data.table::fread(paste0(ResultDir, "/test_reml.hsq"), fill = TRUE))
+  if (file.exists(normalizePath(file.path(ResultDir, "test_reml.hsq"), mustWork = FALSE))) {
+    resultREML <- na.omit(data.table::fread(normalizePath(file.path(ResultDir, "test_reml.hsq"), mustWork = FALSE), fill = TRUE))
     return(resultREML)
   } else {
     rlang::inform(rlang::format_error_bullets(c(
@@ -3736,7 +3681,7 @@ ComputeREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 1
       " " = "- set different options", 
       " " = "- verify SNP partitioning or quality of the data")))
 
-    log_file <- paste0(ResultDir, "/test_reml.log")
+    log_file <- normalizePath(file.path(ResultDir, "test_reml.log"), mustWork = FALSE)
 
     suppressWarnings(if (file.exists(log_file)) {
       if (file.exists(log_file)) {
@@ -3815,9 +3760,8 @@ ChrwiseLDprun <- function(DataDir, ResultDir, finput, chromosome, highLD_regions
     highLD_regions <- NULL
     excludev <- NULL
   } else {
-    write.table(highLD_regions, file = paste0(ResultDir, "/", "highLD_regions_temp"), quote = FALSE, row.names = FALSE, col.names = FALSE)
-    # highLD_regions <- paste0(DataDir,"/",highLD_regions)
-    highLD_regions <- paste0(ResultDir, "/", "highLD_regions_temp")
+    write.table(highLD_regions, file = normalizePath(file.path(ResultDir, "highLD_regions_temp"), mustWork = FALSE), quote = FALSE, row.names = FALSE, col.names = FALSE)
+    highLD_regions <- normalizePath(file.path(ResultDir, "highLD_regions_temp"), mustWork = FALSE)
     excludev <- "--exclude"
   }
 
@@ -3825,18 +3769,16 @@ ChrwiseLDprun <- function(DataDir, ResultDir, finput, chromosome, highLD_regions
     plink(),
     args = c(
       "--bfile",
-      paste0(DataDir, "/", finput),
+      normalizePath(file.path(DataDir, finput), mustWork = FALSE),
       "--chr", chromosome,
-      # "--exclude",
       excludev,
-      # paste0(DataDir,"/",highLD_regions),
       highLD_regions,
       "--indep-pairwise",
       IndepSNP_window_size,
       IndepSNP_step_size,
       IndepSNP_r2_threshold,
       "--out",
-      paste0(ResultDir, "/", "LDsnp"),
+      normalizePath(file.path(ResultDir, "LDsnp"), mustWork = FALSE),
       "--silent"
     ),
     std_out = FALSE,
@@ -3847,34 +3789,32 @@ ChrwiseLDprun <- function(DataDir, ResultDir, finput, chromosome, highLD_regions
     plink(),
     args = c(
       "--bfile",
-      paste0(DataDir, "/", finput),
+      normalizePath(file.path(DataDir, finput), mustWork = FALSE),
       "--extract",
-      paste0(ResultDir, "/", "LDsnp.prune.in"),
+      normalizePath(file.path(ResultDir, "LDsnp.prune.in"), mustWork = FALSE),
       "--allow-no-sex",
       "--make-bed",
       "--out",
-      paste0(ResultDir, "/", "LDfiltered"),
+      normalizePath(file.path(ResultDir, "LDfiltered"), mustWork = FALSE),
       "--silent"
     ),
     std_out = FALSE,
     std_err = FALSE
   ))
 
-  ftemp <- list.files(paste0(ResultDir, "/"), pattern = "_temp")
-  suppressWarnings(invisible(file.remove(paste0(ResultDir, "/", ftemp))))
+  ftemp <- list.files(normalizePath(file.path(ResultDir), mustWork = FALSE), pattern = "_temp")
+  suppressWarnings(invisible(file.remove(normalizePath(file.path(ResultDir, ftemp), mustWork = FALSE))))
 }
 ## Function 80
 GeneProtein <- function(ResultDir, hg, chromosome) { ## Automatically using HG data from extdata
   if (hg == "hg19") {
-    # DataDir <- system.file("extdata", package = "GXwasR")
-
     # Downloading HG19 data from figshare to ResultDir
     utils::download.file(
-      destfile = paste0(ResultDir, "/HumanGenome19info.txt"),
+      destfile = normalizePath(file.path(ResultDir, "HumanGenome19info.txt"), mustWork = FALSE),
       "https://figshare.com/ndownloader/files/42118098", quiet = TRUE,
     )
 
-    genes <- unique(read.table(file = paste0(ResultDir, "/", "HumanGenome19info.txt"))[, c(1, 7, 8)]) # Using hgnc_name
+    genes <- unique(read.table(file = normalizePath(file.path(ResultDir, "HumanGenome19info.txt"), mustWork = FALSE))[, c(1, 7, 8)]) # Using hgnc_name
 
     genes$Chrom <- stringr::str_sub(genes$Chrom, 4)
     genes1 <- unique(genes[genes$Chrom == chromosome, 2, drop = FALSE])
@@ -3886,7 +3826,7 @@ GeneProtein <- function(ResultDir, hg, chromosome) { ## Automatically using HG d
     return(GP)
   } else {
     utils::download.file(
-      destfile = paste0(ResultDir, "/HumanGenome38info.txt"),
+      destfile = normalizePath(file.path(ResultDir, "HumanGenome38info.txt"), mustWork = FALSE),
       "https://figshare.com/ndownloader/files/42118242", quiet = TRUE,
     )
 
@@ -3900,8 +3840,8 @@ GeneProtein <- function(ResultDir, hg, chromosome) { ## Automatically using HG d
     GP <- data.table::as.data.table(cbind(no.of.genes, no.of.proteins))
     return(GP)
   }
-  ftemp <- list.files(paste0(ResultDir, "/"), pattern = "info.txt")
-  suppressWarnings(invisible(file.remove(paste0(ResultDir, "/", ftemp))))
+  ftemp <- list.files(normalizePath(file.path(ResultDir), mustWork = FALSE), pattern = "info.txt")
+  suppressWarnings(invisible(file.remove(normalizePath(file.path(ResultDir, ftemp), mustWork = FALSE))))
 }
 
 ## Function 81
@@ -3968,7 +3908,7 @@ PlotHeritability <- function(Hdata, miMAF, maMAF, plotjpeg, plotname, ResultDir)
       color = "red", face = "bold", size = 10
     )))
   } else {
-    jpeg(paste0(ResultDir, "/", plotname, ".jpeg"), width = 1000, height = 1000, res = 100)
+    jpeg(normalizePath(file.path(ResultDir, paste0(plotname, ".jpeg")), mustWork = FALSE), width = 1000, height = 1000, res = 100)
 
     print(ggpubr::annotate_figure(plot1, top = ggpubr::text_grob(paste0(miMAF, ",", maMAF),
       color = "red", face = "bold", size = 10
@@ -3985,11 +3925,13 @@ computeMAFRange <- function(DataDir, ResultDir, finput, minMAF, maxMAF) {
   if (is.null(minMAF) | is.null(maxMAF)) {
     # Compute min and max MAF using Plink
     plink_exec_path <- plink()
-    args <- c("--bfile", paste0(DataDir, "/", finput), "--freq", "--out", paste0(ResultDir, "/MAF"), "--silent")
+    args <- c(
+      "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE), "--freq", 
+      "--out", normalizePath(file.path(ResultDir, "MAF"), mustWork = FALSE), "--silent")
 
     invisible(sys::exec_wait(plink_exec_path, args = args, std_out = FALSE, std_err = FALSE))
 
-    MAF <- na.omit(read.table(paste0(ResultDir, "/MAF.frq"), header = TRUE))
+    MAF <- na.omit(read.table(normalizePath(file.path(ResultDir, "MAF.frq"), mustWork = FALSE), header = TRUE))
     minmaf <- min(MAF$MAF)
     maxmaf <- max(MAF$MAF)
     miMAF <- paste0("MAF = [", minmaf)
@@ -4006,7 +3948,7 @@ computeMAFRange <- function(DataDir, ResultDir, finput, minMAF, maxMAF) {
 ## Added in 3.0
 processGWASData <- function(DataDir, finput, summarystat) {
   # Construct the file path for the GWAS bed file
-  gxwas_bedfile <- paste0(DataDir, "/", finput, ".bed")
+  gxwas_bedfile <- normalizePath(file.path(DataDir, paste0(finput, ".bed")), mustWork = FALSE)
 
   # Read the bedfile and store the data in a temporary directory
   rds <- bigsnpr::snp_readBed(gxwas_bedfile, backingfile = tempfile())
@@ -4157,8 +4099,8 @@ processGREMLModel <- function(DataDir, ResultDir, finput, byCHR, autosome, Xsome
 
   # setupGCTA(ResultDir)
 
-  famfile <- read.table(paste0(DataDir, "/", finput, ".fam"))[, c(1, 2, 6)]
-  write.table(famfile, file = paste0(ResultDir, "/phenofile.phen"), sep = " ", col.names = FALSE, row.names = FALSE, quote = FALSE)
+  famfile <- read.table(normalizePath(file.path(DataDir, paste0(finput, ".fam")), mustWork = FALSE))[, c(1, 2, 6)]
+  write.table(famfile, file = normalizePath(file.path(ResultDir, "phenofile.phen"), mustWork = FALSE), sep = " ", col.names = FALSE, row.names = FALSE, quote = FALSE)
 
   if (byCHR == FALSE) {
     if (autosome == TRUE && Xsome == FALSE) {
@@ -4224,7 +4166,7 @@ processGREMLModel <- function(DataDir, ResultDir, finput, byCHR, autosome, Xsome
       rlang::inform(rlang::format_error_bullets(c("x" = "Autosome and Xsome cannot both be set as FALSE.")))
     }
   } else {
-    bimfile <- read.table(paste0(DataDir, "/", finput, ".bim"))
+    bimfile <- read.table(normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE))
 
     chrnum <- 1:length(unique(bimfile$V1))
 
@@ -4240,7 +4182,7 @@ processGREMLModel <- function(DataDir, ResultDir, finput, byCHR, autosome, Xsome
         )
 
 
-        bimfile1 <- read.table(paste0(ResultDir, "/LDfiltered.bim"))
+        bimfile1 <- read.table(normalizePath(file.path(ResultDir, "LDfiltered.bim"), mustWork = FALSE))
       } else {
         bimfile1 <- bimfile[bimfile$V1 == chromosome, ]
       }
@@ -4483,13 +4425,13 @@ allForestplot <- function(i, MR2, Sbeta) {
 ## Apply Genomic Control
 getGCse <- function(SummData, ResultDir) {
   rlang::inform(rlang::format_error_bullets(c("i" = "Applying study-specific genomic control.")))
-  s1 <- read.table(paste0(ResultDir, "/", SummData), header = TRUE)
+  s1 <- read.table(normalizePath(file.path(ResultDir, SummData), mustWork = FALSE), header = TRUE)
 
   # From p-values, calculate chi-squared statistic
   chisq <- qchisq(1 - na.omit(s1$P), 1)
   lamdaGC <- median(chisq) / qchisq(0.5, 1)
   s1$SE <- s1$SE * sqrt(lamdaGC)
-  write.table(s1, paste0(ResultDir, "/", SummData), col.names = TRUE, row.names = FALSE, quote = FALSE)
+  write.table(s1, normalizePath(file.path(ResultDir, SummData)), col.names = TRUE, row.names = FALSE, quote = FALSE)
   return()
 }
 
@@ -4497,7 +4439,7 @@ getGCse <- function(SummData, ResultDir) {
 # Added in 3.0
 # Compute confidence interval
 getStudyCI <- function(SummData, MRsnps, ResultDir) {
-  s1 <- read.table(paste0(ResultDir, "/", SummData), header = TRUE)
+  s1 <- read.table(normalizePath(file.path(ResultDir, SummData)), header = TRUE)
   s11 <- merge(MRsnps, s1, by = "SNP")
   S1 <- s11[, c("SNP", "BETA", "L95", "U95")]
   return(S1)
@@ -4544,7 +4486,7 @@ metaFun <- function(DataDir, ResultDir, SummData, CHR, chromosome, nomap, UseA1v
   invisible(sys::exec_wait(
     plink(),
     args = c(
-      "--meta-analysis", paste0(ResultDir, "/", SummData),
+      "--meta-analysis", normalizePath(file.path(ResultDir, SummData), mustWork = FALSE),
       "+",
       "qt",
       "report-all",
@@ -4556,14 +4498,14 @@ metaFun <- function(DataDir, ResultDir, SummData, CHR, chromosome, nomap, UseA1v
       CHR, chromosomev,
       extract, SNPfilev,
       "--out",
-      paste0(ResultDir, "/", "MetaResult"),
+      normalizePath(file.path(ResultDir, "MetaResult"), mustWork = FALSE),
       "--silent"
     ),
     std_out = FALSE,
     std_err = FALSE
   ))
 
-  metaresult <- read.table(paste0(ResultDir, "/", "MetaResult.meta"), header = TRUE)
+  metaresult <- read.table(normalizePath(file.path(ResultDir, "MetaResult.meta"), mustWork = FALSE), header = TRUE)
   return(metaresult)
 }
 
@@ -4606,7 +4548,7 @@ ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr 
     catcovarval <- NULL
   } else {
     catcovar <- "--ccovar"
-    catcovarval <- paste0(DataDir, "/", cat_covarfile)
+    catcovarval <- normalizePath(file.path(DataDir, cat_covarfile), mustWork = FALSE)
   }
 
   if (is.null(quant_covarfile)) {
@@ -4614,7 +4556,7 @@ ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr 
     quantcovarval <- NULL
   } else {
     quantcovar <- "--qcovar"
-    quantcovarval <- paste0(DataDir, "/", quant_covarfile)
+    quantcovarval <- normalizePath(file.path(DataDir, quant_covarfile), mustWork = FALSE)
   }
 
   invisible(sys::exec_wait(
@@ -4623,31 +4565,24 @@ ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr 
       "--reml-bivar",
       "--reml-alg", REMLalgo,
       "--reml-maxit", nitr,
-      "--grm",
-      paste0(ResultDir, "/", grmfile),
-      "--pheno", paste0(ResultDir, "/", phenofile),
+      "--grm", normalizePath(file.path(ResultDir, grmfile), mustWork = FALSE),
+      "--pheno", normalizePath(file.path(ResultDir, phenofile), mustWork = FALSE),
       catcovar, catcovarval,
       quantcovar, quantcovarval,
       ExResi,
       # "--reml-no-constrain",
       "--thread-num", ncores,
-      "--out",
-      paste0(ResultDir, "/", chr, "test_bireml")
+      "--out", normalizePath(file.path(ResultDir, paste0(chr, "test_bireml")), mustWork = FALSE)
     ),
-    std_out = FALSE,
-    std_err = FALSE
+    std_out = TRUE,
+    std_err = TRUE
   ))
 
-  if (file.exists(paste0(ResultDir, "/", chr, "test_bireml.hsq"))) {
-    resultREML <- na.omit(data.table::fread(paste0(ResultDir, "/", chr, "test_bireml.hsq"), fill = TRUE))
+  if (file.exists(normalizePath(file.path(ResultDir, paste0(chr, "test_bireml.hsq")), mustWork = FALSE))) {
+    resultREML <- na.omit(data.table::fread(normalizePath(file.path(ResultDir, paste0(chr, "test_bireml.hsq")), mustWork = FALSE), fill = TRUE))
     return(resultREML)
   } else {
-    # print(grep("Error", readLines(paste0(ResultDir,"/",chr,"test_bireml.log")), value = TRUE))
-    # print("An error occurs, please try byCHR = TRUE, check different options, SNP partitioning or data")
-    # x <- data.frame(NA,NA,NA)
-    # colnames(x) <- c("Source", "Variance","SE")
-    # return(x)
-    log_file <- paste0(ResultDir, "/", chr, "test_bireml.log")
+    log_file <- normalizePath(file.path(ResultDir, paste0(chr, "test_bireml.log")), mustWork = FALSE)
     lines <- readLines(log_file)
     pattern <- paste0(nitr - 1, "\t")
     matched_lines <- grep(pattern, lines, value = TRUE)
@@ -4663,12 +4598,8 @@ ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr 
     } else {
       x <- data.frame(Source = NA, Variance = NA)
     }
-    # x1 <- read.table(text = grep(paste0(nitr-1,"\t"), readLines(paste0(ResultDir,"/",chr,"test_bireml.log")), value = TRUE))
-    # colnames(x1)<- NULL
-    # rownames(x1)<- NULL
-    # print(x1)
-    rlang::inform(rlang::format_error_bullets(c("x" = grep("Error", readLines(paste0(ResultDir, "/", chr, "test_bireml.log")), value = TRUE))))
-    rlang::inform(rlang::format_error_bullets(c("i" = grep("Note: to constrain", readLines(paste0(ResultDir, "/", chr, "test_bireml.log")), value = TRUE))))
+    rlang::inform(rlang::format_error_bullets(c("x" = grep("Error", readLines(normalizePath(file.path(ResultDir, paste0(chr, "test_bireml.log")), mustWork = FALSE)), value = TRUE))))
+    rlang::inform(rlang::format_error_bullets(c("i" = grep("Note: to constrain", readLines(normalizePath(file.path(ResultDir, paste0(chr, "test_bireml.log")), mustWork = FALSE)), value = TRUE))))
     rlang::inform(rlang::format_error_bullets(c(
       "x" = "Convergence issue occurred, please:", 
       " " = "- set byCHR = TRUE", 
@@ -4676,14 +4607,6 @@ ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr 
       " " = "- verify SNP partitioning or quality of the data")))
     rlang::inform(rlang::format_error_bullets(c("i" = "The result will be provided for the last iteration.")))
     message("\n")
-    # if(grep("Error", readLines(paste0(ResultDir,"/",chr,"test_bireml.log")), value = TRUE) == 0){
-    #   x <- data.frame(Source = NA, Variance = NA, SE = NA)
-    #   print("Segmentation fault from GCTA 1.94.1.")
-    # }else{
-    # x <- as.data.frame(t(x1))
-    # x <- x[-1,]
-    # colnames(x) <- c("Source", "Variance","SE")}
-
     return(x)
   }
 }
@@ -4703,7 +4626,7 @@ ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nit
     catcovarval <- NULL
   } else {
     catcovar <- "--ccovar"
-    catcovarval <- paste0(DataDir, "/", cat_covarfile)
+    catcovarval <- normalizePath(file.path(DataDir, cat_covarfile), mustWork = FALSE)
   }
 
   if (is.null(quant_covarfile)) {
@@ -4711,19 +4634,15 @@ ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nit
     quantcovarval <- NULL
   } else {
     quantcovar <- "--qcovar"
-    quantcovarval <- paste0(DataDir, "/", quant_covarfile)
+    quantcovarval <- normalizePath(file.path(DataDir, quant_covarfile), mustWork = FALSE)
   }
 
-  # ## Create multi_GRMs.txt in ResultDir
-  # fileConn<-file(paste0(ResultDir,"/multi_GRMs.txt"))
-  # writeLines(c(paste0(ResultDir,"/GXwasR"),paste0(ResultDir,"/xGXwasR")), fileConn)
-  # close(fileConn)
   ## Create multi_GRMs.txt in ResultDir
   if (isTRUE(computeGRM)) {
     rlang::inform(rlang::format_error_bullets(c("i" = "Creating multi_GRMs.txt because computeGRM is TRUE")))
 
-    fileConn <- file(paste0(ResultDir, "/multi_GRMs.txt"))
-    writeLines(c(paste0(ResultDir, "/GXwasR"), paste0(ResultDir, "/xGXwasR")), fileConn)
+    fileConn <- file(normalizePath(file.path(ResultDir, "multi_GRMs.txt"), mustWork = FALSE))
+    writeLines(c(normalizePath(file.path(ResultDir, "GXwasR"), mustWork = FALSE), normalizePath(file.path(ResultDir, "xGXwasR"), mustWork = FALSE)), fileConn)
     close(fileConn)
   } else {
     rlang::inform(rlang::format_error_bullets(c("i" = "computeGRM is FALSE, checking grmfile_name")))
@@ -4732,8 +4651,8 @@ ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nit
       stop("grmfile_name must be provided if computeGRM is FALSE")
     }
 
-    fileConn <- file(paste0(ResultDir, "/multi_GRMs.txt"))
-    writeLines(c(paste0(ResultDir, "/", grmfile_name), paste0(ResultDir, "/x", grmfile_name)), fileConn)
+    fileConn <- file(normalizePath(file.path(ResultDir, "multi_GRMs.txt"), mustWork = FALSE))
+    writeLines(c(normalizePath(file.path(ResultDir, grmfile_name), mustWork = FALSE), normalizePath(file.path(ResultDir, paste0("x", grmfile_name)), mustWork = FALSE)), fileConn)
     close(fileConn)
   }
 
@@ -4741,25 +4660,25 @@ ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nit
     "--reml-alg", REMLalgo,
     "--reml-bivar", 1, 2,
     "--reml-maxit", nitr,
-    "--mgrm", paste0(ResultDir, "/multi_GRMs.txt"),
-    "--pheno", paste0(ResultDir, "/", phenofile),
+    "--mgrm", normalizePath(file.path(ResultDir, "multi_GRMs.txt"), mustWork = FALSE),
+    "--pheno", normalizePath(file.path(ResultDir, phenofile), mustWork = FALSE),
     catcovar, catcovarval,
     quantcovar, quantcovarval,
     ExResi,
     # "--reml-no-constrain",
     "--thread-num", ncores,
-    "--out", paste0(ResultDir, "/test_bireml")
+    "--out", normalizePath(file.path(ResultDir, "test_bireml"), mustWork = FALSE)
   )
 
   # Executing GCTA with the specified arguments
   executeGCTA(ResultDir, args)
 
-  if (file.exists(paste0(ResultDir, "/test_bireml.hsq"))) {
-    resultREML <- na.omit(data.table::fread(paste0(ResultDir, "/test_bireml.hsq"), fill = TRUE))
+  if (file.exists(normalizePath(file.path(ResultDir, "test_bireml.hsq"), mustWork = FALSE))) {
+    resultREML <- na.omit(data.table::fread(normalizePath(file.path(ResultDir, "test_bireml.hsq"), mustWork = FALSE), fill = TRUE))
 
     return(resultREML)
   } else {
-    log_file <- paste0(ResultDir, "/test_bireml.log")
+    log_file <- normalizePath(file.path(ResultDir, "test_bireml.log"), mustWork = FALSE)
     lines <- readLines(log_file)
     pattern <- paste0(nitr - 1, "\t")
     matched_lines <- grep(pattern, lines, value = TRUE)
@@ -4776,12 +4695,8 @@ ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nit
       x <- data.frame(Source = NA, Variance = NA)
     }
 
-    # x1 <- read.table(text = grep(paste0(nitr-1,"\t"), readLines(paste0(ResultDir,"/test_bireml.log")), value = TRUE))
-    # colnames(x1)<- NULL
-    # rownames(x1)<- NULL
-    # print(x1)
-    rlang::inform(rlang::format_error_bullets(c("x" = grep("Error", readLines(paste0(ResultDir, "/test_bireml.log")), value = TRUE))))
-    rlang::inform(rlang::format_error_bullets(c("i" = grep("Note: to constrain", readLines(paste0(ResultDir, "/test_bireml.log")), value = TRUE))))
+    rlang::inform(rlang::format_error_bullets(c("x" = grep("Error", readLines(normalizePath(file.path(ResultDir, "test_bireml.log"), mustWork = FALSE)), value = TRUE))))
+    rlang::inform(rlang::format_error_bullets(c("i" = grep("Note: to constrain", readLines(normalizePath(file.path(ResultDir, "test_bireml.log"), mustWork = FALSE)), value = TRUE))))
     rlang::inform(rlang::format_error_bullets(c(
       "x" = "Convergence issue occurred, please:", 
       " " = "- set byCHR = TRUE", 
@@ -4789,9 +4704,6 @@ ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nit
       " " = "- verify SNP partitioning or quality of the data")))
     rlang::inform(rlang::format_error_bullets(c("i" = "The result will be provided for the last iteration.")))
     message("\n")
-    # x <- as.data.frame(t(x1))
-    # x <- x[-1,]
-    # colnames(x) <- c("Source", "Variance","SE")
     return(x)
   }
 }
@@ -5077,23 +4989,16 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
     )
   }
 
-  # write.table(title, fn, col.names = FALSE, row.names = FALSE, quote = FALSE, sep = '\t')
-  write.table(title, paste0(ResultDir, "/", fn), col.names = FALSE, row.names = FALSE, quote = FALSE, sep = "\t")
-
-  # if (requireNamespace("data.table", quietly = TRUE)) {
-  #   suppressWarnings(data.table::fwrite(vcf, fn, row.names = FALSE, quote = FALSE, append = TRUE, col.names = TRUE, sep = '\t', na = 'NA'))
-  # } else {
-  #   suppressWarnings(write.table(vcf, fn, row.names = FALSE, quote = FALSE, append = TRUE, sep = '\t'))
-  # }
+  write.table(title, normalizePath(file.path(ResultDir, fn), mustWork = FALSE), col.names = FALSE, row.names = FALSE, quote = FALSE, sep = "\t")
 
   if (requireNamespace("data.table", quietly = TRUE)) {
-    suppressWarnings(data.table::fwrite(vcf, paste0(ResultDir, "/", fn), row.names = FALSE, quote = FALSE, append = TRUE, col.names = TRUE, sep = "\t", na = "NA"))
+    suppressWarnings(data.table::fwrite(vcf, normalizePath(file.path(ResultDir, fn), mustWork = FALSE), row.names = FALSE, quote = FALSE, append = TRUE, col.names = TRUE, sep = "\t", na = "NA"))
   } else {
-    suppressWarnings(write.table(vcf, paste0(ResultDir, "/", fn), row.names = FALSE, quote = FALSE, append = TRUE, sep = "\t"))
+    suppressWarnings(write.table(vcf, normalizePath(file.path(ResultDir, fn), mustWork = FALSE), row.names = FALSE, quote = FALSE, append = TRUE, sep = "\t"))
   }
 
   # Build full path to input file and its gzipped output
-  vcf_path <- file.path(ResultDir, fn)
+  vcf_path <- normalizePath(file.path(ResultDir, fn), mustWork = FALSE)
   vcf_gz <- paste0(vcf_path, ".gz")
 
   # Remove existing gzipped file if it exists
@@ -5111,55 +5016,6 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
       c("v" = paste("File", vcf_gz, "has been created and indexed")))
     ) 
 }
-
-## Function 98
-# Download_reference(refdata = "HapMapIII_NCBI36", wdir = DataDir)
-# Download_reference <- function(refdata, wdir){
-#   OS <- Sys.info()['sysname']
-#   options(timeout=200)
-#   if (refdata == "HapMapIII_NCBI36"){
-#     if (OS == "Linux"){
-#
-#     utils::download.file(destfile = paste0(wdir,"/",refdata,".zip"),
-#                        "https://figshare.com/ndownloader/files/40585145", quiet = TRUE,
-#     )
-#     }else if (OS == "Windows"){
-#
-#       utils::download.file(destfile = paste0(wdir,"/",refdata,".zip"),
-#                            "https://figshare.com/ndownloader/files/40585145", quiet = TRUE,mode = "wb",
-#       )
-#     }else if (OS == "macOS"){
-#       utils::download.file(destfile = paste0(wdir,"/",refdata,".zip"),
-#                            "https://figshare.com/ndownloader/files/40585145", quiet = TRUE,
-#       )
-#     }
-#     utils::unzip(paste0(wdir,"/",refdata,".zip"), exdir = wdir, junkpaths = TRUE)
-#     utils::unzip(paste0(wdir,"/",refdata,".zip"), exdir = wdir)
-#     invisible(file.remove(paste0(wdir,"/",refdata,".zip")))
-#
-#     }else if(refdata == "ThousandGenome"){
-#       options(timeout=200)##Takes more time, that's why this line
-#       if (OS == "Linux"){
-#         utils::download.file(destfile = paste0(wdir,"/",refdata,".tar.gz"),
-#                              "https://figshare.com/ndownloader/files/40728539", quiet = TRUE,
-#         )
-#       }else if (OS == "Windows"){
-#         utils::download.file(destfile = paste0(wdir,"/",refdata,".tar.gz"),
-#                              "https://figshare.com/ndownloader/files/40728539", quiet = TRUE,mode = "wb",
-#         )
-#       }else if (OS == "macOS"){
-#         utils::download.file(destfile = paste0(wdir,"/",refdata,".tar.gz"),
-#                              "https://figshare.com/ndownloader/files/40728539", quiet = TRUE,
-#         )
-#       }
-#
-#       untar(paste0(wdir,"/",refdata,".tar.gz"),exdir = wdir)
-#       invisible(file.remove(paste0(wdir,"/",refdata,".tar.gz")))
-#     }
-#
-#   print(paste0("Reference:", refdata, " downloaded."))
-#
-# }
 
 ## Function 99
 ## Added in 3.0
@@ -5272,7 +5128,7 @@ validateAncestryCheckInputs <- function(DataDir, ResultDir, finput, reference, f
   }
 
   # Validate file input
-  if (!file.exists(paste0(DataDir, "/", finput, ".bim"))) {
+  if (!file.exists(normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE))) {
     stop("BIM file not found for input: ", finput)
   }
 
@@ -5300,7 +5156,7 @@ validateAncestryCheckInputs <- function(DataDir, ResultDir, finput, reference, f
   }
 
   # Read IID from .fam file
-  famFilePath <- paste0(DataDir, "/", finput, ".fam")
+  famFilePath <- normalizePath(file.path(DataDir, paste0(finput, ".fam")), mustWork = FALSE)
   if (!file.exists(famFilePath)) {
     stop(".fam file not found: ", famFilePath)
   }
@@ -5336,55 +5192,56 @@ processLDstudyData <- function(ResultDir, highLD_regions, studyLD, studyLD_windo
     if (!is.null(highLD_regions)) {
       # Using the provided helper function to execute PLINK with specific arguments
       executePlinkAd(ResultDir, c(
-        "--bfile", paste0(ResultDir, "/filtered_study_temp1"),
+        "--bfile", normalizePath(file.path(ResultDir, "filtered_study_temp1"), mustWork = FALSE),
         "--exclude", "range", highLD_regions,
         "--indep-pairwise", studyLD_window_size, studyLD_step_size, studyLD_r2_threshold,
         "--allow-no-sex", ## Adding in 4.0
-        "--out", paste0(ResultDir, "/filtered_study_temp2"),
+        "--out", normalizePath(file.path(ResultDir, "filtered_study_temp2"), mustWork = FALSE),
         "--silent"
       ))
 
       # Extract pruned SNPs based on the .prune.in file
       executePlinkAd(ResultDir, c(
-        "--bfile", paste0(ResultDir, "/filtered_study_temp1"), # Original data
-        "--extract", paste0(ResultDir, "/filtered_study_temp2.prune.in"), # Use pruned SNP list
+        "--bfile", normalizePath(file.path(ResultDir, "filtered_study_temp1"), mustWork = FALSE), # Original data
+        "--extract", normalizePath(file.path(ResultDir, "filtered_study_temp2.prune.in"), mustWork = FALSE), # Use pruned SNP list
         "--allow-no-sex",
         "--make-bed",
-        "--out", paste0(ResultDir, "/filtered_study_temp2"),
+        "--out", normalizePath(file.path(ResultDir, "filtered_study_temp2"), mustWork = FALSE),
         "--silent" # Final file with pruned SNPs
       ))
     } else {
       executePlinkAd(ResultDir, c(
-        "--bfile", paste0(ResultDir, "/filtered_study_temp1"),
+        "--bfile", normalizePath(file.path(ResultDir, "filtered_study_temp1"), mustWork = FALSE),
         "--indep-pairwise", studyLD_window_size, studyLD_step_size, studyLD_r2_threshold,
         "--allow-no-sex", ## Adding in 5.0
-        "--out", paste0(ResultDir, "/filtered_study_temp2"),
+        "--out", normalizePath(file.path(ResultDir, "filtered_study_temp2")),
         "--silent"
       ))
 
       # Extract pruned SNPs based on the .prune.in file
       executePlinkAd(ResultDir, c(
-        "--bfile", paste0(ResultDir, "/filtered_study_temp1"), # Original data
-        "--extract", paste0(ResultDir, "/filtered_study_temp2.prune.in"), # Use pruned SNP list
+        "--bfile", normalizePath(file.path(ResultDir, "filtered_study_temp1"), mustWork = FALSE), # Original data
+        "--extract", normalizePath(file.path(ResultDir, "filtered_study_temp2.prune.in"), mustWork = FALSE), # Use pruned SNP list
         "--allow-no-sex",
         "--make-bed",
-        "--out", paste0(ResultDir, "/filtered_study_temp2"),
+        "--out", normalizePath(file.path(ResultDir, "filtered_study_temp2"), mustWork = FALSE),
         "--silent" # Final file with pruned SNPs
       ))
     }
   } else {
     executePlinkAd(ResultDir, c(
-      "--bfile", paste0(ResultDir, "/filtered_study_temp1"),
-      "--make-bed", "--out", paste0(ResultDir, "/filtered_study_temp2"),
+      "--bfile", normalizePath(file.path(ResultDir, "filtered_study_temp1"), mustWork = FALSE),
+      "--make-bed", 
+      "--out", normalizePath(file.path(ResultDir, "filtered_study_temp2"), mustWork = FALSE),
       "--silent"
     ))
   }
 
   # Return a message based on the LD pruning status
   if (studyLD) {
-    "LD pruning was done for study dataset."
+    rlang::inform(format_error_bullets(c("v" = "LD pruning was performed for study dataset.")))
   } else {
-    "LD pruning for study dataset is recommended. Set studyLD == TRUE."
+    rlang::inform(format_error_bullets(c("i" = "LD pruning is recommended for study dataset. Set studyLD = TRUE.")))
   }
 }
 
@@ -5394,54 +5251,55 @@ processLDreferenceData <- function(ResultDir, highLD_regions, referLD, referLD_w
   if (referLD) {
     if (!is.null(highLD_regions)) {
       executePlinkAd(ResultDir, c(
-        "--bfile", paste0(ResultDir, "/filtered_ref_temp1"),
+        "--bfile", normalizePath(file.path(ResultDir, "/filtered_ref_temp1"), mustWork = FALSE),
         "--exclude", "range", highLD_regions,
         "--indep-pairwise", referLD_window_size, referLD_step_size, referLD_r2_threshold,
         "--allow-no-sex", ## Adding in 4.0
-        "--out", paste0(ResultDir, "/filtered_ref_temp2"),
+        "--out", normalizePath(file.path(ResultDir, "/filtered_ref_temp2"), mustWork = FALSE),
         "--silent"
       ))
 
       # Extract pruned SNPs based on the .prune.in file
       executePlinkAd(ResultDir, c(
-        "--bfile", paste0(ResultDir, "/filtered_ref_temp1"), # Original data
-        "--extract", paste0(ResultDir, "/filtered_ref_temp2.prune.in"), # Use pruned SNP list
+        "--bfile", normalizePath(file.path(ResultDir, "filtered_ref_temp1"), mustWork = FALSE), # Original data
+        "--extract", normalizePath(file.path(ResultDir, "filtered_ref_temp2.prune.in"), mustWork = FALSE), # Use pruned SNP list
         "--allow-no-sex",
         "--make-bed",
-        "--out", paste0(ResultDir, "/filtered_ref_temp2"),
+        "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp2"), mustWork = FALSE),
         "--silent" # Final file with pruned SNPs
       ))
     } else {
       executePlinkAd(ResultDir, c(
-        "--bfile", paste0(ResultDir, "/filtered_ref_temp1"),
+        "--bfile", normalizePath(file.path(ResultDir, "filtered_ref_temp1"), mustWork = FALSE),
         "--indep-pairwise", referLD_window_size, referLD_step_size, referLD_r2_threshold,
         "--allow-no-sex", ## Adding in 5.0
-        "--out", paste0(ResultDir, "/filtered_ref_temp2"),
+        "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp2"), mustWork = FALSE),
         "--silent"
       ))
 
       # Extract pruned SNPs based on the .prune.in file
       executePlinkAd(ResultDir, c(
-        "--bfile", paste0(ResultDir, "/filtered_ref_temp1"), # Original data
-        "--extract", paste0(ResultDir, "/filtered_ref_temp2.prune.in"), # Use pruned SNP list
+        "--bfile", normalizePath(file.path(ResultDir, "filtered_ref_temp1"), mustWork = FALSE), # Original data
+        "--extract", normalizePath(file.path(ResultDir, "filtered_ref_temp2.prune.in"), mustWork = FALSE), # Use pruned SNP list
         "--allow-no-sex",
         "--make-bed",
-        "--out", paste0(ResultDir, "/filtered_ref_temp2"),
+        "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp2"), mustWork = FALSE),
         "--silent" # Final file with pruned SNPs
       ))
     }
   } else {
     executePlinkAd(ResultDir, c(
-      "--bfile", paste0(ResultDir, "/filtered_ref_temp1"),
-      "--make-bed", "--out", paste0(ResultDir, "/filtered_ref_temp2"),
+      "--bfile", normalizePath(file.path(ResultDir, "filtered_ref_temp1"), mustWork = FALSE),
+      "--make-bed", 
+      "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp2"), mustWork = FALSE),
       "--silent"
     ))
   }
 
   if (referLD) {
-    "LD pruning was done for reference dataset."
+    rlang::inform(rlang::format_error_bullets(c("v" = "LD pruning was performed for reference dataset.")))
   } else {
-    "LD pruning for reference dataset is recommended. Set referLD == TRUE."
+    rlang::inform(rlang::format_error_bullets(c("i" = "LD pruning is recommended for reference dataset. Set referLD == TRUE.")))
   }
 }
 
@@ -5449,14 +5307,14 @@ processLDreferenceData <- function(ResultDir, highLD_regions, referLD, referLD_w
 ## Added in 3.0
 filterATGCSNPs <- function(DataDir, ResultDir, finput, reference) {
   filterSNPs <- function(DataDir, file, SNPPrefix) {
-    bimData <- read.table(file = paste0(DataDir, "/", file, ".bim"), stringsAsFactors = FALSE)
+    bimData <- read.table(file = normalizePath(file.path(DataDir, paste0(file, ".bim")), mustWork = FALSE), stringsAsFactors = FALSE)
     SNP_AT <- bimData[which(bimData[, 5] == "A" & bimData[, 6] == "T"), 2, drop = FALSE]
     SNP_TA <- bimData[which(bimData[, 5] == "T" & bimData[, 6] == "A"), 2, drop = FALSE]
     SNP_GC <- bimData[which(bimData[, 5] == "G" & bimData[, 6] == "C"), 2, drop = FALSE]
     SNP_CG <- bimData[which(bimData[, 5] == "C" & bimData[, 6] == "G"), 2, drop = FALSE]
 
     SNP <- rbind(SNP_AT, SNP_TA, SNP_GC, SNP_CG)
-    write.table(SNP, file = paste0(ResultDir, "/", SNPPrefix, "_SNP"), quote = FALSE, row.names = FALSE, col.names = FALSE, eol = "\r\n", sep = " ")
+    write.table(SNP, file = normalizePath(file.path(ResultDir, paste0(SNPPrefix, "_SNP")), mustWork = FALSE), quote = FALSE, row.names = FALSE, col.names = FALSE, eol = "\r\n", sep = " ")
 
     return(SNP)
   }
@@ -5465,8 +5323,18 @@ filterATGCSNPs <- function(DataDir, ResultDir, finput, reference) {
   ref_SNP <- filterSNPs(ResultDir, reference, "ref")
 
   # Execute Plink Commands
-  executePlinkAd(ResultDir, c("--bfile", paste0(DataDir, "/", finput), "--exclude", paste0(ResultDir, "/study_SNP"), "--allow-no-sex", "--make-bed", "--out", paste0(ResultDir, "/filtered_study_temp1"), "--silent")) ## Added "--allow-no-sex" in 4.0
-  executePlinkAd(ResultDir, c("--bfile", paste0(ResultDir, "/", reference), "--exclude", paste0(ResultDir, "/ref_SNP"), "--allow-no-sex", "--make-bed", "--out", paste0(ResultDir, "/filtered_ref_temp1"), "--silent")) ## Added "--allow-no-sex" in 4.0
+  executePlinkAd(ResultDir, c(
+    "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE), 
+    "--exclude", normalizePath(file.path(ResultDir, "study_SNP"), mustWork = FALSE), 
+    "--allow-no-sex", "--make-bed", 
+    "--out", normalizePath(file.path(ResultDir, "filtered_study_temp1"), mustWork = FALSE), 
+    "--silent")) ## Added "--allow-no-sex" in 4.0
+  executePlinkAd(ResultDir, c(
+    "--bfile", normalizePath(file.path(ResultDir, reference), mustWork = FALSE), 
+    "--exclude", normalizePath(file.path(ResultDir, "ref_SNP"), mustWork = FALSE), 
+    "--allow-no-sex", "--make-bed", 
+    "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp1"), mustWork = FALSE), 
+    "--silent")) ## Added "--allow-no-sex" in 4.0
 
   # Print Messages
   if (nrow(study_SNP) == 0) {
@@ -5485,8 +5353,16 @@ filterATGCSNPs <- function(DataDir, ResultDir, finput, reference) {
 ## Function 104
 ## Added in 3.0
 executePlinkForUnfilteredData <- function(DataDir, ResultDir, finput, reference) {
-  executePlinkAd(ResultDir, c("--bfile", paste0(DataDir, "/", finput), "--make-bed", "--out", paste0(ResultDir, "/filtered_study_temp2"), "--silent"))
-  executePlinkAd(ResultDir, c("--bfile", paste0(ResultDir, "/", reference), "--make-bed", "--out", paste0(ResultDir, "/filtered_ref_temp2"), "--silent"))
+  executePlinkAd(ResultDir, c(
+    "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE), 
+    "--make-bed", 
+    "--out", normalizePath(file.path(ResultDir, "filtered_study_temp2"), mustWork = FALSE), 
+    "--silent"))
+  executePlinkAd(ResultDir, c(
+    "--bfile", normalizePath(file.path(ResultDir, reference), mustWork = FALSE), 
+    "--make-bed", 
+    "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp2"), mustWork = FALSE), 
+    "--silent"))
 
   rlang::inform(rlang::format_error_bullets("A-T and C-G SNPs recommended to remove from both the reference and study data set by setting filterSNP == TRUE"))
 }
@@ -5494,14 +5370,11 @@ executePlinkForUnfilteredData <- function(DataDir, ResultDir, finput, reference)
 ## Function 105
 ## Added in 3.0
 findCommonSNPs <- function(ResultDir) {
-  pruned_study <- read.table(file = paste0(ResultDir, "/", "filtered_study_temp2", ".bim"), stringsAsFactors = FALSE)
-  pruned_ref <- read.table(file = paste0(ResultDir, "/", "filtered_ref_temp2", ".bim"), stringsAsFactors = FALSE)
+  pruned_study <- read.table(file = normalizePath(file.path(ResultDir, "filtered_study_temp2.bim"), mustWork = FALSE), stringsAsFactors = FALSE)
+  pruned_ref <- read.table(file = normalizePath(file.path(ResultDir, "filtered_ref_temp2.bim"), mustWork = FALSE), stringsAsFactors = FALSE)
 
   # Final update
   common_snps <- intersect(pruned_study$V2, pruned_ref$V2)
-  # common_snps <- merge(pruned_study, pruned_ref, by = c("V1","V4"))
-  # common_snps <- common_snps[,1:2]
-  # colnames(common_snps) <- c("V1","V4")
 
   if (length(common_snps) == 0) {
     # if (nrow(common_snps) == 0){
@@ -5511,40 +5384,27 @@ findCommonSNPs <- function(ResultDir) {
   }
 
   # Updated in final
-  # common_snps_study1 <- unique(merge(pruned_study,common_snps,by = c("V1","V4")))
-  # common_snps_study <- common_snps_study1$V2
-  # common_snps_ref1 <- unique(merge(pruned_ref,common_snps,by = c("V1","V4")))
-  # common_snps_ref <- common_snps_ref1$V2
-
-  write.table(common_snps, file = paste0(ResultDir, "/", "common_snps"), quote = FALSE, row.names = FALSE, col.names = FALSE, eol = "\r\n", sep = " ")
-  # write.table(common_snps_study, file = paste0(ResultDir, "/","common_snps_study"), quote = FALSE, row.names = FALSE, col.names = FALSE, eol = "\r\n", sep = " ")
-  # write.table(common_snps_ref, file = paste0(ResultDir, "/","common_snps_ref"), quote = FALSE, row.names = FALSE, col.names = FALSE, eol = "\r\n", sep = " ")
-
+  write.table(common_snps, file = normalizePath(file.path(ResultDir, "common_snps"), mustWork = FALSE), quote = FALSE, row.names = FALSE, col.names = FALSE, eol = "\r\n", sep = " ")
   return(list(common_snps = common_snps, pruned_study = pruned_study, pruned_ref = pruned_ref))
 }
 
 ## Function 106
 ## Added in 3.0
-processCommonSNPs <- function(ResultDir, common_snps) {
-  # Write common SNPs to a file
-  # Updated in final
-  # write.table(
-  #   common_snps,
-  #   file = paste0(ResultDir, "/","common_snps"),
-  #   quote = FALSE,
-  #   row.names = FALSE,
-  #   col.names = FALSE,
-  #   eol = "\r\n",
-  #   sep = " "
-  # )
-
+processCommonSNPs <- function(ResultDir) {
   # Extract common SNPs from study and reference datasets
-  executePlinkAd(ResultDir, c("--bfile", paste0(ResultDir, "/", "filtered_study_temp2"), "--extract", paste0(ResultDir, "/", "common_snps"), "--allow-no-sex", "--make-bed", "--out", paste0(ResultDir, "/", "filtered_study_temp3"), "--silent")) ## Added "--allow-no-sex" in 4.0
-  executePlinkAd(ResultDir, c("--bfile", paste0(ResultDir, "/", "filtered_ref_temp2"), "--extract", paste0(ResultDir, "/", "common_snps"), "--allow-no-sex", "--make-bed", "--out", paste0(ResultDir, "/", "filtered_ref_temp3"), "--silent"))
-  # Updated in final
-  # executePlinkAd(ResultDir, c("--bfile", paste0(ResultDir, "/","filtered_study_temp2"), "--extract", paste0(ResultDir, "/","common_snps_study"), "--allow-no-sex", "--make-bed", "--out", paste0(ResultDir, "/","filtered_study_temp3"),"--silent")) ## Added "--allow-no-sex" in 4.0
-  # executePlinkAd(ResultDir, c("--bfile", paste0(ResultDir, "/","filtered_ref_temp2"), "--extract", paste0(ResultDir, "/","common_snps_ref"), "--allow-no-sex", "--make-bed", "--out", paste0(ResultDir, "/","filtered_ref_temp3"),"--silent"))
-
+  executePlinkAd(ResultDir, c(
+    "--bfile", normalizePath(file.path(ResultDir, "filtered_study_temp2"), mustWork = FALSE), 
+    "--extract", normalizePath(file.path(ResultDir, "common_snps"), mustWork = FALSE), 
+    "--allow-no-sex", "--make-bed", 
+    "--out", normalizePath(file.path(ResultDir, "filtered_study_temp3"), mustWork = FALSE), 
+    "--silent")) ## Added "--allow-no-sex" in 4.0
+  executePlinkAd(ResultDir, c(
+    "--bfile", normalizePath(file.path(ResultDir, "filtered_ref_temp2"), mustWork = FALSE), 
+    "--extract", normalizePath(file.path(ResultDir, "common_snps"), mustWork = FALSE), 
+    "--allow-no-sex", "--make-bed", 
+    "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp3"), mustWork = FALSE), 
+    "--silent"))
+  
   # Remove temporary files
   removeTempFiles(ResultDir, "filtered_study_temp2")
   removeTempFiles(ResultDir, "filtered_ref_temp2")
@@ -5559,7 +5419,7 @@ handleSnpAlleleFlips <- function(ResultDir, snp_allele_flips) {
   if (snp_allele_flips_count != 0) {
     write.table(
       snp_allele_flips,
-      file = paste0(ResultDir, "/snp_allele_flips"),
+      file = normalizePath(file.path(ResultDir, "snp_allele_flips"), mustWork = FALSE),
       quote = FALSE,
       row.names = FALSE,
       col.names = FALSE,
@@ -5569,17 +5429,21 @@ handleSnpAlleleFlips <- function(ResultDir, snp_allele_flips) {
 
 
     executePlinkAd(ResultDir, c(
-      "--bfile", paste0(ResultDir, "/filtered_ref_temp4"),
-      "--flip", paste0(ResultDir, "/snp_allele_flips"), "--allow-no-sex", ## Added in 4.0
-      "--make-bed", "--out", paste0(ResultDir, "/filtered_ref_temp5"), "--silent"
+      "--bfile", normalizePath(file.path(ResultDir, "filtered_ref_temp4"), mustWork = FALSE),
+      "--flip", normalizePath(file.path(ResultDir, "snp_allele_flips"), mustWork = FALSE), 
+      "--allow-no-sex", ## Added in 4.0
+      "--make-bed", 
+      "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp5"), mustWork = FALSE), 
+      "--silent"
     ))
   } else {
     # Execute PLINK without allele flips
     executePlinkAd(
       ResultDir,
       c(
-        "--bfile", paste0(ResultDir, "/filtered_ref_temp4"),
-        "--make-bed", "--out", paste0(ResultDir, "/filtered_ref_temp5"),
+        "--bfile", normalizePath(file.path(ResultDir, "filtered_ref_temp4"), mustWork = FALSE),
+        "--make-bed", 
+        "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp5"), mustWork = FALSE),
         "--silent"
       )
     )
@@ -5596,20 +5460,6 @@ correctChromosomeMismatches <- function(ResultDir, common_snps, pruned_study, pr
   # Updated in final
   S1 <- pruned_study[match(common_snps, pruned_study[, 2]), , drop = FALSE]
   S2 <- pruned_ref[match(common_snps, pruned_ref[, "V2"]), , drop = FALSE]
-  # common_names_of_snps <- intersect(pruned_study$V2,pruned_ref$V2)
-
-
-  # S1 <- merge(pruned_study,unique(common_snps),by = c("V1","V4"))
-  # # Apply distinct to S1 to ensure uniqueness based on V1 and V4
-  # S1 <- S1 %>%
-  #   dplyr::distinct(V1, V4, .keep_all = TRUE)
-  # S1 <- S1[,c("V1","V2","V3","V4","V5","V6")]
-  #
-  # S2 <- merge(pruned_ref,unique(common_snps),by = c("V1","V4"))
-  # # Apply distinct to S1 to ensure uniqueness based on V1 and V4
-  # S2 <- S2 %>%
-  #   dplyr::distinct(V1, V4, .keep_all = TRUE)
-  # S2 <- S2[,c("V1","V2","V3","V4","V5","V6")]
 
   whChrNotSame <- which(S1[, 1] != S2[, "V1"])
   whPosNotSame <- which(S1[, 4] != S2[, "V4"])
@@ -5618,13 +5468,22 @@ correctChromosomeMismatches <- function(ResultDir, common_snps, pruned_study, pr
   snpSameNameDiffPos <- S1[whChrPosNotSame, c(1, 4, 2), drop = FALSE]
 
   if (nrow(snpSameNameDiffPos) != 0) {
-    write.table(snpSameNameDiffPos, file = paste0(ResultDir, "/", "snpSameNameDiffPos"), quote = FALSE, row.names = FALSE, col.names = FALSE, eol = "\r\n", sep = " ")
-    executePlinkAd(ResultDir, c("--bfile", paste0(ResultDir, "/", "filtered_ref_temp3"), "--update-chr", paste0(ResultDir, "/", "snpSameNameDiffPos"), 1, 3, "--update-map", paste0(ResultDir, "/", "snpSameNameDiffPos"), 2, 3, "--allow-no-sex", "--make-bed", "--out", paste0(ResultDir, "/", "filtered_ref_temp4"), "--silent")) ## Adding "--allow-no-sex" in 4.0.
+    write.table(snpSameNameDiffPos, file = normalizePath(file.path(ResultDir, "snpSameNameDiffPos"), mustWork = FALSE), quote = FALSE, row.names = FALSE, col.names = FALSE, eol = "\r\n", sep = " ")
+    executePlinkAd(ResultDir, c(
+      "--bfile", normalizePath(file.path(ResultDir, "filtered_ref_temp3"), mustWork = FALSE), 
+      "--update-chr", normalizePath(file.path(ResultDir, "snpSameNameDiffPos"), mustWork = FALSE), 1, 3, 
+      "--update-map", normalizePath(file.path(ResultDir, "snpSameNameDiffPos"), mustWork = FALSE), 2, 3, 
+      "--allow-no-sex", "--make-bed", 
+      "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp4"), mustWork = FALSE), 
+      "--silent")) ## Adding "--allow-no-sex" in 4.0.
   } else {
-    executePlinkAd(ResultDir, c("--bfile", paste0(ResultDir, "/", "filtered_ref_temp3"), "--make-bed", "--out", paste0(ResultDir, "/", "filtered_ref_temp4"), "--silent"))
+    executePlinkAd(ResultDir, c(
+      "--bfile", normalizePath(file.path(ResultDir, "filtered_ref_temp3"), mustWork = FALSE), 
+      "--make-bed", "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp4"), mustWork = FALSE), 
+      "--silent"))
   }
 
-  removeTempFiles(ResultDir, "filtered_ref_temp3")
+  removeTempFiles(normalizePath(ResultDir, mustWork = FALSE), "filtered_ref_temp3")
 
   return(list(S1 = S1, S2 = S2, snpSameNameDiffPos = snpSameNameDiffPos))
 }
@@ -5638,7 +5497,7 @@ handleAlleleFlipsWrong <- function(ResultDir, allele_flips_wrong) {
   if (allele_flips_wrong_count != 0) {
     write.table(
       allele_flips_wrong,
-      file = paste0(ResultDir, "/allele_flips_wrong"),
+      file = normalizePath(file.path(ResultDir, "allele_flips_wrong"), mustWork = FALSE),
       quote = FALSE,
       row.names = FALSE,
       col.names = FALSE,
@@ -5647,99 +5506,85 @@ handleAlleleFlipsWrong <- function(ResultDir, allele_flips_wrong) {
     )
 
     # Execute PLINK for allele flips wrong
-    executePlinkAd(
-      ResultDir,
-      c(
-        "--bfile", paste0(ResultDir, "/filtered_ref_temp5"),
-        "--exclude", paste0(ResultDir, "/allele_flips_wrong"),
-        "--allow-no-sex", ## Adding in 4.0.
-        "--make-bed", "--out", paste0(ResultDir, "/filtered_ref_temp6"), "--silent"
-      )
-    )
+    executePlinkAd(ResultDir, c(
+      "--bfile", normalizePath(file.path(ResultDir, "filtered_ref_temp5"), mustWork = FALSE),
+      "--exclude", normalizePath(file.path(ResultDir, "allele_flips_wrong"), mustWork = FALSE),
+      "--allow-no-sex", ## Adding in 4.0.
+      "--make-bed", "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp6"), mustWork = FALSE), 
+      "--silent"
+    ))
   } else {
     # Execute PLINK without allele flips wrong
-    executePlinkAd(
-      ResultDir,
-      c(
-        "--bfile", paste0(ResultDir, "/filtered_ref_temp5"), ##### Updated in final
-        "--make-bed", "--out", paste0(ResultDir, "/filtered_ref_temp6"),
-        "--silent"
-      )
-    )
+    executePlinkAd(ResultDir, c(
+      "--bfile", normalizePath(file.path(ResultDir, "filtered_ref_temp5"), mustWork = FALSE), ##### Updated in final
+      "--make-bed", 
+      "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp6"), mustWork = FALSE),
+      "--silent"
+    ))
   }
 
   # Remove temporary files using the provided helper function
-  removeTempFiles(ResultDir, "filtered_ref_temp5")
-}
+  removeTempFiles(normalizePath(ResultDir, mustWork = FALSE), "filtered_ref_temp5")
+  }
 
 ## Function 110
 ## Added in 3.0
 mergeDatasetsAndPerformPCA <- function(ResultDir) {
   # Merge study and reference datasets
-  executePlinkAd(
-    ResultDir,
-    c(
-      "--bfile", paste0(ResultDir, "/filtered_study_temp3"),
-      "--bmerge", paste0(ResultDir, "/filtered_ref_temp6"),
-      "--allow-no-sex", ## Adding in 4.0
-      "--make-bed", "--out", paste0(ResultDir, "/study_ref_merge"),
-      "--silent"
-    )
-  )
-
+  executePlinkAd(ResultDir, c(
+    "--bfile", normalizePath(file.path(ResultDir, "filtered_study_temp3"), mustWork = FALSE),
+    "--bmerge", normalizePath(file.path(ResultDir, "filtered_ref_temp6"), mustWork = FALSE),
+    "--allow-no-sex", ## Adding in 4.0
+    "--make-bed", 
+    "--out", normalizePath(file.path(ResultDir, "study_ref_merge"), mustWork = FALSE),
+    "--silent"
+  ))
 
   # Check for strand inconsistency
-  if (file.exists(paste0(ResultDir, "/study_ref_merge-merge.missnp"))) {
+  if (file.exists(normalizePath(file.path(ResultDir, "study_ref_merge-merge.missnp"), mustWork = FALSE))) {
     # Re-merge study and reference datasets after excluding inconsistent SNPs
-    executePlinkAd(
-      ResultDir,
-      c(
-        "--bfile", paste0(ResultDir, "/filtered_ref_temp6"),
-        "--exclude", paste0(ResultDir, "/study_ref_merge-merge.missnp"),
-        "--allow-no-sex", ## Adding in 4.0
-        "--make-bed", "--out", paste0(ResultDir, "/filtered_ref_temp7"), "--silent"
-      )
-    )
-
-
-    executePlinkAd(
-      ResultDir,
-      c(
-        "--bfile", paste0(ResultDir, "/filtered_study_temp3"),
-        "--bmerge", paste0(ResultDir, "/filtered_ref_temp7"),
-        "--allow-no-sex", ## Adding in 4.0.
-        "--make-bed", "--out", paste0(ResultDir, "/study_ref_merge"),
-        "--silent"
-      )
-    )
-  }
-
-  # Remove temporary files using the provided helper function
-  removeTempFiles(ResultDir, "filtered_study_temp3")
-
-  # Perform PCA for ancestry
-  executePlinkAd(
-    ResultDir,
-    c(
-      "--bfile", paste0(ResultDir, "/study_ref_merge"),
-      "--pca", "--out", paste0(ResultDir, "/study_ref_merge"),
+    executePlinkAd(ResultDir, c(
+      "--bfile", normalizePath(file.path(ResultDir, "filtered_ref_temp6"), mustWork = FALSE),
+      "--exclude", normalizePath(file.path(ResultDir, "study_ref_merge-merge.missnp"), mustWork = FALSE),
+      "--allow-no-sex", ## Adding in 4.0
+      "--make-bed", 
+      "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp7"), mustWork = FALSE), 
       "--silent"
-    )
-  )
+    ))
 
+    executePlinkAd(ResultDir, c(
+      "--bfile", normalizePath(file.path(ResultDir, "filtered_study_temp3"), mustWork = FALSE),
+      "--bmerge", normalizePath(file.path(ResultDir, "filtered_ref_temp7"), mustWork = FALSE),
+      "--allow-no-sex", ## Adding in 4.0.
+      "--make-bed", 
+      "--out", normalizePath(file.path(ResultDir, "study_ref_merge"), mustWork = FALSE),
+      "--silent"
+    ))
 
-  # Clean up temporary files
-  removeTempFiles(ResultDir, "filtered_ref_temp6")
-  removeTempFiles(ResultDir, "filtered_ref_temp7")
-
-  if (file.exists(paste0(ResultDir, "/study_ref_merge.eigenvec"))) {
-    rlang::inform(rlang::format_error_bullets(c("v" = "PCA done.")))
+    # Remove temporary files using the provided helper function
+    removeTempFiles(normalizePath(ResultDir), "filtered_study_temp3")
   } else {
-    rlang::inform(
-      rlang::format_error_bullets(c(
-        "x" = "PCA cannot be computed.",
-        "i" = "Please check whether you have sufficient number of overlapping SNPs between study and reference data. There are too many missing genotypes in study data or closely related individuals so GRM cannot be extracted.")))
-    stop("Ancestry check cannot be performed since PCA cannot be computed")
+    # Perform PCA for ancestry
+    executePlinkAd(ResultDir, c(
+      "--bfile", normalizePath(file.path(ResultDir, "study_ref_merge"), mustWork = FALSE),
+      "--pca", 
+      "--out", normalizePath(file.path(ResultDir, "study_ref_merge"), mustWork = FALSE),
+      "--silent"
+    ))
+
+    # Clean up temporary files
+    removeTempFiles(normalizePath(ResultDir), "filtered_ref_temp6")
+    removeTempFiles(normalizePath(ResultDir), "filtered_ref_temp7")
+
+    if (file.exists(normalizePath(file.path(ResultDir, "study_ref_merge.eigenvec"), mustWork = FALSE))) {
+      rlang::inform(rlang::format_error_bullets(c("v" = "PCA done.")))
+    } else {
+      rlang::inform(
+        rlang::format_error_bullets(c(
+          "x" = "PCA cannot be computed.",
+          "i" = "Please check whether you have sufficient number of overlapping SNPs between study and reference data. There are too many missing genotypes in study data or closely related individuals so GRM cannot be extracted.")))
+      stop("Ancestry check cannot be performed since PCA cannot be computed")
+    }
   }
 }
 
@@ -5749,13 +5594,13 @@ loadAndProcessReferenceAncestry <- function(ResultDir, reference) {
   if (reference == "HapMapIII_NCBI36") {
     ref_ancestry1 <-
       read.table(
-        file = paste0(system.file("extdata", package = "GXwasR"), "/", "hapmap_relationships_w_pops_121708.txt"),
+        file = file.path(system.file("extdata", package = "GXwasR"), "hapmap_relationships_w_pops_121708.txt"),
         stringsAsFactors = FALSE,
         header = TRUE
       )[, c("IID", "population")]
     colnames(ref_ancestry1) <- c("ID", "Ancestry")
     ## Updated in 5.0
-    ref1 <- read.table(paste0(ResultDir, "/", reference, ".fam"), header = FALSE)[, 2, drop = FALSE]
+    ref1 <- read.table(normalizePath(file.path(ResultDir, paste0(reference, ".fam")), mustWork = FALSE), header = FALSE)[, 2, drop = FALSE]
     colnames(ref1) <- "ID"
     ref_ancestry <- merge(ref_ancestry1, ref1, by = "ID")
 
@@ -5791,7 +5636,7 @@ loadAndProcessReferenceAncestry <- function(ResultDir, reference) {
   } else if (reference == "ThousandGenome") {
     ref_ancestry <-
       read.table(
-        file = paste0(system.file("extdata", package = "GXwasR"), "/", "1000genomesampleinfo.txt"),
+        file = file.path(system.file("extdata", package = "GXwasR"), "1000genomesampleinfo.txt"),
         stringsAsFactors = FALSE,
         header = TRUE
       )[, c("Sample", "superpop")]
@@ -5823,7 +5668,7 @@ prepareAncestryData <- function(study_pop, ref_ancestry_EUR_AFR_ASIAN) {
 ## Function 113
 ## Added in 3.0
 loadPCAData <- function(ResultDir, combined_pop) {
-  pca <- read.table(file = paste0(ResultDir, "/study_ref_merge.eigenvec"), stringsAsFactors = FALSE, header = FALSE)
+  pca <- read.table(file = normalizePath(file.path(ResultDir, "study_ref_merge.eigenvec"), mustWork = FALSE), stringsAsFactors = FALSE, header = FALSE)
   tab <- data.frame(
     sample = pca$V2,
     pop = factor(combined_pop$Ancestry)[match(pca$V2, combined_pop$ID)],
@@ -5888,7 +5733,7 @@ reportAlleleFlips <- function(snp_allele_flips, ResultDir) {
     rlang::inform(rlang::format_error_bullets(c("i" = "No allele flips between study and reference data.")))
   } else {
     rlang::inform(rlang::format_error_bullets(c("i" = paste0(snp_allele_flips_count, " allele flips identified between study and reference data."))))
-    mergebim <- read.table(paste0(ResultDir, "/study_ref_merge.bim"))
+    mergebim <- read.table(normalizePath(file.path(ResultDir, "study_ref_merge.bim"), mustWork = FALSE))
     rlang::inform(rlang::format_error_bullets(c("i" = paste0(length(unique(mergebim$V2)), " SNPs were finally retained in study and reference data after correcting for position mismatch and allele flips."))))
   }
 }
@@ -6034,7 +5879,7 @@ detectOutliers <- function(tab, ResultDir, DataDir, finput, outlier, outlierOf, 
   colnames(Samples_with_predicted_ancestry) <- c("Sample ID", "Predicted_Ancestry")
   Samples_with_predicted_ancestry$Predicted_Ancestry[is.na(Samples_with_predicted_ancestry$Predicted_Ancestry)] <- "Undecided"
 
-  studyfam <- read.table(paste0(DataDir, "/", finput, ".fam"))
+  studyfam <- read.table(normalizePath(file.path(DataDir, paste0(finput, ".fam")), mustWork = FALSE))
   Outlier_samples_fam <- merge(Outlier_samples, studyfam[, 1:2], by.x = "sample", by.y = "V2")[, c(2, 1)]
   colnames(Outlier_samples_fam) <- c("FID", "IID")
 
@@ -6045,7 +5890,7 @@ detectOutliers <- function(tab, ResultDir, DataDir, finput, outlier, outlierOf, 
   if (nrow(Outlier_samples_fam) != 0) {
     write.table(
       Outlier_samples_fam,
-      file = paste0(ResultDir, "/Outlier_ancestry"),
+      file = normalizePath(file.path(ResultDir, "Outlier_ancestry"), mustWork = FALSE),
       quote = FALSE, row.names = FALSE, col.names = FALSE, eol = "\r\n", sep = " "
     )
     rlang::inform(rlang::format_error_bullets(c("i" = paste0(nrow(unique(Outlier_samples_fam)), " samples are outliers of selected reference population."))))
@@ -7097,10 +6942,10 @@ validateInputForGeneticCorrBT <- function(DataDir, ResultDir, finput, byCHR, REM
 
 
   # Validate categorical and quantitative covariate files
-  if (!is.null(cat_covarfile) && !file.exists(paste0(DataDir, "/", cat_covarfile))) {
+  if (!is.null(cat_covarfile) && !file.exists(normalizePath(file.path(DataDir, cat_covarfile), mustWork = FALSE))) {
     stop("Error in cat_covarfile: Specified file does not exist in DataDir.")
   }
-  if (!is.null(quant_covarfile) && !file.exists(paste0(DataDir, "/", quant_covarfile))) {
+  if (!is.null(quant_covarfile) && !file.exists(normalizePath(file.path(DataDir, quant_covarfile), mustWork = FALSE))) {
     stop("Error in quant_covarfile: Specified file does not exist in DataDir.")
   }
 
@@ -7332,7 +7177,7 @@ processRegionFilter <- function(x, filterPAR, filterXTR, filterAmpliconic, Resul
 
     write.table(
       y,
-      file = paste0(ResultDir, "/par_region.txt"),
+      file = normalizePath(file.path(ResultDir, "par_region.txt"), mustWork = FALSE),
       quote = FALSE,
       row.names = FALSE,
       col.names = FALSE,
@@ -7343,22 +7188,22 @@ processRegionFilter <- function(x, filterPAR, filterXTR, filterAmpliconic, Resul
       plink(),
       args = c(
         "--bfile",
-        paste0(DataDir, "/", finput),
+        normalizePath(file.path(DataDir, finput), mustWork = FALSE),
         "--extract",
         "range",
-        paste0(ResultDir, "/", "par_region.txt"),
+        normalizePath(file.path(ResultDir, "par_region.txt"), mustWork = FALSE),
         "--allow-no-sex", ## Adding in 4.0.
         "--make-bed",
         "--out",
-        paste0(ResultDir, "/", foutput, "_par_region"),
+        normalizePath(file.path(ResultDir, paste0(foutput, "_par_region")), mustWork = FALSE),
         "--silent"
       ),
       std_out = FALSE,
       std_err = FALSE
     ))
 
-    if (file.exists(paste0(ResultDir, "/", foutput, "_par_region.bim"))) {
-      par_snps <- read.table(paste0(ResultDir, "/", foutput, "_par_region.bim"))
+    if (file.exists(normalizePath(file.path(ResultDir, paste0(foutput, "_par_region.bim")), mustWork = FALSE))) {
+      par_snps <- read.table(normalizePath(file.path(ResultDir, paste0(foutput, "_par_region.bim")), mustWork = FALSE))
       colnames(par_snps) <- c("CHR", "SNP", "START", "END", "A1", "A2")
       rlang::inform(rlang::format_error_bullets(c("i" = paste0("PAR SNPs:", length(unique(par_snps$SNP))))))
     } else {
@@ -7378,7 +7223,7 @@ processRegionFilter <- function(x, filterPAR, filterXTR, filterAmpliconic, Resul
 
     write.table(
       y,
-      file = paste0(ResultDir, "/xtr_region.txt"),
+      file = normalizePath(file.path(ResultDir, "xtr_region.txt"), mustWork = FALSE),
       quote = FALSE,
       row.names = FALSE,
       col.names = FALSE,
@@ -7390,22 +7235,22 @@ processRegionFilter <- function(x, filterPAR, filterXTR, filterAmpliconic, Resul
       plink(),
       args = c(
         "--bfile",
-        paste0(DataDir, "/", finput),
+        normalizePath(file.path(DataDir, finput), mustWork = FALSE),
         "--extract",
         "range",
-        paste0(ResultDir, "/", "xtr_region.txt"),
+        normalizePath(file.path(ResultDir, "xtr_region.txt"), mustWork = FALSE),
         "--allow-no-sex", ## Adding in 4.0.
         "--make-bed",
         "--out",
-        paste0(ResultDir, "/", foutput, "_xtr_region"),
+        normalizePath(file.path(ResultDir, foutput, "_xtr_region"), mustWork = FALSE),
         "--silent"
       ),
       std_out = FALSE,
       std_err = FALSE
     ))
 
-    if (file.exists(paste0(ResultDir, "/", foutput, "_xtr_region.bim"))) {
-      xtr_snps <- read.table(paste0(ResultDir, "/", foutput, "_xtr_region.bim"))
+    if (file.exists(normalizePath(file.path(ResultDir, paste0(foutput, "_xtr_region.bim")), mustWork = FALSE))) {
+      xtr_snps <- read.table(normalizePath(file.path(ResultDir, paste0(foutput, "_xtr_region.bim")), mustWork = FALSE))
       colnames(xtr_snps) <- c("CHR", "SNP", "START", "END", "A1", "A2")
       rlang::inform(rlang::format_error_bullets(c("i" = paste0("XTR SNPs:", length(unique(xtr_snps$SNP))))))
     } else {
@@ -7426,7 +7271,7 @@ processRegionFilter <- function(x, filterPAR, filterXTR, filterAmpliconic, Resul
 
     write.table(
       y,
-      file = paste0(ResultDir, "/ampliconic_region.txt"),
+      file = normalizePath(file.path(ResultDir, "/ampliconic_region.txt"), mustWork = FALSE),
       quote = FALSE,
       row.names = FALSE,
       col.names = FALSE,
@@ -7439,22 +7284,22 @@ processRegionFilter <- function(x, filterPAR, filterXTR, filterAmpliconic, Resul
       plink(),
       args = c(
         "--bfile",
-        paste0(DataDir, "/", finput),
+        normalizePath(file.path(DataDir, finput), mustWork = FALSE),
         "--extract",
         "range",
-        paste0(ResultDir, "/", "ampliconic_region.txt"),
+        normalizePath(file.path(ResultDir, "ampliconic_region.txt"), mustWork = FALSE),
         "--allow-no-sex", ## Adding in 4.0.
         "--make-bed",
         "--out",
-        paste0(ResultDir, "/", foutput, "_ampliconic_region"),
+        normalizePath(file.path(ResultDir, paste0(foutput, "_ampliconic_region")), mustWork = FALSE),
         "--silent"
       ),
       std_out = FALSE,
       std_err = FALSE
     ))
 
-    if (file.exists(paste0(ResultDir, "/", foutput, "_ampliconic_region.bim"))) {
-      ampliconic_snps <- read.table(paste0(ResultDir, "/", foutput, "_ampliconic_region.bim"))
+    if (file.exists(normalizePath(file.path(ResultDir, paste0(foutput, "_ampliconic_region.bim")), mustWork = FALSE))) {
+      ampliconic_snps <- read.table(normalizePath(file.path(ResultDir, paste0(foutput, "_ampliconic_region.bim")), mustWork = FALSE))
       colnames(ampliconic_snps) <- c("CHR", "SNP", "START", "END", "A1", "A2")
       rlang::inform(rlang::format_error_bullets(c("i" = paste0("Ampliconic SNPs:", length(unique(ampliconic_snps$SNP))))))
     } else {
@@ -7480,7 +7325,7 @@ readGenomicFeatures <- function(DataDir1, CHRX, CHRY, CHR, HG) {
   if (CHRX == TRUE && CHRY == TRUE) {
     x1 <- as.data.frame(
       read.table(
-        file = paste0(DataDir1, "/", "X", "_genomic_features_", HG, ".bed.txt"),
+        file = normalizePath(file.path(DataDir1, paste0("X", "_genomic_features_", HG, ".bed.txt")), mustWork = FALSE),
         header = FALSE,
         sep = ""
       )
@@ -7488,7 +7333,7 @@ readGenomicFeatures <- function(DataDir1, CHRX, CHRY, CHR, HG) {
 
     x2 <- as.data.frame(
       read.table(
-        file = paste0(DataDir1, "/", "Y", "_genomic_features_", HG, ".bed.txt"),
+        file = normalizePath(file.path(DataDir1, paste0("Y", "_genomic_features_", HG, ".bed.txt")), mustWork = FALSE),
         header = FALSE,
         sep = ""
       )
@@ -7498,7 +7343,7 @@ readGenomicFeatures <- function(DataDir1, CHRX, CHRY, CHR, HG) {
   } else {
     x <- as.data.frame(
       read.table(
-        file = paste0(DataDir1, "/", CHR, "_genomic_features_", HG, ".bed.txt"),
+        file = normalizePath(file.path(DataDir1, paste0(CHR, "_genomic_features_", HG, ".bed.txt")), mustWork = FALSE),
         header = FALSE,
         sep = ""
       )
@@ -7541,14 +7386,14 @@ executePlinkExcludeExtract <- function(ResultDir, DataDir, finput, rangefile, fo
   # Exclude region
   exclude_args <- c(
     "--bfile",
-    paste0(DataDir, "/", finput),
+    normalizePath(file.path(DataDir, finput), mustWork = FALSE),
     "--exclude",
     "range",
     rangefile,
     "--allow-no-sex", ## Adding in 4.0
     "--make-bed",
     "--out",
-    paste0(ResultDir, "/", foutput),
+    normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
     "--silent"
   )
 
@@ -7557,14 +7402,14 @@ executePlinkExcludeExtract <- function(ResultDir, DataDir, finput, rangefile, fo
   # Extract region
   extract_args <- c(
     "--bfile",
-    paste0(DataDir, "/", finput),
+    normalizePath(file.path(DataDir, finput), mustWork = FALSE),
     "--extract",
     "range",
     rangefile,
     "--allow-no-sex", ## Adding in 4.0
     "--make-bed",
     "--out",
-    paste0(ResultDir, "/", foutput, "_snps_extracted"),
+    normalizePath(file.path(ResultDir, paste0(foutput, "_snps_extracted")), mustWork = FALSE),
     "--silent"
   )
 
@@ -7578,12 +7423,12 @@ executePlinkChrFilter <- function(ResultDir, DataDir, finput, filterCHR, foutput
   # Filter SNPs not on specified chromosomes
   not_chr_args <- c(
     "--bfile",
-    paste0(DataDir, "/", finput),
+    normalizePath(file.path(DataDir, finput), mustWork = FALSE),
     "--not-chr",
     filterCHR,
     "--make-bed",
     "--out",
-    paste0(ResultDir, "/", foutput),
+    normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
     "--silent"
   )
 
@@ -7592,12 +7437,12 @@ executePlinkChrFilter <- function(ResultDir, DataDir, finput, filterCHR, foutput
   # Filter SNPs on specified chromosomes
   chr_args <- c(
     "--bfile",
-    paste0(DataDir, "/", finput),
+    normalizePath(file.path(DataDir, finput), mustWork = FALSE),
     "--chr",
     filterCHR,
     "--make-bed",
     "--out",
-    paste0(ResultDir, "/", foutput, "_snps_extracted"),
+    normalizePath(file.path(ResultDir, paste0(foutput, "_snps_extracted")), mustWork = FALSE),
     "--silent"
   )
 
@@ -7648,7 +7493,7 @@ validateInputForLDPrune <- function(DataDir, finput, ResultDir, window_size, ste
 ## New function V7.0
 read_plink_clumped_clean <- function(resultDir, filename) {
   # Define the file path
-  file_path <- file.path(resultDir, filename)
+  file_path <- normalizePath(file.path(resultDir, filename), mustWork = FALSE)
 
   # Read the file
   lines <- readLines(file_path)
@@ -9407,3 +9252,4 @@ llfun <- function(param, N, M, Nref = 1000, lam, bstar, lim = exp(-10)) {
   ll <- sum(log(lamh2)) + sum(bstar^2 / (lamh2))
   return(ll)
 }
+  
