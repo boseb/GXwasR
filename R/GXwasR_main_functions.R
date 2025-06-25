@@ -113,7 +113,7 @@
 #' outlier_threshold <- 3
 #' x <- AncestryCheck(
 #'     DataDir = DataDir, ResultDir = ResultDir, finput = finput,
-#'     reference = "HapMapIII_NCBI36", highLD_regions = highLD_regions,
+#'     reference = reference, highLD_regions = highLD_regions,
 #'     study_pop = study_pop, studyLD = studyLD, referLD = referLD,
 #'     outlierOf = "EUR", outlier = outlier, outlier_threshold = outlier_threshold
 #' )
@@ -161,10 +161,14 @@ AncestryCheck <-
                 # Changing the input file
                 finput <- paste0(finput, "_new")
 
-                Download_reference(refdata = reference, wdir = ResultDir)
-
+                # Verify existence of required reference data
+                ref_path <- validate_reference_data(reference)
+                if(reference == 'ThousandGenome'){
+                    reference <- 'Ref10Kgenome'
+                }
+                
                 # Changing the snp ids in reference .bim file
-                rbim <- read.table(normalizePath(file.path(ResultDir, paste0(reference, ".bim")), mustWork = FALSE))
+                rbim <- read.table(normalizePath(file.path(ref_path, paste0(reference, ".bim")), mustWork = FALSE))
                 # Assuming sbim is your data frame
                 rbim$V2 <- paste(rbim$V1, rbim$V4, sep = ":")
                 # Replace the new input .bim file with new snp ids.
@@ -194,8 +198,8 @@ AncestryCheck <-
                     # Define patterns for files to remove
 
                     # Remove files with specified patterns
-                    file.remove(list.files(ResultDir, pattern = "filtered_study_temp1", full.names = TRUE))
-                    file.remove(list.files(ResultDir, pattern = "filtered_ref_temp1", full.names = TRUE))
+                    file.remove(list.files(normalizePath(ResultDir, mustWork = FALSE), pattern = "filtered_study_temp1", full.names = TRUE))
+                    file.remove(list.files(normalizePath(ResultDir, mustWork = FALSE), pattern = "filtered_ref_temp1", full.names = TRUE))
                 } else if (filterSNP == FALSE) {
                     executePlinkForUnfilteredData(DataDir, ResultDir, finput, reference)
                 }
@@ -5613,106 +5617,82 @@ FilterSNP <- function(DataDir, ResultDir, finput, foutput, SNPvec, extract = FAL
 }
 
 
-#' Download Hapmap phase 3 and 1000 Genome phase 3 Data
+#' Validate Path to Reference Data Set
 #'
 #' @description
-#' Downloads reference data sets from specified URLs based on the reference dataset name and working directory.
-#' Currently supports 'HapMapIII_NCBI36' and 'ThousandGenome'.
+#' Validates that reference data for either 'HapMapIII_NCBI36' or 'ThousandGenome' is present
+#' in the path specified by the appropriate environment variable:
+#' - 'HAPMAPIII_NCBI36_DIR' for HapMapIII_NCBI36
+#' - 'THOUSANDGENOME_DIR' for ThousandGenome
+#'
+#' If files are missing or paths are not set, informative guidance is provided.
 #'
 #' @param refdata
-#' A character string specifying the reference dataset to download. Should be one of 'HapMapIII_NCBI36' or 'ThousandGenome'.
-#'
-#' @param wdir
-#' A character string specifying the working directory where the reference data will be downloaded and extracted.
+#' A character string specifying the reference dataset to validate. Should be one of
+#' 'HapMapIII_NCBI36' or 'ThousandGenome'.
 #'
 #' @return
-#' Invisible. The function prints a message upon successful download and extraction of the reference data.
+#' A normalized path to the directory containing the validated reference data files.
 #'
 #' @export
 #' @examples
 #' \dontrun{
-#' Download_reference("ThousandGenome", tempdir())
-#' Download_reference("HapMapIII_NCBI36", tempdir())
+#' Sys.setenv(HAPMAPIII_NCBI36_DIR = "/path/to/hapmap")
+#' validate_reference_data("HapMapIII_NCBI36")
+#'
+#' Sys.setenv(THOUSANDGENOME_DIR = "/path/to/tgp")
+#' validate_reference_data("ThousandGenome")
 #' }
-Download_reference <- function(refdata, wdir = tempdir()) {
-    # Input validation
-    if (!is.character(refdata) || !is.character(wdir)) {
-        stop("Both 'refdata' and 'wdir' must be character strings.")
+validate_reference_data <- function(refdata) {
+    valid_refs <- c("HapMapIII_NCBI36", "ThousandGenome", "Ref10Kgenome")
+    if (!is.character(refdata) || length(refdata) != 1 || !(refdata %in% valid_refs)) {
+        stop("Invalid 'refdata'. Must be one of: ", paste(valid_refs, collapse = ", "))
     }
 
-
-    if (!refdata %in% c("HapMapIII_NCBI36", "ThousandGenome")) {
-        stop("Invalid 'refdata'. Choose either 'HapMapIII_NCBI36' or 'ThousandGenome'.")
-    }
-
-    if (!dir.exists(wdir)) {
-        stop("The specified working directory does not exist.")
-    }
-
-    tryCatch(
-        {
-            os_type <- detect_os_type()
-            options(timeout = 200)
-
-            if (refdata == "HapMapIII_NCBI36") {
-                url <- "https://figshare.com/ndownloader/files/40585145"
-                file_ext <- ".zip"
-            } else if (refdata == "ThousandGenome") {
-                # url <- "https://figshare.com/ndownloader/files/40728539"
-                url <- "https://figshare.com/ndownloader/files/46552177"
-                file_ext <- ".tar.gz"
-            }
-
-            destfile <- normalizePath(file.path(wdir, paste0(refdata, file_ext)), mustWork = FALSE)
-
-            # Downloading based on OS
-            if (os_type == "unix") {
-                utils::download.file(url, destfile, quiet = TRUE)
-            } else if (os_type == "windows") {
-                utils::download.file(url, destfile, quiet = TRUE, mode = "wb")
-            } else {
-                stop("Unsupported Operating System.")
-            }
-
-            # Extracting files
-            if (file_ext == ".zip") {
-                utils::unzip(destfile, exdir = wdir, junkpaths = TRUE)
-            } else if (file_ext == ".tar.gz") {
-                utils::untar(destfile, exdir = wdir)
-            }
-
-            invisible(file.remove(destfile))
-
-            # List the extracted files in the working directory
-
-            ##### Added in V7
-
-            # Define new names
-
-            if (refdata == "ThousandGenome") {
-                new_names <- c("ThousandGenome.bed", "ThousandGenome.bim", "ThousandGenome.fam")
-
-                # Original file paths
-                extracted_files <- as.list(normalizePath(file.path(wdir, c("Ref10Kgenome.bed", "Ref10Kgenome.bim", "Ref10Kgenome.fam")), mustWork = FALSE))
-
-                # Rename files
-                for (i in seq_along(extracted_files)) {
-                    old_name <- extracted_files[[i]]
-                    new_name <- file.path(wdir, new_names[i])
-                    file.rename(old_name, new_name)
-                }
-            }
-            #########
-            rlang::inform(rlang::format_error_bullets(c("i" = paste0("Reference data '", refdata, "' downloaded and extracted in ", wdir, "."))))
-        },
-        error = function(e) {
-            message("An error occurred: ", e$message)
-            return(NULL)
-        },
-        warning = function(w) {
-            message("Warning: ", w$message)
-        }
+    # Define environment variable and expected files based on dataset
+    env_var <- switch(refdata,
+        "HapMapIII_NCBI36" = "HAPMAPIII_NCBI36_DIR",
+        "ThousandGenome" = "THOUSANDGENOME_DIR",
+        "Ref10Kgenome" = "THOUSANDGENOME_DIR"
     )
+
+    expected_files <- switch(refdata,
+        "HapMapIII_NCBI36" = c("HapMapIII_NCBI36.bed", "HapMapIII_NCBI36.bim", "HapMapIII_NCBI36.fam"),
+        "ThousandGenome" = c("Ref10Kgenome.bed", "Ref10Kgenome.bim", "Ref10Kgenome.fam"),
+        "Ref10Kgenome" = c("Ref10Kgenome.bed", "Ref10Kgenome.bim", "Ref10Kgenome.fam")
+    )
+
+    dir_path <- Sys.getenv(env_var, unset = NA)
+    if (is.na(dir_path) || !dir.exists(dir_path)) {
+        stop(
+            "Environment variable '", env_var, "' is not set or points to an invalid directory.\n",
+            "Set it using Sys.setenv(", env_var, " = '/path/to/your/data')"
+        )
+    }
+
+    # Check presence of all expected files
+    full_paths <- file.path(dir_path, expected_files)
+    missing_files <- expected_files[!file.exists(full_paths)]
+
+    if (length(missing_files) > 0) {
+        stop(
+            "Missing files for '", refdata, "' in ", normalizePath(dir_path), ":\n",
+            paste("-", missing_files, collapse = "\n"), "\n\n",
+            "Please download and extract the reference data manually.\n",
+            "Download URLs:\n",
+            "- HapMapIII_NCBI36: https://figshare.com/ndownloader/files/40585145\n",
+            "- ThousandGenome: https://figshare.com/ndownloader/files/46552177"
+        )
+    }
+
+    rlang::inform(
+        rlang::format_error_bullets(c(
+            "i" = paste0("'", refdata, "' reference data found at ", normalizePath(dir_path), ".")
+        )), 
+        .frequency = "regularly", .frequency_id = 'validate_reference'
+    )
+
+    return(normalizePath(dir_path))
 }
 
 
