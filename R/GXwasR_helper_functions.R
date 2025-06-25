@@ -615,7 +615,6 @@ executePlinkAd <- function(ResultDir, args) {
     tryCatch(
         {
             stderr_dest <- ifelse(.Platform$OS.type == "windows", "NUL", "/dev/null")
-            # invisible(sys::exec_wait(file.path(ResultDir, "./plink"), args = args, std_err = stderr_dest))
             sys::exec_wait(plink(), args = args, std_err = stderr_dest)
         },
         error = function(e) {
@@ -5255,11 +5254,11 @@ processLDreferenceData <- function(ResultDir, highLD_regions, referLD, referLD_w
     if (referLD) {
         if (!is.null(highLD_regions)) {
             executePlinkAd(ResultDir, c(
-                "--bfile", normalizePath(file.path(ResultDir, "/filtered_ref_temp1"), mustWork = FALSE),
+                "--bfile", normalizePath(file.path(ResultDir, "filtered_ref_temp1"), mustWork = FALSE),
                 "--exclude", "range", highLD_regions,
                 "--indep-pairwise", referLD_window_size, referLD_step_size, referLD_r2_threshold,
                 "--allow-no-sex", ## Adding in 4.0
-                "--out", normalizePath(file.path(ResultDir, "/filtered_ref_temp2"), mustWork = FALSE),
+                "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp2"), mustWork = FALSE),
                 "--silent"
             ))
 
@@ -5310,6 +5309,7 @@ processLDreferenceData <- function(ResultDir, highLD_regions, referLD, referLD_w
 ## Function 103
 ## Added in 3.0
 filterATGCSNPs <- function(DataDir, ResultDir, finput, reference) {
+    ref_path <- validate_reference_data(reference)
     filterSNPs <- function(DataDir, file, SNPPrefix) {
         bimData <- read.table(file = normalizePath(file.path(DataDir, paste0(file, ".bim")), mustWork = FALSE), stringsAsFactors = FALSE)
         SNP_AT <- bimData[which(bimData[, 5] == "A" & bimData[, 6] == "T"), 2, drop = FALSE]
@@ -5335,7 +5335,7 @@ filterATGCSNPs <- function(DataDir, ResultDir, finput, reference) {
         "--silent"
     )) ## Added "--allow-no-sex" in 4.0
     executePlinkAd(ResultDir, c(
-        "--bfile", normalizePath(file.path(ResultDir, reference), mustWork = FALSE),
+        "--bfile", normalizePath(file.path(ref_path, reference), mustWork = FALSE),
         "--exclude", normalizePath(file.path(ResultDir, "ref_SNP"), mustWork = FALSE),
         "--allow-no-sex", "--make-bed",
         "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp1"), mustWork = FALSE),
