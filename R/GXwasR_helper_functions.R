@@ -178,7 +178,7 @@ MFsplitPlink <- function(DataDir, ResultDir, finput, foutput, sex, xplink = FALS
 ## Function 3
 ########## Added in 3.0
 checkFiles <- function(DataDir, finput) {
-    all(file.exists(file.path(DataDir, paste0(finput, c(".bed", ".bim", ".fam")))))
+    all(file.exists(normalizePath(file.path(DataDir, paste0(finput, c(".bed", ".bim", ".fam"))), mustWork = FALSE)))
 }
 
 ## Function 4
@@ -329,7 +329,7 @@ outersect <- function(x, y, ...) {
 ## Function 11
 ######### Added in 3.0
 removeTempFiles <- function(directory, pattern) {
-    file_path <- paste0(directory, "/sink_file.txt")
+    file_path <- normalizePath(file.path(directory, "sink_file.txt"), mustWork = FALSE)
 
     # Create an empty file (if it doesn't exist)
     if (!file.exists(file_path)) {
@@ -339,7 +339,7 @@ removeTempFiles <- function(directory, pattern) {
     # Redirect output to the specified file
     sink(file_path)
 
-    tempFiles <- list.files(directory, pattern = pattern, full.names = TRUE)
+    tempFiles <- list.files(normalizePath(directory, mustWork = FALSE), pattern = pattern, full.names = TRUE)
     if (length(tempFiles) > 0) {
         suppressWarnings(file.remove(tempFiles))
     } else {

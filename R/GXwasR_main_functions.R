@@ -2096,9 +2096,10 @@ plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput,
 
                 convertPlinkToVCF <- function(prefix, chr = NULL) {
                     args <- c(
-                        "--bfile", file.path(DataDir, finput),
+                        "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
                         "--recode", "vcf", "--allow-extra-chr",
-                        "--out", file.path(ResultDir, prefix), "--silent"
+                        "--out", normalizePath(file.path(ResultDir, prefix), mustWork = FALSE), 
+                        "--silent"
                     )
                     if (!is.null(chr)) {
                         args <- c(args, "--chr", chr)
@@ -2106,7 +2107,7 @@ plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput,
                     executePlinkAd(ResultDir, args)
 
                     # Compress and index
-                    vcf_path <- file.path(ResultDir, paste0(prefix, ".vcf"))
+                    vcf_path <- normalizePath(file.path(ResultDir, paste0(prefix, ".vcf")), mustWork = FALSE)
                     vcf_gz_path <- Rsamtools::bgzip(
                         file = vcf_path,
                         dest = paste0(vcf_path, ".gz"),
@@ -2116,7 +2117,7 @@ plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput,
                 }
 
                 if (PVbyCHR) {
-                    bimfile <- read.table(file.path(DataDir, paste0(finput, ".bim")))
+                    bimfile <- read.table(normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE))
                     chrs <- unique(bimfile$V1)
                     chrs <- gsub("^chr", "", chrs) # Normalize chromosome names
                     invisible(lapply(chrs, function(chr) {
@@ -2130,7 +2131,7 @@ plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput,
             }
 
             if (VtoP) {
-                vcf_file <- file.path(DataDir, paste0(finput, ".vcf"))
+                vcf_file <- normalizePath(file.path(DataDir, paste0(finput, ".vcf")), mustWork = FALSE)
                 if (!file.exists(vcf_file)) {
                     stop("VCF file not found in DataDir. Please specify correct directory path with input VCF files.")
                 }
@@ -2139,7 +2140,8 @@ plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput,
                     "--vcf", vcf_file,
                     "--keep-allele-order", "--allow-extra-chr",
                     "--make-bed", "--const-fid", "1",
-                    "--out", file.path(ResultDir, foutput), "--silent"
+                    "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE), 
+                    "--silent"
                 ))
 
                 if (!is.null(Famfile)) {
