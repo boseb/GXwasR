@@ -3323,7 +3323,7 @@ ComputeGRMauto <- function(
     crip <- if (cripticut != 0) cripticut else NULL
 
     base_args <- c(
-        "--bfile", file.path(DataDir, finput),
+        "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
         autosome,
         chr, CHRnum,
         minmaf, minmafval,
@@ -3333,13 +3333,13 @@ ComputeGRMauto <- function(
     )
 
     if (!partGRM) {
-        args <- c(base_args, "--make-grm", "--out", file.path(ResultDir, "GXwasR"))
+        args <- c(base_args, "--make-grm", "--out", normalizePath(file.path(ResultDir, "GXwasR"), mustWork = FALSE))
         executeGCTA(ResultDir, args)
 
-        grm_id <- file.path(ResultDir, "GXwasR.grm.id")
+        grm_id <- normalizePath(file.path(ResultDir, "GXwasR.grm.id"), mustWork = FALSE)
         if (file.exists(grm_id)) {
             if (!ByCHR) {
-                log_lines <- readLines(file.path(ResultDir, "GXwasR.log"))
+                log_lines <- readLines(normalizePath(file.path(ResultDir, "GXwasR.log"), mustWork = FALSE))
                 rlang::inform(rlang::format_error_bullets(c(
                     "v" = grep("GRM has been saved", log_lines, value = TRUE),
                     "i" = grep("Number of SNPs in each pair", log_lines, value = TRUE)
@@ -3349,8 +3349,8 @@ ComputeGRMauto <- function(
                 file_extensions <- c("grm.id", "grm.bin", "grm.N.bin")
                 for (ext in file_extensions) {
                     file.copy(
-                        from = file.path(ResultDir, paste0("GXwasR.", ext)),
-                        to = file.path(ResultDir, paste0("Chr", CHRnum, "_GXwasR.", ext))
+                        from = normalizePath(file.path(ResultDir, paste0("GXwasR.", ext)), mustWork = FALSE),
+                        to = normalizePath(file.path(ResultDir, paste0("Chr", CHRnum, "_GXwasR.", ext)), mustWork = FALSE)
                     )
                 }
             }
@@ -3362,7 +3362,7 @@ ComputeGRMauto <- function(
             args <- c(
                 base_args,
                 "--make-grm-part", nGRM, i,
-                "--out", file.path(ResultDir, "GXwasR")
+                "--out", normalizePath(file.path(ResultDir, "GXwasR"), mustWork = FALSE)
             )
             executeGCTA(ResultDir, args)
         }
@@ -3373,8 +3373,8 @@ ComputeGRMauto <- function(
         grm_parts <- c("grm.id", "grm.bin", "grm.N.bin")
 
         for (ext in grm_parts) {
-            input_pattern <- file.path(ResultDir, paste0("GXwasR.part_", nGRM, "_*", ext))
-            output_file <- file.path(ResultDir, paste0("GXwasR.", ext))
+            input_pattern <- normalizePath(file.path(ResultDir, paste0("GXwasR.part_", nGRM, "_*", ext)), mustWork = FALSE)
+            output_file <- normalizePath(file.path(ResultDir, paste0("GXwasR.", ext)), mustWork = FALSE)
 
             if (os_type == "unix") {
                 system2("cat", args = input_pattern, stdout = output_file)
@@ -3386,10 +3386,10 @@ ComputeGRMauto <- function(
             }
         }
 
-        merged_id <- file.path(ResultDir, "GXwasR.grm.id")
+        merged_id <- normalizePath(file.path(ResultDir, "GXwasR.grm.id"), mustWork = FALSE)
         if (file.exists(merged_id)) {
             if (!ByCHR) {
-                log_path <- file.path(ResultDir, "GXwasR.log")
+                log_path <- normalizePath(file.path(ResultDir, "GXwasR.log"), mustWork = FALSE)
                 if (file.exists(log_path)) {
                     log_lines <- readLines(log_path)
                     rlang::inform(rlang::format_error_bullets(c(
@@ -3402,8 +3402,8 @@ ComputeGRMauto <- function(
                 file_extensions <- c("grm.id", "grm.bin", "grm.N.bin")
                 for (ext in file_extensions) {
                     file.copy(
-                        from = file.path(ResultDir, paste0("GXwasR.", ext)),
-                        to = file.path(ResultDir, paste0("Chr", CHRnum, "_GXwasR.", ext))
+                        from = normalizePath(file.path(ResultDir, paste0("GXwasR.", ext)), mustWork = FALSE),
+                        to = normalizePath(file.path(ResultDir, paste0("Chr", CHRnum, "_GXwasR.", ext)), mustWork = FALSE)
                     )
                 }
             }
@@ -3806,42 +3806,48 @@ ChrwiseLDprun <- function(DataDir, ResultDir, finput, chromosome, highLD_regions
     suppressWarnings(invisible(file.remove(normalizePath(file.path(ResultDir, ftemp), mustWork = FALSE))))
 }
 ## Function 80
-GeneProtein <- function(ResultDir, hg, chromosome) { ## Automatically using HG data from extdata
-    if (hg == "hg19") {
-        # Downloading HG19 data from figshare to ResultDir
-        utils::download.file(
-            destfile = normalizePath(file.path(ResultDir, "HumanGenome19info.txt"), mustWork = FALSE),
-            "https://figshare.com/ndownloader/files/42118098", quiet = TRUE,
-        )
-
-        genes <- unique(read.table(file = normalizePath(file.path(ResultDir, "HumanGenome19info.txt"), mustWork = FALSE))[, c(1, 7, 8)]) # Using hgnc_name
-
-        genes$Chrom <- stringr::str_sub(genes$Chrom, 4)
-        genes1 <- unique(genes[genes$Chrom == chromosome, 2, drop = FALSE])
-        no.of.genes <- nrow(genes1)
-        proteins <- genes[genes$gene_biotype == "protein_coding", ]
-        proteins1 <- unique(proteins[proteins$Chrom == chromosome, 2, drop = FALSE])
-        no.of.proteins <- nrow(proteins1)
-        GP <- data.table::as.data.table(cbind(no.of.genes, no.of.proteins))
-        return(GP)
-    } else {
-        utils::download.file(
-            destfile = normalizePath(file.path(ResultDir, "HumanGenome38info.txt"), mustWork = FALSE),
-            "https://figshare.com/ndownloader/files/42118242", quiet = TRUE,
-        )
-
-        genes <- unique(read.table(file = paste0("inst/extdata/HumanGenome38info.txt"))[, c(1, 7, 8)]) # Using hgnc_name
-        genes$Chrom <- stringr::str_sub(genes$Chrom, 4)
-        genes1 <- unique(genes[genes$Chrom == chromosome, 2, drop = FALSE])
-        no.of.genes <- nrow(genes1)
-        proteins <- genes[genes$gene_biotype == "protein_coding", ]
-        proteins1 <- unique(proteins[proteins$Chrom == chromosome, 2, drop = FALSE])
-        no.of.proteins <- nrow(proteins1)
-        GP <- data.table::as.data.table(cbind(no.of.genes, no.of.proteins))
-        return(GP)
+GeneProtein <- function(hg, chromosome) {
+    if (!hg %in% c("hg19", "hg38")) {
+        stop("'hg' must be either 'hg19' or 'hg38'.")
     }
-    ftemp <- list.files(normalizePath(file.path(ResultDir), mustWork = FALSE), pattern = "info.txt")
-    suppressWarnings(invisible(file.remove(normalizePath(file.path(ResultDir, ftemp), mustWork = FALSE))))
+
+    if (!is.integer(chromosome) || length(chromosome) != 1) {
+        stop("'chromosome' must be an integer.")
+    }
+
+    env_var <- if (hg == "hg19") "GENEINFO_HG19" else "GENEINFO_HG38"
+    file_path <- Sys.getenv(env_var, unset = NA)
+
+    if (is.na(file_path) || !file.exists(file_path)) {
+        stop(
+            "Environment variable '", env_var, "' is not set or points to a missing file.\n",
+            "Please set it using Sys.setenv(", env_var, " = '/path/to/HumanGenomeXXinfo.txt')\n",
+            "You can download the file from:\n",
+            "- hg19: https://figshare.com/ndownloader/files/42118098\n",
+            "- hg38: https://figshare.com/ndownloader/files/42118242"
+        )
+    }
+
+    # Read and validate
+    df <- utils::read.table(normalizePath(file_path, mustWork = FALSE), header = TRUE, sep = "", stringsAsFactors = FALSE)
+    required_cols <- c("hgnc_symbol", "Chrom", "gene_biotype")
+    
+    if (!all(required_cols %in% colnames(df))) {
+        stop("The reference file must contain columns: ", paste(required_cols, collapse = ", "))
+    }
+
+    df$Chrom <- stringr::str_remove(df$Chrom, "^chr")
+
+    # Count total genes
+    genes <- unique(df[, c("hgnc_symbol", "Chrom", "gene_biotype")]) ## be explicit
+    gene_subset <- genes[genes$Chrom == chromosome, ]
+    no.of.genes <- nrow(gene_subset)
+
+    # Count protein-coding genes
+    proteins <- gene_subset[gene_subset$gene_biotype == "protein_coding", ]
+    no.of.proteins <- nrow(proteins)
+
+    data.table::data.table(no.of.genes = no.of.genes, no.of.proteins = no.of.proteins)
 }
 
 ## Function 81
@@ -3926,8 +3932,10 @@ computeMAFRange <- function(DataDir, ResultDir, finput, minMAF, maxMAF) {
         # Compute min and max MAF using Plink
         plink_exec_path <- plink()
         args <- c(
-            "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE), "--freq",
-            "--out", normalizePath(file.path(ResultDir, "MAF"), mustWork = FALSE), "--silent"
+            "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE), 
+            "--freq",
+            "--out", normalizePath(file.path(ResultDir, "MAF"), mustWork = FALSE),
+            "--silent"
         )
 
         invisible(sys::exec_wait(plink_exec_path, args = args, std_out = FALSE, std_err = FALSE))
@@ -4034,7 +4042,7 @@ processLDSCModel <- function(DataDir, ResultDir, finput, precomputedLD, IndepSNP
             }
 
             ## Getting number of genes and proteins
-            GP <- GeneProtein(ResultDir = ResultDir, hg = hg, chromosome = chromosome)
+            GP <- GeneProtein(hg = hg, chromosome = chromosome)
 
             rlang::inform(paste0("Processing chromosome ", chromosome))
 
@@ -4189,7 +4197,7 @@ processGREMLModel <- function(DataDir, ResultDir, finput, byCHR, autosome, Xsome
             snp_proportion <- nrow(bimfile1) / nrow(bimfile)
 
             ## Getting number of genes and proteins
-            GP <- GeneProtein(ResultDir = ResultDir, hg = hg, chromosome = chromosome)
+            GP <- GeneProtein(hg = hg, chromosome = chromosome)
 
             rlang::inform(paste0("Processing chromosome ", chromosome))
 
