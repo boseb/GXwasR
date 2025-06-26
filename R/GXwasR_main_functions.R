@@ -1960,41 +1960,53 @@ MergeRegion <- function(DataDir, ResultDir, finput1, finput2, foutput, use_commo
     tryCatch(
         {
             if (use_common_snps) {
-                bim1 <- read.table(file.path(DataDir, paste0(finput1, ".bim")))
-                bim2 <- read.table(file.path(DataDir, paste0(finput2, ".bim")))
+                bim1 <- read.table(normalizePath(file.path(DataDir, paste0(finput1, ".bim")), mustWork = FALSE))
+                bim2 <- read.table(normalizePath(file.path(DataDir, paste0(finput2, ".bim")), mustWork = FALSE))
                 common_snps <- intersect(bim1$V2, bim2$V2)
                 write.table(common_snps,
-                    file = file.path(ResultDir, paste0("common_snps_", foutput)),
+                    file = normalizePath(file.path(ResultDir, paste0("common_snps_", foutput)), mustWork = FALSE),
                     quote = FALSE, row.names = FALSE, col.names = FALSE
                 )
 
                 args1 <- c(
-                    "--bfile", file.path(DataDir, finput1), "--extract", file.path(ResultDir, paste0("common_snps_", foutput)), "--allow-no-sex",
-                    "--make-bed", "--out", file.path(ResultDir, paste0("new", finput1)), "--silent"
+                    "--bfile", normalizePath(file.path(DataDir, finput1), mustWork = FALSE), 
+                    "--extract", normalizePath(file.path(ResultDir, paste0("common_snps_", foutput)), mustWork = FALSE), 
+                    "--allow-no-sex", "--make-bed", 
+                    "--out", normalizePath(file.path(ResultDir, paste0("new", finput1)), mustWork = FALSE), 
+                    "--silent"
                 )
                 executePlink(args1)
 
                 args2 <- c(
-                    "--bfile", file.path(DataDir, finput2), "--extract", file.path(ResultDir, paste0("common_snps_", foutput)), "--allow-no-sex",
-                    "--make-bed", "--out", file.path(ResultDir, paste0("new", finput2)), "--silent"
+                    "--bfile", normalizePath(file.path(DataDir, finput2), mustWork = FALSE), 
+                    "--extract", normalizePath(file.path(ResultDir, paste0("common_snps_", foutput)), mustWork = FALSE), 
+                    "--allow-no-sex", "--make-bed", 
+                    "--out", normalizePath(file.path(ResultDir, paste0("new", finput2)), mustWork = FALSE), 
+                    "--silent"
                 )
                 executePlink(args2)
 
                 merge_args <- c(
-                    "--bfile", file.path(ResultDir, paste0("new", finput1)), "--bmerge", file.path(ResultDir, paste0("new", finput2)),
-                    "--allow-no-sex", "--make-bed", "--out", file.path(ResultDir, foutput), "--silent"
+                    "--bfile", normalizePath(file.path(ResultDir, paste0("new", finput1)), mustWork = FALSE), 
+                    "--bmerge", normalizePath(file.path(ResultDir, paste0("new", finput2)), mustWork = FALSE),
+                    "--allow-no-sex", "--make-bed", 
+                    "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE), 
+                    "--silent"
                 )
                 executePlink(merge_args)
 
                 rlang::inform(rlang::format_error_bullets(c("v" = "Merging is done using the common SNPs between the input genotype files.")))
 
                 # Clean-up
-                ftemp <- c(list.files(ResultDir, pattern = "new"), list.files(ResultDir, pattern = "common_snps"))
-                invisible(file.remove(file.path(ResultDir, ftemp)))
+                ftemp <- c(list.files(normalizePath(ResultDir, mustWork = FALSE), pattern = "new"), list.files(normalizePath(ResultDir, mustWork = FALSE), pattern = "common_snps"))
+                invisible(file.remove(normalizePath(file.path(ResultDir, ftemp), mustWork = FALSE)))
             } else {
                 merge_args <- c(
-                    "--bfile", file.path(DataDir, finput1), "--bmerge", file.path(DataDir, finput2),
-                    "--allow-no-sex", "--make-bed", "--out", file.path(ResultDir, foutput), "--silent"
+                    "--bfile", normalizePath(file.path(DataDir, finput1), mustWork = FALSE), 
+                    "--bmerge", normalizePath(file.path(DataDir, finput2), mustWork = FALSE),
+                    "--allow-no-sex", "--make-bed", 
+                    "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE), 
+                    "--silent"
                 )
                 executePlink(merge_args)
                 rlang::inform(rlang::format_error_bullets(c("v" = "Merging is done with all the SNPs i.e., union of the SNPs.")))
