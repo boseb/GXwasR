@@ -24,11 +24,11 @@ in the path specified by the appropriate environment variable:
 If files are missing or paths are not set, informative guidance is provided.
 }
 \examples{
-\dontrun{
-Sys.setenv(HAPMAPIII_NCBI36_DIR = "/path/to/hapmap")
-validate_reference_data("HapMapIII_NCBI36")
+if (nzchar(Sys.getenv("HAPMAPIII_NCBI36_DIR"))) {
+     validate_reference_data("HapMapIII_NCBI36")
+}
 
-Sys.setenv(THOUSANDGENOME_DIR = "/path/to/tgp")
-validate_reference_data("ThousandGenome")
+if (nzchar(Sys.getenv("HAPMAPIII_NCBI36_DIR"))) {
+     validate_reference_data("ThousandGenome")
 }
 }

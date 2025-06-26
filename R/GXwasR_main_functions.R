@@ -5650,12 +5650,12 @@ FilterSNP <- function(DataDir, ResultDir, finput, foutput, SNPvec, extract = FAL
 #'
 #' @export
 #' @examples
-#' \dontrun{
-#' Sys.setenv(HAPMAPIII_NCBI36_DIR = "/path/to/hapmap")
-#' validate_reference_data("HapMapIII_NCBI36")
-#'
-#' Sys.setenv(THOUSANDGENOME_DIR = "/path/to/tgp")
-#' validate_reference_data("ThousandGenome")
+#' if (nzchar(Sys.getenv("HAPMAPIII_NCBI36_DIR"))) {
+#'      validate_reference_data("HapMapIII_NCBI36")
+#' }
+#' 
+#' if (nzchar(Sys.getenv("HAPMAPIII_NCBI36_DIR"))) {
+#'      validate_reference_data("ThousandGenome")
 #' }
 validate_reference_data <- function(refdata) {
     valid_refs <- c("HapMapIII_NCBI36", "ThousandGenome", "Ref10Kgenome")
