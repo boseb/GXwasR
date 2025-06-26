@@ -392,7 +392,11 @@ createHeterozygosityPlot <- function(hetermiss, hetfail, imissfail, het, imiss, 
 
     # Plotting
     rlang::inform(rlang::format_error_bullets("Plots are initiated."))
-    plot_hetimiss <- ggplot2::ggplot(data = hetermiss, ggplot2::aes(x = with(hetermiss, logF_MISS), y = FALSE, color = with(hetermiss, type), shape = with(hetermiss, shape))) +
+    plot_hetimiss <- ggplot2::ggplot(data = hetermiss, ggplot2::aes(
+        x = .data$logF_MISS,
+        y = .data$F,
+        color = .data$type,
+        shape = .data$shape)) +
         ggplot2::geom_point() +
         ggplot2::scale_shape_manual(values = c(16, 17), guide = "none") +
         ggplot2::scale_color_manual(values = colors) +
