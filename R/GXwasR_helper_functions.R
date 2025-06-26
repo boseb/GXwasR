@@ -3292,10 +3292,10 @@ executeGCTA <- function(ResultDir, args) {
             invisible(sys::exec_wait(
                 gcta(), # Path to the GCTA executable
                 args = args, # Arguments for the GCTA command
-                # std_out = stdout_dest,                # Standard output redirection
-                # std_err = stderr_dest                 # Standard error redirection
-                std_out = TRUE, # Standard output redirection
-                std_err = TRUE
+                std_out = stdout_dest,                # Standard output redirection
+                std_err = stderr_dest                 # Standard error redirection
+                # std_out = TRUE, # Standard output redirection
+                # std_err = TRUE
             ))
         },
         error = function(e) {
@@ -4568,7 +4568,7 @@ ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr 
         quantcovar <- "--qcovar"
         quantcovarval <- normalizePath(file.path(DataDir, quant_covarfile), mustWork = FALSE)
     }
-
+    
     invisible(sys::exec_wait(
         gcta(),
         args = c(
