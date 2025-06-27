@@ -25,10 +25,10 @@ If files are missing or paths are not set, informative guidance is provided.
 }
 \examples{
 if (nzchar(Sys.getenv("HAPMAPIII_NCBI36_DIR"))) {
-     validate_reference_data("HapMapIII_NCBI36")
+    validate_reference_data("HapMapIII_NCBI36")
 }
 
 if (nzchar(Sys.getenv("HAPMAPIII_NCBI36_DIR"))) {
-     validate_reference_data("ThousandGenome")
+    validate_reference_data("ThousandGenome")
 }
 }
