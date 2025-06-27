@@ -2919,7 +2919,7 @@ Xhwe <- function(DataDir, ResultDir = tempdir(), finput, filterSNP = TRUE, foutp
 #' files will be produced inside `DataDir`.
 #'
 #' @importFrom stats na.omit
-#' @importFrom utils download.file read.table unzip write.table
+#' @importFrom utils read.table write.table
 #' @importFrom sys exec_wait
 #' @export
 #'
