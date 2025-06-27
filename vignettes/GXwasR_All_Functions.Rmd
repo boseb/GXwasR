@@ -1,18 +1,70 @@
 ---
 title: "GXwasR Functions"
-author: "Banabithi Bose, Northwestern University"
-output: rmarkdown::html_vignette
+author: 
+  - name: "Banabithi Bose"
+    affiliation:
+    - Northwestern University
+    email: banabithi.bose@gmail.com
+output: 
+  BiocStyle::html_document:
+    self_contained: yes
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    code_folding: show
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('GXwasR')`"
 vignette: >
   %\VignetteIndexEntry{GXwasR Functions}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(fig.width = 8, fig.height = 6)
+knitr::opts_chunk$set(
+    ig.width = 8, fig.height = 6,
+    collapse = TRUE,
+    comment = "#>",
+    crop = NULL ## Related to https://stat.ethz.ch/pipermail/bioc-devel/2020-April/016656.html
+)
 ```
+
+```{r vignetteSetup, echo=FALSE, message=FALSE, warning = FALSE}
+## Bib setup
+library("RefManageR")
+
+## Write bibliography information
+bib <- c(
+    R = citation(),
+    BiocStyle = citation("BiocStyle")[1],
+    knitr = citation("knitr")[1],
+    RefManageR = citation("RefManageR")[1],
+    rmarkdown = citation("rmarkdown")[1],
+    sessioninfo = citation("sessioninfo")[1],
+    testthat = citation("testthat")[1],
+    GXwasR = citation("GXwasR")[1]
+)
+```
+
 # <a id = "GXwasR Description"></a> GXwasR Description: 
 
 This package implements various statistical genetics models for Genome-Wide Association (GWA) and X-Chromosome Wide Association (XWA) analyses in a sex-combined or sex-stratified way considering X-Chromosome Inactivation (XCI) pattern. In addition to association analysis, the package also enables testing for sex differences in genetic effects, including the implementation of specific models and applying best practices for additional quality control (QC) of genetic data required for these tests. The package includes thirty different functions in six different categories (A-F) which enable a comprehensive pipeline for sex-aware genetic association analysis of common variants with unrelated individuals.
+
+# Basics
+
+## Install `GXwasR`
+
+`R` is an open-source statistical environment which can be easily modified to enhance its functionality via packages. `r BiocStyle::Biocpkg("GXwasR")` is a `R` package available via the [Bioconductor](http://bioconductor.org) repository for packages. `R` can be installed on any operating system from [CRAN](https://cran.r-project.org/) after which you can install `r BiocStyle::Biocpkg("GXwasR")` by using the following commands in your `R` session:
+
+```{r "install", eval = FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+      install.packages("BiocManager")
+  }
+
+BiocManager::install("GXwasR")
+
+## Check that you have a valid Bioconductor installation
+BiocManager::valid()
+```
 
 # Functions Overview
 
@@ -258,3 +310,47 @@ Tutorial for meta analysis:
 Tutorial for heritability estimate and genetic correlation:
 
 Tutorial for gene-based tests:
+
+## Citing `GXwasR`
+
+We hope that `r BiocStyle::Biocpkg("GXwasR")` will be useful for your research. Please use the following information to cite the package and the overall approach. Thank you!
+
+```{r "citation"}
+## Citation info
+citation("GXwasR")
+```
+
+# Reproducibility
+
+The `r BiocStyle::Biocpkg("GXwasR")` package `r Citep(bib[["GXwasR"]])` was made possible thanks to:
+
+* R `r Citep(bib[["R"]])`
+* `r BiocStyle::Biocpkg("BiocStyle")` `r Citep(bib[["BiocStyle"]])`
+* `r BiocStyle::CRANpkg("knitr")` `r Citep(bib[["knitr"]])`
+* `r BiocStyle::CRANpkg("RefManageR")` `r Citep(bib[["RefManageR"]])`
+* `r BiocStyle::CRANpkg("rmarkdown")` `r Citep(bib[["rmarkdown"]])`
+* `r BiocStyle::CRANpkg("sessioninfo")` `r Citep(bib[["sessioninfo"]])`
+* `r BiocStyle::CRANpkg("testthat")` `r Citep(bib[["testthat"]])`
+
+`R` session information.
+
+```{r reproduce3, echo=FALSE}
+## Session info
+library("sessioninfo")
+options(width = 120)
+session_info()
+```
+
+
+
+# Bibliography
+
+This vignette was generated using `r BiocStyle::Biocpkg("BiocStyle")` `r Citep(bib[["BiocStyle"]])`
+with `r BiocStyle::CRANpkg("knitr")` `r Citep(bib[["knitr"]])` and `r BiocStyle::CRANpkg("rmarkdown")` `r Citep(bib[["rmarkdown"]])` running behind the scenes.
+
+Citations made with `r BiocStyle::CRANpkg("RefManageR")` `r Citep(bib[["RefManageR"]])`.
+
+```{r vignetteBiblio, results = "asis", echo = FALSE, warning = FALSE, message = FALSE}
+## Print bibliography
+PrintBibliography(bib, .opts = list(hyperlink = "to.doc", style = "html"))
+```
