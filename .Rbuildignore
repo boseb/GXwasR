@@ -11,3 +11,5 @@
 ^\.vscode$
 ^GXwasR-package\.Rd$
 ^logo
+^docs
+^LICENSE\.md$

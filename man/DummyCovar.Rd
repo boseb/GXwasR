@@ -4,10 +4,12 @@
 \alias{DummyCovar}
 \title{DummyCovar: Recode a categorical variable to a set of binary dummy variables.}
 \usage{
-DummyCovar(DataDir, bfile, incovar, outcovar)
+DummyCovar(DataDir, ResultDir = DataDir, bfile, incovar, outcovar)
 }
 \arguments{
 \item{DataDir}{A character string for the file path of the input PLINK binary files.}
+
+\item{ResultDir}{A character string for the file path where all output files will be stored. The default is \code{tempdir()}.}
 
 \item{bfile}{Character string, specifying the prefix of the input PLINK binary files for which covariate file will be generated.}
 
@@ -26,13 +28,16 @@ One level is automatically excluded from the dummy variables which serves as the
 implicitly sets the excluded that category as the baseline against which other categories are compared.
 }
 \examples{
-\dontrun{
 DataDir <- system.file("extdata", package = "GXwasR")
-bfile <- Example_GXwasR
+ResultDir <- tempdir()
+bfile <- "GXwasR_example"
 incovar <- "covarfile_w_pc_age.txt"
 outcovar <- "dummycovarfile"
-DummyCovar(DataDir = DataDir, bfile = bfile, incovar = incovar, outcovar = outcovar)
-}
+dummy_covars <- DummyCovar(
+    DataDir = DataDir, ResultDir = ResultDir,
+    bfile = bfile, incovar = incovar,
+    outcovar = outcovar
+)
 }
 \references{
 \insertAllCited{}

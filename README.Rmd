@@ -6,10 +6,10 @@ output: github_document
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
+    collapse = TRUE,
+    comment = "#>",
+    fig.path = "man/figures/README-",
+    out.width = "100%"
 )
 ```
 
@@ -168,23 +168,23 @@ Run a genome-wide association study (GWAS) and X-chromosome-wide association stu
 ```{r example}
 library(GXwasR)
 ResultGXwas <- GXwas(
-  DataDir = system.file("extdata", package = "GXwasR"),
-  ResultDir = tempdir(), 
-  finput = "GXwasR_example", 
-  trait = "binary", 
-  xmodel = "FMstatrified", 
-  covarfile = NULL, 
-  sex = TRUE, 
-  xsex = FALSE, 
-  combtest = "fisher.method", 
-  MF.p.corr = "none",
-  snp_pval = 1e-08, 
-  plot.jpeg = FALSE, 
-  suggestiveline = 5, 
-  genomewideline = 7.3,
-  MF.mc.cores = 1, 
-  ncores = 0
-  )
+    DataDir = system.file("extdata", package = "GXwasR"),
+    ResultDir = tempdir(),
+    finput = "GXwasR_example",
+    trait = "binary",
+    xmodel = "FMstatrified",
+    covarfile = NULL,
+    sex = TRUE,
+    xsex = FALSE,
+    combtest = "fisher.method",
+    MF.p.corr = "none",
+    snp_pval = 1e-08,
+    plot.jpeg = FALSE,
+    suggestiveline = 5,
+    genomewideline = 7.3,
+    MF.mc.cores = 1,
+    ncores = 0
+)
 ResultGXwas
 ```
 

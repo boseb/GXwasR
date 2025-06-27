@@ -108,10 +108,10 @@ monomorphicSNPs <- FALSE
 caldiffmiss <- FALSE
 ld_prunning <- FALSE
 x <- QCsnp(
-  DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput,
-  geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl,
-  ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs,
-  caldiffmiss = caldiffmiss
+    DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput,
+    geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl,
+    ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs,
+    caldiffmiss = caldiffmiss
 )
 }
 \references{

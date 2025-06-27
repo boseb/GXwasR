@@ -207,36 +207,43 @@ library(GXwasR)
 #> Tutorial: https://github.com
 #> Use citation("GXwasR") to know how to cite this work.
 ResultGXwas <- GXwas(
-  DataDir = system.file("extdata", package = "GXwasR"),
-  ResultDir = tempdir(), 
-  finput = "GXwasR_example", 
-  trait = "binary", 
-  xmodel = "FMstatrified", 
-  covarfile = NULL, 
-  sex = TRUE, 
-  xsex = FALSE, 
-  combtest = "fisher.method", 
-  MF.p.corr = "none",
-  snp_pval = 1e-08, 
-  plot.jpeg = FALSE, 
-  suggestiveline = 5, 
-  genomewideline = 7.3,
-  MF.mc.cores = 1, 
-  ncores = 0
-  )
-#> [1] "Running FMstatrified model"
+    DataDir = system.file("extdata", package = "GXwasR"),
+    ResultDir = tempdir(),
+    finput = "GXwasR_example",
+    trait = "binary",
+    xmodel = "FMstatrified",
+    covarfile = NULL,
+    sex = TRUE,
+    xsex = FALSE,
+    combtest = "fisher.method",
+    MF.p.corr = "none",
+    snp_pval = 1e-08,
+    plot.jpeg = FALSE,
+    suggestiveline = 5,
+    genomewideline = 7.3,
+    MF.mc.cores = 1,
+    ncores = 0
+)
+#> • Running FMstatrified model
 #> Using PLINK v1.9.0-b.7.7 64-bit (22 Oct 2024)
+#> • Stratified test is running
+#> • Stratified test is running
+#> • If you want parallel computation, please provide non-zero value for argument ncores.
+#> • If you want parallel computation, please provide non-zero value for argument ncores.
+#> ℹ Plots are initiated.
+#> ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpsbVaBB/Stratified_GWAS.png
 #> This message is displayed once every 8 hours.
-#> [1] "Stratified test is running"
-#> [1] "Stratified test is running"
-#> [1] "If you want parallel computation, please provide non-zero value for argument ncores."
-#> [1] "If you want parallel computation, please provide non-zero value for argument ncores."
-#> [1] "Plots are initiated."
 ```
 
-<img src="man/figures/README-example-1.png" width="100%" /><img src="man/figures/README-example-2.png" width="100%" /><img src="man/figures/README-example-3.png" width="100%" /><img src="man/figures/README-example-4.png" width="100%" /><img src="man/figures/README-example-5.png" width="100%" /><img src="man/figures/README-example-6.png" width="100%" />
+<img src="man/figures/README-example-1.png" width="100%" />
 
-    #> [1] "Three dataframes such as, CombinedWAS, MaleWAS and FemaleWAS are produced in/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmpqj9NMo"
+    #> ℹ Saving plot to
+    #> /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpsbVaBB/Stratified_XWAS.png
+
+<img src="man/figures/README-example-2.png" width="100%" /><img src="man/figures/README-example-3.png" width="100%" /><img src="man/figures/README-example-4.png" width="100%" /><img src="man/figures/README-example-5.png" width="100%" /><img src="man/figures/README-example-6.png" width="100%" />
+
+    #> • Three dataframes such as, CombinedWAS, MaleWAS and FemaleWAS are produced
+    #> in/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpsbVaBB
     ResultGXwas
     #> $CombinedWAS
     #> Key: <SNP>

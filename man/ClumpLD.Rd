@@ -77,10 +77,11 @@ argument. Instead of the best p-value, the function refer to the SNP that has th
 Based on the genotype data, the SNP with the highest LD will be the same for all input files.
 }
 \examples{
+data("Summary_Stat_Ex1", package = "GXwasR")
+data("Summary_Stat_Ex2", package = "GXwasR")
 DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
-data("GXwasRData")
 SNPdata <- list(Summary_Stat_Ex1, Summary_Stat_Ex2)
 clump_p1 <- 0.0001
 clump_p2 <- 0.001
@@ -88,8 +89,8 @@ clump_r2 <- 0.5
 clump_kb <- 250
 byCHR <- TRUE
 clumpedResult <- ClumpLD(
-  DataDir, finput, SNPdata, ResultDir, clump_p1,
-  clump_p2, clump_r2, clump_kb, byCHR
+    DataDir, finput, SNPdata, ResultDir, clump_p1,
+    clump_p2, clump_r2, clump_kb, byCHR
 )
 }
 \references{

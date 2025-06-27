@@ -1,4 +1,7 @@
 .Rproj.user
-
 /.quarto/
 .vscode/settings.json
+docs
+inst/doc
+vignettes/*.html
+vignettes/*.R

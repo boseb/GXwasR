@@ -120,9 +120,10 @@ i.e., effect size beta. 'This function also calculates weighted Z-score-based p-
 For more information about the algorithms, please see the associated paper.
 }
 \examples{
+data("Summary_Stat_Ex1", package = "GXwasR")
+data("Summary_Stat_Ex2", package = "GXwasR")
 DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
-data("GXwasRData")
 SummData <- list(Summary_Stat_Ex1, Summary_Stat_Ex2)
 SNPfile <- "UniqueLoci"
 useSNPposition <- FALSE
@@ -136,10 +137,10 @@ chosen_snps_file <- NULL
 pval_threshold_manplot <- 1e-05
 plotname <- "Meta_Analysis.plot"
 x <- MetaGWAS(
-  DataDir = DataDir, SummData = SummData, ResultDir = ResultDir,
-  SNPfile = NULL, useSNPposition = TRUE, UseA1 = UseA1, GCse = GCse,
-  plotname = "Meta_Analysis.plot", pval_filter, top_snp_pval, max_top_snps,
-  chosen_snps_file = NULL, byCHR, pval_threshold_manplot
+    DataDir = DataDir, SummData = SummData, ResultDir = ResultDir,
+    SNPfile = NULL, useSNPposition = TRUE, UseA1 = UseA1, GCse = GCse,
+    plotname = "Meta_Analysis.plot", pval_filter, top_snp_pval, max_top_snps,
+    chosen_snps_file = NULL, byCHR, pval_threshold_manplot
 )
 }
 \references{
