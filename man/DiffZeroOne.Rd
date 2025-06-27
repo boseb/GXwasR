@@ -34,8 +34,8 @@ rg for a trait) < 1 using a 1-tailed test compared with a normal distribution (z
 For multiple tests, users are encouraged to apply a Bonferroni multiple-testing correction.
 }
 \examples{
-data("GXwasRData")
-colnames(Example_rgdata) <- c("Trait", "Stat", "SE")
+data("Example_rgdata", package = "GXwasR")
 inputdata <- Example_rgdata
+colnames(inputdata) <- c("Trait", "Stat", "SE")
 x <- DiffZeroOne(inputdata, FALSE, TRUE)
 }

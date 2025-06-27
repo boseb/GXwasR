@@ -37,8 +37,8 @@ ResultDir <- tempdir()
 finput <- "GXwasR_example"
 foutput <- "Test_output"
 x <- Xhwe(
-  DataDir = DataDir, ResultDir = ResultDir,
-  finput = finput, foutput = foutput, filterSNP = TRUE
+    DataDir = DataDir, ResultDir = ResultDir,
+    finput = finput, foutput = foutput, filterSNP = TRUE
 )
 x
 }

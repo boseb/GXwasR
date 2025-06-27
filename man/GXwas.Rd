@@ -198,11 +198,11 @@ covarfile <- NULL
 ncores <- 0
 MF.mc.cores <- 1
 ResultGXwas <- GXwas(
-  DataDir = DataDir, ResultDir = ResultDir,
-  finput = finput, xmodel = xmodel, trait = trait, covarfile = covarfile,
-  sex = sex, xsex = xsex, combtest = combtest, MF.p.corr = "none",
-  snp_pval = snp_pval, plot.jpeg = TRUE, suggestiveline = 5, genomewideline = 7.3,
-  MF.mc.cores = 1, ncores = ncores
+    DataDir = DataDir, ResultDir = ResultDir,
+    finput = finput, xmodel = xmodel, trait = trait, covarfile = covarfile,
+    sex = sex, xsex = xsex, combtest = combtest, MF.p.corr = "none",
+    snp_pval = snp_pval, plot.jpeg = TRUE, suggestiveline = 5, genomewideline = 7.3,
+    MF.mc.cores = 1, ncores = ncores
 )
 }
 \references{
