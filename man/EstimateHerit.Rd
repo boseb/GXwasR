@@ -177,7 +177,7 @@ DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 precomputedLD <- NULL
 finput <- "GXwasR_example"
-test.sumstats <- na.omit(Summary_Stat_Ex1[Summary_Stat_Ex1$TEST == "ADD", c(1:4, 6:8)])
+test.sumstats <- na.omit(Summary_Stat_Ex1[Summary_Stat_Ex1$TEST == "ADD", c(seq_len(4), 6:8)])
 colnames(test.sumstats) <- c("chr", "rsid", "pos", "a1", "n_eff", "beta", "beta_se")
 summarystat <- test.sumstats
 ncores <- 3
