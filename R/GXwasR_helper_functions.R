@@ -2,7 +2,7 @@
 # GXwasR helper functions
 #' @author Banabithi Bose
 #' @importFrom stats na.omit median qchisq binomial dnorm glm na.exclude p.adjust pchisq pnorm lm pt qnorm setNames
-#' @importFrom utils download.file read.table unzip write.table untar txtProgressBar setTxtProgressBar
+#' @importFrom utils read.table write.table txtProgressBar setTxtProgressBar
 #' @importFrom qqman manhattan qq
 #' @importFrom grDevices dev.off jpeg
 #' @importFrom poolr stouffer bonferroni
