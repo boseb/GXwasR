@@ -32,7 +32,10 @@ Suggests:
     tools,
     qpdf,
     printr,
-    doSNOW
+    doSNOW,
+    RefManageR,
+    sessioninfo,
+    testthat
 Imports:
     utils,
     ggpubr,
