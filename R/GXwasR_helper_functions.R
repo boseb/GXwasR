@@ -380,8 +380,8 @@ createHeterozygosityPlot <- function(hetermiss, hetfail, imissfail, het, imiss, 
     hetermiss$type[hetermiss$IID %in% imissfail$IID] <- "Failed M"
     hetermiss$type[hetermiss$IID %in% intersect(hetfail$IID, imissfail$IID)] <- "Failed H & M"
 
-    minus_sd <- mean(hetermiss$F) - 1:5 * stats::sd(hetermiss$F)
-    plus_sd <- mean(hetermiss$F) + 1:5 * stats::sd(hetermiss$F)
+    minus_sd <- mean(hetermiss$F) - seq_len(5) * stats::sd(hetermiss$F)
+    plus_sd <- mean(hetermiss$F) + seq_len(5) * stats::sd(hetermiss$F)
 
     colors <- c("#666666", "#1b9e77", "#d95f02", "#7570b3")
     names(colors) <- c("Passed", "Failed H", "Failed M", "Failed H & M")
@@ -401,7 +401,7 @@ createHeterozygosityPlot <- function(hetermiss, hetfail, imissfail, het, imiss, 
         ggplot2::scale_shape_manual(values = c(16, 17), guide = "none") +
         ggplot2::scale_color_manual(values = colors) +
         ggplot2::labs(x = "Sample's missingness in log10", y = "Heterozygosity rate \n(and standard deviation)", color = "Sample Status", title = "Heterozygosity by missingness across samples") +
-        ggplot2::geom_hline(yintercept = c(minus_sd[1:3], plus_sd[1:3]), lty = 2, col = "azure4") +
+        ggplot2::geom_hline(yintercept = c(minus_sd[seq_len(3)], plus_sd[seq_len(3)]), lty = 2, col = "azure4") +
         ggplot2::scale_y_continuous(labels = c("-3", "-4", "-5", "+3", "+4", "+5"), breaks = c(minus_sd[3:5], plus_sd[3:5])) +
         ggplot2::scale_x_continuous(labels = c(0.0001, 0.001, 0.01, 0.03, 0.05, 0.01, 1), breaks = c(-4, -3, -2, log10(0.03), log10(0.05), -1, 0)) +
         ggplot2::geom_hline(yintercept = mean(hetermiss$F) - (het * stats::sd(hetermiss$F)), col = "#e7298a", lty = 2) +
@@ -567,7 +567,7 @@ identifyFailedSamplesFromIBD <- function(ibd, ResultDir) {
     failedSamples <- unique(c(ibd$IID1, ibd$IID2))
     if (length(failedSamples) > 0) {
         famData <- read.table(normalizePath(file.path(ResultDir, paste0("foutput", ".fam")), mustWork = FALSE))
-        famData[famData$V2 %in% failedSamples, 1:2]
+        famData[famData$V2 %in% failedSamples, seq_len(2)]
     } else {
         NULL
     }
@@ -999,7 +999,7 @@ applySNPmissCCFilter <- function(ResultDir, SNPmissCC, diffmissFilter, foutput) 
 
 ## Function 36
 #' @importFrom ggplot2 element_rect expansion
-gmirror <- function(top, bottom, tline, bline, chroms = c(1:22, "X", "Y"), log10 = TRUE,
+gmirror <- function(top, bottom, tline, bline, chroms = c(seq_len(22), "X", "Y"), log10 = TRUE,
     yaxis, opacity = 1, annotate_snp, annotate_p, toptitle = NULL,
     bottomtitle = NULL, highlight_snp, highlight_p, highlighter = "red",
     chrcolor1 = "#AAAAAA", chrcolor2 = "#4D4D4D", freey = FALSE,
@@ -1218,7 +1218,7 @@ performLDClumping <- function(ldclump, DataDir, ResultDir, LDreference, summarys
 ## Function 38
 ######### Added in 3.0
 preparePhenotypeData <- function(phenofile, nPC, DataDir, ResultDir, finput, highLD_regions, ld_prunning, window_size, step_size, r2_threshold) {
-    phenotype <- cbind(phenofile[, 1:2], phenofile[, "Pheno1"])
+    phenotype <- cbind(phenofile[, seq_len(2)], phenofile[, "Pheno1"])
     colnames(phenotype) <- c("FID", "IID", "Pheno1")
 
     if (nPC > 0) {
@@ -1226,11 +1226,11 @@ preparePhenotypeData <- function(phenofile, nPC, DataDir, ResultDir, finput, hig
             DataDir = DataDir, ResultDir = ResultDir, finput = finput, countPC = nPC, highLD_regions = highLD_regions,
             ld_prunning = ld_prunning, window_size = window_size, step_size = step_size, r2_threshold = r2_threshold, plotPC = FALSE
         )
-        colnames(GP) <- c("FID", "IID", paste0("PC", 1:nPC))
+        colnames(GP) <- c("FID", "IID", paste0("PC", seq_len(nPC)))
         return(GP)
     } else {
         rlang::inform(rlang::format_error_bullets(c("i" = "Parameter 'nPC' is either zero or negative. Genetic PC will not be computed.")))
-        return(phenotype[, 1:2])
+        return(phenotype[, seq_len(2)])
     }
 }
 
@@ -1393,9 +1393,9 @@ createBinaryPhenotypePlots <- function(dat, p1, p2) {
 
     # Arrange plots
     if (nrow(mdat) != 0 && nrow(fdat) != 0) {
-        plotArrangement <- ggpubr::ggarrange(p1, p2, p3, p4, p5, ncol = 3, nrow = 2, labels = LETTERS[1:5], widths = c(1.5, 1.5, 1.5, 1.5))
+        plotArrangement <- ggpubr::ggarrange(p1, p2, p3, p4, p5, ncol = 3, nrow = 2, labels = LETTERS[seq_len(5)], widths = c(1.5, 1.5, 1.5, 1.5))
     } else {
-        plotArrangement <- ggpubr::ggarrange(p1, p2, p3, ncol = 2, nrow = 2, labels = LETTERS[1:3], widths = c(1.5, 1.5, 1.5, 1.5))
+        plotArrangement <- ggpubr::ggarrange(p1, p2, p3, ncol = 2, nrow = 2, labels = LETTERS[seq_len(3)], widths = c(1.5, 1.5, 1.5, 1.5))
     }
 
     return(plotArrangement)
@@ -1410,7 +1410,7 @@ Run_newcovarfile <- function(DataDir, ResultDir, covarfile, covartest) {
             header = TRUE
         ))
 
-    covarfile <- cbind(covarfile1[, 1:2, drop = FALSE], covarfile1[, covartest, drop = FALSE])
+    covarfile <- cbind(covarfile1[, seq_len(2), drop = FALSE], covarfile1[, covartest, drop = FALSE])
 
     write.table(
         covarfile,
@@ -1757,7 +1757,7 @@ fisher.method <-
                 )
             ))
         } else {
-            fisher.sums <- parallel::mclapply(1:nrow(pvals), function(i) {
+            fisher.sums <- parallel::mclapply(seq_len(nrow(pvals)), function(i) {
                 fisher.sum(pvals[i, ], zero.sub = zero.sub, na.rm = na.rm)
             }, mc.cores = mc.cores)
             fisher.sums <- data.frame(do.call(rbind, fisher.sums))
@@ -1794,7 +1794,7 @@ fisher.method.perm <-
         p.corr <- ifelse(length(p.corr) != 1, "BH", p.corr)
         pvals[pvals == 0] <- zero.sub
 
-        res.perm <- lapply(1:nrow(pvals), function(i) {
+        res.perm <- lapply(seq_len(nrow(pvals)), function(i) {
             if (!is.na(blinker) & i %% blinker == 0) {
                 message("=", appendLF = FALSE)
             }
@@ -1802,7 +1802,7 @@ fisher.method.perm <-
             good.p <- which(!is.na(pvals[i, ]))
             S.obs <- fisher.sum(pvals[i, good.p], na.rm = FALSE)
             if (is.null(mc.cores)) {
-                S.rand <- unlist(lapply(1:B, function(b) {
+                S.rand <- unlist(lapply(seq_len(B), function(b) {
                     ## get non NA p-values from studies contributing to S
                     myp <- vapply(good.p, function(pc) {
                         sample(stats::na.exclude(pvals[, pc]), 1)
@@ -1810,7 +1810,7 @@ fisher.method.perm <-
                     fisher.sum(myp)$S
                 }))
             } else {
-                S.rand <- unlist(parallel::mclapply(1:B, function(b) {
+                S.rand <- unlist(parallel::mclapply(seq_len(B), function(b) {
                     ## get non NA p-values from studies contributing to S
                     myp <- vapply(good.p, function(pc) {
                         sample(stats::na.exclude(pvals[, pc]), 1)
@@ -1863,7 +1863,7 @@ stouffer.method <-
         ## substitute p-values of 0
         pvals[pvals == 0] <- zero.sub
 
-        i <- 1:nrow(pvals)
+        i <- seq_len(nrow(pvals))
         stpFun <- function(i) {
             p1 <-
                 poolr::stouffer(
@@ -1920,7 +1920,7 @@ paraStouffer <- function(chunks, chunk, pvals, MF.p.corr, MF.zero.sub, MF.na.rm)
             ## substitute p-values of 0
             pvals[pvals == 0] <- zero.sub
 
-            i <- 1:nrow(pvals)
+            i <- seq_len(nrow(pvals))
             stpFun <- function(i) {
                 p1 <-
                     poolr::stouffer(
@@ -2317,7 +2317,7 @@ FMcomb_sub <- function(ResultDir, combtest, MF.p.corr,
             rlang::inform(rlang::format_error_bullets("v" = "Parallel computation complete."))
         }
 
-        Result <- cbind(MFWAS1[, 1:5], Pnew[, 3:4])
+        Result <- cbind(MFWAS1[, seq_len(5)], Pnew[, 3:4])
         gc(reset = TRUE)
         Result <- Result[Result$TEST == "ADD", c("SNP", "CHR.x", "BP.x", "p2")] # we could choose "p.adj" as well.
         gc(reset = TRUE)
@@ -2333,7 +2333,7 @@ FMcomb_sub <- function(ResultDir, combtest, MF.p.corr,
                 na.rm = MF.na.rm,
                 mc.cores = MF.mc.cores
             )
-        Result <- cbind(MFWAS[, 1:5], Pnew[, 3:4])
+        Result <- cbind(MFWAS[, seq_len(5)], Pnew[, 3:4])
         gc(reset = TRUE)
         Result <- Result[Result$TEST == "ADD", c("SNP", "CHR.x", "BP.x", "p.value")] # we could choose "p.adj" as well.
         colnames(Result) <- c("SNP", "CHR", "BP", "P")
@@ -2350,7 +2350,7 @@ FMcomb_sub <- function(ResultDir, combtest, MF.p.corr,
                 mc.cores = MF.mc.cores,
                 blinker = 1000
             )
-        Result <- cbind(MFWAS[, 1:7], Pnew[, 3:4])
+        Result <- cbind(MFWAS[, seq_len(7)], Pnew[, 3:4])
         gc(reset = TRUE)
         Result <- Result[Result$TEST == "ADD", c("SNP", "CHR", "BP", "P")]
         gc(reset = TRUE)
@@ -3720,8 +3720,8 @@ ComputeREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 1
 ChrLength <- function(hg) {
     x <- GenomeInfoDb::getChromInfoFromUCSC(paste0(hg))
     x$size_mb <- x$size / 1000000
-    x_mb <- x[1:26, c(1, 5)]
-    x_mb$chrom <- 1:26
+    x_mb <- x[seq_len(26), c(1, 5)]
+    x_mb$chrom <- seq_len(26)
     return(x_mb)
 }
 
@@ -3974,7 +3974,7 @@ processGWASData <- function(DataDir, finput, summarystat) {
 
     # Merge summary statistics with the test map
     summarystat1 <- merge(summarystat, test.map, by = c("chr", "rsid", "pos", "a1"))
-    summarystat2 <- summarystat1[, c(1:4, 8, 5, 6, 7)]
+    summarystat2 <- summarystat1[, c(seq_len(seq_len(4)), 8, 5, 6, 7)]
 
     # Match summary statistics to test map and omit NA values
     test.df_beta <- bigsnpr::snp_match(summarystat2, test.map, join_by_pos = FALSE)
@@ -4083,7 +4083,7 @@ processLDSCModel <- function(DataDir, ResultDir, finput, precomputedLD, IndepSNP
         x <- na.omit(result)
         if (nrow(x) < 3) {
             rlang::inform(rlang::format_error_bullets(c("x" = "Not enough data points for plots.")))
-            result1 <- result[, 1:9]
+            result1 <- result[, seq_len(9)]
             result2 <- na.omit(result1)
             colnames(result2) <- c("chromosome", "snp_proportion", "no.of.genes", "no.of.proteins", "Intercept", "Int_SE", "Variance", "SE", "Source")
 
@@ -4098,7 +4098,7 @@ processLDSCModel <- function(DataDir, ResultDir, finput, precomputedLD, IndepSNP
 
             result3 <- result2
             colnames(result3) <- c("Chromosome", "SNP_proportion", "No.of.genes", "No.of.proteins", "Intercept", "Int_SE", "Variance", "SE", "Source", "Size_mb")
-            result3 <- result3[, c(1:4, 10, 9, 7, 8, 5, 6)]
+            result3 <- result3[, c(seq_len(4), 10, 9, 7, 8, 5, 6)]
             return(result3)
         }
     }
@@ -4179,7 +4179,7 @@ processGREMLModel <- function(DataDir, ResultDir, finput, byCHR, autosome, Xsome
     } else {
         bimfile <- read.table(normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE))
 
-        chrnum <- 1:length(unique(bimfile$V1))
+        chrnum <- seq_len(length(unique(bimfile$V1)))
 
         chrwiseRELM <- function(chrnum) {
             chromosome <- unique(bimfile$V1)[chrnum]
@@ -4266,7 +4266,7 @@ processGREMLModel <- function(DataDir, ResultDir, finput, byCHR, autosome, Xsome
             suppressWarnings(PlotHeritability(Hdata = result2, miMAF = miMAF, maMAF = maMAF, plotjpeg = plotjpeg, plotname = plotname, ResultDir = ResultDir))
 
             result3 <- merge(result, chr_mb, by.y = "chrom", by.x = "chromosome")
-            result3 <- result3[, c(1:4, 8, 5:7)]
+            result3 <- result3[, c(seq_len(4), 8, 5:7)]
             colnames(result3) <- c("Chromosome", "SNP_proportion", "No.of.genes", "No.of.proteins", "Size_mb", "Source", "Variance", "SE")
 
             return(result3)
@@ -4333,7 +4333,7 @@ topForestplot <- function(i, MR2, Sbeta) {
     D1$V2 <- row.names(D1)
     D1$index <- as.integer(D1$V2)
     D1$study <- paste0("S", D1$index)
-    D1 <- D1[, c(6, 5, 1:3)]
+    D1 <- D1[, c(6, 5, seq_len(3))]
     colnames(D1) <- c("study", "index", "effect", "lower", "upper")
     D1[nrow(D1), "study"] <- "W"
     D1[nrow(D1) - 1, "study"] <- "R"
@@ -4378,7 +4378,7 @@ allForestplot <- function(i, MR2, Sbeta) {
     D1$V2 <- row.names(D1)
     D1$index <- as.integer(D1$V2)
     D1$study <- paste0("S", D1$index)
-    D1 <- D1[, c(6, 5, 1:3)]
+    D1 <- D1[, c(6, 5, seq_len(3))]
     colnames(D1) <- c("study", "index", "effect", "lower", "upper")
     D1[nrow(D1), "study"] <- "W"
     D1[nrow(D1) - 1, "study"] <- "R"
@@ -4389,7 +4389,7 @@ allForestplot <- function(i, MR2, Sbeta) {
     plot1 <- ggplot2::ggplot(data = df, ggplot2::aes(y = df$index, x = df$effect, xmin = df$lower, xmax = df$upper)) +
         ggplot2::geom_point() +
         ggplot2::geom_errorbarh(height = .1) +
-        ggplot2::scale_y_continuous(breaks = 1:nrow(df), labels = df$study) +
+        ggplot2::scale_y_continuous(breaks = seq_len(nrow(df)), labels = df$study) +
         ggplot2::labs(title = paste0("Forest plot for ", SNPs), x = "Effect Size (95% CI)", y = "Studies and tests") +
         ggplot2::geom_vline(xintercept = 0, color = "black", linetype = "dashed", alpha = .5) +
         # theme_minimal()
@@ -4529,7 +4529,7 @@ generatePlots <- function(MRfiltered, Sbeta, ResultDir, plotname, useSNPposition
     }
 
     # Generate Forest plots
-    invisible(suppressWarnings(lapply(1:numSNPs, topForestplot, MR2 = MRfiltered, Sbeta = Sbeta)))
+    invisible(suppressWarnings(lapply(seq_len(numSNPs), topForestplot, MR2 = MRfiltered, Sbeta = Sbeta)))
 
     # Add mtext for all plots
     options(warn = -1)
@@ -5906,10 +5906,10 @@ detectOutliers <- function(tab, ResultDir, DataDir, finput, outlier, outlierOf, 
     Samples_with_predicted_ancestry$Predicted_Ancestry[is.na(Samples_with_predicted_ancestry$Predicted_Ancestry)] <- "Undecided"
 
     studyfam <- read.table(normalizePath(file.path(DataDir, paste0(finput, ".fam")), mustWork = FALSE))
-    Outlier_samples_fam <- merge(Outlier_samples, studyfam[, 1:2], by.x = "sample", by.y = "V2")[, c(2, 1)]
+    Outlier_samples_fam <- merge(Outlier_samples, studyfam[, seq_len(2)], by.x = "sample", by.y = "V2")[, c(2, 1)]
     colnames(Outlier_samples_fam) <- c("FID", "IID")
 
-    Samples_with_predicted_ancestry <- merge(Samples_with_predicted_ancestry, studyfam[, 1:2], by.x = "Sample ID", by.y = "V2")[, c(3, 1, 2)]
+    Samples_with_predicted_ancestry <- merge(Samples_with_predicted_ancestry, studyfam[, seq_len(2)], by.x = "Sample ID", by.y = "V2")[, c(3, 1, 2)]
     colnames(Samples_with_predicted_ancestry) <- c("FID", "IID", "Predicted Ancestry")
 
     # Report results
@@ -5932,12 +5932,6 @@ detectOutliers <- function(tab, ResultDir, DataDir, finput, outlier, outlierOf, 
     } else {
         rlang::inform(rlang::format_error_bullets(c("x" = "There are no non-outlier samples.")))
     }
-
-    # Prepare Outlier_samples1
-    # Outlier_samples1 <- Non_Ref_Pop[, 1:2]
-    # Outlier_samples1$pop <- as.character(Outlier_samples1$pop)
-    # Outlier_samples1 <- Outlier_samples1[grepl("Study_.*", Outlier_samples1$pop), ]
-    # return(Outlier_samples1)
 
     return(list(Outlier_samples = Outlier_samples_fam, Samples_with_predicted_ancestry = Samples_with_predicted_ancestry, NonOutlier_samples = na.omit(Sample_Ref_Pop[, c(1, 13)])))
 }
@@ -6382,10 +6376,10 @@ validateInputForComputePRS <- function(DataDir, ResultDir = tempdir(), finput, s
 
     # Check for required column names
     requiredColumns <- c("SNP", "A1", c("BETA", "OR"))
-    actualColumns <- colnames(summarystat)[1:3]
+    actualColumns <- colnames(summarystat)[seq_len(3)]
 
     # Check if the first two columns are "SNP" and "A1"
-    if (!all(requiredColumns[1:2] %in% actualColumns[1:2])) {
+    if (!all(requiredColumns[seq_len(2)] %in% actualColumns[seq_len(2)])) {
         stop("Error in summarystat: The first two columns must be 'SNP' and 'A1'.")
     }
 
@@ -7636,7 +7630,7 @@ HDL.rg <-
                 snps.name.list <- snps.list.imputed.vector
                 nsnps.list <- nsnps.list.imputed
             }
-            if (is.null(names(nsnps.list))) names(nsnps.list) <- as.character(1:length(nsnps.list))
+            if (is.null(names(nsnps.list))) names(nsnps.list) <- as.character(seq_len(length(nsnps.list)))
         } else {
             error.message <- "It seems this directory does not contain all files needed for HDL. Please check your LD.path again. The current version of HDL only supports pre-computed LD reference panels."
             log_output(
@@ -7815,7 +7809,7 @@ HDL.rg <-
                 ## Check if there are multiallelic or duplicated SNPs
                 if (any(duplicated(gwas1.df.subset$SNP)) == TRUE) {
                     gwas1.df.subset.duplicated <- gwas1.df.subset %>%
-                        dplyr::mutate(row.num = 1:n()) %>%
+                        dplyr::mutate(row.num = seq_len(n())) %>%
                         dplyr::filter(.data$SNP == .data$SNP[duplicated(.data$SNP)]) %>%
                         dplyr::mutate(SNP_A1_A2 = paste(.data$SNP, .data$A1, .data$A2, sep = "_"))
                     snps.ref.df.duplicated <- dplyr::filter(snps.ref.df, .data$id %in% gwas1.df.subset.duplicated$SNP)
@@ -7840,7 +7834,7 @@ HDL.rg <-
                 ## Check if there are multiallelic or duplicated SNPs
                 if (any(duplicated(gwas2.df.subset$SNP)) == TRUE) {
                     gwas2.df.subset.duplicated <- gwas2.df.subset %>%
-                        dplyr::mutate(row.num = 1:n()) %>%
+                        dplyr::mutate(row.num = seq_len(n())) %>%
                         dplyr::filter(.data$SNP == .data$SNP[duplicated(.data$SNP)]) %>%
                         dplyr::mutate(SNP_A1_A2 = paste(.data$SNP, .data$A1, .data$A2, sep = "_"))
                     snps.ref.df.duplicated <- dplyr::filter(snps.ref.df, .data$id %in% gwas2.df.subset.duplicated$SNP)
@@ -7870,14 +7864,14 @@ HDL.rg <-
                 a12 <- bhat1 * bhat2
 
                 reg <- lm(a11 ~ loop_env$LDsc)
-                h11.ols <- c(summary(reg)$coefficients[1:2, 1:2] * c(N1, M))
+                h11.ols <- c(summary(reg)$coefficients[seq_len(2), seq_len(2)] * c(N1, M))
 
                 reg <- lm(a22 ~ loop_env$LDsc)
-                h22.ols <- c(summary(reg)$coefficients[1:2, 1:2] * c(N2, M))
+                h22.ols <- c(summary(reg)$coefficients[seq_len(2), seq_len(2)] * c(N2, M))
 
                 reg <- lm(a12 ~ loop_env$LDsc)
-                if (N0 > 0) h12.ols <- c(summary(reg)$coefficients[1:2, 1:2] * c((N0 / p1 / p2), M))
-                if (N0 == 0) h12.ols <- c(summary(reg)$coefficients[1:2, 1:2] * c(N, M))
+                if (N0 > 0) h12.ols <- c(summary(reg)$coefficients[seq_len(2), seq_len(2)] * c((N0 / p1 / p2), M))
+                if (N0 == 0) h12.ols <- c(summary(reg)$coefficients[seq_len(2), seq_len(2)] * c(N, M))
 
                 ##  ................................ weighted LS: use estimated h2
                 ## vars from Bulik-Sullivan
@@ -7886,17 +7880,17 @@ HDL.rg <-
                 h22v <- (h22.ols[2] * loop_env$LDsc / M + 1 / N2)^2
 
                 reg <- lm(a11 ~ loop_env$LDsc, weights = 1 / h11v)
-                h11.wls <- c(summary(reg)$coefficients[1:2, 1:2] * c(N1, M))
+                h11.wls <- c(summary(reg)$coefficients[seq_len(2), seq_len(2)] * c(N1, M))
 
                 reg <- lm(a22 ~ loop_env$LDsc, weights = 1 / h22v)
-                h22.wls <- c(summary(reg)$coefficients[1:2, 1:2] * c(N2, M))
+                h22.wls <- c(summary(reg)$coefficients[seq_len(2), seq_len(2)] * c(N2, M))
 
                 if (N0 > 0) h12v <- sqrt(h11v * h22v) + (h12.ols[2] * loop_env$LDsc / M + p1 * p2 * rho12 / N0)^2
                 if (N0 == 0) h12v <- sqrt(h11v * h22v) + (h12.ols[2] * loop_env$LDsc / M)^2
 
                 reg <- lm(a12 ~ loop_env$LDsc, weights = 1 / h12v)
-                if (N0 > 0) h12.wls <- c(summary(reg)$coefficients[1:2, 1:2] * c((N0 / p1 / p2), M))
-                if (N0 == 0) h12.wls <- c(summary(reg)$coefficients[1:2, 1:2] * c(N, M))
+                if (N0 > 0) h12.wls <- c(summary(reg)$coefficients[seq_len(2), seq_len(2)] * c((N0 / p1 / p2), M))
+                if (N0 == 0) h12.wls <- c(summary(reg)$coefficients[seq_len(2), seq_len(2)] * c(N, M))
 
                 ## .................................  likelihood based
                 ## ....  estimate h2s
@@ -7954,7 +7948,7 @@ HDL.rg <-
         )
         M.ref <- sum(unlist(nsnps.list))
         eigen_select.fun <- function(x, k) {
-            return(x[1:k])
+            return(x[seq_len(k)])
         }
 
         eigen_select_num.fun <- function(eigen.percent, cut.percent) {
@@ -8527,7 +8521,7 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
             snps.name.list <- snps.list.imputed.vector
             nsnps.list <- nsnps.list.imputed
         }
-        if (is.null(names(nsnps.list))) names(nsnps.list) <- as.character(1:length(nsnps.list))
+        if (is.null(names(nsnps.list))) names(nsnps.list) <- as.character(seq_len(length(nsnps.list)))
     } else {
         error.message <- "It seems this directory does not contain all files needed for HDL. Please check your LD.path again. The current version of HDL only supports pre-computed LD reference panels."
         log_output(
@@ -8689,7 +8683,7 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
 
     # Export necessary functions/operators to the foreach environment
     HDL.res.pieces.list <- foreach::foreach(
-        i = 1:nrow(info.pieces.df),
+        i = seq_len(nrow(info.pieces.df)),
         .packages = c("dplyr"),
         .options.snow = opts,
         .export = c(
@@ -8764,22 +8758,22 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
         a12 <- bhat1 * bhat2
 
         # Unweighted regressions
-        h11.ols <- summary(lm(a11 ~ loop_env$LDsc))$coefficients[1:2, 1:2] * c(N1, M)
-        h22.ols <- summary(lm(a22 ~ loop_env$LDsc))$coefficients[1:2, 1:2] * c(N2, M)
+        h11.ols <- summary(lm(a11 ~ loop_env$LDsc))$coefficients[seq_len(2), seq_len(2)] * c(N1, M)
+        h22.ols <- summary(lm(a22 ~ loop_env$LDsc))$coefficients[seq_len(2), seq_len(2)] * c(N2, M)
 
         reg12 <- lm(a12 ~ loop_env$LDsc)
         h12.ols <- if (N0 > 0) {
-            summary(reg12)$coefficients[1:2, 1:2] * c(N0 / p1 / p2, M)
+            summary(reg12)$coefficients[seq_len(2), seq_len(2)] * c(N0 / p1 / p2, M)
         } else {
-            summary(reg12)$coefficients[1:2, 1:2] * c(N, M)
+            summary(reg12)$coefficients[seq_len(2), seq_len(2)] * c(N, M)
         }
 
         # Weighted regressions
         h11v <- (h11.ols[2] * loop_env$LDsc / M + 1 / N1)^2
         h22v <- (h22.ols[2] * loop_env$LDsc / M + 1 / N2)^2
 
-        h11.wls <- summary(lm(a11 ~ loop_env$LDsc, weights = 1 / h11v))$coefficients[1:2, 1:2] * c(N1, M)
-        h22.wls <- summary(lm(a22 ~ loop_env$LDsc, weights = 1 / h22v))$coefficients[1:2, 1:2] * c(N2, M)
+        h11.wls <- summary(lm(a11 ~ loop_env$LDsc, weights = 1 / h11v))$coefficients[seq_len(2), seq_len(2)] * c(N1, M)
+        h22.wls <- summary(lm(a22 ~ loop_env$LDsc, weights = 1 / h22v))$coefficients[seq_len(2), seq_len(2)] * c(N2, M)
 
         h12v <- sqrt(h11v * h22v) +
             if (N0 > 0) {
@@ -8788,7 +8782,7 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
                 (h12.ols[2] * loop_env$LDsc / M)^2
             }
 
-        h12.wls <- summary(lm(a12 ~ loop_env$LDsc, weights = 1 / h12v))$coefficients[1:2, 1:2] *
+        h12.wls <- summary(lm(a12 ~ loop_env$LDsc, weights = 1 / h12v))$coefficients[seq_len(2), seq_len(2)] *
             if (N0 > 0) c(N0 / p1 / p2, M) else c(N, M)
 
         # Likelihood-based estimation
@@ -8840,7 +8834,7 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     )
     M.ref <- sum(unlist(nsnps.list))
     eigen_select.fun <- function(x, k) {
-        return(x[1:k])
+        return(x[seq_len(k)])
     }
 
     eigen_select_num.fun <- function(eigen.percent, cut.percent) {
@@ -9101,7 +9095,7 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     opts <- list(progress = progress)
 
     HDL.res.jackknife.list <- foreach::foreach(
-        i = 1:length(lam.v),
+        i = seq_len(seq_len(length(lam.v))),
         .options.snow = opts,
         .export = c(
             "%>%",

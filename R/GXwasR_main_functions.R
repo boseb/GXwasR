@@ -696,7 +696,7 @@ TestXGene <- function(
                     genes1 <- as.vector(g)
                 } else {
                     maxgene <- max_gene
-                    genes1 <- as.vector(g[1:max_gene])
+                    genes1 <- as.vector(g[seq_len(max_gene)])
                 }
 
                 if (genebasedTest == "SKAT") {
@@ -1300,7 +1300,7 @@ QCsnp <-
 #' ResultDir <- tempdir()
 #' precomputedLD <- NULL
 #' finput <- "GXwasR_example"
-#' test.sumstats <- na.omit(Summary_Stat_Ex1[Summary_Stat_Ex1$TEST == "ADD", c(1:4, 6:8)])
+#' test.sumstats <- na.omit(Summary_Stat_Ex1[Summary_Stat_Ex1$TEST == "ADD", c(seq_len(4), 6:8)])
 #' colnames(test.sumstats) <- c("chr", "rsid", "pos", "a1", "n_eff", "beta", "beta_se")
 #' summarystat <- test.sumstats
 #' ncores <- 3
@@ -1581,10 +1581,10 @@ ComputeGeneticPC <- function(
 
             # Process PCA results
             PCs1 <- read.table(normalizePath(file.path(ResultDir, "pcfile.eigenvec"), mustWork = FALSE))
-            PCs <- PCs1[, -c(1:2)]
-            names(PCs) <- paste0("PC", 1:ncol(PCs))
+            PCs <- PCs1[, -c(seq_len(2))]
+            names(PCs) <- paste0("PC", seq_len(ncol(PCs)))
             EV <- scan(normalizePath(file.path(ResultDir, "pcfile.eigenval"), mustWork = FALSE))
-            Percent.var <- data.frame(PC = 1:ncol(PCs), Percent.var = EV / sum(EV) * 100)
+            Percent.var <- data.frame(PC = seq_len(ncol(PCs)), Percent.var = EV / sum(EV) * 100)
 
             # Plot PCA results
             if (plotPC) {
@@ -1767,7 +1767,7 @@ ComputeGeneticPC <- function(
 #'
 #' ## This table shows 10 samples with phenotype, covariates and a PRS column.
 #' PRS <- PRSresult$PRS
-#' PRS[1:10, ]
+#' PRS[seq_len(10), ]
 #' ## The best threshold
 #' BestPvalue <- PRSresult$BestP$Threshold
 #' BestPvalue
@@ -1807,7 +1807,7 @@ ComputePRS <- function(
             GP <- preparePhenotypeData(phenofile, nPC, DataDir, ResultDir, finput, highLD_regions, ld_prunning, window_size, step_size, r2_threshold)
 
             # Read in the phenotype file
-            phenotype <- cbind(phenofile[, 1:2], phenofile[, "Pheno1"])
+            phenotype <- cbind(phenofile[, seq_len(2)], phenofile[, "Pheno1"])
             colnames(phenotype) <- c("FID", "IID", "Pheno1")
 
             # Read the covariates (here, it is sex)
@@ -3285,19 +3285,19 @@ QCsample <- function(
                 if (nrow(hetermiss) == 0) {
                     hetermiss1 <- NULL
                 } else {
-                    hetermiss1 <- hetermiss[, 1:2]
+                    hetermiss1 <- hetermiss[, seq_len(2)]
                 }
 
                 if (nrow(imissfail) == 0) {
                     imissfail1 <- NULL
                 } else {
-                    imissfail1 <- imissfail[, 1:2]
+                    imissfail1 <- imissfail[, seq_len(2)]
                 }
 
                 if (nrow(hetfail) == 0) {
                     hetfail1 <- NULL
                 } else {
-                    hetfail1 <- hetfail[, 1:2]
+                    hetfail1 <- hetfail[, seq_len(2)]
                 }
 
                 ftemp <- c("failed_het_imiss", "filtered_hetero.log", "filtered_missing.lmiss", "filtered_missing.log")
@@ -3370,9 +3370,9 @@ QCsample <- function(
             }
             return(list(
                 HM = hm,
-                Failed_Missingness = imissfail[, 1:2],
-                Failed_heterozygosity = hetfail[, 1:2],
-                Failed_IBD = failed_ibd[, 1:2],
+                Failed_Missingness = imissfail[, seq_len(2)],
+                Failed_heterozygosity = hetfail[, seq_len(2)],
+                Failed_IBD = failed_ibd[, seq_len(2)],
                 Missingness_results = fmi,
                 Heterozygosity_results = fhh,
                 IBD_results = ibd
@@ -3977,7 +3977,7 @@ MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile =
                     UseA1v = UseA1v, extract = extract, SNPfilev = SNPfilev
                 )
             } else {
-                chromosome <- 1:23
+                chromosome <- seq_len(23)
                 MR <- data.table::rbindlist(lapply(chromosome, metaFun,
                     DataDir = DataDir, ResultDir = ResultDir, SummData = SummData,
                     CHR = "--chr", nomap = NULL,
@@ -4027,7 +4027,7 @@ MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile =
 
             ## Produce all forest plots in .pdf
             grDevices::pdf(normalizePath(file.path(ResultDir, paste0(plotname, ".pdf")), mustWork = FALSE), width = 10, height = 5)
-            i <- 1:length(MRfiltered$SNP)
+            i <- seq_len(length(MRfiltered$SNP))
             invisible(suppressWarnings(lapply(i, allForestplot, MR2 = MRfiltered, Sbeta = Sbeta)))
             dev.off()
 
@@ -4242,7 +4242,7 @@ ClumpLD <- function(DataDir, finput, SNPdata, ResultDir = tempdir(),
 
             if (byCHR == TRUE) {
                 bimfile <- read.table(normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE))
-                chrnum <- 1:length(unique(bimfile$V1))
+                chrnum <- seq_len(length(unique(bimfile$V1)))
 
                 chrwiseLD <- function(chrnum) {
                     chromosome <- unique(bimfile$V1)[chrnum]
@@ -4759,8 +4759,7 @@ GeneticCorrBT <- function(
                 } else {
                     bimfile <- read.table(normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE))
 
-                    chrnum <- 1:length(unique(bimfile$V1))
-                    # chrnum <- 1:3
+                    chrnum <- seq_len(length(unique(bimfile$V1)))
 
                     chrwiseRELM <- function(chrnum, ncores) {
                         chromosome <- as.integer(unique(bimfile$V1)[chrnum])
@@ -5182,7 +5181,7 @@ PlinkSummary <- function(DataDir, ResultDir = tempdir(), finput) {
             fam <- as.data.frame(utils::read.table(file.path(DataDir, paste0(finput, ".fam"))))
             if (ncol(fam) == 5) {
                 fam$V6 <- fam$V1
-                fam <- fam[, c(6, 1:5)]
+                fam <- fam[, c(6, seq_len(5))]
                 colnames(fam) <- c("V1", "V2", "V3", "V4", "V5", "V6")
                 rlang::inform(rlang::format_error_bullets(c("x" = ".fam file has five columns, please provide six columns in this to utilize GXwasR.")))
             }

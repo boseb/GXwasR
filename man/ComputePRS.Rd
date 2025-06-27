@@ -145,7 +145,7 @@ PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, cova
 
 ## This table shows 10 samples with phenotype, covariates and a PRS column.
 PRS <- PRSresult$PRS
-PRS[1:10, ]
+PRS[seq_len(10), ]
 ## The best threshold
 BestPvalue <- PRSresult$BestP$Threshold
 BestPvalue
