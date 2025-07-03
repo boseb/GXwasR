@@ -98,6 +98,7 @@
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' reference <- "HapMapIII_NCBI36"
+#' reference <- "ThousandGenome"
 #' highLD_regions <- highLD_hg19
 #' study_pop <- example_data_study_sample_ancestry # PreimputeEX
 #' studyLD_window_size <- 50
@@ -150,7 +151,6 @@ AncestryCheck <-
                 file.copy(from = normalizePath(file.path(DataDir, paste0(finput, ".fam")), mustWork = FALSE), to = normalizePath(file.path(DataDir, paste0(finput, "_new.fam")), mustWork = FALSE))
                 file.copy(from = normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE), to = normalizePath(file.path(DataDir, paste0(finput, "_new.bim")), mustWork = FALSE))
                 file.copy(from = normalizePath(file.path(DataDir, paste0(finput, ".bed")), mustWork = FALSE), to = normalizePath(file.path(DataDir, paste0(finput, "_new.bed")), mustWork = FALSE))
-
                 sbim <- read.table(normalizePath(file.path(DataDir, paste0(finput, "_new.bim")), mustWork = FALSE))
                 # Assuming sbim is your data frame
                 sbim$V2 <- paste(sbim$V1, sbim$V4, sep = ":")
@@ -158,13 +158,18 @@ AncestryCheck <-
                 write.table(sbim, file = normalizePath(file.path(DataDir, paste0(finput, "_new.bim")), mustWork = FALSE), quote = FALSE, row.names = FALSE, col.names = FALSE)
 
                 # Changing the input file
-                finput <- paste0(finput, "_new")
+                finput_new <- paste0(finput, "_new")
 
                 # Verify existence of required reference data
                 ref_path <- validate_reference_data(reference)
                 if (reference == "ThousandGenome") {
                     reference <- "Ref10Kgenome"
                 }
+                # Copy the reference data and chance the NSP ids in the reference data.
+                # Similarly, the reference
+                file.copy(normalizePath(file.path(ref_path, paste0(reference, ".bed")), mustWork = FALSE), normalizePath(file.path(ResultDir, paste0(reference, ".bed")), mustWork = FALSE), overwrite = TRUE)
+                file.copy(normalizePath(file.path(ref_path, paste0(reference, ".fam")), mustWork = FALSE), normalizePath(file.path(ResultDir, paste0(reference, ".fam")), mustWork = FALSE), overwrite = TRUE)
+                file.copy(normalizePath(file.path(ref_path, paste0(reference, ".bim")), mustWork = FALSE), normalizePath(file.path(ResultDir, paste0(reference, ".bim")), mustWork = FALSE), overwrite = TRUE)
 
                 # Changing the snp ids in reference .bim file
                 rbim <- read.table(normalizePath(file.path(ref_path, paste0(reference, ".bim")), mustWork = FALSE))
@@ -184,10 +189,18 @@ AncestryCheck <-
 
                 if (filterSNP == TRUE) {
                     # Filter AT-GC
-                    filterATGCSNPs(DataDir, ResultDir, finput, reference)
+                    filterATGCSNPs(
+                        study_bim_path = normalizePath(file.path(DataDir, paste0(finput_new, ".bim")), mustWork = FALSE),
+                        study_bed_path = normalizePath(file.path(DataDir, paste0(finput_new, ".bed")), mustWork = FALSE),
+                        study_fam_path = normalizePath(file.path(DataDir, paste0(finput_new, ".fam")), mustWork = FALSE),
+                        ref_bim_path   = normalizePath(file.path(ResultDir, paste0(reference, ".bim")), mustWork = FALSE),  # make sure you've copied all 3!
+                        ref_bed_path   = normalizePath(file.path(ResultDir, paste0(reference, ".bed")), mustWork = FALSE),
+                        ref_fam_path   = normalizePath(file.path(ResultDir, paste0(reference, ".fam")), mustWork = FALSE),
+                        ResultDir = ResultDir
+                    )
 
                     # LD Pruning for Study and Reference Data
-                    studyLDMessage <- processLDstudyData(ResultDir, highLD_regions, studyLD, studyLD_window_size, studyLD_step_size, studyLD_r2_threshold)
+                    studyLDMessage <- processLDstudyData(ResultDir, highLD_regions = normalizePath(file.path(ResultDir, "high-LD-regions-temp.txt"), mustWork = FALSE), studyLD, studyLD_window_size, studyLD_step_size, studyLD_r2_threshold)
                     referenceLDMessage <- processLDreferenceData(ResultDir, highLD_regions, referLD, referLD_window_size, referLD_step_size, referLD_r2_threshold)
 
                     # Printing the messages returned by the functions
@@ -197,10 +210,10 @@ AncestryCheck <-
                     # Define patterns for files to remove
 
                     # Remove files with specified patterns
-                    file.remove(list.files(normalizePath(ResultDir, mustWork = FALSE), pattern = "filtered_study_temp1", full.names = TRUE))
-                    file.remove(list.files(normalizePath(ResultDir, mustWork = FALSE), pattern = "filtered_ref_temp1", full.names = TRUE))
+                    # file.remove(list.files(normalizePath(ResultDir, mustWork = FALSE), pattern = "filtered_study_temp1", full.names = TRUE))
+                    # file.remove(list.files(normalizePath(ResultDir, mustWork = FALSE), pattern = "filtered_ref_temp1", full.names = TRUE))
                 } else if (filterSNP == FALSE) {
-                    executePlinkForUnfilteredData(DataDir, ResultDir, finput, reference)
+                    executePlinkForUnfilteredData(DataDir, ResultDir, finput_new, reference)
                 }
 
                 # Find common SNPs between study and reference data
@@ -276,7 +289,7 @@ AncestryCheck <-
                 mergeDatasetsAndPerformPCA(ResultDir)
 
                 # Process Reference
-                ref_ancestry_EUR_AFR_ASIAN <- loadAndProcessReferenceAncestry(reference)
+                ref_ancestry_EUR_AFR_ASIAN <- loadAndProcessReferenceAncestry(ResultDir, reference)
 
                 # Plot PCA
                 combined_pop <- prepareAncestryData(study_pop, ref_ancestry_EUR_AFR_ASIAN)
@@ -288,7 +301,10 @@ AncestryCheck <-
                 reportAlleleFlips(snp_allele_flips, ResultDir)
 
                 # Example of using the function
-                Outlier_samples1 <- detectOutliers(tab, ResultDir, outlier, outlierOf, outlier_threshold)
+                Outlier_samples1 <- detectOutliers(
+                    tab = tab, ResultDir = ResultDir, DataDir = DataDir, 
+                    finput = finput, outlier = outlier, outlierOf = outlierOf, 
+                    outlier_threshold = outlier_threshold)
 
                 removeTempFiles(ResultDir, "study_ref_merge")
                 removeTempFiles(DataDir, "_new")
