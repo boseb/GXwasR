@@ -103,8 +103,8 @@ studyLD_window_size <- 50
 studyLD_step_size <- 5
 studyLD_r2_threshold <- 0.02
 filterSNP <- TRUE
-studyLD <- TRUE
-referLD <- TRUE
+studyLD <- FALSE
+referLD <- FALSE
 referLD_window_size <- 50
 referLD_step_size <- 5
 referLD_r2_threshold <- 0.02

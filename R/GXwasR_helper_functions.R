@@ -620,7 +620,7 @@ executePlinkAd <- function(ResultDir, args) {
     tryCatch(
         {
             stderr_dest <- ifelse(.Platform$OS.type == "windows", "NUL", "/dev/null")
-            sys::exec_wait(plink(), args = args, std_err = TRUE)
+            sys::exec_wait(plink(), args = args, std_err = stderr_dest)
         },
         error = function(e) {
             stop("An error occurred while executing Plink: ", e$message)
@@ -930,8 +930,8 @@ handleCaseControlFiltering <- function(ResultDir, casecontrol, dmissX, dmissAuto
                 chrfilter, chrv,
                 "--test-missing", "--adjust",
                 "--make-bed", "--allow-no-sex",
-                "--out", normalizePath(file.path(ResultDir, "filtered_temp_casecontrol"), mustWork = FALSE)
-                # "--silent"
+                "--out", normalizePath(file.path(ResultDir, "filtered_temp_casecontrol"), mustWork = FALSE),
+                "--silent"
             ))
 
             # Process the differential missingness results
@@ -3681,8 +3681,8 @@ ComputeREMLmulti <- function(
             "--thread-num", ncores,
             "--out", normalizePath(file.path(ResultDir, "test_reml"), mustWork = FALSE)
         ),
-        std_out = TRUE,
-        std_err = TRUE
+        std_out = FALSE,
+        std_err = FALSE
     ))
 
     if (file.exists(normalizePath(file.path(ResultDir, "test_reml.hsq"), mustWork = FALSE))) {
@@ -4598,8 +4598,8 @@ ComputeBivarREMLone <- function(
             "--thread-num", ncores,
             "--out", normalizePath(file.path(ResultDir, paste0(chr, "test_bireml")), mustWork = FALSE)
         ),
-        std_out = TRUE,
-        std_err = TRUE
+        std_out = FALSE,
+        std_err = FALSE
     ))
 
     if (file.exists(normalizePath(file.path(ResultDir, paste0(chr, "test_bireml.hsq")), mustWork = FALSE))) {
@@ -5226,8 +5226,8 @@ processLDstudyData <- function(ResultDir, highLD_regions, studyLD, studyLD_windo
                 "--exclude", "range", highLD_regions,
                 "--indep-pairwise", studyLD_window_size, studyLD_step_size, studyLD_r2_threshold,
                 "--allow-no-sex", ## Adding in 4.0
-                "--out", normalizePath(file.path(ResultDir, "filtered_study_temp2"), mustWork = FALSE)
-                # "--silent"
+                "--out", normalizePath(file.path(ResultDir, "filtered_study_temp2"), mustWork = FALSE),
+                "--silent"
             ))
 
             # Extract pruned SNPs based on the .prune.in file
@@ -5515,8 +5515,8 @@ correctChromosomeMismatches <- function(ResultDir, common_snps, pruned_study, pr
             "--update-chr", normalizePath(file.path(ResultDir, "snpSameNameDiffPos"), mustWork = FALSE), 1, 3,
             "--update-map", normalizePath(file.path(ResultDir, "snpSameNameDiffPos"), mustWork = FALSE), 2, 3,
             "--allow-no-sex", "--make-bed",
-            "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp4"), mustWork = FALSE)
-            # "--silent"
+            "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp4"), mustWork = FALSE),
+            "--silent"
         )) ## Adding "--allow-no-sex" in 4.0.
     } else {
         executePlinkAd(ResultDir, c(
@@ -5561,8 +5561,8 @@ handleAlleleFlipsWrong <- function(ResultDir, allele_flips_wrong) {
         executePlinkAd(ResultDir, c(
             "--bfile", normalizePath(file.path(ResultDir, "filtered_ref_temp5"), mustWork = FALSE), ##### Updated in final
             "--make-bed",
-            "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp6"), mustWork = FALSE)
-            # "--silent"
+            "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp6"), mustWork = FALSE),
+            "--silent"
         ))
     }
 
@@ -5579,8 +5579,8 @@ mergeDatasetsAndPerformPCA <- function(ResultDir) {
         "--bmerge", normalizePath(file.path(ResultDir, "filtered_ref_temp6"), mustWork = FALSE),
         "--allow-no-sex", ## Adding in 4.0
         "--make-bed",
-        "--out", normalizePath(file.path(ResultDir, "study_ref_merge"), mustWork = FALSE)
-        # "--silent"
+        "--out", normalizePath(file.path(ResultDir, "study_ref_merge"), mustWork = FALSE),
+        "--silent"
     ))
 
     # Check for strand inconsistency
@@ -5591,8 +5591,8 @@ mergeDatasetsAndPerformPCA <- function(ResultDir) {
             "--exclude", normalizePath(file.path(ResultDir, "study_ref_merge-merge.missnp"), mustWork = FALSE),
             "--allow-no-sex", ## Adding in 4.0
             "--make-bed",
-            "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp7"), mustWork = FALSE)
-            # "--silent"
+            "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp7"), mustWork = FALSE),
+            "--silent"
         ))
 
         executePlinkAd(ResultDir, c(
@@ -5600,8 +5600,8 @@ mergeDatasetsAndPerformPCA <- function(ResultDir) {
             "--bmerge", normalizePath(file.path(ResultDir, "filtered_ref_temp7"), mustWork = FALSE),
             "--allow-no-sex", ## Adding in 4.0.
             "--make-bed",
-            "--out", normalizePath(file.path(ResultDir, "study_ref_merge"), mustWork = FALSE)
-            # "--silent"
+            "--out", normalizePath(file.path(ResultDir, "study_ref_merge"), mustWork = FALSE),
+            "--silent"
         ))
 
         # Remove temporary files using the provided helper function
@@ -5624,8 +5624,8 @@ mergeDatasetsAndPerformPCA <- function(ResultDir) {
         ))
 
         # Clean up temporary files
-        removeTempFiles(normalizePath(ResultDir), "filtered_ref_temp6")
-        removeTempFiles(normalizePath(ResultDir), "filtered_ref_temp7")
+        # removeTempFiles(normalizePath(ResultDir), "filtered_ref_temp6")
+        # removeTempFiles(normalizePath(ResultDir), "filtered_ref_temp7")
 
         if (file.exists(normalizePath(file.path(ResultDir, "study_ref_merge.eigenvec"), mustWork = FALSE))) {
             rlang::inform(rlang::format_error_bullets(c("v" = "PCA done.")))
@@ -5644,6 +5644,10 @@ mergeDatasetsAndPerformPCA <- function(ResultDir) {
 ## Function 111
 ## Added in 3.0
 loadAndProcessReferenceAncestry <- function(ResultDir, reference) {
+    ref_path <- validate_reference_data(reference)
+                if (reference == "ThousandGenome") {
+                    reference <- "Ref10Kgenome"
+                }
     if (reference == "HapMapIII_NCBI36") {
         ref_ancestry1 <-
             read.table(
@@ -5653,7 +5657,7 @@ loadAndProcessReferenceAncestry <- function(ResultDir, reference) {
             )[, c("IID", "population")]
         colnames(ref_ancestry1) <- c("ID", "Ancestry")
         ## Updated in 5.0
-        ref1 <- read.table(normalizePath(file.path(ResultDir, paste0(reference, ".fam")), mustWork = FALSE), header = FALSE)[, 2, drop = FALSE]
+        ref1 <- read.table(normalizePath(file.path(ref_path, paste0(reference, ".fam")), mustWork = FALSE), header = FALSE)[, 2, drop = FALSE]
         colnames(ref1) <- "ID"
         ref_ancestry <- merge(ref_ancestry1, ref1, by = "ID")
 
