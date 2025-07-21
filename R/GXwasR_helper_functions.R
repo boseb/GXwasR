@@ -7494,13 +7494,6 @@ removeFiles <- function(fileNames, directory) {
     }
 }
 
-
-removeFiles1 <- function(fileNames) {
-    for (fileName in fileNames) {
-        file.remove(fileName)
-    }
-}
-
 ## Added in V7
 validateInputForLDPrune <- function(DataDir, finput, ResultDir, window_size, step_size, r2_threshold) {
     # Check if directories exist

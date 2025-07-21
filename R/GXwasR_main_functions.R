@@ -1373,14 +1373,12 @@ EstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL, 
 
                 # Gather files matching the patterns
 
-                patterns <- c("plink", "test_reml", "LDfiltered", "HumanGenome", "LDsnp", "test", "gcta", "MAF", "GRM", "phenofile.phen", "sink")
-
-                files_to_remove <- unlist(lapply(patterns, function(pattern) {
-                    list.files(ResultDir, pattern = patterns, full.names = TRUE)
-                }))
+                patterns_to_remove <- c("plink", "test_reml", "LDfiltered", "HumanGenome", "LDsnp", "test", "gcta", "MAF", "GRM", "phenofile.phen", "sink")
 
                 # Use removeFiles helper function to delete the files
-                suppressWarnings(removeFiles1(files_to_remove))
+                for(pattern in patterns_to_remove){
+                    removeTempFiles(ResultDir, pattern)
+                }
 
                 rlang::inform(rlang::format_error_bullets(c("v" = paste0("All GRM related files are in ", ResultDir))))
 
