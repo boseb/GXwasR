@@ -329,27 +329,10 @@ outersect <- function(x, y, ...) {
 ## Function 11
 ######### Added in 3.0
 removeTempFiles <- function(directory, pattern) {
-    file_path <- normalizePath(file.path(directory, "sink_file.txt"), mustWork = FALSE)
-
-    # Create an empty file (if it doesn't exist)
-    if (!file.exists(file_path)) {
-        file.create(file_path)
-    }
-
-    # Redirect output to the specified file
-    sink(file_path)
-
     tempFiles <- list.files(normalizePath(directory, mustWork = FALSE), pattern = pattern, full.names = TRUE)
     if (length(tempFiles) > 0) {
         suppressWarnings(file.remove(tempFiles))
-    } else {
-        rlang::inform(rlang::format_error_bullets(c("x" = paste("No files found with pattern:", pattern, "in directory:", directory))))
-    }
-
-    # Reset the sink to stop redirecting the output to the file
-    if (sink.number() > 0) {
-        sink() # This line resets the output redirection
-    }
+    } 
 }
 
 ## Function 12
@@ -5271,7 +5254,7 @@ processLDstudyData <- function(ResultDir, highLD_regions, studyLD, studyLD_windo
     if (studyLD) {
         format_error_bullets(c("v" = "LD pruning was performed for study dataset."))
     } else {
-        format_error_bullets(c("i" = "LD pruning is recommended for study dataset. Set studyLD = TRUE."))
+        format_error_bullets(c("!" = "LD pruning is recommended for study dataset. Set studyLD = TRUE."))
     }
 }
 
@@ -5329,7 +5312,7 @@ processLDreferenceData <- function(ResultDir, highLD_regions, referLD, referLD_w
     if (referLD) {
         rlang::inform(rlang::format_error_bullets(c("v" = "LD pruning was performed for reference dataset.")))
     } else {
-        rlang::inform(rlang::format_error_bullets(c("i" = "LD pruning is recommended for reference dataset. Set referLD == TRUE.")))
+        rlang::inform(rlang::format_error_bullets(c("!" = "LD pruning is recommended for reference dataset. Set referLD = TRUE.")))
     }
 }
 
@@ -5419,7 +5402,7 @@ findCommonSNPs <- function(ResultDir) {
         # if (nrow(common_snps) == 0){
         stop("No common SNPs found between study and reference data. This analysis cannot be done.")
     } else {
-        rlang::inform(rlang::format_error_bullets(c("i" = paste0("Number of overlapping SNPs between study and reference data using chromosme ID and position:", length(common_snps)))))
+        rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of overlapping SNPs between study and reference data using chromosme ID and position:", length(common_snps)))))
     }
 
     # Updated in final
