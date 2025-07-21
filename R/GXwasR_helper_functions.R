@@ -5623,10 +5623,6 @@ mergeDatasetsAndPerformPCA <- function(ResultDir) {
             "--silent"
         ))
 
-        # Clean up temporary files
-        # removeTempFiles(normalizePath(ResultDir), "filtered_ref_temp6")
-        # removeTempFiles(normalizePath(ResultDir), "filtered_ref_temp7")
-
         if (file.exists(normalizePath(file.path(ResultDir, "study_ref_merge.eigenvec"), mustWork = FALSE))) {
             rlang::inform(rlang::format_error_bullets(c("v" = "PCA done.")))
         } else {

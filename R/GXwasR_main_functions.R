@@ -184,11 +184,6 @@ AncestryCheck <-
                     rlang::inform(studyLDMessage)
                     rlang::inform(referenceLDMessage)
 
-                    # Define patterns for files to remove
-
-                    # Remove files with specified patterns
-                    # file.remove(list.files(normalizePath(ResultDir, mustWork = FALSE), pattern = "filtered_study_temp1", full.names = TRUE))
-                    # file.remove(list.files(normalizePath(ResultDir, mustWork = FALSE), pattern = "filtered_ref_temp1", full.names = TRUE))
                 } else if (filterSNP == FALSE) {
                     executePlinkForUnfilteredData(DataDir, ResultDir, finput, reference)
                 }
