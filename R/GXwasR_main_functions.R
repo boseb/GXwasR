@@ -139,7 +139,10 @@ AncestryCheck <-
         tryCatch(
             {
                 # Validate inputs
-                validateAncestryCheckInputs(DataDir, ResultDir, finput, reference, filterSNP, studyLD, studyLD_window_size, studyLD_step_size, studyLD_r2_threshold, referLD, referLD_window_size, referLD_step_size, referLD_r2_threshold, highLD_regions, study_pop, outlier, outlierOf, outlier_threshold)
+                validateAncestryCheckInputs(
+                    DataDir, ResultDir, finput, reference, filterSNP, studyLD, studyLD_window_size, studyLD_step_size, 
+                    studyLD_r2_threshold, referLD, referLD_window_size, referLD_step_size, referLD_r2_threshold, 
+                    highLD_regions, study_pop, outlier, outlierOf, outlier_threshold)
 
                 if (!checkFiles(DataDir, finput)) {
                     stop("Missing required Plink files in the specified DataDir.")
@@ -157,7 +160,10 @@ AncestryCheck <-
                 rbim <- read.table(normalizePath(file.path(ref_path, paste0(reference, ".bim")), mustWork = FALSE))
 
                 if (!is.null(highLD_regions)) {
-                    write.table(highLD_regions, file = normalizePath(file.path(ResultDir, "high-LD-regions-temp.txt"), mustWork = FALSE), quote = FALSE, row.names = FALSE, col.names = FALSE)
+                    write.table(
+                        highLD_regions, file = normalizePath(file.path(ResultDir, "high-LD-regions-temp.txt"), mustWork = FALSE), 
+                        quote = FALSE, row.names = FALSE, col.names = FALSE
+                    )
 
                     highLD_regions <- normalizePath(file.path(ResultDir, "high-LD-regions-temp.txt"), mustWork = FALSE)
                 } else {
@@ -177,8 +183,13 @@ AncestryCheck <-
                     )
 
                     # LD Pruning for Study and Reference Data
-                    studyLDMessage <- processLDstudyData(ResultDir, highLD_regions = normalizePath(file.path(ResultDir, "high-LD-regions-temp.txt"), mustWork = FALSE), studyLD, studyLD_window_size, studyLD_step_size, studyLD_r2_threshold)
-                    referenceLDMessage <- processLDreferenceData(ResultDir, highLD_regions, referLD, referLD_window_size, referLD_step_size, referLD_r2_threshold)
+                    studyLDMessage <- processLDstudyData(
+                        ResultDir, highLD_regions = normalizePath(file.path(ResultDir, "high-LD-regions-temp.txt"), mustWork = FALSE), 
+                        studyLD, studyLD_window_size, studyLD_step_size, studyLD_r2_threshold
+                    )
+                    referenceLDMessage <- processLDreferenceData(
+                        ResultDir, highLD_regions, referLD, referLD_window_size, referLD_step_size, referLD_r2_threshol
+                    )
 
                     # Printing the messages returned by the functions
                     rlang::inform(studyLDMessage)
