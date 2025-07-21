@@ -188,7 +188,7 @@ AncestryCheck <-
                         studyLD, studyLD_window_size, studyLD_step_size, studyLD_r2_threshold
                     )
                     referenceLDMessage <- processLDreferenceData(
-                        ResultDir, highLD_regions, referLD, referLD_window_size, referLD_step_size, referLD_r2_threshol
+                        ResultDir, highLD_regions, referLD, referLD_window_size, referLD_step_size, referLD_r2_threshold
                     )
 
                     # Printing the messages returned by the functions

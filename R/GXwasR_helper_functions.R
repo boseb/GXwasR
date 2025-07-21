@@ -5428,10 +5428,6 @@ processCommonSNPs <- function(ResultDir) {
         "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp3"), mustWork = FALSE),
         "--silent"
     ))
-
-    # Remove temporary files
-    # removeTempFiles(ResultDir, "filtered_study_temp2")
-    # removeTempFiles(ResultDir, "filtered_ref_temp2")
 }
 
 ## Function 107
@@ -5508,9 +5504,7 @@ correctChromosomeMismatches <- function(ResultDir, common_snps, pruned_study, pr
             "--silent"
         ))
     }
-
-    # removeTempFiles(normalizePath(ResultDir, mustWork = FALSE), "filtered_ref_temp3")
-
+    
     return(list(S1 = S1, S2 = S2, snpSameNameDiffPos = snpSameNameDiffPos))
 }
 
