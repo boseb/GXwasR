@@ -98,15 +98,14 @@
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' reference <- "HapMapIII_NCBI36"
-#' reference <- "ThousandGenome"
 #' highLD_regions <- highLD_hg19
 #' study_pop <- example_data_study_sample_ancestry # PreimputeEX
 #' studyLD_window_size <- 50
 #' studyLD_step_size <- 5
 #' studyLD_r2_threshold <- 0.02
 #' filterSNP <- TRUE
-#' studyLD <- TRUE
-#' referLD <- TRUE
+#' studyLD <- FALSE
+#' referLD <- FALSE
 #' referLD_window_size <- 50
 #' referLD_step_size <- 5
 #' referLD_r2_threshold <- 0.02
@@ -145,39 +144,17 @@ AncestryCheck <-
                 if (!checkFiles(DataDir, finput)) {
                     stop("Missing required Plink files in the specified DataDir.")
                 }
-
-                # Copying the input data and changing the SNP ids in study data.
-                # Copy the file in the same directory with a new name
-                file.copy(from = normalizePath(file.path(DataDir, paste0(finput, ".fam")), mustWork = FALSE), to = normalizePath(file.path(DataDir, paste0(finput, "_new.fam")), mustWork = FALSE))
-                file.copy(from = normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE), to = normalizePath(file.path(DataDir, paste0(finput, "_new.bim")), mustWork = FALSE))
-                file.copy(from = normalizePath(file.path(DataDir, paste0(finput, ".bed")), mustWork = FALSE), to = normalizePath(file.path(DataDir, paste0(finput, "_new.bed")), mustWork = FALSE))
-                sbim <- read.table(normalizePath(file.path(DataDir, paste0(finput, "_new.bim")), mustWork = FALSE))
-                # Assuming sbim is your data frame
-                sbim$V2 <- paste(sbim$V1, sbim$V4, sep = ":")
-                # Replace the new input .bim file with new snp ids.
-                write.table(sbim, file = normalizePath(file.path(DataDir, paste0(finput, "_new.bim")), mustWork = FALSE), quote = FALSE, row.names = FALSE, col.names = FALSE)
-
-                # Changing the input file
-                finput_new <- paste0(finput, "_new")
+                # Read study bim file
+                sbim <- read.table(normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE))
 
                 # Verify existence of required reference data
                 ref_path <- validate_reference_data(reference)
                 if (reference == "ThousandGenome") {
                     reference <- "Ref10Kgenome"
                 }
-                # Copy the reference data and chance the NSP ids in the reference data.
-                # Similarly, the reference
-                file.copy(normalizePath(file.path(ref_path, paste0(reference, ".bed")), mustWork = FALSE), normalizePath(file.path(ResultDir, paste0(reference, ".bed")), mustWork = FALSE), overwrite = TRUE)
-                file.copy(normalizePath(file.path(ref_path, paste0(reference, ".fam")), mustWork = FALSE), normalizePath(file.path(ResultDir, paste0(reference, ".fam")), mustWork = FALSE), overwrite = TRUE)
-                file.copy(normalizePath(file.path(ref_path, paste0(reference, ".bim")), mustWork = FALSE), normalizePath(file.path(ResultDir, paste0(reference, ".bim")), mustWork = FALSE), overwrite = TRUE)
 
-                # Changing the snp ids in reference .bim file
+                # Read reference .bim file
                 rbim <- read.table(normalizePath(file.path(ref_path, paste0(reference, ".bim")), mustWork = FALSE))
-                # Assuming sbim is your data frame
-                rbim$V2 <- paste(rbim$V1, rbim$V4, sep = ":")
-                # Replace the new input .bim file with new snp ids.
-                write.table(rbim, file = normalizePath(file.path(ResultDir, paste0(reference, ".bim")), mustWork = FALSE), quote = FALSE, row.names = FALSE, col.names = FALSE)
-
 
                 if (!is.null(highLD_regions)) {
                     write.table(highLD_regions, file = normalizePath(file.path(ResultDir, "high-LD-regions-temp.txt"), mustWork = FALSE), quote = FALSE, row.names = FALSE, col.names = FALSE)
@@ -190,12 +167,12 @@ AncestryCheck <-
                 if (filterSNP == TRUE) {
                     # Filter AT-GC
                     filterATGCSNPs(
-                        study_bim_path = normalizePath(file.path(DataDir, paste0(finput_new, ".bim")), mustWork = FALSE),
-                        study_bed_path = normalizePath(file.path(DataDir, paste0(finput_new, ".bed")), mustWork = FALSE),
-                        study_fam_path = normalizePath(file.path(DataDir, paste0(finput_new, ".fam")), mustWork = FALSE),
-                        ref_bim_path   = normalizePath(file.path(ResultDir, paste0(reference, ".bim")), mustWork = FALSE),  # make sure you've copied all 3!
-                        ref_bed_path   = normalizePath(file.path(ResultDir, paste0(reference, ".bed")), mustWork = FALSE),
-                        ref_fam_path   = normalizePath(file.path(ResultDir, paste0(reference, ".fam")), mustWork = FALSE),
+                        study_bim_path = normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE),
+                        study_bed_path = normalizePath(file.path(DataDir, paste0(finput, ".bed")), mustWork = FALSE),
+                        study_fam_path = normalizePath(file.path(DataDir, paste0(finput, ".fam")), mustWork = FALSE),
+                        ref_bim_path   = normalizePath(file.path(ref_path, paste0(reference, ".bim")), mustWork = FALSE),  # make sure you've copied all 3!
+                        ref_bed_path   = normalizePath(file.path(ref_path, paste0(reference, ".bed")), mustWork = FALSE),
+                        ref_fam_path   = normalizePath(file.path(ref_path, paste0(reference, ".fam")), mustWork = FALSE),
                         ResultDir = ResultDir
                     )
 
@@ -213,7 +190,7 @@ AncestryCheck <-
                     # file.remove(list.files(normalizePath(ResultDir, mustWork = FALSE), pattern = "filtered_study_temp1", full.names = TRUE))
                     # file.remove(list.files(normalizePath(ResultDir, mustWork = FALSE), pattern = "filtered_ref_temp1", full.names = TRUE))
                 } else if (filterSNP == FALSE) {
-                    executePlinkForUnfilteredData(DataDir, ResultDir, finput_new, reference)
+                    executePlinkForUnfilteredData(DataDir, ResultDir, finput, reference)
                 }
 
                 # Find common SNPs between study and reference data
@@ -307,14 +284,12 @@ AncestryCheck <-
                     outlier_threshold = outlier_threshold)
 
                 removeTempFiles(ResultDir, "study_ref_merge")
-                removeTempFiles(DataDir, "_new")
 
                 # Define patterns for other files to remove
                 patterns_to_remove <- c(
-                    c("study_SNP", "ref_SNP", "common_snps", "snp_allele_flips", "allele_flips_wrong"),
-                    "Outlier_ancestry",
-                    "snpSameNameDiffPos",
-                    reference
+                    "study_SNP", "ref_SNP", "common_snps", 
+                    "snp_allele_flips", "allele_flips_wrong",
+                    "Outlier_ancestry","snpSameNameDiffPos", "temp"
                 )
                 for (pattern in patterns_to_remove) {
                     removeTempFiles(ResultDir, pattern)
@@ -5848,8 +5823,8 @@ executePlinkMAF <- function(DataDir, ResultDir, finput) {
                     "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
                     "--silent" # Suppress output to standard output
                 ),
-                std_out = TRUE,
-                std_err = TRUE
+                std_out = FALSE,
+                std_err = FALSE
             ))
         },
         error = function(e) {
