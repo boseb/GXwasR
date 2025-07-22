@@ -160,7 +160,13 @@ AncestryCheck <-
                 # Read reference .bim file
                 rbim <- read.table(normalizePath(file.path(ref_path, paste0(reference, ".bim")), mustWork = FALSE))
                 ref_snp_format <- verify_snp_format(rbim)
-                
+
+                if(study_snp_format == "chr:pos" & ref_snp_format == "rsID") {
+                    rbim <- 
+                        rbim %>%
+                        mutate(V2 = paste0(V1, ":", V4))
+                }
+
                 if (!is.null(highLD_regions)) {
                     write.table(
                         highLD_regions, file = normalizePath(file.path(ResultDir, "high-LD-regions-temp.txt"), mustWork = FALSE), 
