@@ -5381,7 +5381,7 @@ findCommonSNPs <- function(ResultDir) {
         # if (nrow(common_snps) == 0){
         stop("No common SNPs found between study and reference data. This analysis cannot be done.")
     } else {
-        rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of overlapping SNPs between study and reference data using chromosme ID and position:", length(common_snps)))))
+        rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of overlapping SNPs between study and reference data using rsID:", length(common_snps)))))
     }
 
     # Updated in final
@@ -9237,4 +9237,52 @@ llfun <- function(param, N, M, Nref = 1000, lam, bstar, lim = exp(-10)) {
     lamh2 <- ifelse(lamh2 < lim, lim, lamh2)
     ll <- sum(log(lamh2)) + sum(bstar^2 / (lamh2))
     return(ll)
+}
+
+#' Verify SNP Format in BIM Data
+#'
+#' This function checks the format of SNP identifiers in a BIM data frame to determine if they are in `chr:pos` or `rsID` notation.
+#' It issues a warning if both formats are present or an error if neither format is detected.
+#'
+#' @param bim A data frame representing the BIM file, with specific column names expected.
+#'
+#' @return A string indicating the SNP format detected: `"rsID"` if SNPs are in rsID notation, `"chr:pos"` if SNPs are in chr:pos notation.
+#' 
+#' @noRd
+#' @importFrom dplyr mutate summarise
+#' @importFrom stringr str_detect
+#' @importFrom rlang warn abort format_error_bullets
+verify_snp_format <- function(bim) {
+    format_test <- bim %>%
+        dplyr::mutate(
+            rsid = stringr::str_detect(V2, "^(rs|chr)[0-9]+$"),
+            chr_pos = stringr::str_detect(V2, "^\\d+:[0-9]+$")
+        ) %>%
+        dplyr::summarise(
+            rsid = any(rsid),
+            chr_pos = any(chr_pos)
+        )
+
+    if (format_test$rsid & format_test$chr_pos) {
+        rlang::warn(
+            rlang::format_error_bullets(
+                c(
+                    "x" = "Bim data contains SNPs in both chr:pos and rsID notation.",
+                    " " = "Please choose one."
+                )
+            )
+        )
+    } else if (format_test$rsid) {
+        return("rsID")
+    } else if (format_test$chr_pos) {
+        return("chr:pos")
+    } else {
+        rlang::abort(
+            rlang::format_error_bullets(
+                c(
+                    "x" = "Bim data does not contain SNPs in either chr:pos or rsID notation."
+                )
+            )
+        )
+    }
 }
