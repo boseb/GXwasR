@@ -9256,12 +9256,12 @@ llfun <- function(param, N, M, Nref = 1000, lam, bstar, lim = exp(-10)) {
 verify_snp_format <- function(bim) {
     format_test <- bim %>%
         dplyr::mutate(
-            rsid = stringr::str_detect(V2, "^(rs|chr)[0-9]+$"),
-            chr_pos = stringr::str_detect(V2, "^\\d+:[0-9]+$")
+            rsid = stringr::str_detect(.data$V2, "^(rs|chr)[0-9]+$"),
+            chr_pos = stringr::str_detect(.data$V2, "^\\d+:[0-9]+$")
         ) %>%
         dplyr::summarise(
-            rsid = any(rsid),
-            chr_pos = any(chr_pos)
+            rsid = any(.data$rsid),
+            chr_pos = any(.data$chr_pos)
         )
 
     if (format_test$rsid & format_test$chr_pos) {
