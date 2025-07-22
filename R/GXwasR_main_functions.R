@@ -164,7 +164,7 @@ AncestryCheck <-
                 if(study_snp_format == "chr:pos" & ref_snp_format == "rsID") {
                     rbim <- 
                         rbim %>%
-                        mutate(V2 = paste0(V1, ":", V4))
+                        mutate(V2 = paste0(.data$V1, ":", .data$V4))
                 }
 
                 if (!is.null(highLD_regions)) {
