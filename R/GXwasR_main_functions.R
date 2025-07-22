@@ -149,6 +149,7 @@ AncestryCheck <-
                 }
                 # Read study bim file
                 sbim <- read.table(normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE))
+                study_snp_format <- verify_snp_format(sbim)
 
                 # Verify existence of required reference data
                 ref_path <- validate_reference_data(reference)
@@ -158,7 +159,8 @@ AncestryCheck <-
 
                 # Read reference .bim file
                 rbim <- read.table(normalizePath(file.path(ref_path, paste0(reference, ".bim")), mustWork = FALSE))
-
+                ref_snp_format <- verify_snp_format(rbim)
+                
                 if (!is.null(highLD_regions)) {
                     write.table(
                         highLD_regions, file = normalizePath(file.path(ResultDir, "high-LD-regions-temp.txt"), mustWork = FALSE), 
