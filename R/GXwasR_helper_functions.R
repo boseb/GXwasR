@@ -5376,12 +5376,13 @@ findCommonSNPs <- function(ResultDir) {
 
     # Final update
     common_snps <- intersect(trimws(pruned_study$V2), trimws(pruned_ref$V2))
+    common_snp_format <- verify_snp_format(pruned_study)
 
     if (length(common_snps) == 0) {
         # if (nrow(common_snps) == 0){
         stop("No common SNPs found between study and reference data. This analysis cannot be done.")
     } else {
-        rlang::inform(rlang::format_error_bullets(c("i" = paste("Number of overlapping SNPs between study and reference data using rsID:", length(common_snps)))))
+        rlang::inform(rlang::format_error_bullets(c("i" = paste0("Number of overlapping SNPs between study and reference data using ", common_snp_format, ": ", length(common_snps)))))
     }
 
     # Updated in final
