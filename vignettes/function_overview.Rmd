@@ -15,13 +15,13 @@ output:
 date: "`r BiocStyle::doc_date()`"
 package: "`r BiocStyle::pkg_ver('GXwasR')`"
 vignette: >
-  %\VignetteIndexEntry{GXwasR Functions}
+  %\VignetteIndexEntry{function_overview}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-    ig.width = 8, fig.height = 6,
+    fig.width = 8, fig.height = 6,
     collapse = TRUE,
     comment = "#>",
     crop = NULL ## Related to https://stat.ethz.ch/pipermail/bioc-devel/2020-April/016656.html
