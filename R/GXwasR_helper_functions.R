@@ -115,16 +115,12 @@ MFsplitPlink <- function(DataDir, ResultDir, finput, foutput, sex, xplink = FALS
         invisible(sys::exec_wait(
             plink(),
             args = c(
-                "--bed",
-                normalizePath(file.path(DataDir, paste0(finput, ".bed")), mustWork = FALSE),
-                "--bim",
-                normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE),
-                "--fam",
-                normalizePath(file.path(DataDir, paste0(finput, ".fam")), mustWork = FALSE),
+                "--bed", normalizePath(file.path(DataDir, paste0(finput, ".bed")), mustWork = FALSE),
+                "--bim", normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE),
+                "--fam", normalizePath(file.path(DataDir, paste0(finput, ".fam")), mustWork = FALSE),
                 paste0("--filter-", sex),
                 "--make-bed",
-                "--out",
-                normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
+                "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
                 "--silent"
             ),
             std_out = FALSE,
@@ -134,17 +130,13 @@ MFsplitPlink <- function(DataDir, ResultDir, finput, foutput, sex, xplink = FALS
         invisible(sys::exec_wait(
             plink(),
             args = c(
-                "--bed",
-                normalizePath(file.path(DataDir, paste0(finput, ".bed")), mustWork = FALSE),
-                "--bim",
-                normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE),
-                "--fam",
-                normalizePath(file.path(DataDir, paste0(finput, ".fam")), mustWork = FALSE),
+                "--bed", normalizePath(file.path(DataDir, paste0(finput, ".bed")), mustWork = FALSE),
+                "--bim", normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE),
+                "--fam", normalizePath(file.path(DataDir, paste0(finput, ".fam")), mustWork = FALSE),
                 paste0("--filter-", sex),
                 "--chr", 23,
                 "--make-bed",
-                "--out",
-                normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
+                "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
                 "--silent"
             ),
             std_out = FALSE,
@@ -154,17 +146,13 @@ MFsplitPlink <- function(DataDir, ResultDir, finput, foutput, sex, xplink = FALS
         invisible(sys::exec_wait(
             plink(),
             args = c(
-                "--bed",
-                normalizePath(file.path(DataDir, paste0(finput, ".bed")), mustWork = FALSE),
-                "--bim",
-                normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE),
-                "--fam",
-                normalizePath(file.path(DataDir, paste0(finput, ".fam")), mustWork = FALSE),
+                "--bed", normalizePath(file.path(DataDir, paste0(finput, ".bed")), mustWork = FALSE),
+                "--bim", normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE),
+                "--fam", normalizePath(file.path(DataDir, paste0(finput, ".fam")), mustWork = FALSE),
                 paste0("--filter-", sex),
                 "--not-chr", 23,
                 "--make-bed",
-                "--out",
-                normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
+                "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
                 "--silent"
             ),
             std_out = FALSE,
@@ -329,27 +317,10 @@ outersect <- function(x, y, ...) {
 ## Function 11
 ######### Added in 3.0
 removeTempFiles <- function(directory, pattern) {
-    file_path <- normalizePath(file.path(directory, "sink_file.txt"), mustWork = FALSE)
-
-    # Create an empty file (if it doesn't exist)
-    if (!file.exists(file_path)) {
-        file.create(file_path)
-    }
-
-    # Redirect output to the specified file
-    sink(file_path)
-
     tempFiles <- list.files(normalizePath(directory, mustWork = FALSE), pattern = pattern, full.names = TRUE)
     if (length(tempFiles) > 0) {
         suppressWarnings(file.remove(tempFiles))
-    } else {
-        rlang::inform(rlang::format_error_bullets(c("x" = paste("No files found with pattern:", pattern, "in directory:", directory))))
-    }
-
-    # Reset the sink to stop redirecting the output to the file
-    if (sink.number() > 0) {
-        sink() # This line resets the output redirection
-    }
+    } 
 }
 
 ## Function 12
@@ -746,7 +717,8 @@ applyCaseControlFilters <- function(ResultDir, fam4, casecontrol, HWECase, hweCa
             "--bfile", normalizePath(file.path(ResultDir, "filtered_temp1"), mustWork = FALSE),
             "--filter-cases", HWECase, hweCase,
             "--allow-no-sex",
-            "--make-bed", "--out", normalizePath(file.path(ResultDir, "filtered_temp_hwe_case_filtered"), mustWork = FALSE),
+            "--make-bed", 
+            "--out", normalizePath(file.path(ResultDir, "filtered_temp_hwe_case_filtered"), mustWork = FALSE),
             "--silent"
         ))
         printHWEMessages(ResultDir, "/filtered_temp_hwe_case_filtered.log", "In cases")
@@ -756,7 +728,8 @@ applyCaseControlFilters <- function(ResultDir, fam4, casecontrol, HWECase, hweCa
             "--bfile", normalizePath(file.path(ResultDir, "/filtered_temp1"), mustWork = FALSE),
             "--filter-controls", HWECon, hweControl,
             "--allow-no-sex",
-            "--make-bed", "--out", normalizePath(file.path(ResultDir, "filtered_temp_hwe_control_filtered"), mustWork = FALSE),
+            "--make-bed", 
+            "--out", normalizePath(file.path(ResultDir, "filtered_temp_hwe_control_filtered"), mustWork = FALSE),
             "--silent"
         ))
         printHWEMessages(ResultDir, "/filtered_temp_hwe_control_filtered.log", "In controls")
@@ -930,8 +903,8 @@ handleCaseControlFiltering <- function(ResultDir, casecontrol, dmissX, dmissAuto
                 chrfilter, chrv,
                 "--test-missing", "--adjust",
                 "--make-bed", "--allow-no-sex",
-                "--out", normalizePath(file.path(ResultDir, "filtered_temp_casecontrol"), mustWork = FALSE)
-                # "--silent"
+                "--out", normalizePath(file.path(ResultDir, "filtered_temp_casecontrol"), mustWork = FALSE),
+                "--silent"
             ))
 
             # Process the differential missingness results
@@ -1272,8 +1245,7 @@ prsFun <- function(pthreshold, ResultDir, DataDir, finput, clumpExtract, clumpSN
             "--score", normalizePath(file.path(ResultDir, "prssummarystat"), mustWork = FALSE), 1, 2, 3, "header",
             "--q-score-range", normalizePath(file.path(ResultDir, "range_list"), mustWork = FALSE), normalizePath(file.path(ResultDir, "SNP.pvalue"), mustWork = FALSE),
             clumpExtract, clumpSNP,
-            "--out",
-            normalizePath(file.path(ResultDir, "PRS"), mustWork = FALSE),
+            "--out", normalizePath(file.path(ResultDir, "PRS"), mustWork = FALSE),
             "--silent"
         ),
         std_out = FALSE,
@@ -1522,10 +1494,8 @@ paraGwas <- function(chunks, chunk, ResultDir, DataDir, finput, trait, modelv, r
     invisible(sys::exec_wait(
         plink(),
         args = c(
-            "--bfile",
-            normalizePath(file.path(DataDir, finput), mustWork = FALSE),
-            "--extract",
-            normalizePath(file.path(ResultDir, paste0(chunks, "_snps")), mustWork = FALSE),
+            "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
+            "--extract", normalizePath(file.path(ResultDir, paste0(chunks, "_snps")), mustWork = FALSE),
             "--xchr-model",
             modelv,
             "--freq",
@@ -1537,8 +1507,7 @@ paraGwas <- function(chunks, chunk, ResultDir, DataDir, finput, trait, modelv, r
             Inphenocovv,
             covar,
             covarv,
-            "--out",
-            normalizePath(file.path(ResultDir, chunks, "_ss")),
+            "--out", normalizePath(file.path(ResultDir, chunks, "_ss")),
             "--silent"
         ),
         std_out = FALSE,
@@ -2488,10 +2457,8 @@ paraGwasAuto <- function(
     invisible(sys::exec_wait(
         plink(),
         args = c(
-            "--bfile",
-            normalizePath(file.path(ResultDir, finput), mustWork = FALSE),
-            "--extract",
-            normalizePath(file.path(ResultDir, paste0(chunks, "_snps")), mustWork = FALSE),
+            "--bfile", normalizePath(file.path(ResultDir, finput), mustWork = FALSE),
+            "--extract", normalizePath(file.path(ResultDir, paste0(chunks, "_snps")), mustWork = FALSE),
             "--freq",
             "--ci", 0.95,
             regress,
@@ -2504,8 +2471,7 @@ paraGwasAuto <- function(
             Inphenocovv,
             covar,
             covarv,
-            "--out",
-            normalizePath(file.path(ResultDir, paste0(chunks, "_ss")), mustWork = FALSE),
+            "--out", normalizePath(file.path(ResultDir, paste0(chunks, "_ss")), mustWork = FALSE),
             "--silent"
         ),
         std_out = FALSE,
@@ -2947,7 +2913,9 @@ prepareData <- function(DataDir, ResultDir, finput) {
         plink(),
         args = c(
             "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE), "--chr", 23,
-            "--make-bed", "--out", normalizePath(file.path(ResultDir, "XPLINK"), mustWork = FALSE), "--silent"
+            "--make-bed", 
+            "--out", normalizePath(file.path(ResultDir, "XPLINK"), mustWork = FALSE), 
+            "--silent"
         ),
         std_out = FALSE, std_err = FALSE
     ))
@@ -2957,7 +2925,9 @@ prepareData <- function(DataDir, ResultDir, finput) {
         plink(),
         args = c(
             "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE), "--not-chr", 23,
-            "--make-bed", "--out", normalizePath(file.path(ResultDir, "FilteredX"), mustWork = FALSE), "--silent"
+            "--make-bed", 
+            "--out", normalizePath(file.path(ResultDir, "FilteredX"), mustWork = FALSE),
+            "--silent"
         ),
         std_out = FALSE, std_err = FALSE
     ))
@@ -3108,13 +3078,11 @@ XCMAFun <- function(
     invisible(sys::exec_wait(
         plink(),
         args = c(
-            "--bfile",
-            normalizePath(file.path(ResultDir, "XPLINK"), mustWork = FALSE),
+            "--bfile", normalizePath(file.path(ResultDir, "XPLINK"), mustWork = FALSE),
             "--logistic",
             "beta",
             "intercept", "--ci", 0.95,
-            "--out",
-            normalizePath(file.path(ResultDir, "XChrRun"), mustWork = FALSE),
+            "--out", normalizePath(file.path(ResultDir, "XChrRun"), mustWork = FALSE),
             "--silent"
         ),
         std_out = FALSE,
@@ -3681,8 +3649,8 @@ ComputeREMLmulti <- function(
             "--thread-num", ncores,
             "--out", normalizePath(file.path(ResultDir, "test_reml"), mustWork = FALSE)
         ),
-        std_out = TRUE,
-        std_err = TRUE
+        std_out = FALSE,
+        std_err = FALSE
     ))
 
     if (file.exists(normalizePath(file.path(ResultDir, "test_reml.hsq"), mustWork = FALSE))) {
@@ -3784,8 +3752,7 @@ ChrwiseLDprun <- function(
     invisible(sys::exec_wait(
         plink(),
         args = c(
-            "--bfile",
-            normalizePath(file.path(DataDir, finput), mustWork = FALSE),
+            "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
             "--chr", chromosome,
             excludev,
             highLD_regions,
@@ -3793,8 +3760,7 @@ ChrwiseLDprun <- function(
             IndepSNP_window_size,
             IndepSNP_step_size,
             IndepSNP_r2_threshold,
-            "--out",
-            normalizePath(file.path(ResultDir, "LDsnp"), mustWork = FALSE),
+            "--out", normalizePath(file.path(ResultDir, "LDsnp"), mustWork = FALSE),
             "--silent"
         ),
         std_out = FALSE,
@@ -3804,14 +3770,11 @@ ChrwiseLDprun <- function(
     invisible(sys::exec_wait(
         plink(),
         args = c(
-            "--bfile",
-            normalizePath(file.path(DataDir, finput), mustWork = FALSE),
-            "--extract",
-            normalizePath(file.path(ResultDir, "LDsnp.prune.in"), mustWork = FALSE),
+            "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
+            "--extract", normalizePath(file.path(ResultDir, "LDsnp.prune.in"), mustWork = FALSE),
             "--allow-no-sex",
             "--make-bed",
-            "--out",
-            normalizePath(file.path(ResultDir, "LDfiltered"), mustWork = FALSE),
+            "--out", normalizePath(file.path(ResultDir, "LDfiltered"), mustWork = FALSE),
             "--silent"
         ),
         std_out = FALSE,
@@ -4520,8 +4483,7 @@ metaFun <- function(DataDir, ResultDir, SummData, CHR, chromosome, nomap, UseA1v
             "study",
             CHR, chromosomev,
             extract, SNPfilev,
-            "--out",
-            normalizePath(file.path(ResultDir, "MetaResult"), mustWork = FALSE),
+            "--out", normalizePath(file.path(ResultDir, "MetaResult"), mustWork = FALSE),
             "--silent"
         ),
         std_out = FALSE,
@@ -4598,8 +4560,8 @@ ComputeBivarREMLone <- function(
             "--thread-num", ncores,
             "--out", normalizePath(file.path(ResultDir, paste0(chr, "test_bireml")), mustWork = FALSE)
         ),
-        std_out = TRUE,
-        std_err = TRUE
+        std_out = FALSE,
+        std_err = FALSE
     ))
 
     if (file.exists(normalizePath(file.path(ResultDir, paste0(chr, "test_bireml.hsq")), mustWork = FALSE))) {
@@ -5269,9 +5231,9 @@ processLDstudyData <- function(ResultDir, highLD_regions, studyLD, studyLD_windo
 
     # Return a message based on the LD pruning status
     if (studyLD) {
-        rlang::inform(format_error_bullets(c("v" = "LD pruning was performed for study dataset.")))
+        format_error_bullets(c("v" = "LD pruning was performed for study dataset."))
     } else {
-        rlang::inform(format_error_bullets(c("i" = "LD pruning is recommended for study dataset. Set studyLD = TRUE.")))
+        format_error_bullets(c("!" = "LD pruning is recommended for study dataset. Set studyLD = TRUE."))
     }
 }
 
@@ -5329,58 +5291,62 @@ processLDreferenceData <- function(ResultDir, highLD_regions, referLD, referLD_w
     if (referLD) {
         rlang::inform(rlang::format_error_bullets(c("v" = "LD pruning was performed for reference dataset.")))
     } else {
-        rlang::inform(rlang::format_error_bullets(c("i" = "LD pruning is recommended for reference dataset. Set referLD == TRUE.")))
+        rlang::inform(rlang::format_error_bullets(c("!" = "LD pruning is recommended for reference dataset. Set referLD = TRUE.")))
     }
 }
 
 ## Function 103
-## Added in 3.0
-filterATGCSNPs <- function(DataDir, ResultDir, finput, reference) {
-    ref_path <- validate_reference_data(reference)
-    filterSNPs <- function(DataDir, file, SNPPrefix) {
-        bimData <- read.table(file = normalizePath(file.path(DataDir, paste0(file, ".bim")), mustWork = FALSE), stringsAsFactors = FALSE)
-        SNP_AT <- bimData[which(bimData[, 5] == "A" & bimData[, 6] == "T"), 2, drop = FALSE]
-        SNP_TA <- bimData[which(bimData[, 5] == "T" & bimData[, 6] == "A"), 2, drop = FALSE]
-        SNP_GC <- bimData[which(bimData[, 5] == "G" & bimData[, 6] == "C"), 2, drop = FALSE]
-        SNP_CG <- bimData[which(bimData[, 5] == "C" & bimData[, 6] == "G"), 2, drop = FALSE]
+filterATGCSNPs <- function(study_bim_path, study_bed_path, study_fam_path,
+                           ref_bim_path, ref_bed_path, ref_fam_path,
+                           ResultDir) {
+  # Helper to identify ambiguous SNPs (A-T / G-C)
+  getAmbiguousSNPs <- function(bim_file) {
+    bimData <- read.table(file = bim_file, stringsAsFactors = FALSE)
+    SNP_AT <- bimData[bimData[, 5] == "A" & bimData[, 6] == "T", 2, drop = FALSE]
+    SNP_TA <- bimData[bimData[, 5] == "T" & bimData[, 6] == "A", 2, drop = FALSE]
+    SNP_GC <- bimData[bimData[, 5] == "G" & bimData[, 6] == "C", 2, drop = FALSE]
+    SNP_CG <- bimData[bimData[, 5] == "C" & bimData[, 6] == "G", 2, drop = FALSE]
+    rbind(SNP_AT, SNP_TA, SNP_GC, SNP_CG)
+  }
 
-        SNP <- rbind(SNP_AT, SNP_TA, SNP_GC, SNP_CG)
-        write.table(SNP, file = normalizePath(file.path(ResultDir, paste0(SNPPrefix, "_SNP")), mustWork = FALSE), quote = FALSE, row.names = FALSE, col.names = FALSE, eol = "\r\n", sep = " ")
+  # Collect ambiguous SNPs
+  study_SNP <- getAmbiguousSNPs(study_bim_path)
+  ref_SNP   <- getAmbiguousSNPs(ref_bim_path)
+  # Write SNP lists for exclusion
+  write.table(study_SNP, file = normalizePath(file.path(ResultDir, "study_SNP"), mustWork = FALSE),
+              quote = FALSE, row.names = FALSE, col.names = FALSE, sep = " ")
+  write.table(ref_SNP, file = normalizePath(file.path(ResultDir, "ref_SNP"), mustWork = FALSE),
+              quote = FALSE, row.names = FALSE, col.names = FALSE, sep = " ")
 
-        return(SNP)
-    }
+  # Run Plink to exclude ambiguous SNPs
+  executePlinkAd(ResultDir, c(
+    "--bfile", tools::file_path_sans_ext(study_bim_path),  # assume same prefix
+    "--exclude", normalizePath(file.path(ResultDir, "study_SNP"), mustWork = FALSE),
+    "--allow-no-sex", "--make-bed",
+    "--out", normalizePath(file.path(ResultDir, "filtered_study_temp1"), mustWork = FALSE),
+    "--silent"
+  ))
 
-    study_SNP <- filterSNPs(DataDir, finput, "study")
-    ref_SNP <- filterSNPs(ResultDir, reference, "ref")
+  executePlinkAd(ResultDir, c(
+    "--bfile", tools::file_path_sans_ext(ref_bim_path),
+    "--exclude", normalizePath(file.path(ResultDir, "ref_SNP"), mustWork = FALSE),
+    "--allow-no-sex", "--make-bed",
+    "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp1"), mustWork = FALSE),
+    "--silent"
+  ))
 
-    # Execute Plink Commands
-    executePlinkAd(ResultDir, c(
-        "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
-        "--exclude", normalizePath(file.path(ResultDir, "study_SNP"), mustWork = FALSE),
-        "--allow-no-sex", "--make-bed",
-        "--out", normalizePath(file.path(ResultDir, "filtered_study_temp1"), mustWork = FALSE),
-        "--silent"
-    )) ## Added "--allow-no-sex" in 4.0
-    executePlinkAd(ResultDir, c(
-        "--bfile", normalizePath(file.path(ref_path, reference), mustWork = FALSE),
-        "--exclude", normalizePath(file.path(ResultDir, "ref_SNP"), mustWork = FALSE),
-        "--allow-no-sex", "--make-bed",
-        "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp1"), mustWork = FALSE),
-        "--silent"
-    )) ## Added "--allow-no-sex" in 4.0
+  # Inform user
+  if (nrow(study_SNP) == 0) {
+    rlang::inform("No A-T or G-C SNPs found in study data.")
+  } else {
+    rlang::inform(paste(nrow(study_SNP), "ambiguous SNPs removed from study data."))
+  }
 
-    # Print Messages
-    if (nrow(study_SNP) == 0) {
-        rlang::inform(rlang::format_error_bullets("No SNP had 'A-T' and 'G-C' in study data."))
-    } else {
-        rlang::inform(rlang::format_error_bullets(c("i" = paste0(nrow(study_SNP), " SNPs had 'A-T' and 'G-C' in study data. These SNPs were removed."))))
-    }
-
-    if (nrow(ref_SNP) == 0) {
-        rlang::inform(rlang::format_error_bullets("No SNP had 'A-T' and 'G-C' in reference data."))
-    } else {
-        rlang::inform(rlang::format_error_bullets(c("i" = paste0(nrow(ref_SNP), " SNPs were 'A-T' and 'G-C' in reference data. These SNPs were removed."))))
-    }
+  if (nrow(ref_SNP) == 0) {
+    rlang::inform("No A-T or G-C SNPs found in reference data.")
+  } else {
+    rlang::inform(paste(nrow(ref_SNP), "ambiguous SNPs removed from reference data."))
+  }
 }
 
 ## Function 104
@@ -5409,13 +5375,14 @@ findCommonSNPs <- function(ResultDir) {
     pruned_ref <- read.table(file = normalizePath(file.path(ResultDir, "filtered_ref_temp2.bim"), mustWork = FALSE), stringsAsFactors = FALSE)
 
     # Final update
-    common_snps <- intersect(pruned_study$V2, pruned_ref$V2)
+    common_snps <- intersect(trimws(pruned_study$V2), trimws(pruned_ref$V2))
+    common_snp_format <- verify_snp_format(pruned_study)
 
     if (length(common_snps) == 0) {
         # if (nrow(common_snps) == 0){
         stop("No common SNPs found between study and reference data. This analysis cannot be done.")
     } else {
-        rlang::inform(rlang::format_error_bullets(c("i" = paste0("Number of overlapping SNPs between study and reference data using chromosme ID and position:", length(common_snps)))))
+        rlang::inform(rlang::format_error_bullets(c("i" = paste0("Number of overlapping SNPs between study and reference data using ", common_snp_format, ": ", length(common_snps)))))
     }
 
     # Updated in final
@@ -5441,10 +5408,6 @@ processCommonSNPs <- function(ResultDir) {
         "--out", normalizePath(file.path(ResultDir, "filtered_ref_temp3"), mustWork = FALSE),
         "--silent"
     ))
-
-    # Remove temporary files
-    removeTempFiles(ResultDir, "filtered_study_temp2")
-    removeTempFiles(ResultDir, "filtered_ref_temp2")
 }
 
 ## Function 107
@@ -5521,8 +5484,6 @@ correctChromosomeMismatches <- function(ResultDir, common_snps, pruned_study, pr
             "--silent"
         ))
     }
-
-    removeTempFiles(normalizePath(ResultDir, mustWork = FALSE), "filtered_ref_temp3")
 
     return(list(S1 = S1, S2 = S2, snpSameNameDiffPos = snpSameNameDiffPos))
 }
@@ -5602,6 +5563,14 @@ mergeDatasetsAndPerformPCA <- function(ResultDir) {
 
         # Remove temporary files using the provided helper function
         removeTempFiles(normalizePath(ResultDir), "filtered_study_temp3")
+        
+        # Perform PCA now that merge succeeded
+        executePlinkAd(ResultDir, c(
+        "--bfile", normalizePath(file.path(ResultDir, "study_ref_merge"), mustWork = FALSE),
+        "--pca",
+        "--out", normalizePath(file.path(ResultDir, "study_ref_merge"), mustWork = FALSE),
+        "--silent"
+    ))
     } else {
         # Perform PCA for ancestry
         executePlinkAd(ResultDir, c(
@@ -5610,10 +5579,6 @@ mergeDatasetsAndPerformPCA <- function(ResultDir) {
             "--out", normalizePath(file.path(ResultDir, "study_ref_merge"), mustWork = FALSE),
             "--silent"
         ))
-
-        # Clean up temporary files
-        removeTempFiles(normalizePath(ResultDir), "filtered_ref_temp6")
-        removeTempFiles(normalizePath(ResultDir), "filtered_ref_temp7")
 
         if (file.exists(normalizePath(file.path(ResultDir, "study_ref_merge.eigenvec"), mustWork = FALSE))) {
             rlang::inform(rlang::format_error_bullets(c("v" = "PCA done.")))
@@ -5632,6 +5597,10 @@ mergeDatasetsAndPerformPCA <- function(ResultDir) {
 ## Function 111
 ## Added in 3.0
 loadAndProcessReferenceAncestry <- function(ResultDir, reference) {
+    ref_path <- validate_reference_data(reference)
+                if (reference == "ThousandGenome") {
+                    reference <- "Ref10Kgenome"
+                }
     if (reference == "HapMapIII_NCBI36") {
         ref_ancestry1 <-
             read.table(
@@ -5641,7 +5610,7 @@ loadAndProcessReferenceAncestry <- function(ResultDir, reference) {
             )[, c("IID", "population")]
         colnames(ref_ancestry1) <- c("ID", "Ancestry")
         ## Updated in 5.0
-        ref1 <- read.table(normalizePath(file.path(ResultDir, paste0(reference, ".fam")), mustWork = FALSE), header = FALSE)[, 2, drop = FALSE]
+        ref1 <- read.table(normalizePath(file.path(ref_path, paste0(reference, ".fam")), mustWork = FALSE), header = FALSE)[, 2, drop = FALSE]
         colnames(ref1) <- "ID"
         ref_ancestry <- merge(ref_ancestry1, ref1, by = "ID")
 
@@ -5674,7 +5643,7 @@ loadAndProcessReferenceAncestry <- function(ResultDir, reference) {
         ref_ancestry_EUR_AFR_ASIAN[ref_ancestry_EUR_AFR_ASIAN$Ancestry == "AFR", 2] <- "Ref_AFR"
         ref_ancestry_EUR_AFR_ASIAN[ref_ancestry_EUR_AFR_ASIAN$Ancestry == "EAS", 2] <- "Ref_EAS"
         ref_ancestry_EUR_AFR_ASIAN[ref_ancestry_EUR_AFR_ASIAN$Ancestry == "SAS", 2] <- "Ref_SAS"
-    } else if (reference == "ThousandGenome") {
+    } else if (reference %in% c("ThousandGenome", "Ref10Kgenome")) {
         ref_ancestry <-
             read.table(
                 file = file.path(system.file("extdata", package = "GXwasR"), "1000genomesampleinfo.txt"),
@@ -7224,15 +7193,12 @@ processRegionFilter <- function(x, filterPAR, filterXTR, filterAmpliconic, Resul
         invisible(sys::exec_wait(
             plink(),
             args = c(
-                "--bfile",
-                normalizePath(file.path(DataDir, finput), mustWork = FALSE),
+                "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
                 "--extract",
-                "range",
-                normalizePath(file.path(ResultDir, "par_region.txt"), mustWork = FALSE),
+                "range", normalizePath(file.path(ResultDir, "par_region.txt"), mustWork = FALSE),
                 "--allow-no-sex", ## Adding in 4.0.
                 "--make-bed",
-                "--out",
-                normalizePath(file.path(ResultDir, paste0(foutput, "_par_region")), mustWork = FALSE),
+                "--out", normalizePath(file.path(ResultDir, paste0(foutput, "_par_region")), mustWork = FALSE),
                 "--silent"
             ),
             std_out = FALSE,
@@ -7273,15 +7239,12 @@ processRegionFilter <- function(x, filterPAR, filterXTR, filterAmpliconic, Resul
         invisible(sys::exec_wait(
             plink(),
             args = c(
-                "--bfile",
-                normalizePath(file.path(DataDir, finput), mustWork = FALSE),
+                "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
                 "--extract",
-                "range",
-                normalizePath(file.path(ResultDir, "xtr_region.txt"), mustWork = FALSE),
+                "range", normalizePath(file.path(ResultDir, "xtr_region.txt"), mustWork = FALSE),
                 "--allow-no-sex", ## Adding in 4.0.
                 "--make-bed",
-                "--out",
-                normalizePath(file.path(ResultDir, foutput, "_xtr_region"), mustWork = FALSE),
+                "--out", normalizePath(file.path(ResultDir, foutput, "_xtr_region"), mustWork = FALSE),
                 "--silent"
             ),
             std_out = FALSE,
@@ -7323,15 +7286,12 @@ processRegionFilter <- function(x, filterPAR, filterXTR, filterAmpliconic, Resul
         invisible(sys::exec_wait(
             plink(),
             args = c(
-                "--bfile",
-                normalizePath(file.path(DataDir, finput), mustWork = FALSE),
+                "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
                 "--extract",
-                "range",
-                normalizePath(file.path(ResultDir, "ampliconic_region.txt"), mustWork = FALSE),
+                "range", normalizePath(file.path(ResultDir, "ampliconic_region.txt"), mustWork = FALSE),
                 "--allow-no-sex", ## Adding in 4.0.
                 "--make-bed",
-                "--out",
-                normalizePath(file.path(ResultDir, paste0(foutput, "_ampliconic_region")), mustWork = FALSE),
+                "--out", normalizePath(file.path(ResultDir, paste0(foutput, "_ampliconic_region")), mustWork = FALSE),
                 "--silent"
             ),
             std_out = FALSE,
@@ -7425,15 +7385,13 @@ filterGenomicFeatures <- function(x, filterPAR, filterXTR, filterAmpliconic) {
 executePlinkExcludeExtract <- function(ResultDir, DataDir, finput, rangefile, foutput) {
     # Exclude region
     exclude_args <- c(
-        "--bfile",
-        normalizePath(file.path(DataDir, finput), mustWork = FALSE),
+        "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
         "--exclude",
         "range",
         rangefile,
         "--allow-no-sex", ## Adding in 4.0
         "--make-bed",
-        "--out",
-        normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
+        "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
         "--silent"
     )
 
@@ -7441,15 +7399,13 @@ executePlinkExcludeExtract <- function(ResultDir, DataDir, finput, rangefile, fo
 
     # Extract region
     extract_args <- c(
-        "--bfile",
-        normalizePath(file.path(DataDir, finput), mustWork = FALSE),
+        "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
         "--extract",
         "range",
         rangefile,
         "--allow-no-sex", ## Adding in 4.0
         "--make-bed",
-        "--out",
-        normalizePath(file.path(ResultDir, paste0(foutput, "_snps_extracted")), mustWork = FALSE),
+        "--out", normalizePath(file.path(ResultDir, paste0(foutput, "_snps_extracted")), mustWork = FALSE),
         "--silent"
     )
 
@@ -7461,13 +7417,11 @@ executePlinkExcludeExtract <- function(ResultDir, DataDir, finput, rangefile, fo
 executePlinkChrFilter <- function(ResultDir, DataDir, finput, filterCHR, foutput) {
     # Filter SNPs not on specified chromosomes
     not_chr_args <- c(
-        "--bfile",
-        normalizePath(file.path(DataDir, finput), mustWork = FALSE),
+        "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
         "--not-chr",
         filterCHR,
         "--make-bed",
-        "--out",
-        normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
+        "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
         "--silent"
     )
 
@@ -7475,13 +7429,11 @@ executePlinkChrFilter <- function(ResultDir, DataDir, finput, filterCHR, foutput
 
     # Filter SNPs on specified chromosomes
     chr_args <- c(
-        "--bfile",
-        normalizePath(file.path(DataDir, finput), mustWork = FALSE),
+        "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
         "--chr",
         filterCHR,
         "--make-bed",
-        "--out",
-        normalizePath(file.path(ResultDir, paste0(foutput, "_snps_extracted")), mustWork = FALSE),
+        "--out", normalizePath(file.path(ResultDir, paste0(foutput, "_snps_extracted")), mustWork = FALSE),
         "--silent"
     )
 
@@ -7496,13 +7448,6 @@ removeFiles <- function(fileNames, directory) {
         if (file.exists(filePath)) {
             file.remove(filePath)
         }
-    }
-}
-
-
-removeFiles1 <- function(fileNames) {
-    for (fileName in fileNames) {
-        file.remove(fileName)
     }
 }
 
@@ -9293,4 +9238,52 @@ llfun <- function(param, N, M, Nref = 1000, lam, bstar, lim = exp(-10)) {
     lamh2 <- ifelse(lamh2 < lim, lim, lamh2)
     ll <- sum(log(lamh2)) + sum(bstar^2 / (lamh2))
     return(ll)
+}
+
+#' Verify SNP Format in BIM Data
+#'
+#' This function checks the format of SNP identifiers in a BIM data frame to determine if they are in `chr:pos` or `rsID` notation.
+#' It issues a warning if both formats are present or an error if neither format is detected.
+#'
+#' @param bim A data frame representing the BIM file, with specific column names expected.
+#'
+#' @return A string indicating the SNP format detected: `"rsID"` if SNPs are in rsID notation, `"chr:pos"` if SNPs are in chr:pos notation.
+#' 
+#' @noRd
+#' @importFrom dplyr mutate summarise
+#' @importFrom stringr str_detect
+#' @importFrom rlang warn abort format_error_bullets
+verify_snp_format <- function(bim) {
+    format_test <- bim %>%
+        dplyr::mutate(
+            rsid = stringr::str_detect(.data$V2, "^(rs|chr)[0-9]+$"),
+            chr_pos = stringr::str_detect(.data$V2, "^\\d+:[0-9]+$")
+        ) %>%
+        dplyr::summarise(
+            rsid = any(.data$rsid),
+            chr_pos = any(.data$chr_pos)
+        )
+
+    if (format_test$rsid & format_test$chr_pos) {
+        rlang::warn(
+            rlang::format_error_bullets(
+                c(
+                    "x" = "Bim data contains SNPs in both chr:pos and rsID notation.",
+                    " " = "Please choose one."
+                )
+            )
+        )
+    } else if (format_test$rsid) {
+        return("rsID")
+    } else if (format_test$chr_pos) {
+        return("chr:pos")
+    } else {
+        rlang::abort(
+            rlang::format_error_bullets(
+                c(
+                    "x" = "Bim data does not contain SNPs in either chr:pos or rsID notation."
+                )
+            )
+        )
+    }
 }
