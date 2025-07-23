@@ -107,13 +107,6 @@ jobs:
             echo "$BIN_DIR" >> $GITHUB_PATH
             echo "GCTA_PATH=$BIN_DIR/gcta64.exe" >> $GITHUB_ENV
           fi
-          
-      # MacOS Runner Tempdir
-      - name: Override TMPDIR for macOS
-        if: runner.os == 'macOS'
-        run: |
-          mkdir -p "${{ github.workspace }}/tmp"
-          echo "TMPDIR=${{ github.workspace }}/tmp" >> $GITHUB_ENV
 
       - uses: r-lib/actions/check-r-package@v2
         with:
