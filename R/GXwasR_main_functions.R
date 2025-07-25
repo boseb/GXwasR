@@ -5983,7 +5983,8 @@ LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, st
 #'         parallel = FALSE
 #'     )
 #' }
-SumstatGenCorr <- function(ResultDir = tempdir(),
+SumstatGenCorr <- function(
+    ResultDir = tempdir(),
     referenceLD,
     sumstat1,
     sumstat2,
@@ -5992,7 +5993,8 @@ SumstatGenCorr <- function(ResultDir = tempdir(),
     eigen.cut = "automatic",
     lim = exp(-18),
     parallel = FALSE,
-    numCores = 2) {
+    numCores = 2
+) {
     reference_paths <- list(
         UKB_imputed_hapmap2_SVD_eigen99_extraction = Sys.getenv("UKB_IMPUTED_HAPMAP2_PATH", unset = NA),
         UKB_imputed_SVD_eigen99_extraction = Sys.getenv("UKB_IMPUTED_PATH", unset = NA),
