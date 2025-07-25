@@ -1533,7 +1533,7 @@ paraGwas <- function(chunks, chunk, ResultDir, DataDir, finput, trait, modelv, r
 FMmain <- function(
         DataDir, ResultDir, finput, trait, standard_beta, xmodel,
         sex, xsex, covarfile, interaction, covartest, Inphenocov, plot.jpeg, plotname, snp_pval, annotateTopSnp, suggestiveline, genomewideline, ncores) {
-    if (xmodel[1] == "FMcombx01" | xmodel[1] == "FMstatrified") {
+    if (xmodel[1] == "FMcombx01" | xmodel[1] == "FMstratified") {
         modelv <- 1
     } else if (xmodel[1] == "FMcombx02") {
         modelv <- 2
@@ -5038,7 +5038,7 @@ validateGXwasInputs <- function(DataDir, ResultDir, finput, trait, standard_beta
     }
 
     # Validate xmodel
-    if (!xmodel %in% c("FMcombx01", "FMcombx02", "FMstatrified", "GWAScxci")) {
+    if (!xmodel %in% c("FMcombx01", "FMcombx02", "FMstratified", "GWAScxci")) {
         return("Invalid xmodel value.")
     }
 

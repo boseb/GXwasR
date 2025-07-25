@@ -172,7 +172,7 @@ ResultGXwas <- GXwas(
     ResultDir = tempdir(),
     finput = "GXwasR_example",
     trait = "binary",
-    xmodel = "FMstatrified",
+    xmodel = "FMstratified",
     covarfile = NULL,
     sex = TRUE,
     xsex = FALSE,

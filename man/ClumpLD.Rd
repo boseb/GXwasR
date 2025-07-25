@@ -49,7 +49,7 @@ typically be \code{TRUE} if clump_best is \code{TRUE.} Default is \code{TRUE}.}
 A list with two dataframes.
 
 BestClump: a dataframe with eight columns showing the single best proxy SNP for each index SNP with
-coulmns "INDEX"(Index SNP identifier), "PSNP"(Best proxy SNP), "RSQ LD"(r-squared) between index and proxy,
+columns "INDEX"(Index SNP identifier), "PSNP"(Best proxy SNP), "RSQ LD"(r-squared) between index and proxy,
 "KB"(Physical distance between index and proxy), P(p-value for proxy SNP), "ALLELES"(The associated haplotypes for the index and proxy SNP),
 and "F"(Which file used for clumping from which this result came from).
 

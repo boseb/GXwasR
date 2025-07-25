@@ -35,7 +35,8 @@ Suggests:
     sessioninfo,
     stats,
     testthat,
-    tools
+    tools,
+    spelling
 Imports:
     BiocStyle,
     bigparallelr,
@@ -69,3 +70,4 @@ Imports:
     utils
 RdMacros: Rdpack
 biocViews: GenomeWideAssociation, LinkageDisequilibrium, VariantDetection, QualityControl, PrincipalComponent
+Language: en-US
