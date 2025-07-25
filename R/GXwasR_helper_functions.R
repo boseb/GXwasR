@@ -9268,7 +9268,7 @@ verify_snp_format <- function(bim) {
         rlang::warn(
             rlang::format_error_bullets(
                 c(
-                    "x" = "Bim data contains SNPs in both chr:pos and rsID notation.",
+                    "x" = "Input file contains SNPs in both chr:pos and rsID notation.",
                     " " = "Please choose one."
                 )
             )
@@ -9281,7 +9281,7 @@ verify_snp_format <- function(bim) {
         rlang::abort(
             rlang::format_error_bullets(
                 c(
-                    "x" = "Bim data does not contain SNPs in either chr:pos or rsID notation."
+                    "x" = "Input file does not contain SNPs in either chr:pos or rsID notation."
                 )
             )
         )
