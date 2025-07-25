@@ -259,7 +259,7 @@ The points are spread across the PCA plot, with each cluster likely representing
 
 Since the study dataset was simulated from CEU 1000 Genome dataset, it is not suprising that we do see some outlier samples. Specifically, TSI population is not highly similar to CEU. 
 
-## AncestryCheck Usage using 1000 genome data as reference
+## AncestryCheck Using ThousandGenome Reference
 
 The function can be used in the following manner with our study data and reference data as ThousandGenome:
 
@@ -268,7 +268,7 @@ The function can be used in the following manner with our study data and referen
 data("highLD_hg19", package = "GXwasR")
 data("example_data_study_sample_ancestry", package = "GXwasR")
 finput <- "GXwasR_example"
-reference <- "HapMapIII_NCBI36"
+reference <- "ThousandGenome"
 highLD_regions <- highLD_hg19 #"high-LD-regions-hg19-GRCh37.txt" # four columns, chr, start, end, index
 study_pop <- example_data_study_sample_ancestry #PreimputeEX
 studyLD_window_size = 50
