@@ -211,7 +211,7 @@ ResultGXwas <- GXwas(
     ResultDir = tempdir(),
     finput = "GXwasR_example",
     trait = "binary",
-    xmodel = "FMstatrified",
+    xmodel = "FMstratified",
     covarfile = NULL,
     sex = TRUE,
     xsex = FALSE,
@@ -224,7 +224,7 @@ ResultGXwas <- GXwas(
     MF.mc.cores = 1,
     ncores = 0
 )
-#> • Running FMstatrified model
+#> • Running FMstratified model
 #> Using PLINK v1.9.0-b.7.7 64-bit (22 Oct 2024)
 #> • Stratified test is running
 #> • Stratified test is running

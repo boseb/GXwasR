@@ -61,7 +61,7 @@ to provide \code{precomputedLD} argument. See below.}
 \item \code{chr} (Chromosome code),
 \item \code{pos} (Basepair position)
 \item \code{a1} (First allele code)
-\item \code{rsid} (i.e., SNP idenitifier)
+\item \code{rsid} (i.e., SNP identifier)
 \item \code{beta} (i.e., effect-size or logarithm of odds ratio)
 \item \code{beta_se} (i.e., standard error of beta)
 \item \code{P} (i.e., p-values)
@@ -121,7 +121,7 @@ Note: for the continuous trait value, users should use the default.}
 
 \item{Xsome}{Boolean value, \code{TRUE} or \code{FALSE}, specifying whether estimate of heritability will be done for X chromosome or not. The default is \code{TRUE}.}
 
-\item{nGRM}{Integer value, specifying the number of the partision of the GRM in GREML model. The default is 3.}
+\item{nGRM}{Integer value, specifying the number of the partition of the GRM in GREML model. The default is 3.}
 
 \item{cripticut}{Numeric value, specifying the threshold to create a new GRM of "unrelated" individuals in GREML model. The default is arbitrary chosen
 as 0.025 following \insertCite{Yang2011}{GXwasR}.}
@@ -151,11 +151,11 @@ This file needs to be in \code{DataDir}.}
 
 \item{plotjpeg}{Boolean value, \code{TRUE} or \code{FALSE}, specifying whether to save the plots in jpeg file in \code{ResultDir}. The default is \code{TRUE}.}
 
-\item{plotname}{String of character value specifying the name of the jpeg file with the plots. The deafult is "Heritability_Plots".}
+\item{plotname}{String of character value specifying the name of the jpeg file with the plots. The default is "Heritability_Plots".}
 }
 \value{
 A dataframe with maximum eight columns for GREML (here, three columns if running genome-wide) and ten columns for LDSC model if byCHR is \code{TRUE}.
-The columns, such as, "chromosome"(i.e., chromosome code),"snp_proportion" (i.e.,chromosome-wise SNP propotion)", "no.of.genes" (i.e., number of genes per chromosome),
+The columns, such as, "chromosome"(i.e., chromosome code),"snp_proportion" (i.e.,chromosome-wise SNP proportion)", "no.of.genes" (i.e., number of genes per chromosome),
 "no.of.proteins" (i.e., number of genes per chromosome),"size_mb" (i.e., chromosome length), "Source" (i.e., source of heritability),
 "Variance" (i.e., estimated heritability), and "SE" (i.e., standard error of the estimated heritability) are common for both GREML and LDSC model.
 The column, "Intercept" (i.e., LDSC regression intercept) and "Int_SE" (i.e., standard error of the intercept) will be two extra columns for LDSC models.

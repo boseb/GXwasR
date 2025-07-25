@@ -935,7 +935,7 @@ SexDiff <- function(Mfile, Ffile) {
 #'
 #' @param diffmissFilter
 #' Boolean value, `TRUE` or `FALSE`, specifying whether to filter out the SNPs or only flagged them for differential
-#' missingness in cases vs contols. The deafailt is `TRUE`.
+#' missingness in cases vs controls. The default is `TRUE`.
 #'
 #' @param dmissX
 #' Boolean value, `TRUE` or `FALSE` for computing differential missingness between cases and controls for X chromosome
@@ -1164,7 +1164,7 @@ QCsnp <-
 #' * `chr` (Chromosome code),
 #' * `pos` (Basepair position)
 #' * `a1` (First allele code)
-#' * `rsid` (i.e., SNP idenitifier)
+#' * `rsid` (i.e., SNP identifier)
 #' * `beta` (i.e., effect-size or logarithm of odds ratio)
 #' * `beta_se` (i.e., standard error of beta)
 #' * `P` (i.e., p-values)
@@ -1233,7 +1233,7 @@ QCsnp <-
 #' Boolean value, `TRUE` or `FALSE`, specifying whether estimate of heritability will be done for X chromosome or not. The default is `TRUE`.
 #'
 #' @param nGRM
-#' Integer value, specifying the number of the partision of the GRM in GREML model. The default is 3.
+#' Integer value, specifying the number of the partition of the GRM in GREML model. The default is 3.
 #'
 #' @param cripticut
 #' Numeric value, specifying the threshold to create a new GRM of "unrelated" individuals in GREML model. The default is arbitrary chosen
@@ -1277,11 +1277,11 @@ QCsnp <-
 #' Boolean value, `TRUE` or `FALSE`, specifying whether to save the plots in jpeg file in `ResultDir`. The default is `TRUE`.
 #'
 #' @param plotname
-#' String of character value specifying the name of the jpeg file with the plots. The deafult is "Heritability_Plots".
+#' String of character value specifying the name of the jpeg file with the plots. The default is "Heritability_Plots".
 #'
 #' @returns
 #' A dataframe with maximum eight columns for GREML (here, three columns if running genome-wide) and ten columns for LDSC model if byCHR is `TRUE`.
-#' The columns, such as, "chromosome"(i.e., chromosome code),"snp_proportion" (i.e.,chromosome-wise SNP propotion)", "no.of.genes" (i.e., number of genes per chromosome),
+#' The columns, such as, "chromosome"(i.e., chromosome code),"snp_proportion" (i.e.,chromosome-wise SNP proportion)", "no.of.genes" (i.e., number of genes per chromosome),
 #' "no.of.proteins" (i.e., number of genes per chromosome),"size_mb" (i.e., chromosome length), "Source" (i.e., source of heritability),
 #' "Variance" (i.e., estimated heritability), and "SE" (i.e., standard error of the estimated heritability) are common for both GREML and LDSC model.
 #' The column, "Intercept" (i.e., LDSC regression intercept) and "Int_SE" (i.e., standard error of the intercept) will be two extra columns for LDSC models.
@@ -1648,7 +1648,7 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 #' * `CHR`(Chromosome code)
 #' * `BP`(Basepair position)
 #' * `A1` (effect allele)
-#' * `SNP` (i.e., SNP idenitifier)
+#' * `SNP` (i.e., SNP identifier)
 #' * `BETA` or `OR` (i.e., effect-size or logarithm of odds ratio)
 #' * `P` (i.e., p-values).
 #'
@@ -3101,7 +3101,7 @@ MAFdiffSexControl <- function(
 #' @importFrom ggplot2 ggplot
 #'
 #' @return
-#' A plot of heterogysity estimate vs missingness accross sample and a list containing five R dataframe objects, namely,
+#' A plot of heterogysity estimate vs missingness across sample and a list containing five R dataframe objects, namely,
 #' `HM` (samples with outlying heterozygosity and/or missing genotype rates), `Failed_Missingness` (samples with missing genotype rates),
 #' `Failed_heterozygosity` (samples with outlying heterozygosity), `Missingness_results` (missingness results) and `Heterozygosity_results`
 #' (heterozygosity results) with output plink files in ResultDir if filtering out the samples option is chosen.
@@ -3441,7 +3441,7 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #'
 #' @description
 #' This function runs GWAS models in autosomes with several alternative XWAS models.
-#' Models such as "FMcombx01","FMcombx02",and "FMstatrified" can be applied to both binary and quantitative traits,
+#' Models such as "FMcombx01","FMcombx02",and "FMstratified" can be applied to both binary and quantitative traits,
 #' while "GWAcxci" can only be applied to a binary trait.
 #'
 #' For binary and quantitative features, this function uses logistic and linear regression,
@@ -3483,7 +3483,7 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #' (mean 0, unit variance), so the resulting coefficients will be standardized. The default is `TRUE`.
 #'
 #' @param xmodel
-#' Models "FMcombx01","FMcombx02",and "FMstatrified" can be chosen for both binary and quantitative traits
+#' Models "FMcombx01","FMcombx02",and "FMstratified" can be chosen for both binary and quantitative traits
 #' while "GWAcxci" can only apply to the binary trait. These models take care of the X-chromosomal marker.
 #' Three female genotypes are coded by 0, 1, and 2 in FM01 and FM02. The two genotypes of males that follow the
 #' X-chromosome inactivation (XCI) pattern as random (XCI-R) in the FM01 model are coded by 0 and 1, while the two
@@ -3506,14 +3506,14 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #' the other columns should be covariates. The primary header line should be there starting with “FID”, and “IID”
 #' followed by covariate names. If an individual is not present in the covariate file, or if the individual has a
 #' missing phenotype value (i.e. -9 by default) for the covariate, then that individual is set to missing (i.e. will
-#' be excluded from association analysis). It is important to note that for statrified GWAS model, if PCs are included
+#' be excluded from association analysis). It is important to note that for stratified GWAS model, if PCs are included
 #' as covar then it should be generated separately for each cohort and then included in the covarfile. Use the function
 #' \code{\link{DummyCovar}} to generate a new covariate file with categorical variables down-coded as binary dummy variables for
 #' the covariate file with categorical variables. For instance, if a variable has K categories, K-1 new dummy variables
 #' are constructed, and the original covariate is now estimated with a coefficient for each category.
 #'
 #' @param covartest
-#' Vector value with `NULL`,"ALL" or covarite name/names to be included in the test. The default is `NULL.` For instance,
+#' Vector value with `NULL`,"ALL" or covariate name/names to be included in the test. The default is `NULL.` For instance,
 #' the user can choose “AGE” and “SEX” as covartest = c(“AGE”, “SEX”) or all the covariates as covartest = c(“ALL”).
 #'
 #' @param interaction
@@ -3640,7 +3640,7 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #'     MF.mc.cores = 1, ncores = ncores
 #' )
 GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"), standard_beta = TRUE,
-    xmodel = c("FMcombx01", "FMcombx02", "FMstatrified", "GWAScxci"), sex = FALSE, xsex = FALSE,
+    xmodel = c("FMcombx01", "FMcombx02", "FMstratified", "GWAScxci"), sex = FALSE, xsex = FALSE,
     covarfile = NULL, interaction = FALSE, covartest = c("ALL"), Inphenocov = c("ALL"), combtest = c("fisher.method", "fisher.method.perm", "stouffer.method"),
     MF.zero.sub = 0.00001, B = 10000, MF.mc.cores = 1, MF.na.rm = FALSE,
     MF.p.corr = "none", plot.jpeg = FALSE, plotname = "GXwas.plot", snp_pval = 1e-08,
@@ -3685,8 +3685,8 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
 
 
                 pb$tick(20)
-            } else if (xmodel[1] == "FMstatrified") {
-                rlang::inform(rlang::format_error_bullets("Running FMstatrified model"))
+            } else if (xmodel[1] == "FMstratified") {
+                rlang::inform(rlang::format_error_bullets("Running FMstratified model"))
 
                 ## Making male and female files in ResultDir
 
@@ -3750,7 +3750,7 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
 #'
 #' @param SummData
 #' Vector value containing the name(s) of the .Rda file(s) with GWAS summary statistics, with ‘SNP’
-#' (i.e., SNP idenitifier), ‘BETA’ (i.e., effect-size or logarithm of odds ratio), ‘SE’ (i.e., standard error of BETA),
+#' (i.e., SNP identifier), ‘BETA’ (i.e., effect-size or logarithm of odds ratio), ‘SE’ (i.e., standard error of BETA),
 #' ‘P’ (i.e., p-values), 'NMISS' (i.e., effective sample size), 'L95' (i.e., lower limit of 95% confidence interval) and
 #' 'U95' (i.e., upper limit of 95% confidence interval) are in mandatory column headers. These files needed to be in DataDir.
 #' If the numbers of cases and controls are unequal, effective sample size should be \eqn{4 / (1/<# of cases> + 1/<# of controls>)}.
@@ -3782,7 +3782,7 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
 #' genotyped and imputed SNPs prior using the function, set this parameter as `FALSE`.
 #'
 #' @param plotname
-#' Character string, spycifying the plot name of the file containg forest plots for the SNPs. The default is
+#' Character string, specifying the plot name of the file containing forest plots for the SNPs. The default is
 #' “Meta_Analysis.plot”.
 #'
 #' @param pval_filter
@@ -3797,7 +3797,7 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
 #' plot file. The default is 6.
 #'
 #' @param chosen_snps_file
-#' Character string specifing the name of the plain-text file with a column of SNP names for the forest plots.
+#' Character string specifying the name of the plain-text file with a column of SNP names for the forest plots.
 #' The default is NULL.
 #'
 #' @param byCHR
@@ -4135,7 +4135,7 @@ MetaGWAS <- function(
 #' A list with two dataframes.
 #'
 #' BestClump: a dataframe with eight columns showing the single best proxy SNP for each index SNP with
-#' coulmns "INDEX"(Index SNP identifier), "PSNP"(Best proxy SNP), "RSQ LD"(r-squared) between index and proxy,
+#' columns "INDEX"(Index SNP identifier), "PSNP"(Best proxy SNP), "RSQ LD"(r-squared) between index and proxy,
 #' "KB"(Physical distance between index and proxy), P(p-value for proxy SNP), "ALLELES"(The associated haplotypes for the index and proxy SNP),
 #' and "F"(Which file used for clumping from which this result came from).
 #'
@@ -4361,16 +4361,16 @@ ClumpLD <- function(
 #' For multiple tests, users are encouraged to apply a Bonferroni multiple-testing correction.
 #'
 #' @param inputdata
-#' A dataframe object, contaning three columns:
+#' A dataframe object, containing three columns:
 #' * `Trait` (i.e., the phenotype of interest)
 #' * `Stat` (i.e., the measured statistics)
 #' * `SE` (i.e., the standard error of the measured statistics)
 #'
 #' @param diffzero
-#' Boolean value, `TRUE` or `FALSE`, specifying to perform diviation from 0 test.
+#' Boolean value, `TRUE` or `FALSE`, specifying to perform deviation from 0 test.
 #'
 #' @param diffone
-#' Boolean value, `TRUE` or `FALSE`, specifying to perform diviation from 1 test.
+#' Boolean value, `TRUE` or `FALSE`, specifying to perform deviation from 1 test.
 #'
 #' @return
 #' A dataframe with columns:
@@ -5292,7 +5292,7 @@ FilterAllele <- function(DataDir, ResultDir, finput, foutput) {
 #' * `POS` (base-pair position)
 #' * `P` (p-value).
 #'
-#' Other coulmns may present.
+#' Other columns may present.
 #'
 #' @param SumstatFemale
 #' R dataframe object of summary statistics of female GWAS with five mandatory columns:
@@ -5302,7 +5302,7 @@ FilterAllele <- function(DataDir, ResultDir, finput, foutput) {
 #' * `POS`
 #' * `P`
 #'
-#' Other coulmns may present.
+#' Other columns may present.
 #'
 #' @param combtest
 #' Character vector specifying method for combining p-values for stratified GWAS models. Choices are “stouffer.method”,
