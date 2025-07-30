@@ -293,23 +293,11 @@ Please follow these tutorials to know more about the functionality of the packag
 
 Tutorial for performing post-imputation QC followed by sex-aware association tests: (vignette:Use of GXwasR)
 
-Tutorial for performing pre-imputation QC using GXwasR:
+* Tutorial for performing pre-imputation QC using GXwasR: ()[https://boseb.github.io/GXwasR/articles/preimputationQC.html]
+* Tutorial for performing post-imputation QC using GXwasR: 
+* Tutorial for ancestry estimation: ()[https://boseb.github.io/GXwasR/articles/decoding_ancestry.html]
 
-Tutorial for performing post-imputation QC using GXwasR:
 
-Tutorial for sex-combined and sex-stratified GWAS with XWAS:**hdhghchjfvjh**
-
-Tutorial for sex-differential test:**gdhgdcmh**
-
-Tutorial for ancestry estimation:
-
-Tutorial for computing polygenic risk score:**jcjjcjh**
-
-Tutorial for meta analysis:
-
-Tutorial for heritability estimate and genetic correlation:
-
-Tutorial for gene-based tests:
 
 ## Citing `GXwasR`
 
