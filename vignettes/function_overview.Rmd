@@ -4,6 +4,7 @@ author:
   - name: "Banabithi Bose"
     affiliation:
     - Northwestern University
+    - University of Colorado Anschutz Medical Campus
     email: banabithi.bose@gmail.com
 output: 
   BiocStyle::html_document:
