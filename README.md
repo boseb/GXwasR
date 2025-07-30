@@ -11,6 +11,7 @@ traits.
 
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![R-CMD-check](https://github.com/boseb/GXwasR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/boseb/GXwasR/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 This package implements various statistical genetics models for
@@ -226,24 +227,26 @@ ResultGXwas <- GXwas(
 )
 #> • Running FMstratified model
 #> Using PLINK v1.9.0-b.7.7 64-bit (22 Oct 2024)
-#> • Stratified test is running
-#> • Stratified test is running
-#> • If you want parallel computation, please provide non-zero value for argument ncores.
-#> • If you want parallel computation, please provide non-zero value for argument ncores.
+#> • Stratified test is running for females
+#> • Stratified test is running for males
+#> ℹ If you want parallel computation, please provide non-zero value for argument ncores.
 #> ℹ Plots are initiated.
-#> ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpsbVaBB/Stratified_GWAS.png
+#> ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmppH3zra/Stratified_GWAS.png
 #> This message is displayed once every 8 hours.
 ```
 
 <img src="man/figures/README-example-1.png" width="100%" />
 
     #> ℹ Saving plot to
-    #> /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpsbVaBB/Stratified_XWAS.png
+    #> /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmppH3zra/Stratified_XWAS.png
 
 <img src="man/figures/README-example-2.png" width="100%" /><img src="man/figures/README-example-3.png" width="100%" /><img src="man/figures/README-example-4.png" width="100%" /><img src="man/figures/README-example-5.png" width="100%" /><img src="man/figures/README-example-6.png" width="100%" />
 
-    #> • Three dataframes such as, CombinedWAS, MaleWAS and FemaleWAS are produced
-    #> in/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpsbVaBB
+    #> Three data frames have been created and saved:
+    #> • CombinedWAS
+    #> • MaleWAS
+    #> • FemaleWAS
+    #> ℹ You can find them in the directory: /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmppH3zra
     ResultGXwas
     #> $CombinedWAS
     #> Key: <SNP>
