@@ -119,170 +119,170 @@ library(printr)
 library(rmarkdown)
 ```
 
-# Function 1
+### Function 1
 ```{r}
 help(QCsnp, package = "GXwasR")
 ```
 
-# Function 2
+### Function 2
 ```{r}
 help(QCsample, package = "GXwasR")
 ```
 
-# Function 3
+### Function 3
 ```{r}
 help(AncestryCheck, package = "GXwasR")
 ```
 
-# Function 4
+### Function 4
 ```{r}
 help(SexCheck, package = "GXwasR")
 ```
 
-# Function 5
+### Function 5
 ```{r}
 help(Xhwe, package = "GXwasR")
 ```
 
-# Function 6
+### Function 6
 ```{r}
 help(MAFdiffSexControl, package = "GXwasR")
 ```
 
-# Function 7
+### Function 7
 ```{r}
 help(FilterRegion, package = "GXwasR")
 ```
 
-# Function 8
+### Function 8
 ```{r}
 help(GXwas, package = "GXwasR")
 ```
 
-# Function 9
+### Function 9
 ```{r}
 help(PvalComb, package = "GXwasR")
 ```
 
-# Function 10
+### Function 10
 ```{r}
 help(SexDiff, package = "GXwasR")
 ```
 
-# Function 11
+### Function 11
 ```{r}
 help(SexDiffZscore, package = "GXwasR")
 ```
 
-# Function 12
+### Function 12
 ```{r}
 help(DiffZeroOne, package = "GXwasR")
 ```
 
-# Function 13
+### Function 13
 ```{r}
 help(TestXGene, package = "GXwasR")
 ```
 
-# Function 14
+### Function 14
 ```{r}
 help(MetaGXwas, package = "GXwasR")
 ```
 
-# Function 15
+### Function 15
 ```{r}
 help(ComputePRS, package = "GXwasR")
 ```
 
-# Function 16
+### Function 16
 ```{r}
 help(ComputeCorrBT, package = "GXwasR")
 ```
 
-# Function 17
+### Function 17
 ```{r}
 help(EstimateHerit, package = "GXwasR")
 ```
 
-# Function 18
+### Function 18
 ```{r}
 help(SexRegress, package = "GXwasR")
 ```
 
-# Function 19
+### Function 19
 ```{r}
 help(FilterPlinkSample, package = "GXwasR")
 ```
 
-# Function 20
+### Function 20
 ```{r}
 help(ComputeGeneticPC, package = "GXwasR")
 ```
 
-# Function 21
+### Function 21
 ```{r}
 help(ClumpLD, package = "GXwasR")
 ```
 
-# Function 22
+### Function 22
 ```{r}
 help(GetMFPlink, package = "GXwasR")
 ```
 
-# Function 23
+### Function 23
 ```{r}
 help(plinkVCF, package = "GXwasR")
 ```
 
-# Function 24
+### Function 24
 ```{r}
 help(MergeRegion, package = "GXwasR")
 ```
 
-# Function 25
+### Function 25
 ```{r}
 help(FilterAllele, package = "GXwasR")
 ```
 
-# Function 26
+### Function 26
 ```{r}
 help(PlinkSummary, package = "GXwasR")
 ```
 
-# Function 27
+### Function 27
 ```{r}
 help(FilterSNP, package = "GXwasR")
 ```
 
-# Function 28
+### Function 28
 ```{r}
 help(DummyCovar, package = "GXwasR")
 ```
-# Function 29
+### Function 29
 ```{r}
 help(GXWASmiami, package = "GXwasR")
 ```
-# Function 30
+### Function 30
 ```{r}
 help(Download_reference, package = "GXwasR")
 ```
 
-# Function 31
+### Function 31
 ```{r}
 help(SumstatGenCorr, package = "GXwasR")
 ```
 
-# Function 32
+### Function 32
 ```{r}
 help(LDPrune, package = "GXwasR")
 ```
 
-# Function 33
+### Function 33
 ```{r}
 help(executePlinkMAF, package = "GXwasR")
 ```
 
-# Function 34
+### Function 34
 ```{r}
 help(ComputeLD, package = "GXwasR")
 ```
