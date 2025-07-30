@@ -4003,8 +4003,10 @@ MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile =
             invisible(suppressWarnings(lapply(i, allForestplot, MR2 = MRfiltered, Sbeta = Sbeta)))
             dev.off()
 
-            rlang::inform(rlang::format_error_bullets(c("v" = paste0(plotname, " files containing the forest plots of the SNPs are produced in the directory ", ResultDir, "."))))
-
+            rlang::inform(rlang::format_error_bullets(c(
+                "v" = paste0("Forest plot files for ", plotname, " SNPs have been created."),
+                "i" = paste("You can find them in the directory:", ResultDir)
+            )))
 
             # Check for problem SNPs
             problemFile <- normalizePath(file.path(ResultDir, "MetaResult.prob"), mustWork = FALSE)
@@ -4060,7 +4062,10 @@ MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile =
                 invisible(suppressWarnings(qqman::manhattan(mR, ylim = c(0, 10), annotatePval = pval_threshold_manplot, annotateTop = TRUE, main = "Manhattan plot of weighted Z-score meta GWAS")))
                 invisible(suppressWarnings(qqman::qq(mR$P, main = paste0(("Q-Q plot of weighted Z-score meta GWAS p-values with GIF = "), lamdaGC))))
                 dev.off()
-                rlang::inform(rlang::format_error_bullets(c("v" = paste0(plotname, " files containing the forest plots of the SNPs are produced in the directory ", ResultDir, "."))))
+                rlang::inform(rlang::format_error_bullets(c(
+                    "v" = paste0("Forest plot files for ", plotname, " SNPs have been created."),
+                    "i" = paste("You can find them in the directory:", ResultDir)
+                )))
 
                 #####
             } else {
