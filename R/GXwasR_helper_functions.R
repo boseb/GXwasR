@@ -2293,8 +2293,10 @@ FMcomb_sub <- function(
             parallel::stopCluster(cl)
             rlang::inform(rlang::format_error_bullets("v" = "Parallel computation complete."))
         }
-
-        Result <- cbind(MFWAS1[, 1:5], Pnew[, 3:4])
+        Result <- cbind(
+            MFWAS1[, .SD, .SDcols = intersect(seq_len(5), seq_len(ncol(MFWAS)))], 
+            as.data.table(Pnew)[, .SD, .SDcols = intersect(3:4, seq_len(ncol(Pnew)))]
+        )
         gc(reset = TRUE)
         Result <- Result[Result$TEST == "ADD", c("SNP", "CHR.x", "BP.x", "p2")] # we could choose "p.adj" as well.
         gc(reset = TRUE)
@@ -2310,7 +2312,10 @@ FMcomb_sub <- function(
                 na.rm = MF.na.rm,
                 mc.cores = MF.mc.cores
             )
-        Result <- cbind(MFWAS[, 1:5], Pnew[, 3:4])
+        Result <- cbind(
+            MFWAS[, .SD, .SDcols = intersect(seq_len(5), seq_len(ncol(MFWAS)))], 
+            as.data.table(Pnew)[, .SD, .SDcols = intersect(3:4, seq_len(ncol(Pnew)))]
+        )
         gc(reset = TRUE)
         Result <- Result[Result$TEST == "ADD", c("SNP", "CHR.x", "BP.x", "p.value")] # we could choose "p.adj" as well.
         colnames(Result) <- c("SNP", "CHR", "BP", "P")
@@ -2327,7 +2332,10 @@ FMcomb_sub <- function(
                 mc.cores = MF.mc.cores,
                 blinker = 1000
             )
-        Result <- cbind(MFWAS[, 1:7], Pnew[, 3:4])
+        Result <- cbind(
+            MFWAS[, .SD, .SDcols = intersect(seq_len(7), seq_len(ncol(MFWAS)))],
+            as.data.table(Pnew)[, .SD, .SDcols = intersect(3:4, seq_len(ncol(Pnew)))]
+        )
         gc(reset = TRUE)
         Result <- Result[Result$TEST == "ADD", c("SNP", "CHR", "BP", "P")]
         gc(reset = TRUE)
