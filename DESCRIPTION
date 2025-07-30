@@ -67,7 +67,8 @@ Imports:
     stringr,
     sumFREGAT,
     sys,
-    utils
+    utils,
+    vroom
 RdMacros: Rdpack
 biocViews: GenomeWideAssociation, LinkageDisequilibrium, VariantDetection, QualityControl, PrincipalComponent
 Language: en-US

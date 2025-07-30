@@ -81,8 +81,9 @@
 #' Eucledean distance from the center of the PC 1 and PC2 to the maximum Euclidean distance of the reference samples. Study samples
 #' outside this distance will be considered as outlier. The default is 3.
 #'
-#' @importFrom data.table as.data.table
+#' @importFrom data.table as.data.table .SD
 #' @importFrom ggplot2 ggplot aes geom_hline geom_vline guides geom_point guide_legend scale_shape_manual
+#' @importFrom vroom vroom
 #'
 #' @return A dataframe with the IDs of non-European samples as outliers.
 #'
@@ -150,7 +151,15 @@ AncestryCheck <-
                     stop("Missing required Plink files in the specified DataDir.")
                 }
                 # Read study bim file
-                sbim <- read.table(normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE))
+                sbim <- vroom::vroom(
+                    file = normalizePath(file.path(DataDir, paste0(finput, ".bim")), mustWork = FALSE),
+                    col_names = FALSE,
+                    delim = "\t",
+                    show_col_types = FALSE
+                )
+                names(sbim) <- paste0("V", seq_len(ncol(sbim)))
+
+                # Verify SNP format of study data
                 study_snp_format <- verify_snp_format(sbim)
 
                 # Verify existence of required reference data
@@ -160,7 +169,15 @@ AncestryCheck <-
                 }
 
                 # Read reference .bim file
-                rbim <- read.table(normalizePath(file.path(ref_path, paste0(reference, ".bim")), mustWork = FALSE))
+                rbim <- vroom::vroom(
+                    file = normalizePath(file.path(ref_path, paste0(reference, ".bim")), mustWork = FALSE),
+                    col_names = FALSE,
+                    delim = "\t",
+                    show_col_types = FALSE
+                )
+                names(rbim) <- paste0("V", seq_len(ncol(rbim)))
+
+                # Verify SNP format of reference data
                 ref_snp_format <- verify_snp_format(rbim)
 
                 if (study_snp_format == "chr:pos" & ref_snp_format == "rsID") {
@@ -216,7 +233,6 @@ AncestryCheck <-
                 pruned_study <- commonSNPResults$pruned_study
                 pruned_ref <- commonSNPResults$pruned_ref
 
-
                 # Process common SNPs
                 processCommonSNPs(ResultDir)
 
@@ -228,12 +244,14 @@ AncestryCheck <-
 
                 # Finding mis-matching allele positions
                 updated_ref <-
-                    read.table(
+                    vroom::vroom(
                         file = normalizePath(file.path(ResultDir, "filtered_ref_temp4.bim"), mustWork = FALSE),
-                        stringsAsFactors = FALSE
+                        col_names = FALSE,
+                        delim = "\t",
+                        show_col_types = FALSE
                     )
-                S3 <-
-                    updated_ref[match(common_snps, updated_ref[, "V2"]), , drop = FALSE]
+                names(updated_ref) <- paste0("V", seq_len(ncol(updated_ref)))
+                S3 <- updated_ref[match(common_snps, updated_ref$V2), , drop = FALSE]
                 colnames(S1) <- c("V1", "V2", "V3", "V4", "Sa", "Sb")
                 colnames(S3) <- c("V1", "V2", "V3", "V4", "Ra", "Rb")
 
@@ -251,12 +269,14 @@ AncestryCheck <-
 
                 # Checking allele flips again after correcting
                 flipped_ref <-
-                    read.table(
+                    vroom::vroom(
                         file = normalizePath(file.path(ResultDir, "filtered_ref_temp5.bim"), mustWork = FALSE),
-                        stringsAsFactors = FALSE
+                        col_names = FALSE,
+                        delim = "\t",
+                        show_col_types = FALSE
                     )
-                S5 <-
-                    flipped_ref[match(common_snps, flipped_ref[, "V2"]), , drop = FALSE]
+                names(flipped_ref) <- paste0("V", seq_len(ncol(flipped_ref)))
+                S5 <- flipped_ref[match(common_snps, flipped_ref$V2), , drop = FALSE]
                 colnames(S5) <- c("V1", "V2", "V3", "V4", "Ra", "Rb")
                 S5 <- data.table::as.data.table(S5)
                 # S6 <- merge(S1, S5, by = c("V1", "V2"))
@@ -271,10 +291,13 @@ AncestryCheck <-
 
                 # Checking number of SNPs in reference after clean-up.
                 cleaned_ref <-
-                    read.table(
+                    vroom::vroom(
                         file = normalizePath(file.path(ResultDir, "filtered_ref_temp6.bim"), mustWork = FALSE),
-                        stringsAsFactors = FALSE
+                        col_names = FALSE,
+                        delim = "\t",
+                        show_col_types = FALSE
                     )
+                names(cleaned_ref) <- paste0("V", seq_len(ncol(cleaned_ref)))
 
                 snps_final <- unique(cleaned_ref$V2)
 
@@ -284,7 +307,6 @@ AncestryCheck <-
 
                 # Process Reference
                 ref_ancestry_EUR_AFR_ASIAN <- loadAndProcessReferenceAncestry(ResultDir, reference)
-
                 # Plot PCA
                 combined_pop <- prepareAncestryData(study_pop, ref_ancestry_EUR_AFR_ASIAN)
                 tab <- loadPCAData(ResultDir, combined_pop)

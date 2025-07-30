@@ -5308,11 +5308,17 @@ filterATGCSNPs <- function(study_bim_path, study_bed_path, study_fam_path,
     ResultDir) {
     # Helper to identify ambiguous SNPs (A-T / G-C)
     getAmbiguousSNPs <- function(bim_file) {
-        bimData <- read.table(file = bim_file, stringsAsFactors = FALSE)
-        SNP_AT <- bimData[bimData[, 5] == "A" & bimData[, 6] == "T", 2, drop = FALSE]
-        SNP_TA <- bimData[bimData[, 5] == "T" & bimData[, 6] == "A", 2, drop = FALSE]
-        SNP_GC <- bimData[bimData[, 5] == "G" & bimData[, 6] == "C", 2, drop = FALSE]
-        SNP_CG <- bimData[bimData[, 5] == "C" & bimData[, 6] == "G", 2, drop = FALSE]
+        bimData <- vroom::vroom(
+            file = bim_file, 
+            col_names = FALSE,
+            delim = "\t",
+            show_col_types = FALSE
+        )
+        names(bimData) <- paste0("V", seq_len(ncol(bimData)))
+        SNP_AT <- bimData[bimData$V5 == "A" & bimData$V6 == "T", 2, drop = FALSE]
+        SNP_TA <- bimData[bimData$V5 == "T" & bimData$V6 == "A", 2, drop = FALSE]
+        SNP_GC <- bimData[bimData$V5 == "G" & bimData$V6 == "C", 2, drop = FALSE]
+        SNP_CG <- bimData[bimData$V5 == "C" & bimData$V6 == "G", 2, drop = FALSE]
         rbind(SNP_AT, SNP_TA, SNP_GC, SNP_CG)
     }
 
@@ -5382,8 +5388,20 @@ executePlinkForUnfilteredData <- function(DataDir, ResultDir, finput, reference)
 ## Function 105
 ## Added in 3.0
 findCommonSNPs <- function(ResultDir) {
-    pruned_study <- read.table(file = normalizePath(file.path(ResultDir, "filtered_study_temp2.bim"), mustWork = FALSE), stringsAsFactors = FALSE)
-    pruned_ref <- read.table(file = normalizePath(file.path(ResultDir, "filtered_ref_temp2.bim"), mustWork = FALSE), stringsAsFactors = FALSE)
+    pruned_study <- vroom::vroom(
+        file = normalizePath(file.path(ResultDir, "filtered_study_temp2.bim"), mustWork = FALSE), 
+        col_names = FALSE,
+        delim = "\t",
+        show_col_types = FALSE
+    )
+    names(pruned_study) <- paste0("V", seq_len(ncol(pruned_study)))
+    pruned_ref <- vroom::vroom(
+        file = normalizePath(file.path(ResultDir, "filtered_ref_temp2.bim"), mustWork = FALSE), 
+        col_names = FALSE,
+        delim = "\t",
+        show_col_types = FALSE
+    )
+    names(pruned_ref) <- paste0("V", seq_len(ncol(pruned_ref)))
 
     # Final update
     common_snps <- intersect(trimws(pruned_study$V2), trimws(pruned_ref$V2))
@@ -5469,8 +5487,8 @@ handleSnpAlleleFlips <- function(ResultDir, snp_allele_flips) {
 # Helper function for correcting chromosome mismatches
 correctChromosomeMismatches <- function(ResultDir, common_snps, pruned_study, pruned_ref) {
     # Updated in final
-    S1 <- pruned_study[match(common_snps, pruned_study[, 2]), , drop = FALSE]
-    S2 <- pruned_ref[match(common_snps, pruned_ref[, "V2"]), , drop = FALSE]
+    S1 <- pruned_study[match(common_snps, pruned_study$V2), , drop = FALSE]
+    S2 <- pruned_ref[match(common_snps, pruned_ref$V2), , drop = FALSE]
 
     whChrNotSame <- which(S1[, 1] != S2[, "V1"])
     whPosNotSame <- which(S1[, 4] != S2[, "V4"])
@@ -5614,14 +5632,21 @@ loadAndProcessReferenceAncestry <- function(ResultDir, reference) {
     }
     if (reference == "HapMapIII_NCBI36") {
         ref_ancestry1 <-
-            read.table(
+            vroom::vroom(
                 file = file.path(system.file("extdata", package = "GXwasR"), "hapmap_relationships_w_pops_121708.txt"),
-                stringsAsFactors = FALSE,
-                header = TRUE
+                col_names = TRUE,
+                delim = "\t",
+                show_col_types = FALSE
             )[, c("IID", "population")]
         colnames(ref_ancestry1) <- c("ID", "Ancestry")
         ## Updated in 5.0
-        ref1 <- read.table(normalizePath(file.path(ref_path, paste0(reference, ".fam")), mustWork = FALSE), header = FALSE)[, 2, drop = FALSE]
+        ref1 <- vroom::vroom(
+            file = normalizePath(file.path(ref_path, paste0(reference, ".fam")), mustWork = FALSE), 
+            col_names = FALSE,
+            show_col_types = FALSE
+        )
+        names(ref1) <- paste0("V", seq_len(ncol(ref1)))
+        ref1 <- ref1[, 2, drop = FALSE]
         colnames(ref1) <- "ID"
         ref_ancestry <- merge(ref_ancestry1, ref1, by = "ID")
 
@@ -5656,10 +5681,9 @@ loadAndProcessReferenceAncestry <- function(ResultDir, reference) {
         ref_ancestry_EUR_AFR_ASIAN[ref_ancestry_EUR_AFR_ASIAN$Ancestry == "SAS", 2] <- "Ref_SAS"
     } else if (reference %in% c("ThousandGenome", "Ref10Kgenome")) {
         ref_ancestry <-
-            read.table(
+            vroom::vroom(
                 file = file.path(system.file("extdata", package = "GXwasR"), "1000genomesampleinfo.txt"),
-                stringsAsFactors = FALSE,
-                header = TRUE
+                col_names = TRUE
             )[, c("Sample", "superpop")]
         ref_ancestry_EUR_AFR_ASIAN <- ref_ancestry[ref_ancestry$superpop == "EUR" |
             ref_ancestry$superpop == "AFR" | ref_ancestry$superpop == "EAS" | ref_ancestry$superpop == "SAS", ]
@@ -5689,12 +5713,17 @@ prepareAncestryData <- function(study_pop, ref_ancestry_EUR_AFR_ASIAN) {
 ## Function 113
 ## Added in 3.0
 loadPCAData <- function(ResultDir, combined_pop) {
-    pca <- read.table(file = normalizePath(file.path(ResultDir, "study_ref_merge.eigenvec"), mustWork = FALSE), stringsAsFactors = FALSE, header = FALSE)
+    pca <- vroom::vroom(
+        file = normalizePath(file.path(ResultDir, "study_ref_merge.eigenvec"), mustWork = FALSE), 
+        col_names = FALSE,
+        show_col_types = FALSE
+    )
+    names(pca) <- paste0("V", seq_len(ncol(pca)))
     tab <- data.frame(
         sample = pca$V2,
         pop = factor(combined_pop$Ancestry)[match(pca$V2, combined_pop$ID)],
-        PC1 = pca[, 3], # the first eigenvector
-        PC2 = pca[, 4], # the second eigenvector
+        PC1 = pca$V3, # the first eigenvector
+        PC2 = pca$V4, # the second eigenvector
         stringsAsFactors = FALSE
     )
     return(na.omit(tab))
