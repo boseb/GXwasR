@@ -1,5 +1,5 @@
 ---
-title: "GXwasR Functions"
+title: "GXwasR Overview"
 author: 
   - name: "Banabithi Bose"
     affiliation:
@@ -8,7 +8,7 @@ author:
     email: banabithi.bose@gmail.com
 output: 
   BiocStyle::html_document:
-    self_contained: yes
+    self_contained: true
     toc: true
     toc_float: true
     toc_depth: 2
@@ -295,12 +295,10 @@ Please follow these tutorials to know more about the functionality of the packag
 Tutorial for performing post-imputation QC followed by sex-aware association tests: (vignette:Use of GXwasR)
 
 * Tutorial for performing pre-imputation QC using GXwasR: ()[https://boseb.github.io/GXwasR/articles/preimputationQC.html]
-* Tutorial for performing post-imputation QC using GXwasR: 
+* Tutorial for performing post-imputation QC using GXwasR: ()[https://boseb.github.io/Processing_1000Genome/]
 * Tutorial for ancestry estimation: ()[https://boseb.github.io/GXwasR/articles/decoding_ancestry.html]
 
-
-
-## Citing `GXwasR`
+# Citing `GXwasR`
 
 We hope that `r BiocStyle::Biocpkg("GXwasR")` will be useful for your research. Please use the following information to cite the package and the overall approach. Thank you!
 
@@ -330,8 +328,6 @@ options(width = 120)
 session_info()
 ```
 
-
-
 # Bibliography
 
 This vignette was generated using `r BiocStyle::Biocpkg("BiocStyle")` `r Citep(bib[["BiocStyle"]])`
@@ -341,5 +337,5 @@ Citations made with `r BiocStyle::CRANpkg("RefManageR")` `r Citep(bib[["RefManag
 
 ```{r vignetteBiblio, results = "asis", echo = FALSE, warning = FALSE, message = FALSE}
 ## Print bibliography
-PrintBibliography(bib, .opts = list(hyperlink = "to.doc", style = "html"))
+RefManageR::PrintBibliography(bib, .opts = list(hyperlink = "to.doc", style = "html"))
 ```

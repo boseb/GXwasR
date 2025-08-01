@@ -23,7 +23,7 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-    fig.path = "vignettes/figures/",
+    fig.path = "figures/",
     fig.width = 8, fig.height = 6,
     collapse = TRUE,
     comment = "#>",

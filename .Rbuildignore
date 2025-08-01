@@ -12,4 +12,7 @@
 ^GXwasR-package\.Rd$
 ^logo
 ^docs
+^figures
 ^LICENSE\.md$
+^doc$
+^Meta$
