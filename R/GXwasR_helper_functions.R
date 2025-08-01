@@ -5683,7 +5683,8 @@ loadAndProcessReferenceAncestry <- function(ResultDir, reference) {
         ref_ancestry <-
             vroom::vroom(
                 file = file.path(system.file("extdata", package = "GXwasR"), "1000genomesampleinfo.txt"),
-                col_names = TRUE
+                col_names = TRUE,
+                show_col_types = FALSE
             )[, c("Sample", "superpop")]
         ref_ancestry_EUR_AFR_ASIAN <- ref_ancestry[ref_ancestry$superpop == "EUR" |
             ref_ancestry$superpop == "AFR" | ref_ancestry$superpop == "EAS" | ref_ancestry$superpop == "SAS", ]
