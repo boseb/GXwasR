@@ -1,4 +1,4 @@
-"Sample" "Family.ID" "Population" "Population.Description" "Gender" "Relationship" "superpop"
+"ID" "Sample" "Family.ID" "Population" "Population.Description" "Gender" "Relationship" "superpop"
 "1" "HG00096" "HG00096" "GBR" "British in England and Scotland" "male" "" "EUR"
 "2" "HG00097" "HG00097" "GBR" "British in England and Scotland" "female" "" "EUR"
 "3" "HG00098" "HG00098" "GBR" "British in England and Scotland" "male" "" "EUR"

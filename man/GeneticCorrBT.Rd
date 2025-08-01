@@ -104,6 +104,7 @@ following \insertCite{Yang2011,Lee2012}{GXwasR}. If users want, this function gi
 correlation chromosome-wise.
 }
 \examples{
+data("Example_phenofile", package = "GXwasR")
 DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
@@ -111,7 +112,6 @@ byCHR <- TRUE
 REMLalgo <- 0
 nitr <- 3
 ncores <- 3
-data("GXwasRData")
 phenofile <- Example_phenofile # Cannot be NULL
 cat_covarfile <- NULL
 quant_covarfile <- NULL
@@ -124,10 +124,10 @@ maxMAF <- 0.04
 excludeResidual <- TRUE
 
 genetic_correlation <- GeneticCorrBT(
-  DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = byCHR,
-  REMLalgo = 0, nitr = 10, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL,
-  partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
-  cripticut = 0.025, minMAF = NULL, maxMAF = NULL, excludeResidual = TRUE, ncores = ncores
+    DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = byCHR,
+    REMLalgo = 0, nitr = 10, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL,
+    partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
+    cripticut = 0.025, minMAF = NULL, maxMAF = NULL, excludeResidual = TRUE, ncores = ncores
 )
 }
 \references{

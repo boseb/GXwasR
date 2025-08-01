@@ -84,13 +84,13 @@ You must set one of the following environment variables to the appropriate direc
 sumstat1 <- GXwasR:::simulateSumstats()
 sumstat2 <- GXwasR:::simulateSumstats()
 if (nzchar(Sys.getenv("UKB_IMPUTED_HAPMAP2_PATH"))) {
- res <- SumstatGenCorr(
-   ResultDir = tempdir(), 
-   referenceLD = "UKB_imputed_hapmap2_SVD_eigen99_extraction",
-   sumstat1 = sumstat1,
-   sumstat2 = sumstat2, 
-   parallel = FALSE
- )
+    res <- SumstatGenCorr(
+        ResultDir = tempdir(),
+        referenceLD = "UKB_imputed_hapmap2_SVD_eigen99_extraction",
+        sumstat1 = sumstat1,
+        sumstat2 = sumstat2,
+        parallel = TRUE
+    )
 }
 }
 \references{
