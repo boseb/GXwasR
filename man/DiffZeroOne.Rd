@@ -7,16 +7,16 @@
 DiffZeroOne(inputdata, diffzero = TRUE, diffone = TRUE)
 }
 \arguments{
-\item{inputdata}{A dataframe object, contaning three columns:
+\item{inputdata}{A dataframe object, containing three columns:
 \itemize{
 \item \code{Trait} (i.e., the phenotype of interest)
 \item \code{Stat} (i.e., the measured statistics)
 \item \code{SE} (i.e., the standard error of the measured statistics)
 }}
 
-\item{diffzero}{Boolean value, \code{TRUE} or \code{FALSE}, specifying to perform diviation from 0 test.}
+\item{diffzero}{Boolean value, \code{TRUE} or \code{FALSE}, specifying to perform deviation from 0 test.}
 
-\item{diffone}{Boolean value, \code{TRUE} or \code{FALSE}, specifying to perform diviation from 1 test.}
+\item{diffone}{Boolean value, \code{TRUE} or \code{FALSE}, specifying to perform deviation from 1 test.}
 }
 \value{
 A dataframe with columns:

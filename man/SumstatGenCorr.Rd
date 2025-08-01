@@ -89,7 +89,7 @@ if (nzchar(Sys.getenv("UKB_IMPUTED_HAPMAP2_PATH"))) {
         referenceLD = "UKB_imputed_hapmap2_SVD_eigen99_extraction",
         sumstat1 = sumstat1,
         sumstat2 = sumstat2,
-        parallel = FALSE
+        parallel = TRUE
     )
 }
 }

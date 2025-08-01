@@ -33,7 +33,7 @@ PvalComb(
 \item \code{P} (p-value).
 }
 
-Other coulmns may present.}
+Other columns may present.}
 
 \item{SumstatFemale}{R dataframe object of summary statistics of female GWAS with five mandatory columns:
 \itemize{
@@ -44,7 +44,7 @@ Other coulmns may present.}
 \item \code{P}
 }
 
-Other coulmns may present.}
+Other columns may present.}
 
 \item{combtest}{Character vector specifying method for combining p-values for stratified GWAS models. Choices are “stouffer.method”,
 "fisher.method" and "fisher.method.perm". For fisher.method the function for combining p-values uses a statistic,

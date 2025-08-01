@@ -1,0 +1,393 @@
+---
+title: "Pre-impute Quality Control Pipeline Using GXwasR"
+author: 
+  - name: "Banabithi Bose"
+    affiliation:
+    - Northwestern University
+    - University of Colorado Anschutz Medical Campus
+    email: banabithi.bose@gmail.com
+output: 
+  BiocStyle::html_document:
+    self_contained: true
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    code_folding: show
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('GXwasR')`"
+vignette: >
+  %\VignetteIndexEntry{preimputationQC}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}  
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+    fig.width = 8, fig.height = 6,
+    collapse = TRUE,
+    comment = "#>",
+    crop = NULL ## Related to https://stat.ethz.ch/pipermail/bioc-devel/2020-April/016656.html
+)
+```
+
+
+```{r vignetteSetup, echo=FALSE, message=FALSE, warning = FALSE}
+## Bib setup
+library("RefManageR")
+
+## Write bibliography information
+bib <- c(
+    R = citation(),
+    BiocStyle = citation("BiocStyle")[1],
+    knitr = citation("knitr")[1],
+    RefManageR = citation("RefManageR")[1],
+    rmarkdown = citation("rmarkdown")[1],
+    sessioninfo = citation("sessioninfo")[1],
+    testthat = citation("testthat")[1],
+    GXwasR = citation("GXwasR")[1]
+)
+```
+
+This document outlines the pre-imputation quality control (QC) steps, which represent our recommended best practices. Users have the flexibility to create their own pipelines using the GXwasR functions based on their specific needs.
+
+## Pre-imputation QC pipeline:
+We will run the pre-imputation QC pipeline in this vignette utilizing the functions from GXwasR package. 
+
+## Example Datasets
+The PLINK bed, bim, and fam files are the three mandatory files representing a genotype dataset to run this pipeline. To know about these file extensions, please check https://www.cog-genomics.org/plink/1.9/formats.
+
+**GXwasR_example:**
+
+* GXwasR_example.bed
+* GXwasR_example.bim
+* GXwasR_example.fam
+
+These plink files contain genotypes for 276 individuals (males and females) simulated from 1000Genome from European decent with 26515 variants across twelve chromosomes (1-10,23,24). This dataset contains 125 males, 151 females, 108 cases and 168 controls. We will utilize this set of plink files as proxy of pre-imputated genotype data.
+
+## Pre-imputation QC steps
+- **Filtering Multi-Allelic Variants:** This step is essential for simplifying the genetic data analysis by removing variants that have more than two alleles. Multi-allelic variants can complicate analyses and interpretations, making this filtering crucial for a streamlined dataset.
+
+- **Removal of Ambiguous SNPs and Indels:** We specifically target SNPs with ambiguous mappings (like AT and GC pairings) and indels (insertions and deletions), which can lead to inaccuracies in genotype calling. Removing these elements helps in maintaining the integrity of our genetic data.
+
+- **QC of SNPs with Relaxed Genotype Call Rate:** In this phase, we filter SNPs based on a less stringent genotype call rate. This step aims to balance between retaining enough informative SNPs and excluding those with too much missing data.
+
+- **Filtering Samples with Relaxed Missing Rate Threshold:** Similar to SNPs, we apply a relaxed threshold for sample missingness. This approach ensures that we don't prematurely exclude samples that might be informative despite having a slightly higher rate of missing data.
+
+- **Application of Sex Check:** We verify the consistency between reported and genetic sex. This check helps identify potential sample mix-ups or issues with data integrity.
+
+- **Filter for Needed Chromosomes:** Focus is narrowed to autosomes and sex chromosomes, as these are typically the most relevant for genetic studies. This step streamlines the dataset to the chromosomes of interest.
+
+- **Second Round of SNP Filtering:** This more stringent phase includes filters for minor allele frequency (MAF) < 0.01, call rate < 0.02, case-control differential missingness, Hardy-Weinberg equilibrium (cases < e-10; controls < e-06), and the removal of monomorphic SNPs. This rigorous filtering ensures that only the most reliable SNPs are retained for analysis.
+
+- **Second Round of Sample Filtering:** Here, we apply stringent thresholds for call rate (< 0.02), heterozygosity, and relatedness (IBD F-stat < 0.2). This step further refines the sample pool, ensuring that only high-quality samples are included.
+
+- **Applying Ancestry Check:** We assess the ancestry of the samples to identify and exclude outliers from different ancestries, which is vital for controlling population stratification in genetic association studies.
+
+- **Third Round of SNP Filtering:** This final filtering step ensures that all previously applied SNP thresholds are maintained even after the rigorous sample filtering. It's a crucial step to guarantee the overall quality and consistency of the SNP data set.
+
+## Loading the GXwasR library
+```{r}
+## Call some libraries
+library(GXwasR)
+library(printr)
+library(rmarkdown)
+```
+## Learn about all the GXwasR functions
+
+**Before beginning the pre-imputation quality control (QC), it is recommended that users familiarize themselves with all the functions in the GXwasR package. This knowledge will help them understand the required input arguments, how to execute the functions, and what outputs to expect.**
+
+To explore all available functions, users should first load the GXwasR library and then use the browseVignettes() function:
+
+```{r, eval = FALSE}
+library(GXwasR)
+browseVignettes("GXwasR")
+```
+
+## Example Dataset Summary
+
+**Dataset: GXwasR_example**
+
+```{r}
+DataDir <- system.file("extdata", package = "GXwasR")
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+x <- PlinkSummary(DataDir, ResultDir, finput)
+```
+
+## Step 1: Filtering multi-allelic variants
+Firstly, users need to ensure that their input plink files are bi-allelic. To ensure that, it is advised to run the FilterAllele() function with the input dataset.
+
+```{r}
+foutput <- "PreimputeEX_QC1"
+x <- FilterAllele(DataDir, ResultDir, finput, foutput)
+```
+Since there was no multi-allelic SNPs, we will proceed with the same input data.
+
+## Step 2: QC of SNPs for genotype call rate
+It removes variants that are missing genotype data for more than 20% of the individuals in your dataset. This function implicitly remove ambiguous SNPs (i.e., AT<>GC), indels etc. Users can set their own threshold.
+
+```{r}
+# Running
+foutput <- "PreimputeEX_QC1"
+geno <- 0.2
+maf <- NULL
+casecontrol <- FALSE
+caldiffmiss <- FALSE
+diffmissFilter <- FALSE
+dmissX <- FALSE
+dmissAutoY <- FALSE
+monomorphicSNPs <- TRUE
+ld_prunning <- FALSE
+casecontrol <- FALSE
+hweCase <- NULL
+hweControl <- NULL
+monomorphicSNPs <- FALSE
+ld_prunning <- FALSE
+x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput,foutput = foutput, geno = geno, maf = maf,hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, dmissX = dmissX, dmissAutoY = dmissAutoY, diffmissFilter = diffmissFilter)
+```
+
+Copying the plink files from ResultDir to DataDir.
+```{r}
+ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PreimputeEX_QC1")
+file.copy(paste0(ResultDir,"/",ftemp),DataDir)
+PlinkSummary(DataDir, ResultDir, finput = "PreimputeEX_QC1")
+```
+
+## Step 3: Filtering samples with high missing rate threshold.
+It excludes individuals who have missing genotype data for more than 20% of the genetic variants in the dataset.
+```{r}
+# Running
+finput <- "PreimputeEX_QC1"
+foutput <- "PreimputeEX_QC2"
+imiss = 0.2
+het = NULL
+IBD = NULL
+filterSample <- TRUE
+ambi_out <- TRUE
+x = QCsample(DataDir = DataDir,ResultDir = ResultDir, finput = finput,foutput = foutput, imiss = imiss,het = het, IBD = NULL, filterSample = filterSample, ambi_out = ambi_out)
+```
+
+## Step 4: Apply sex check
+```{r}
+finput <- "PreimputeEX_QC1" # Using the same input file
+LD = TRUE
+LD_window_size <- 50
+LD_step_size <- 5
+LD_r2_threshold <- 0.02
+fmax_F <- 0.3
+mmin_F <- 0.7
+# We will not impute sex
+impute_sex <- FALSE
+compute_freq <- FALSE
+SexCheckResult <-SexCheck(DataDir=DataDir,ResultDir = ResultDir, finput=finput,impute_sex=impute_sex,compute_freq =compute_freq,LD_window_size=LD_window_size,LD_step_size=LD_step_size,LD_r2_threshold=0.02,fmax_F = fmax_F,mmin_F=mmin_F)
+problematic_sex <- SexCheckResult[SexCheckResult$STATUS != "OK",]
+problematic_sex <- problematic_sex[,1:2]
+print(paste0("Number of samples with problematic sex assignment: ",nrow(problematic_sex)))
+write.table(problematic_sex,file = paste0(DataDir,"/problematic_sex_samples"),quote = F, row.names = F,col.names = F)
+SexCheckResult[1:5,]
+```
+
+Note, there is no filtering of the samples based on sex prediction.
+
+This function uses X chromosome data to determine sex (i.e. based on heterozygosity rates) and flags individuals for whom the reported sex in the PED file does not match the estimated sex (given genomic data).
+
+A PROBLEM arises if the two sexes do not match, or if the SNP data or pedigree data are ambiguous with regard to sex. A male call is made if F is more than 0.8; a female call is made if F is less than 0.2.
+
+SNPSEX  Sex as determined by X chromosome
+
+F       The actual X chromosome inbreeding (homozygosity) estimate
+
+Users have the ability to impute the sex for their dataset.
+
+## Step 5: Filter for needed chromosomes.
+
+We prefer to keep only chromosome 1 to 23. 
+
+```{r}
+test1 <- read.table(paste0(DataDir,"/",finput,".bim"))
+unique(test1$V1)
+```
+```{r}
+foutput <- "PreimputeEX_QC2"
+x <- FilterRegion(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, CHRX = FALSE, CHRY = FALSE, filterPAR = FALSE, filterXTR = FALSE, filterAmpliconic = FALSE, regionfile = FALSE, filterCHR = c(24, 25, 26),Hg = "38", exclude = TRUE)
+
+```
+
+Copying the plink files from ResultDir to DataDir.
+
+```{r}
+ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PreimputeEX_QC2")
+file.copy(paste0(ResultDir,"/",ftemp),DataDir)
+PlinkSummary(DataDir, ResultDir, finput = "PreimputeEX_QC2")
+```
+
+## Step 6: Second round of SNP filtering.
+
+```{r}
+library(GXwasR)
+finput <- "PreimputeEX_QC2"
+foutput <- "PreimputeEX_QC3"
+geno <- 0.02
+maf <- 0.01
+casecontrol <- TRUE
+caldiffmiss <- TRUE
+diffmissFilter <- TRUE
+dmissX <- TRUE
+dmissAutoY <- TRUE
+monomorphicSNPs <- TRUE
+ld_prunning <- FALSE
+hwe = NULL
+hweCase <- 1e-10
+hweControl <- 1e-06
+x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput,foutput = foutput, geno = geno, maf = maf,hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, dmissX = dmissX, dmissAutoY = dmissAutoY, diffmissFilter = diffmissFilter)
+```
+Copying the plink files from ResultDir to DataDir.
+
+```{r}
+ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PreimputeEX_QC3")
+file.copy(paste0(ResultDir,"/",ftemp),DataDir)
+PlinkSummary(DataDir, ResultDir, finput = "PreimputeEX_QC3")
+```
+
+## Step 7: Second round of sample filtering
+Here we are using stringent thresholds for sample filter.
+
+```{r}
+finput <- "PreimputeEX_QC3"
+foutput <- "PreimputeEX_QC4"
+imiss = 0.02
+het = 3
+IBD = 0.2
+IBDmatrix = FALSE
+small_sample_mod = TRUE
+filterSample = TRUE
+ambi_out = TRUE
+x = QCsample(DataDir = DataDir,ResultDir = ResultDir, finput = finput,foutput = foutput, imiss = imiss,het = het, IBD = IBD, IBDmatrix = IBDmatrix, filterSample = filterSample, ambi_out = ambi_out)
+```
+Copying the plink files from ResultDir to DataDir.
+```{r}
+ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PreimputeEX_QC4")
+file.copy(paste0(ResultDir,"/",ftemp),DataDir)
+PlinkSummary(DataDir, ResultDir, finput = "PreimputeEX_QC4")
+```
+
+## Step 8: Ancestry check
+
+Prior to use this function, users are highly encouraged to read our tutorial ""Decoding Ancestry: A Guide to Using GXwasR for Genetic Ancestry Estimation".
+
+```{r}
+data("highLD_hg19", package = "GXwasR")
+data("example_data_study_sample_ancestry", package = "GXwasR")
+finput <- "PreimputeEX_QC4"
+reference <- "HapMapIII_NCBI36"
+highLD_regions <- highLD_hg19
+study_pop <- example_data_study_sample_ancestry
+studyLD_window_size = 50
+studyLD_step_size = 5
+studyLD_r2_threshold = 0.02
+filterSNP = TRUE
+studyLD = TRUE
+referLD = TRUE
+referLD_window_size = 50
+referLD_step_size = 5
+referLD_r2_threshold = 0.02
+outlier = TRUE
+outlier_threshold = 3
+outlierOf = "EUR"
+x <- AncestryCheck(DataDir = DataDir,
+    ResultDir = ResultDir,
+    finput = finput,
+    reference = reference,
+    filterSNP = TRUE,
+    studyLD = TRUE,
+    studyLD_window_size = 50,
+    studyLD_step_size = 5,
+    studyLD_r2_threshold = 0.02,
+    referLD = FALSE,
+    referLD_window_size = 50,
+    referLD_step_size = 5,
+    referLD_r2_threshold = 0.02,
+    highLD_regions = highLD_regions,
+    study_pop = study_pop,
+    outlier = TRUE,
+    outlierOf = "EUR",
+    outlier_threshold = 3)
+
+Samples_with_predicted_ancestry <- x[["Samples_with_predicted_ancestry"]]
+
+outlier <- x[["Outlier_samples"]]
+
+outlier
+
+Samples_with_predicted_ancestry[1:5,]
+```
+
+There was no outlier samples.
+
+## Step 9: Third round of SNP filtering
+To make sure all the filtering thresholds for SNPs are maintained after sample filtering.
+```{r}
+library(GXwasR)
+finput <- "PreimputeEX_QC4"
+foutput <- "Preimpute_Final"
+geno <- 0.02
+maf <- 0.01
+casecontrol <- TRUE
+caldiffmiss <- TRUE
+diffmissFilter <- TRUE
+dmissX <- TRUE
+dmissAutoY <- TRUE
+monomorphicSNPs <- TRUE
+ld_prunning <- FALSE
+ hwe = NULL
+hweCase <- 1e-10
+hweControl <- 1e-06
+x <- QCsnp(DataDir = ResultDir, ResultDir = ResultDir, finput = finput,foutput = foutput, geno = geno, maf = maf,hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, dmissX = dmissX, dmissAutoY = dmissAutoY, diffmissFilter = diffmissFilter)
+```
+## Final Summary of final Qc-ed dataset.
+```{r}
+PlinkSummary(ResultDir,ResultDir,foutput)
+```
+## Citation
+If you are using GXwasR package and/or following this pipeline in your study, please cite it as:
+```{r}
+citation("GXwasR")
+```
+
+
+# Reproducibility
+
+The `r BiocStyle::Biocpkg("GXwasR")` package `r Citep(bib[["GXwasR"]])` was made possible thanks to:
+
+* R `r Citep(bib[["R"]])`
+* `r BiocStyle::Biocpkg("BiocStyle")` `r Citep(bib[["BiocStyle"]])`
+* `r BiocStyle::CRANpkg("knitr")` `r Citep(bib[["knitr"]])`
+* `r BiocStyle::CRANpkg("RefManageR")` `r Citep(bib[["RefManageR"]])`
+* `r BiocStyle::CRANpkg("rmarkdown")` `r Citep(bib[["rmarkdown"]])`
+* `r BiocStyle::CRANpkg("sessioninfo")` `r Citep(bib[["sessioninfo"]])`
+* `r BiocStyle::CRANpkg("testthat")` `r Citep(bib[["testthat"]])`
+
+This package was developed using `r BiocStyle::Biocpkg("biocthis")`.
+
+`R` session information.
+
+```{r reproduce3, echo=FALSE}
+## Session info
+library("sessioninfo")
+options(width = 120)
+session_info()
+```
+
+
+
+# Bibliography
+
+This vignette was generated using `r BiocStyle::Biocpkg("BiocStyle")` `r Citep(bib[["BiocStyle"]])`
+with `r BiocStyle::CRANpkg("knitr")` `r Citep(bib[["knitr"]])` and `r BiocStyle::CRANpkg("rmarkdown")` `r Citep(bib[["rmarkdown"]])` running behind the scenes.
+
+Citations made with `r BiocStyle::CRANpkg("RefManageR")` `r Citep(bib[["RefManageR"]])`.
+
+```{r vignetteBiblio, results = "asis", echo = FALSE, warning = FALSE, message = FALSE}
+## Print bibliography
+RefManageR::PrintBibliography(bib, .opts = list(hyperlink = "to.doc", style = "html"))
+```
