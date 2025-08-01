@@ -2,8 +2,11 @@
 <url><loc>/404.html</loc></url>
 <url><loc>/CODE_OF_CONDUCT.html</loc></url>
 <url><loc>/LICENSE-text.html</loc></url>
-<url><loc>/articles/GXwasR_All_Functions.html</loc></url>
+<url><loc>/LICENSE.html</loc></url>
+<url><loc>/articles/GXwasR_overview.html</loc></url>
+<url><loc>/articles/decoding_ancestry.html</loc></url>
 <url><loc>/articles/index.html</loc></url>
+<url><loc>/articles/preimputationQC.html</loc></url>
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
 <url><loc>/news/index.html</loc></url>
@@ -13,7 +16,6 @@
 <url><loc>/reference/ComputeLD.html</loc></url>
 <url><loc>/reference/ComputePRS.html</loc></url>
 <url><loc>/reference/DiffZeroOne.html</loc></url>
-<url><loc>/reference/Download_reference.html</loc></url>
 <url><loc>/reference/DummyCovar.html</loc></url>
 <url><loc>/reference/EstimateHerit.html</loc></url>
 <url><loc>/reference/Example_covarfile.html</loc></url>
@@ -56,8 +58,8 @@
 <url><loc>/reference/executePlinkMAF.html</loc></url>
 <url><loc>/reference/highLD_hg19.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
-<url><loc>/reference/pipe.html</loc></url>
 <url><loc>/reference/plinkVCF.html</loc></url>
 <url><loc>/reference/simulateSumstats.html</loc></url>
+<url><loc>/reference/validate_reference_data.html</loc></url>
 </urlset>
 
