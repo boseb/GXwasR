@@ -1,0 +1,10 @@
+url: ~
+template:
+  bootstrap: 5
+articles:
+  - title: Articles
+    navbar: ~
+    contents:
+      - GXwasR_overview
+      - decoding_ancestry
+      - preimputationQC

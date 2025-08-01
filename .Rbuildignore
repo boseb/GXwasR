@@ -11,6 +11,8 @@
 ^\.vscode$
 ^GXwasR-package\.Rd$
 ^logo
+^_pkgdown\.yml$
+^pkgdown$
 ^docs
 ^figures
 ^LICENSE\.md$
