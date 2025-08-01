@@ -12,6 +12,11 @@ precompile_vignettes <- function() {
     output = 'vignettes/decoding_ancestry.Rmd'
   )
 
+  knitr::knit(
+    input = 'vignettes/preimputationQC.Rmd.orig',
+    output = 'vignettes/preimputationQC.Rmd'
+  )
+
   # Copy figures
   vignette_figures <- list.files('figures', recursive = TRUE, full.names = TRUE)
   dir.create('vignettes/figures', recursive = TRUE, showWarnings = FALSE)
@@ -20,4 +25,3 @@ precompile_vignettes <- function() {
   # Remove temporary figures directory
   unlink('figures', recursive = TRUE)
 }
-
