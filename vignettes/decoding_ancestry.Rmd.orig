@@ -76,11 +76,11 @@ x <- PlinkSummary(DataDir, ResultDir, finput)
 The `AncestryCheck`() function in the GXwasR package is a sophisticated tool designed for ancestry analysis in genetic studies. It provides a comprehensive approach, from data preparation to advanced statistical analysis, for estimating ancestral backgrounds. Let's delve into the technical aspects and workflow of this function:
 
 ## Data Preparation:
-1. **Directories and initial quality check:** The '`AncestryCheck`' function requires specific directories for inputting PLINK binary files and for saving output files. At this stage, the input genotype dataset, i.e., the study dataset, should have already undergone thorough quality control. GXwasR offers a range of functions to facilitate this preliminary quality check (QC) of genotype datasets, essential for accurate ancestry estimation. This QC process typically includes filtering out multi-allelic variants, selecting SNPs based on genotype call rate, filtering for specific chromosomes, SNP filtering grounded in minor allele frequency, adherence to Hardy-Weinberg equilibrium, and sample selection based on criteria like call rate, low missing rate, and heterozygosity thresholds. It's important to apply these filters in the appropriate sequence for optimal dataset preparation. For a more detailed understanding of this QC pipeline, users can refer to the comprehensive guide available at ()[https://boseb.github.io/GXwasR/articles/preimputationQC.html].
+1. **Directories and initial quality check:** The '`AncestryCheck`' function requires specific directories for inputting PLINK binary files and for saving output files. At this stage, the input genotype dataset, i.e., the study dataset, should have already undergone thorough quality control. GXwasR offers a range of functions to facilitate this preliminary quality check (QC) of genotype datasets, essential for accurate ancestry estimation. This QC process typically includes filtering out multi-allelic variants, selecting SNPs based on genotype call rate, filtering for specific chromosomes, SNP filtering grounded in minor allele frequency, adherence to Hardy-Weinberg equilibrium, and sample selection based on criteria like call rate, low missing rate, and heterozygosity thresholds. It's important to apply these filters in the appropriate sequence for optimal dataset preparation. For a more detailed understanding of this QC pipeline, users can refer to the comprehensive guide available at [https://boseb.github.io/GXwasR/articles/preimputationQC.html](https://boseb.github.io/GXwasR/articles/preimputationQC.html).
 
 2. **Genomic Build and X-Chromosome Compatibility:** Users of the `AncestryCheck` function must ensure that both their study and reference datasets are aligned on the same genomic build, with consistent chromosome coding across the entire genome. This alignment is crucial, particularly since sex chromosomes (X and Y) often have different encoding conventions in genomic datasets. The `AncestryCheck` function is equipped to implicitly handle variations in sex chromosome encoding. However, users are advised to employ tools like Liftover or CrossMap for verifying and aligning genomic builds and chromosome codes between their study and reference datasets, thus ensuring compatibility and accuracy in the ancestry estimation process.
 
-2. **Reference Dataset Selection:** The function offers users the flexibility to select from two established reference populations, such as, **HapMap phase III**[2] or the **1000 Genomes phase 3**[3] Projects. It is specifically designed to work seamlessly with the preprocessed genotype datasets of these reference panels. For users seeking to download and process these datasets, a comprehensive guidance was provided through a dedicated vignette. This detailed resource, which can be accessed at ()[https://boseb.github.io/Processing_1000Genome/tutorial.html], offers step-by-step instructions on how to effectively prepare these reference datasets for use in ancestry analysis, ensuring users can make the most out of their genetic studies with the selected reference populations.
+2. **Reference Dataset Selection:** The function offers users the flexibility to select from two established reference populations, such as, **HapMap phase III**[2] or the **1000 Genomes phase 3**[3] Projects. It is specifically designed to work seamlessly with the preprocessed genotype datasets of these reference panels. For users seeking to download and process these datasets, a comprehensive guidance was provided through a dedicated vignette. This detailed resource, which can be accessed at [https://boseb.github.io/Processing_1000Genome/tutorial.html](https://boseb.github.io/Processing_1000Genome/tutorial.html), offers step-by-step instructions on how to effectively prepare these reference datasets for use in ancestry analysis, ensuring users can make the most out of their genetic studies with the selected reference populations.
 
 ## SNP Filtering: 
 The function incorporates a crucial step of SNP filtering for both study and reference datasets. This filtering process is particularly focused on excluding SNPs that do not conform to A-T or G-C base pairings. By implementing this filtering, `AncestryCheck` ensures the overall quality and reliability of the genetic data from both study and reference datasets. This step is vital in maintaining the integrity of the analysis, as it helps in eliminating potentially problematic SNPs that could skew the ancestry estimation results.
@@ -193,7 +193,7 @@ data("highLD_hg19", package = "GXwasR")
 data("example_data_study_sample_ancestry", package = "GXwasR")
 
 # Call the AncestryCheck function
-ancestry_results <- AncestryCheck(
+hapmap_results <- AncestryCheck(
     DataDir = system.file("extdata", package = "GXwasR"),
     ResultDir = tempdir(),
     finput = "GXwasR_example",
@@ -214,9 +214,9 @@ ancestry_results <- AncestryCheck(
     outlier_threshold = 3
 )
 
-Samples_with_predicted_ancestry <- ancestry_results[["Samples_with_predicted_ancestry"]]
+Samples_with_predicted_ancestry <- hapmap_results[["Samples_with_predicted_ancestry"]]
 
-outlier <- ancestry_results[["Outlier_samples"]]
+outlier <- hapmap_results[["Outlier_samples"]]
 outlier
 
 Samples_with_predicted_ancestry[seq_len(5), ]
@@ -237,7 +237,7 @@ The function can be used in the following manner with our study data and referen
 data("highLD_hg19", package = "GXwasR")
 data("example_data_study_sample_ancestry", package = "GXwasR")
 
-x <- AncestryCheck(
+thousandgenome_results <- AncestryCheck(
   DataDir = system.file("extdata", package = "GXwasR"), 
   ResultDir = tempdir(), 
   finput = "GXwasR_example", 
@@ -251,13 +251,12 @@ x <- AncestryCheck(
   outlier_threshold = 5
   )
 
-Samples_with_predicted_ancestry <- ancestry_results[["Samples_with_predicted_ancestry"]]
+Samples_with_predicted_ancestry <- thousandgenome_results[["Samples_with_predicted_ancestry"]]
 
-outlier <- ancestry_results[["Outlier_samples"]]
-
+outlier <- thousandgenome_results[["Outlier_samples"]]
 outlier
 
-Samples_with_predicted_ancestry[seq_len(1:5), ]
+Samples_with_predicted_ancestry[seq_len(5), ]
 ```
 
 The lack of outlier samples—those that would be significantly distanced from the reference group—suggests homogeneity in the ancestry of the study population. Given that our study data was simulated based on the EUR population from the 1000 Genomes project data, the absence of outliers aligns with expectations.
