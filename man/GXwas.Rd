@@ -10,7 +10,7 @@ GXwas(
   finput,
   trait = c("binary", "quantitative"),
   standard_beta = TRUE,
-  xmodel = c("FMcombx01", "FMcombx02", "FMstatrified", "GWAScxci"),
+  xmodel = c("FMcombx01", "FMcombx02", "FMstratified", "GWAScxci"),
   sex = FALSE,
   xsex = FALSE,
   covarfile = NULL,
@@ -49,7 +49,7 @@ an alternate missing value encoding. The missing case/control or quantitative ph
 \item{standard_beta}{Boolean value, \code{TRUE} or \code{FALSE} in case of quantitative trait for standardizing the trait or phenotype values
 (mean 0, unit variance), so the resulting coefficients will be standardized. The default is \code{TRUE}.}
 
-\item{xmodel}{Models "FMcombx01","FMcombx02",and "FMstatrified" can be chosen for both binary and quantitative traits
+\item{xmodel}{Models "FMcombx01","FMcombx02",and "FMstratified" can be chosen for both binary and quantitative traits
 while "GWAcxci" can only apply to the binary trait. These models take care of the X-chromosomal marker.
 Three female genotypes are coded by 0, 1, and 2 in FM01 and FM02. The two genotypes of males that follow the
 X-chromosome inactivation (XCI) pattern as random (XCI-R) in the FM01 model are coded by 0 and 1, while the two
@@ -78,7 +78,7 @@ Note about the covariate file: The first column of this file should be \code{FID
 the other columns should be covariates. The primary header line should be there starting with “FID”, and “IID”
 followed by covariate names. If an individual is not present in the covariate file, or if the individual has a
 missing phenotype value (i.e. -9 by default) for the covariate, then that individual is set to missing (i.e. will
-be excluded from association analysis). It is important to note that for statrified GWAS model, if PCs are included
+be excluded from association analysis). It is important to note that for stratified GWAS model, if PCs are included
 as covar then it should be generated separately for each cohort and then included in the covarfile. Use the function
 \code{\link{DummyCovar}} to generate a new covariate file with categorical variables down-coded as binary dummy variables for
 the covariate file with categorical variables. For instance, if a variable has K categories, K-1 new dummy variables
@@ -95,7 +95,7 @@ do not represent the test for the SNP-phenotype association after controlling fo
 be extremely significant (e.g. if one covaries for smoking in an analysis of heart disease, etc) but this does not mean
 that the SNP has a highly significant effect necessarily. Note that, this feature is not valid for XCGA model for XWAS part.}
 
-\item{covartest}{Vector value with \code{NULL},"ALL" or covarite name/names to be included in the test. The default is \code{NULL.} For instance,
+\item{covartest}{Vector value with \code{NULL},"ALL" or covariate name/names to be included in the test. The default is \code{NULL.} For instance,
 the user can choose “AGE” and “SEX” as covartest = c(“AGE”, “SEX”) or all the covariates as covartest = c(“ALL”).}
 
 \item{Inphenocov}{Vector of integer values starting from 1 to extract the terms which user wants from the above model:
@@ -163,7 +163,7 @@ and Q-Q-plots for stratified tests prefixed with xmodel type will be in the Data
 }
 \description{
 This function runs GWAS models in autosomes with several alternative XWAS models.
-Models such as "FMcombx01","FMcombx02",and "FMstatrified" can be applied to both binary and quantitative traits,
+Models such as "FMcombx01","FMcombx02",and "FMstratified" can be applied to both binary and quantitative traits,
 while "GWAcxci" can only be applied to a binary trait.
 
 For binary and quantitative features, this function uses logistic and linear regression,
@@ -198,11 +198,11 @@ covarfile <- NULL
 ncores <- 0
 MF.mc.cores <- 1
 ResultGXwas <- GXwas(
-  DataDir = DataDir, ResultDir = ResultDir,
-  finput = finput, xmodel = xmodel, trait = trait, covarfile = covarfile,
-  sex = sex, xsex = xsex, combtest = combtest, MF.p.corr = "none",
-  snp_pval = snp_pval, plot.jpeg = TRUE, suggestiveline = 5, genomewideline = 7.3,
-  MF.mc.cores = 1, ncores = ncores
+    DataDir = DataDir, ResultDir = ResultDir,
+    finput = finput, xmodel = xmodel, trait = trait, covarfile = covarfile,
+    sex = sex, xsex = xsex, combtest = combtest, MF.p.corr = "none",
+    snp_pval = snp_pval, plot.jpeg = TRUE, suggestiveline = 5, genomewideline = 7.3,
+    MF.mc.cores = 1, ncores = ncores
 )
 }
 \references{

@@ -8,6 +8,14 @@
 \description{
 This package performs various models of genome-wide and x-chromosome wide association analyses applying best practices of quality control over genetic data.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/boseb/GXwasR/}
+  \item Report bugs at \url{https://github.com/boseb/GXwasR/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Banabithi Bose \email{banabithi.bose@gmail.com} (\href{https://orcid.org/0000-0003-0842-8768}{ORCID})
 

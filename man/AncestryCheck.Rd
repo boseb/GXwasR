@@ -91,29 +91,30 @@ in CGRCh37. Both study and reference datasets should be of the same genome build
 datasets to the same build.
 }
 \examples{
+data("highLD_hg19", package = "GXwasR")
+data("example_data_study_sample_ancestry", package = "GXwasR")
 DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 reference <- "HapMapIII_NCBI36"
-data("GXwasRData")
-highLD_regions <- GXwasR::highLD_hg19 # See: ?GXwasR::highLD_hg19
+highLD_regions <- highLD_hg19
 study_pop <- example_data_study_sample_ancestry # PreimputeEX
 studyLD_window_size <- 50
 studyLD_step_size <- 5
 studyLD_r2_threshold <- 0.02
 filterSNP <- TRUE
-studyLD <- TRUE
-referLD <- TRUE
+studyLD <- FALSE
+referLD <- FALSE
 referLD_window_size <- 50
 referLD_step_size <- 5
 referLD_r2_threshold <- 0.02
 outlier <- TRUE
 outlier_threshold <- 3
 x <- AncestryCheck(
-  DataDir = DataDir, ResultDir = ResultDir, finput = finput,
-  reference = "HapMapIII_NCBI36", highLD_regions = highLD_regions,
-  study_pop = study_pop, studyLD = studyLD, referLD = referLD,
-  outlierOf = "EUR", outlier = outlier, outlier_threshold = outlier_threshold
+    DataDir = DataDir, ResultDir = ResultDir, finput = finput,
+    reference = reference, highLD_regions = highLD_regions,
+    study_pop = study_pop, studyLD = studyLD, referLD = referLD,
+    outlierOf = "EUR", outlier = outlier, outlier_threshold = outlier_threshold
 )
 }
 \references{

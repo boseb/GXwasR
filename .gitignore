@@ -1,5 +1,9 @@
 .Rproj.user
-
 /.quarto/
 docs
 .vscode/settings.json
+docs
+inst/doc
+vignettes/*.html
+/doc/
+/Meta/

@@ -34,10 +34,8 @@ This function utilizes PLINK to perform LD pruning on genetic data. It identifie
 linkage disequilibrium with each other within specified windows.
 }
 \examples{
-\dontrun{
-DataDir <- "path/to/data"
+DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
-finput <- "dataset_prefix"
+finput <- "GXwasR_example"
 prunedSNPs <- LDPrune(DataDir, finput, ResultDir, 50, 5, 0.2)
-}
 }

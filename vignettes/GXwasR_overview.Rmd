@@ -1,18 +1,71 @@
 ---
-title: "GXwasR Functions"
-author: "Banabithi Bose, Northwestern University"
-output: rmarkdown::html_vignette
+title: "GXwasR Overview"
+author: 
+  - name: "Banabithi Bose"
+    affiliation:
+    - Northwestern University
+    - University of Colorado Anschutz Medical Campus
+    email: banabithi.bose@gmail.com
+output: 
+  BiocStyle::html_document:
+    self_contained: true
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    code_folding: show
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('GXwasR')`"
 vignette: >
-  %\VignetteIndexEntry{GXwasR Functions}
+  %\VignetteIndexEntry{function_overview}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(fig.width = 8, fig.height = 6)
+knitr::opts_chunk$set(
+    fig.width = 8, fig.height = 6,
+    collapse = TRUE,
+    comment = "#>",
+    crop = NULL ## Related to https://stat.ethz.ch/pipermail/bioc-devel/2020-April/016656.html
+)
 ```
+
+```{r vignetteSetup, echo=FALSE, message=FALSE, warning = FALSE}
+## Bib setup
+library("RefManageR")
+
+## Write bibliography information
+bib <- c(
+    R = citation(),
+    BiocStyle = citation("BiocStyle")[1],
+    knitr = citation("knitr")[1],
+    RefManageR = citation("RefManageR")[1],
+    rmarkdown = citation("rmarkdown")[1],
+    sessioninfo = citation("sessioninfo")[1],
+    testthat = citation("testthat")[1],
+    GXwasR = citation("GXwasR")[1]
+)
+```
+
 # <a id = "GXwasR Description"></a> GXwasR Description: 
 
 This package implements various statistical genetics models for Genome-Wide Association (GWA) and X-Chromosome Wide Association (XWA) analyses in a sex-combined or sex-stratified way considering X-Chromosome Inactivation (XCI) pattern. In addition to association analysis, the package also enables testing for sex differences in genetic effects, including the implementation of specific models and applying best practices for additional quality control (QC) of genetic data required for these tests. The package includes thirty different functions in six different categories (A-F) which enable a comprehensive pipeline for sex-aware genetic association analysis of common variants with unrelated individuals.
+
+# Basics
+
+## Install `GXwasR`
+
+`R` is an open-source statistical environment which can be easily modified to enhance its functionality via packages. `r BiocStyle::Biocpkg("GXwasR")` is a `R` package available via the [Bioconductor](http://bioconductor.org) repository for packages. `R` can be installed on any operating system from [CRAN](https://cran.r-project.org/) after which you can install `r BiocStyle::Biocpkg("GXwasR")` by using the following commands in your `R` session:
+
+```{r "install", eval = FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+}
+
+BiocManager::install("GXwasR")
+
+## Check that you have a valid Bioconductor installation
+BiocManager::valid()
+```
 
 # Functions Overview
 
@@ -67,170 +120,170 @@ library(printr)
 library(rmarkdown)
 ```
 
-# Function 1
+### Function 1
 ```{r}
 help(QCsnp, package = "GXwasR")
 ```
 
-# Function 2
+### Function 2
 ```{r}
 help(QCsample, package = "GXwasR")
 ```
 
-# Function 3
+### Function 3
 ```{r}
 help(AncestryCheck, package = "GXwasR")
 ```
 
-# Function 4
+### Function 4
 ```{r}
 help(SexCheck, package = "GXwasR")
 ```
 
-# Function 5
+### Function 5
 ```{r}
 help(Xhwe, package = "GXwasR")
 ```
 
-# Function 6
+### Function 6
 ```{r}
 help(MAFdiffSexControl, package = "GXwasR")
 ```
 
-# Function 7
+### Function 7
 ```{r}
 help(FilterRegion, package = "GXwasR")
 ```
 
-# Function 8
+### Function 8
 ```{r}
 help(GXwas, package = "GXwasR")
 ```
 
-# Function 9
+### Function 9
 ```{r}
 help(PvalComb, package = "GXwasR")
 ```
 
-# Function 10
+### Function 10
 ```{r}
 help(SexDiff, package = "GXwasR")
 ```
 
-# Function 11
+### Function 11
 ```{r}
 help(SexDiffZscore, package = "GXwasR")
 ```
 
-# Function 12
+### Function 12
 ```{r}
 help(DiffZeroOne, package = "GXwasR")
 ```
 
-# Function 13
+### Function 13
 ```{r}
 help(TestXGene, package = "GXwasR")
 ```
 
-# Function 14
+### Function 14
 ```{r}
 help(MetaGXwas, package = "GXwasR")
 ```
 
-# Function 15
+### Function 15
 ```{r}
 help(ComputePRS, package = "GXwasR")
 ```
 
-# Function 16
+### Function 16
 ```{r}
 help(ComputeCorrBT, package = "GXwasR")
 ```
 
-# Function 17
+### Function 17
 ```{r}
 help(EstimateHerit, package = "GXwasR")
 ```
 
-# Function 18
+### Function 18
 ```{r}
 help(SexRegress, package = "GXwasR")
 ```
 
-# Function 19
+### Function 19
 ```{r}
 help(FilterPlinkSample, package = "GXwasR")
 ```
 
-# Function 20
+### Function 20
 ```{r}
 help(ComputeGeneticPC, package = "GXwasR")
 ```
 
-# Function 21
+### Function 21
 ```{r}
 help(ClumpLD, package = "GXwasR")
 ```
 
-# Function 22
+### Function 22
 ```{r}
 help(GetMFPlink, package = "GXwasR")
 ```
 
-# Function 23
+### Function 23
 ```{r}
 help(plinkVCF, package = "GXwasR")
 ```
 
-# Function 24
+### Function 24
 ```{r}
 help(MergeRegion, package = "GXwasR")
 ```
 
-# Function 25
+### Function 25
 ```{r}
 help(FilterAllele, package = "GXwasR")
 ```
 
-# Function 26
+### Function 26
 ```{r}
 help(PlinkSummary, package = "GXwasR")
 ```
 
-# Function 27
+### Function 27
 ```{r}
 help(FilterSNP, package = "GXwasR")
 ```
 
-# Function 28
+### Function 28
 ```{r}
 help(DummyCovar, package = "GXwasR")
 ```
-# Function 29
+### Function 29
 ```{r}
 help(GXWASmiami, package = "GXwasR")
 ```
-# Function 30
+### Function 30
 ```{r}
 help(Download_reference, package = "GXwasR")
 ```
 
-# Function 31
+### Function 31
 ```{r}
 help(SumstatGenCorr, package = "GXwasR")
 ```
 
-# Function 32
+### Function 32
 ```{r}
 help(LDPrune, package = "GXwasR")
 ```
 
-# Function 33
+### Function 33
 ```{r}
 help(executePlinkMAF, package = "GXwasR")
 ```
 
-# Function 34
+### Function 34
 ```{r}
 help(ComputeLD, package = "GXwasR")
 ```
@@ -241,20 +294,48 @@ Please follow these tutorials to know more about the functionality of the packag
 
 Tutorial for performing post-imputation QC followed by sex-aware association tests: (vignette:Use of GXwasR)
 
-Tutorial for performing pre-imputation QC using GXwasR:
+* Tutorial for performing pre-imputation QC using GXwasR: [https://boseb.github.io/GXwasR/articles/preimputationQC.html](https://boseb.github.io/GXwasR/articles/preimputationQC.html)
+* Tutorial for performing post-imputation QC using GXwasR: [https://boseb.github.io/Processing_1000Genome/tutorial.html](https://boseb.github.io/Processing_1000Genome/tutorial.html)
+* Tutorial for ancestry estimation: [https://boseb.github.io/GXwasR/articles/decoding_ancestry.html](https://boseb.github.io/GXwasR/articles/decoding_ancestry.html)
 
-Tutorial for performing post-imputation QC using GXwasR:
+# Citing `GXwasR`
 
-Tutorial for sex-combined and sex-stratified GWAS with XWAS:**hdhghchjfvjh**
+We hope that `r BiocStyle::Biocpkg("GXwasR")` will be useful for your research. Please use the following information to cite the package and the overall approach. Thank you!
 
-Tutorial for sex-differential test:**gdhgdcmh**
+```{r "citation"}
+## Citation info
+citation("GXwasR")
+```
 
-Tutorial for ancestry estimation:
+# Reproducibility
 
-Tutorial for computing polygenic risk score:**jcjjcjh**
+The `r BiocStyle::Biocpkg("GXwasR")` package `r Citep(bib[["GXwasR"]])` was made possible thanks to:
 
-Tutorial for meta analysis:
+* R `r Citep(bib[["R"]])`
+* `r BiocStyle::Biocpkg("BiocStyle")` `r Citep(bib[["BiocStyle"]])`
+* `r BiocStyle::CRANpkg("knitr")` `r Citep(bib[["knitr"]])`
+* `r BiocStyle::CRANpkg("RefManageR")` `r Citep(bib[["RefManageR"]])`
+* `r BiocStyle::CRANpkg("rmarkdown")` `r Citep(bib[["rmarkdown"]])`
+* `r BiocStyle::CRANpkg("sessioninfo")` `r Citep(bib[["sessioninfo"]])`
+* `r BiocStyle::CRANpkg("testthat")` `r Citep(bib[["testthat"]])`
 
-Tutorial for heritability estimate and genetic correlation:
+`R` session information.
 
-Tutorial for gene-based tests:
+```{r reproduce3, echo=FALSE}
+## Session info
+library("sessioninfo")
+options(width = 120)
+session_info()
+```
+
+# Bibliography
+
+This vignette was generated using `r BiocStyle::Biocpkg("BiocStyle")` `r Citep(bib[["BiocStyle"]])`
+with `r BiocStyle::CRANpkg("knitr")` `r Citep(bib[["knitr"]])` and `r BiocStyle::CRANpkg("rmarkdown")` `r Citep(bib[["rmarkdown"]])` running behind the scenes.
+
+Citations made with `r BiocStyle::CRANpkg("RefManageR")` `r Citep(bib[["RefManageR"]])`.
+
+```{r vignetteBiblio, results = "asis", echo = FALSE, warning = FALSE, message = FALSE}
+## Print bibliography
+RefManageR::PrintBibliography(bib, .opts = list(hyperlink = "to.doc", style = "html"))
+```

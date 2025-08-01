@@ -49,7 +49,7 @@ typically be \code{TRUE} if clump_best is \code{TRUE.} Default is \code{TRUE}.}
 A list with two dataframes.
 
 BestClump: a dataframe with eight columns showing the single best proxy SNP for each index SNP with
-coulmns "INDEX"(Index SNP identifier), "PSNP"(Best proxy SNP), "RSQ LD"(r-squared) between index and proxy,
+columns "INDEX"(Index SNP identifier), "PSNP"(Best proxy SNP), "RSQ LD"(r-squared) between index and proxy,
 "KB"(Physical distance between index and proxy), P(p-value for proxy SNP), "ALLELES"(The associated haplotypes for the index and proxy SNP),
 and "F"(Which file used for clumping from which this result came from).
 
@@ -77,10 +77,11 @@ argument. Instead of the best p-value, the function refer to the SNP that has th
 Based on the genotype data, the SNP with the highest LD will be the same for all input files.
 }
 \examples{
+data("Summary_Stat_Ex1", package = "GXwasR")
+data("Summary_Stat_Ex2", package = "GXwasR")
 DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
-data("GXwasRData")
 SNPdata <- list(Summary_Stat_Ex1, Summary_Stat_Ex2)
 clump_p1 <- 0.0001
 clump_p2 <- 0.001
@@ -88,8 +89,8 @@ clump_r2 <- 0.5
 clump_kb <- 250
 byCHR <- TRUE
 clumpedResult <- ClumpLD(
-  DataDir, finput, SNPdata, ResultDir, clump_p1,
-  clump_p2, clump_r2, clump_kb, byCHR
+    DataDir, finput, SNPdata, ResultDir, clump_p1,
+    clump_p2, clump_r2, clump_kb, byCHR
 )
 }
 \references{

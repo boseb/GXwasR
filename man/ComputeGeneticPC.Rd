@@ -53,10 +53,10 @@ Top principal components are generally used as covariates in association analysi
 population stratification
 }
 \examples{
+data("highLD_hg19", package = "GXwasR")
 DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
-data("GXwasRData")
 highLD_regions <- highLD_hg19
 ld_prunning <- "TRUE"
 window_size <- 50
@@ -65,8 +65,8 @@ r2_threshold <- 0.02
 countPC <- 20
 ## Genetic PC
 GP <- ComputeGeneticPC(
-  DataDir = DataDir, ResultDir = ResultDir,
-  finput = finput, highLD_regions = highLD_hg19, countPC = 20
+    DataDir = DataDir, ResultDir = ResultDir,
+    finput = finput, highLD_regions = highLD_hg19, countPC = 20
 )
 }
 \references{

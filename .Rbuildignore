@@ -12,5 +12,9 @@
 ^GXwasR-package\.Rd$
 ^logo
 ^_pkgdown\.yml$
-^docs$
 ^pkgdown$
+^docs
+^figures
+^LICENSE\.md$
+^doc$
+^Meta$
