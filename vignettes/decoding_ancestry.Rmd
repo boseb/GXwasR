@@ -243,7 +243,7 @@ ancestry_results <- AncestryCheck(
 #> This message is displayed once every 8 hours.
 ```
 
-![plot of chunk hapmap_ex](vignettes/figures/hapmap_ex-1.png)
+![plot of chunk hapmap_ex](figures/hapmap_ex-1.png)
 
 ```
 #> ℹ No allele flips between study and reference data.
