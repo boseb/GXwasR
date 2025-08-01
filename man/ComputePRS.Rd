@@ -45,7 +45,7 @@ The mandatory column headers in this dataframe are:
 \item \code{CHR}(Chromosome code)
 \item \code{BP}(Basepair position)
 \item \code{A1} (effect allele)
-\item \code{SNP} (i.e., SNP idenitifier)
+\item \code{SNP} (i.e., SNP identifier)
 \item \code{BETA} or \code{OR} (i.e., effect-size or logarithm of odds ratio)
 \item \code{P} (i.e., p-values).
 }

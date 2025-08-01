@@ -63,7 +63,7 @@ Users can set this as \code{NULL} to not apply this filter.}
 for each SNP (threshold is \eqn{0.05/length(unique(No. of. SNPs in the test))}). The default is \code{TRUE.}}
 
 \item{diffmissFilter}{Boolean value, \code{TRUE} or \code{FALSE}, specifying whether to filter out the SNPs or only flagged them for differential
-missingness in cases vs contols. The deafailt is \code{TRUE}.}
+missingness in cases vs controls. The default is \code{TRUE}.}
 
 \item{dmissX}{Boolean value, \code{TRUE} or \code{FALSE} for computing differential missingness between cases and controls for X chromosome
 SNPs only. The default is \code{FALSE}. The diffmissFilter will work for all these SNPs.}

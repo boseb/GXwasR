@@ -61,7 +61,7 @@ matrix will be stored.}
 \item{filterSample}{Boolean value, \code{TRUE} or \code{FALSE} for filtering out the samples or not (i.e., only flagged). The default is \code{TRUE}.}
 }
 \value{
-A plot of heterogysity estimate vs missingness accross sample and a list containing five R dataframe objects, namely,
+A plot of heterogysity estimate vs missingness across sample and a list containing five R dataframe objects, namely,
 \code{HM} (samples with outlying heterozygosity and/or missing genotype rates), \code{Failed_Missingness} (samples with missing genotype rates),
 \code{Failed_heterozygosity} (samples with outlying heterozygosity), \code{Missingness_results} (missingness results) and \code{Heterozygosity_results}
 (heterozygosity results) with output plink files in ResultDir if filtering out the samples option is chosen.
