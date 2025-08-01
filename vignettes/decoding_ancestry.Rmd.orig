@@ -13,18 +13,40 @@ output:
     toc_float: true
     toc_depth: 2
     code_folding: show
-date: "31 July 2025"
-package: "GXwasR 0.99.0"
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('GXwasR')`"
 vignette: >
   %\VignetteIndexEntry{decoding_ancestry}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}  
 ---
 
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+    fig.width = 8, fig.height = 6,
+    collapse = TRUE,
+    comment = "#>",
+    crop = NULL ## Related to https://stat.ethz.ch/pipermail/bioc-devel/2020-April/016656.html
+)
+```
 
 
+```{r vignetteSetup, echo=FALSE, message=FALSE, warning = FALSE}
+## Bib setup
+library("RefManageR")
 
-
+## Write bibliography information
+bib <- c(
+    R = citation(),
+    BiocStyle = citation("BiocStyle")[1],
+    knitr = citation("knitr")[1],
+    RefManageR = citation("RefManageR")[1],
+    rmarkdown = citation("rmarkdown")[1],
+    sessioninfo = citation("sessioninfo")[1],
+    testthat = citation("testthat")[1],
+    GXwasR = citation("GXwasR")[1]
+)
+```
 
 ## Introduction
 
@@ -37,39 +59,12 @@ The core of ancestry estimation lies in combining the genotypes of a study popul
 GXwasR is readily available on Bioconductor and can be installed using BiocManager::install("GXwasR"). The package includes a simulated genotype dataset prefixed as **GXwasR_example** as plink bed files (i.e., .bed, .fam, and .bim), ideal for users to experiment with. This simulated dataset consists of genotypes from 276 individuals across 26,527 genetic markers, providing a realistic scenario for testing the functionality.
 
 Let's see more details of this genotype dataset that we will call 'Study data'.
-
-``` r
+```{r load_GXwasR}
 library(GXwasR)
 DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 x <- PlinkSummary(DataDir, ResultDir, finput)
-#> ℹ Dataset: GXwasR_example
-#> ℹ Number of missing phenotypes: 0
-#> ℹ Number of males: 125
-#> ℹ Number of females: 151
-#> ℹ This is case-control data
-#> ℹ Number of cases: 108
-#> ℹ Number of controls: 168
-#> ℹ Number of cases in males: 53
-#> ℹ Number of controls in males: 72
-#> ℹ Number of cases in females: 55
-#> ℹ Number of controls in females: 96
-#> ℹ Number of chromosomes: 12
-#>   - Chr: 1
-#>   - Chr: 2
-#>   - Chr: 3
-#>   - Chr: 4
-#>   - Chr: 5
-#>   - Chr: 6
-#>   - Chr: 7
-#>   - Chr: 8
-#>   - Chr: 9
-#>   - Chr: 10
-#>   - Chr: 23
-#>   - Chr: 24
-#> ℹ Total number of SNPs: 26527
-#> ℹ Total number of samples: 276
 ```
 
 ## AncestryCheck Function Overview
@@ -190,8 +185,7 @@ These parameters and their default values allow for a significant degree of cust
 
 The function can be used in the following manner with our study data and reference data as HapMapIII:
 
-
-``` r
+```{r hapmap_ex}
 # Define parameters
 library(GXwasR)
 data("highLD_hg19", package = "GXwasR")
@@ -218,43 +212,13 @@ ancestry_results <- AncestryCheck(
     outlierOf = "EUR",
     outlier_threshold = 3
 )
-#> 4214 ambiguous SNPs removed from study data.
-#> 111854 ambiguous SNPs removed from reference data.
-#> ! LD pruning is recommended for reference dataset. Set referLD = TRUE.
-#> ✔ LD pruning was performed for study dataset.
-#> 
-#> ℹ Number of overlapping SNPs between study and reference data using rsID: 1096
-```
-
-![plot of chunk hapmap_ex](figure/hapmap_ex-1.png)
-
-```
-#> ℹ No allele flips between study and reference data.
-#> ℹ 9 samples are outliers of selected reference population.
-#> ℹ 179 samples are NOT outliers of selected reference population.
 
 Samples_with_predicted_ancestry <- ancestry_results[["Samples_with_predicted_ancestry"]]
 
 outlier <- ancestry_results[["Outlier_samples"]]
 outlier
-#>       FID     IID
-#> 1 EUR_FIN HG00189
-#> 2 EUR_FIN HG00280
-#> 3 EUR_FIN HG00315
-#> 4 EUR_FIN HG00332
-#> 5 EUR_FIN HG00349
-#> 6 EUR_FIN HG00350
-#> 7 EUR_FIN HG00377
-#> 8 EUR_FIN HG00383
-#> 9 EUR_TSI NA20537
 
 Samples_with_predicted_ancestry[seq_len(5), ]
-#>       FID     IID Predicted Ancestry
-#> 1 EUR_GBR HG00096                EUR
-#> 2 EUR_GBR HG00097                EUR
-#> 3 EUR_GBR HG00099                EUR
-#> 4 EUR_GBR HG00100                EUR
-#> 5 EUR_GBR HG00101                EUR
 ```
 
 The plot shows the distribution of individual genetic samples along the first two principal components (PC1 and PC2). Each point represents a genetic sample, and they are color-coded based on reference populations (`Ref_ASIAN`, `Ref_CEU`, and `Ref_YRI`) and study populations (`Study_EUR_FIN`, `Study_EUR_GBR`, and `Study_EUR_TSI`).
@@ -267,8 +231,7 @@ Since the study dataset was simulated from CEU 1000 Genome dataset, it is not su
 
 The function can be used in the following manner with our study data and reference data as ThousandGenome:
 
-
-``` r
+```{r thousandgenome_ex}
 # Define parameters
 data("highLD_hg19", package = "GXwasR")
 data("example_data_study_sample_ancestry", package = "GXwasR")
@@ -286,36 +249,14 @@ x <- AncestryCheck(
   outlier = TRUE, 
   outlier_threshold = 5
   )
-#> 4214 ambiguous SNPs removed from study data.
-#> No A-T or G-C SNPs found in reference data.
-#> ✔ LD pruning was performed for reference dataset.
-#> ✔ LD pruning was performed for study dataset.
-#> 
-#> ℹ Number of overlapping SNPs between study and reference data using rsID: 1005
-#> Warning: One or more parsing issues, call `problems()` on your data frame for details, e.g.:
-#>   dat <- vroom(...)
-#>   problems(dat)
 
 Samples_with_predicted_ancestry <- ancestry_results[["Samples_with_predicted_ancestry"]]
 
 outlier <- ancestry_results[["Outlier_samples"]]
 
 outlier
-#>       FID     IID
-#> 1 EUR_FIN HG00189
-#> 2 EUR_FIN HG00280
-#> 3 EUR_FIN HG00315
-#> 4 EUR_FIN HG00332
-#> 5 EUR_FIN HG00349
-#> 6 EUR_FIN HG00350
-#> 7 EUR_FIN HG00377
-#> 8 EUR_FIN HG00383
-#> 9 EUR_TSI NA20537
 
 Samples_with_predicted_ancestry[seq_len(1:5), ]
-#> Warning in seq_len(1:5): first element used of 'length.out' argument
-#>       FID     IID Predicted Ancestry
-#> 1 EUR_GBR HG00096                EUR
 ```
 
 The lack of outlier samples—those that would be significantly distanced from the reference group—suggests homogeneity in the ancestry of the study population. Given that our study data was simulated based on the EUR population from the 1000 Genomes project data, the absence of outliers aligns with expectations.
@@ -337,281 +278,46 @@ The combination of genotype datasets from study populations with comprehensive r
 
 ## Citing `GXwasR`
 
-We hope that *[GXwasR](https://bioconductor.org/packages/3.21/GXwasR)* will be useful for your research. Please use the following information to cite the package and the overall approach. Thank you!
+We hope that `r BiocStyle::Biocpkg("GXwasR")` will be useful for your research. Please use the following information to cite the package and the overall approach. Thank you!
 
-
-``` r
+```{r "citation"}
 ## Citation info
 citation("GXwasR")
-#> To cite package 'GXwasR' in publications use:
-#> 
-#>   Bose B, Blostein F, Kim J, Winters J, Actkins KV, Mayer D, Congivaram H, Niarchou M, Edwards DV, Davis LK, Stranger BE (2025). "GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic
-#>   Effects on Complex Traits." _medRxiv 2025.06.10.25329327_. doi:10.1101/2025.06.10.25329327 <https://doi.org/10.1101/2025.06.10.25329327>.
-#> 
-#> A BibTeX entry for LaTeX users is
-#> 
-#>   @Article{,
-#>     title = {GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic Effects on Complex Traits},
-#>     author = {Banabithi Bose and Freida Blostein and Jeewoo Kim and Jessica Winters and Ky’Era V. Actkins and David Mayer and Harrsha Congivaram and Maria Niarchou and Digna Velez Edwards and Lea K. Davis and Barbara E. Stranger},
-#>     journal = {medRxiv 2025.06.10.25329327},
-#>     year = {2025},
-#>     doi = {10.1101/2025.06.10.25329327},
-#>   }
 ```
 
 # Reproducibility
 
-The *[GXwasR](https://bioconductor.org/packages/3.21/GXwasR)* package (Bose, Blostein, Kim et al., 2025) was made possible thanks to:
+The `r BiocStyle::Biocpkg("GXwasR")` package `r Citep(bib[["GXwasR"]])` was made possible thanks to:
 
-* R (R Core Team, 2025)
-* *[BiocStyle](https://bioconductor.org/packages/3.21/BiocStyle)* (Oleś, 2025)
-* *[knitr](https://CRAN.R-project.org/package=knitr)* (Xie, 2025)
-* *[RefManageR](https://CRAN.R-project.org/package=RefManageR)* (McLean, 2017)
-* *[rmarkdown](https://CRAN.R-project.org/package=rmarkdown)* (Allaire, Xie, Dervieux et al., 2024)
-* *[sessioninfo](https://CRAN.R-project.org/package=sessioninfo)* (Wickham, Chang, Flight et al., 2025)
-* *[testthat](https://CRAN.R-project.org/package=testthat)* (Wickham, 2011)
+* R `r Citep(bib[["R"]])`
+* `r BiocStyle::Biocpkg("BiocStyle")` `r Citep(bib[["BiocStyle"]])`
+* `r BiocStyle::CRANpkg("knitr")` `r Citep(bib[["knitr"]])`
+* `r BiocStyle::CRANpkg("RefManageR")` `r Citep(bib[["RefManageR"]])`
+* `r BiocStyle::CRANpkg("rmarkdown")` `r Citep(bib[["rmarkdown"]])`
+* `r BiocStyle::CRANpkg("sessioninfo")` `r Citep(bib[["sessioninfo"]])`
+* `r BiocStyle::CRANpkg("testthat")` `r Citep(bib[["testthat"]])`
 
-This package was developed using *[biocthis](https://bioconductor.org/packages/3.21/biocthis)*.
+This package was developed using `r BiocStyle::Biocpkg("biocthis")`.
 
 `R` session information.
 
-
-```
-#> ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
-#>  setting  value
-#>  version  R version 4.5.1 (2025-06-13)
-#>  os       macOS Sequoia 15.5
-#>  system   aarch64, darwin24.4.0
-#>  ui       unknown
-#>  language (EN)
-#>  collate  en_US.UTF-8
-#>  ctype    en_US.UTF-8
-#>  tz       America/New_York
-#>  date     2025-07-31
-#>  pandoc   3.6.3 @ /Applications/Positron.app/Contents/Resources/app/quarto/bin/tools/aarch64/ (via rmarkdown)
-#>  quarto   1.7.32 @ /usr/local/bin/quarto
-#> 
-#> ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
-#>  ! package              * version   date (UTC) lib source
-#>    abind                  1.4-8     2024-09-12 [1] CRAN (R 4.5.0)
-#>    backports              1.5.0     2024-05-23 [1] CRAN (R 4.5.1)
-#>    bibtex                 0.5.1     2023-01-26 [1] CRAN (R 4.5.0)
-#>    bigassertr             0.1.7     2025-06-27 [1] CRAN (R 4.5.1)
-#>    bigparallelr           0.3.2     2021-10-02 [1] CRAN (R 4.5.0)
-#>    bigsnpr                1.12.18   2024-11-26 [1] CRAN (R 4.5.1)
-#>    bigsparser             0.7.3     2024-09-06 [1] CRAN (R 4.5.1)
-#>    bigstatsr              1.6.2     2025-07-29 [1] CRAN (R 4.5.1)
-#>    Biobase                2.68.0    2025-04-15 [1] Bioconduc~
-#>    BiocGenerics           0.54.0    2025-04-15 [1] Bioconduc~
-#>    BiocIO                 1.18.0    2025-04-15 [1] Bioconduc~
-#>    BiocManager            1.30.26   2025-06-05 [1] CRAN (R 4.5.0)
-#>    BiocParallel           1.42.1    2025-06-01 [1] Bioconductor 3.21 (R 4.5.0)
-#>    BiocStyle              2.36.0    2025-04-15 [1] Bioconduc~
-#>    Biostrings             2.76.0    2025-04-15 [1] Bioconduc~
-#>    bit                    4.6.0     2025-03-06 [1] CRAN (R 4.5.1)
-#>    bit64                  4.6.0-1   2025-01-16 [1] CRAN (R 4.5.1)
-#>    bitops                 1.0-9     2024-10-03 [1] CRAN (R 4.5.0)
-#>    brio                   1.1.5     2024-04-24 [1] CRAN (R 4.5.1)
-#>    broom                  1.0.9     2025-07-28 [1] CRAN (R 4.5.1)
-#>    BSgenome               1.76.0    2025-04-15 [1] Bioconduc~
-#>    cachem                 1.1.0     2024-05-16 [1] CRAN (R 4.5.0)
-#>    calibrate              1.7.7     2020-06-19 [1] CRAN (R 4.5.0)
-#>    car                    3.1-3     2024-09-27 [1] CRAN (R 4.5.0)
-#>    carData                3.0-5     2022-01-06 [1] CRAN (R 4.5.0)
-#>    cli                    3.6.5     2025-04-23 [1] CRAN (R 4.5.0)
-#>    codetools              0.2-20    2024-03-31 [3] CRAN (R 4.5.1)
-#>    commonmark             2.0.0     2025-07-07 [1] CRAN (R 4.5.1)
-#>    cowplot                1.2.0     2025-07-07 [1] CRAN (R 4.5.1)
-#>    crayon                 1.5.3     2024-06-20 [1] CRAN (R 4.5.0)
-#>    curl                   6.4.0     2025-06-22 [1] CRAN (R 4.5.1)
-#>    data.table             1.17.8    2025-07-10 [1] CRAN (R 4.5.1)
-#>    DelayedArray           0.34.1    2025-04-17 [1] Bioconduc~
-#>    desc                   1.4.3     2023-12-10 [1] CRAN (R 4.5.0)
-#>    devtools             * 2.4.5     2022-10-11 [2] CRAN (R 4.5.0)
-#>    digest                 0.6.37    2024-08-19 [1] CRAN (R 4.5.0)
-#>    doParallel             1.0.17    2022-02-07 [1] CRAN (R 4.5.0)
-#>    doRNG                  1.8.6.2   2025-04-02 [1] CRAN (R 4.5.0)
-#>    dplyr                  1.1.4     2023-11-17 [1] CRAN (R 4.5.0)
-#>    ellipsis               0.3.2     2021-04-29 [2] CRAN (R 4.5.0)
-#>    evaluate               1.0.4     2025-06-18 [1] CRAN (R 4.5.1)
-#>    farver                 2.1.2     2024-05-13 [1] CRAN (R 4.5.0)
-#>    fastmap                1.2.0     2024-05-15 [1] CRAN (R 4.5.0)
-#>    flock                  0.7       2016-11-12 [1] CRAN (R 4.5.1)
-#>    foreach                1.5.2     2022-02-02 [1] CRAN (R 4.5.0)
-#>    Formula                1.2-5     2023-02-24 [1] CRAN (R 4.5.0)
-#>    fs                     1.6.6     2025-04-12 [1] CRAN (R 4.5.0)
-#>    gdsfmt                 1.44.1    2025-07-09 [1] Bioconduc~
-#>    generics               0.1.4     2025-05-09 [1] CRAN (R 4.5.0)
-#>    GenomeInfoDb           1.44.1    2025-07-23 [1] Bioconduc~
-#>    GenomeInfoDbData       1.2.14    2025-04-21 [1] Bioconductor
-#>    GenomicAlignments      1.44.0    2025-04-15 [1] Bioconduc~
-#>    GenomicRanges          1.60.0    2025-04-15 [1] Bioconduc~
-#>    ggplot2                3.5.2     2025-04-09 [1] CRAN (R 4.5.0)
-#>    ggpubr                 0.6.1     2025-06-27 [1] CRAN (R 4.5.1)
-#>    ggrepel                0.9.6     2024-09-07 [1] CRAN (R 4.5.1)
-#>    ggsignif               0.6.4     2022-10-13 [1] CRAN (R 4.5.0)
-#>    glue                   1.8.0     2024-09-30 [1] CRAN (R 4.5.0)
-#>    gridExtra              2.3       2017-09-09 [1] CRAN (R 4.5.0)
-#>    gtable                 0.3.6     2024-10-25 [1] CRAN (R 4.5.0)
-#>  P GXwasR               * 0.99.0    2025-07-30 [?] Bioconductor
-#>    hms                    1.1.3     2023-03-21 [1] CRAN (R 4.5.0)
-#>    htmltools              0.5.8.1   2024-04-04 [1] CRAN (R 4.5.0)
-#>    htmlwidgets            1.6.4     2023-12-06 [1] CRAN (R 4.5.0)
-#>    httpuv                 1.6.16    2025-04-16 [1] CRAN (R 4.5.1)
-#>    httr                   1.4.7     2023-08-15 [1] CRAN (R 4.5.0)
-#>    IRanges                2.42.0    2025-04-15 [1] Bioconduc~
-#>    iterators              1.0.14    2022-02-05 [1] CRAN (R 4.5.0)
-#>    jsonlite               2.0.0     2025-03-27 [1] CRAN (R 4.5.0)
-#>    knitr                  1.50      2025-03-16 [1] CRAN (R 4.5.0)
-#>    labeling               0.4.3     2023-08-29 [1] CRAN (R 4.5.0)
-#>    later                  1.4.2     2025-04-08 [1] CRAN (R 4.5.1)
-#>    lattice                0.22-7    2025-04-02 [3] CRAN (R 4.5.1)
-#>    lifecycle              1.0.4     2023-11-07 [1] CRAN (R 4.5.0)
-#>    lubridate              1.9.4     2024-12-08 [1] CRAN (R 4.5.1)
-#>    magrittr               2.0.3     2022-03-30 [1] CRAN (R 4.5.0)
-#>    MASS                   7.3-65    2025-02-28 [3] CRAN (R 4.5.1)
-#>    mathjaxr               1.8-0     2025-04-30 [1] CRAN (R 4.5.1)
-#>    Matrix                 1.7-3     2025-03-11 [3] CRAN (R 4.5.1)
-#>    MatrixGenerics         1.20.0    2025-04-15 [1] Bioconduc~
-#>    matrixStats            1.5.0     2025-01-07 [1] CRAN (R 4.5.0)
-#>    memoise                2.0.1     2021-11-26 [1] CRAN (R 4.5.0)
-#>    mime                   0.13      2025-03-17 [1] CRAN (R 4.5.0)
-#>    miniUI                 0.1.2     2025-04-17 [2] CRAN (R 4.5.0)
-#>    pillar                 1.11.0    2025-07-04 [1] CRAN (R 4.5.1)
-#>    pkgbuild               1.4.8     2025-05-26 [1] CRAN (R 4.5.0)
-#>    pkgconfig              2.0.3     2019-09-22 [1] CRAN (R 4.5.0)
-#>    pkgload                1.4.0     2024-06-28 [1] CRAN (R 4.5.0)
-#>    plyr                   1.8.9     2023-10-02 [1] CRAN (R 4.5.1)
-#>    plyranges              1.28.0    2025-04-15 [1] Bioconduc~
-#>    poolr                  1.2-0     2025-05-07 [1] CRAN (R 4.5.0)
-#>    prettyunits            1.2.0     2023-09-24 [1] CRAN (R 4.5.0)
-#>    profvis                0.4.0     2024-09-20 [2] CRAN (R 4.5.0)
-#>    progress               1.2.3     2023-12-06 [1] CRAN (R 4.5.0)
-#>    promises               1.3.3     2025-05-29 [1] CRAN (R 4.5.0)
-#>    purrr                  1.1.0     2025-07-10 [1] CRAN (R 4.5.1)
-#>    qqman                  0.1.9     2023-08-23 [1] CRAN (R 4.5.0)
-#>    R6                     2.6.1     2025-02-15 [1] CRAN (R 4.5.0)
-#>    rbibutils              2.3       2024-10-04 [1] CRAN (R 4.5.1)
-#>    RColorBrewer           1.1-3     2022-04-03 [1] CRAN (R 4.5.0)
-#>    Rcpp                   1.1.0     2025-07-02 [1] CRAN (R 4.5.1)
-#>    RCurl                  1.98-1.17 2025-03-22 [1] CRAN (R 4.5.0)
-#>    Rdpack                 2.6.4     2025-04-09 [1] CRAN (R 4.5.0)
-#>    RefManageR           * 1.4.0     2022-09-30 [1] CRAN (R 4.5.1)
-#>    regioneR               1.40.1    2025-06-01 [1] Bioconductor 3.21 (R 4.5.0)
-#>    remotes                2.5.0     2024-03-17 [1] CRAN (R 4.5.0)
-#>    restfulr               0.0.16    2025-06-27 [1] CRAN (R 4.5.1)
-#>    rjson                  0.2.23    2024-09-16 [1] CRAN (R 4.5.0)
-#>    rlang                  1.1.6     2025-04-11 [1] CRAN (R 4.5.0)
-#>    rmarkdown              2.29      2024-11-04 [1] CRAN (R 4.5.0)
-#>    rmio                   0.4.0     2022-02-17 [1] CRAN (R 4.5.0)
-#>    rngtools               1.5.2     2021-09-20 [1] CRAN (R 4.5.0)
-#>    roxygen2               7.3.2     2024-06-28 [1] CRAN (R 4.5.0)
-#>    rprojroot              2.1.0     2025-07-12 [1] CRAN (R 4.5.1)
-#>    Rsamtools              2.24.0    2025-04-15 [1] Bioconduc~
-#>    rstatix                0.7.2     2023-02-01 [1] CRAN (R 4.5.0)
-#>    rstudioapi             0.17.1    2024-10-22 [1] CRAN (R 4.5.0)
-#>    rtracklayer            1.68.0    2025-04-15 [1] Bioconduc~
-#>    S4Arrays               1.8.1     2025-06-01 [1] Bioconductor 3.21 (R 4.5.0)
-#>    S4Vectors              0.46.0    2025-04-15 [1] Bioconduc~
-#>    scales                 1.4.0     2025-04-24 [1] CRAN (R 4.5.0)
-#>    sessioninfo          * 1.2.3     2025-02-05 [1] CRAN (R 4.5.1)
-#>    shiny                  1.11.0    2025-06-24 [1] CRAN (R 4.5.1)
-#>    SNPRelate              1.42.0    2025-04-15 [1] Bioconduc~
-#>    SparseArray            1.8.1     2025-07-23 [1] Bioconduc~
-#>    stringi                1.8.7     2025-03-27 [1] CRAN (R 4.5.0)
-#>    stringr                1.5.1     2023-11-14 [1] CRAN (R 4.5.0)
-#>    sumFREGAT              1.2.5     2022-06-07 [1] CRAN (R 4.5.1)
-#>    SummarizedExperiment   1.38.1    2025-04-30 [1] Bioconductor 3.21 (R 4.5.0)
-#>    sys                    3.4.3     2024-10-04 [1] CRAN (R 4.5.0)
-#>    testthat             * 3.2.3     2025-01-13 [1] CRAN (R 4.5.1)
-#>    tibble                 3.3.0     2025-06-08 [1] CRAN (R 4.5.0)
-#>    tidyr                  1.3.1     2024-01-24 [1] CRAN (R 4.5.1)
-#>    tidyselect             1.2.1     2024-03-11 [1] CRAN (R 4.5.0)
-#>    timechange             0.3.0     2024-01-18 [1] CRAN (R 4.5.1)
-#>    tzdb                   0.5.0     2025-03-15 [1] CRAN (R 4.5.1)
-#>    UCSC.utils             1.4.0     2025-04-15 [1] Bioconduc~
-#>    urlchecker             1.0.1     2021-11-30 [2] CRAN (R 4.5.0)
-#>    usethis              * 3.1.0     2024-11-26 [1] CRAN (R 4.5.0)
-#>    vctrs                  0.6.5     2023-12-01 [1] CRAN (R 4.5.0)
-#>    vroom                  1.6.5     2023-12-05 [1] CRAN (R 4.5.1)
-#>    withr                  3.0.2     2024-10-28 [1] CRAN (R 4.5.0)
-#>    xfun                   0.52      2025-04-02 [1] CRAN (R 4.5.0)
-#>    XML                    3.99-0.18 2025-01-01 [1] CRAN (R 4.5.0)
-#>    xml2                   1.3.8     2025-03-14 [1] CRAN (R 4.5.1)
-#>    xtable                 1.8-4     2019-04-21 [1] CRAN (R 4.5.0)
-#>    XVector                0.48.0    2025-04-15 [1] Bioconduc~
-#>    yaml                   2.3.10    2024-07-26 [1] CRAN (R 4.5.0)
-#> 
-#>  [1] /Users/mayerdav/Library/R/arm64/4.5/library
-#>  [2] /opt/homebrew/lib/R/4.5/site-library
-#>  [3] /opt/homebrew/Cellar/r/4.5.1/lib/R/library
-#> 
-#>  * ── Packages attached to the search path.
-#>  P ── Loaded and on-disk path mismatch.
-#> 
-#> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+```{r reproduce3, echo=FALSE}
+## Session info
+library("sessioninfo")
+options(width = 120)
+session_info()
 ```
 
 
 
 # Bibliography
 
-This vignette was generated using *[BiocStyle](https://bioconductor.org/packages/3.21/BiocStyle)* (Oleś, 2025)
-with *[knitr](https://CRAN.R-project.org/package=knitr)* (Xie, 2025) and *[rmarkdown](https://CRAN.R-project.org/package=rmarkdown)* (Allaire, Xie, Dervieux et al., 2024) running behind the scenes.
+This vignette was generated using `r BiocStyle::Biocpkg("BiocStyle")` `r Citep(bib[["BiocStyle"]])`
+with `r BiocStyle::CRANpkg("knitr")` `r Citep(bib[["knitr"]])` and `r BiocStyle::CRANpkg("rmarkdown")` `r Citep(bib[["rmarkdown"]])` running behind the scenes.
 
-Citations made with *[RefManageR](https://CRAN.R-project.org/package=RefManageR)* (McLean, 2017).
+Citations made with `r BiocStyle::CRANpkg("RefManageR")` `r Citep(bib[["RefManageR"]])`.
 
-<p><a id='bib-allaire2024rmarkdown'></a><a href="#cite-allaire2024rmarkdown">[1]</a><cite>
-J. Allaire, Y. Xie, C. Dervieux, et al.
-<em>rmarkdown: Dynamic Documents for R</em>.
-R package version 2.29.
-2024.
-URL: <a href="https://github.com/rstudio/rmarkdown">https://github.com/rstudio/rmarkdown</a>.</cite></p>
-
-<p><a id='bib-bose2025gxwasr'></a><a href="#cite-bose2025gxwasr">[2]</a><cite>
-B. Bose, F. Blostein, J. Kim, et al.
-&ldquo;GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic Effects on Complex Traits&rdquo;.
-In: <em>medRxiv 2025.06.10.25329327</em> (2025).
-DOI: <a href="https://doi.org/10.1101/2025.06.10.25329327">10.1101/2025.06.10.25329327</a>.</cite></p>
-
-<p><a id='bib-mclean2017refmanager'></a><a href="#cite-mclean2017refmanager">[3]</a><cite>
-M. W. McLean.
-&ldquo;RefManageR: Import and Manage BibTeX and BibLaTeX References in R&rdquo;.
-In: <em>The Journal of Open Source Software</em> (2017).
-DOI: <a href="https://doi.org/10.21105/joss.00338">10.21105/joss.00338</a>.</cite></p>
-
-<p><a id='bib-ole2025biocstyle'></a><a href="#cite-ole2025biocstyle">[4]</a><cite>
-A. Oleś.
-<em>BiocStyle: Standard styles for vignettes and other Bioconductor documents</em>.
-R package version 2.36.0.
-2025.
-DOI: <a href="https://doi.org/10.18129/B9.bioc.BiocStyle">10.18129/B9.bioc.BiocStyle</a>.
-URL: <a href="https://bioconductor.org/packages/BiocStyle">https://bioconductor.org/packages/BiocStyle</a>.</cite></p>
-
-<p><a id='bib-2025language'></a><a href="#cite-2025language">[5]</a><cite>
-R Core Team.
-<em>R: A Language and Environment for Statistical Computing</em>.
-R Foundation for Statistical Computing.
-Vienna, Austria, 2025.
-URL: <a href="https://www.R-project.org/">https://www.R-project.org/</a>.</cite></p>
-
-<p><a id='bib-wickham2011testthat'></a><a href="#cite-wickham2011testthat">[6]</a><cite>
-H. Wickham.
-&ldquo;testthat: Get Started with Testing&rdquo;.
-In: <em>The R Journal</em> 3 (2011), pp. 5&ndash;10.
-URL: <a href="https://journal.r-project.org/archive/2011-1/RJournal_2011-1_Wickham.pdf">https://journal.r-project.org/archive/2011-1/RJournal_2011-1_Wickham.pdf</a>.</cite></p>
-
-<p><a id='bib-wickham2025sessioninfo'></a><a href="#cite-wickham2025sessioninfo">[7]</a><cite>
-H. Wickham, W. Chang, R. Flight, et al.
-<em>sessioninfo: R Session Information</em>.
-R package version 1.2.3.
-2025.
-DOI: <a href="https://doi.org/10.32614/CRAN.package.sessioninfo">10.32614/CRAN.package.sessioninfo</a>.
-URL: <a href="https://CRAN.R-project.org/package=sessioninfo">https://CRAN.R-project.org/package=sessioninfo</a>.</cite></p>
-
-<p><a id='bib-xie2025knitr'></a><a href="#cite-xie2025knitr">[8]</a><cite>
-Y. Xie.
-<em>knitr: A General-Purpose Package for Dynamic Report Generation in R</em>.
-R package version 1.50.
-2025.
-URL: <a href="https://yihui.org/knitr/">https://yihui.org/knitr/</a>.</cite></p>
+```{r vignetteBiblio, results = "asis", echo = FALSE, warning = FALSE, message = FALSE}
+## Print bibliography
+RefManageR::PrintBibliography(bib, .opts = list(hyperlink = "to.doc", style = "html"))
+```
