@@ -309,18 +309,29 @@ thousandgenome_results <- AncestryCheck(
 #> ✔ LD pruning was performed for study dataset.
 #> 
 #> ℹ Number of overlapping SNPs between study and reference data using rsID: 1005
-#> Warning: One or more parsing issues, call `problems()` on your data frame for details, e.g.:
-#>   dat <- vroom(...)
-#>   problems(dat)
+```
+
+![plot of chunk thousandgenome_ex](figures/thousandgenome_ex-1.png)
+
+```
+#> ℹ No allele flips between study and reference data.
+#> ✖ There is no outlier sample.
+#> ✖ There are no non-outlier samples.
 
 Samples_with_predicted_ancestry <- thousandgenome_results[["Samples_with_predicted_ancestry"]]
 
 outlier <- thousandgenome_results[["Outlier_samples"]]
 outlier
-#> NULL
+#> [1] FID IID
+#> <0 rows> (or 0-length row.names)
 
 Samples_with_predicted_ancestry[seq_len(5), ]
-#> NULL
+#>       FID  IID Predicted Ancestry
+#> NA   <NA> <NA>               <NA>
+#> NA.1 <NA> <NA>               <NA>
+#> NA.2 <NA> <NA>               <NA>
+#> NA.3 <NA> <NA>               <NA>
+#> NA.4 <NA> <NA>               <NA>
 ```
 
 The lack of outlier samples—those that would be significantly distanced from the reference group—suggests homogeneity in the ancestry of the study population. Given that our study data was simulated based on the EUR population from the 1000 Genomes project data, the absence of outliers aligns with expectations.
