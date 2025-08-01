@@ -23,6 +23,7 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
+    fig.path = "vignettes/figures/",
     fig.width = 8, fig.height = 6,
     collapse = TRUE,
     comment = "#>",
@@ -48,14 +49,14 @@ bib <- c(
 )
 ```
 
-## Introduction
+# Introduction
 
 The pursuit of ancestral origins using genetic data has become increasingly accessible and sophisticated with the advent of genomics technology. Our R package GXwasR enables the identification of individuals of divergent ancestry through genotype datasets. This vignette provides an in-depth look at how GXwasR facilitates ancestry estimation, particularly focusing on its `AncestryCheck`() function.
 
-## Identifying Divergent Ancestry
+# Identifying Divergent Ancestry
 The core of ancestry estimation lies in combining the genotypes of a study population with those from a reference dataset, such as the HapMap or 1000 Genomes studies. This integration allows for the detection of population structure down to the level of the reference dataset, revealing continental-scale ancestry differences.
 
-## Accessing GXwasR and Simulated Genotype Datasets
+# Accessing GXwasR and Simulated Genotype Datasets
 GXwasR is readily available on Bioconductor and can be installed using BiocManager::install("GXwasR"). The package includes a simulated genotype dataset prefixed as **GXwasR_example** as plink bed files (i.e., .bed, .fam, and .bim), ideal for users to experiment with. This simulated dataset consists of genotypes from 276 individuals across 26,527 genetic markers, providing a realistic scenario for testing the functionality.
 
 Let's see more details of this genotype dataset that we will call 'Study data'.
@@ -67,32 +68,32 @@ finput <- "GXwasR_example"
 x <- PlinkSummary(DataDir, ResultDir, finput)
 ```
 
-## AncestryCheck Function Overview
+# AncestryCheck Function Overview
   
 `AncestryCheck` is a comprehensive R function designed for comprehensive ancestry analysis in genetic studies. By leveraging plink software via R platform,it seamlessly integrates several critical steps: SNP filtering for data integrity, linkage disequilibrium (LD) pruning to reduce data complexity, correction of chromosome mismatches, and checking for allele flips to ensure data accuracy. Additionally, it adeptly merges study and reference datasets, conducts Principal Component Analysis (PCA) to unravel population structures, and incorporates outlier detection and visualization. This function is pivotal in comparing study samples' self-reported ancestry against reference populations, enabling a detailed analysis of population structure and the identification of divergent ancestries.
   
-## Implemented workflow of ancestry estimation in AncestryCheck
+# Implemented workflow of ancestry estimation in AncestryCheck
 The `AncestryCheck`() function in the GXwasR package is a sophisticated tool designed for ancestry analysis in genetic studies. It provides a comprehensive approach, from data preparation to advanced statistical analysis, for estimating ancestral backgrounds. Let's delve into the technical aspects and workflow of this function:
 
-### Data Preparation:
-1. **Directories and initial quality check:** The '`AncestryCheck`' function requires specific directories for inputting PLINK binary files and for saving output files. At this stage, the input genotype dataset, i.e., the study dataset, should have already undergone thorough quality control. GXwasR offers a range of functions to facilitate this preliminary quality check (QC) of genotype datasets, essential for accurate ancestry estimation. This QC process typically includes filtering out multi-allelic variants, selecting SNPs based on genotype call rate, filtering for specific chromosomes, SNP filtering grounded in minor allele frequency, adherence to Hardy-Weinberg equilibrium, and sample selection based on criteria like call rate, low missing rate, and heterozygosity thresholds. It's important to apply these filters in the appropriate sequence for optimal dataset preparation. For a more detailed understanding of this QC pipeline, users can refer to the comprehensive guide available at ()[https://boseb.github.io/GXwasR/articles/preimputationQC.html]. ## use PRE
+## Data Preparation:
+1. **Directories and initial quality check:** The '`AncestryCheck`' function requires specific directories for inputting PLINK binary files and for saving output files. At this stage, the input genotype dataset, i.e., the study dataset, should have already undergone thorough quality control. GXwasR offers a range of functions to facilitate this preliminary quality check (QC) of genotype datasets, essential for accurate ancestry estimation. This QC process typically includes filtering out multi-allelic variants, selecting SNPs based on genotype call rate, filtering for specific chromosomes, SNP filtering grounded in minor allele frequency, adherence to Hardy-Weinberg equilibrium, and sample selection based on criteria like call rate, low missing rate, and heterozygosity thresholds. It's important to apply these filters in the appropriate sequence for optimal dataset preparation. For a more detailed understanding of this QC pipeline, users can refer to the comprehensive guide available at ()[https://boseb.github.io/GXwasR/articles/preimputationQC.html].
 
 2. **Genomic Build and X-Chromosome Compatibility:** Users of the `AncestryCheck` function must ensure that both their study and reference datasets are aligned on the same genomic build, with consistent chromosome coding across the entire genome. This alignment is crucial, particularly since sex chromosomes (X and Y) often have different encoding conventions in genomic datasets. The `AncestryCheck` function is equipped to implicitly handle variations in sex chromosome encoding. However, users are advised to employ tools like Liftover or CrossMap for verifying and aligning genomic builds and chromosome codes between their study and reference datasets, thus ensuring compatibility and accuracy in the ancestry estimation process.
 
 2. **Reference Dataset Selection:** The function offers users the flexibility to select from two established reference populations, such as, **HapMap phase III**[2] or the **1000 Genomes phase 3**[3] Projects. It is specifically designed to work seamlessly with the preprocessed genotype datasets of these reference panels. For users seeking to download and process these datasets, a comprehensive guidance was provided through a dedicated vignette. This detailed resource, which can be accessed at ()[https://boseb.github.io/Processing_1000Genome/tutorial.html], offers step-by-step instructions on how to effectively prepare these reference datasets for use in ancestry analysis, ensuring users can make the most out of their genetic studies with the selected reference populations.
 
-### SNP Filtering: 
+## SNP Filtering: 
 The function incorporates a crucial step of SNP filtering for both study and reference datasets. This filtering process is particularly focused on excluding SNPs that do not conform to A-T or G-C base pairings. By implementing this filtering, `AncestryCheck` ensures the overall quality and reliability of the genetic data from both study and reference datasets. This step is vital in maintaining the integrity of the analysis, as it helps in eliminating potentially problematic SNPs that could skew the ancestry estimation results.
 
-### LD Pruning: 
+## LD Pruning: 
 The function includes a critical step of LD-based filtering for both the study and reference datasets, which is essential in simplifying the genetic data by removing variants in high linkage disequilibrium. This process is especially significant for conducting accurate PCA on the study dataset SNPs. The default setting targets variants in LD with an `r2` value greater than 0.2 within a 50kb window. However, `AncestryCheck` offers users the flexibility to adjust these parameters according to their specific research needs. Users can choose whether or not to apply LD-based filtering and can modify parameters like the `r2` threshold and the `window size`. This adaptability ensures that the function can be tailored to a variety of study designs and research objectives, making it a versatile tool for ancestry analysis.
 
 The '`AncestryCheck` then utilizes the list of pruned variants from the study data to proportionately adjust the reference dataset, aligning it to the scale of the study data. This harmonization is crucial for accurate comparative analysis and ensures consistency in the ancestral estimation process.
 
-### Filter for known high-LD structure.
+## Filter for known high-LD structure.
 The '`AncestryCheck`' provides an additional layer of refinement by offering the option to filter out genomic ranges characterized by high-LD [4]. This feature is particularly beneficial for genomic builds hg19 and hg38, as it targets and removes regions within these builds that are known for their high-LD structures. These specific high-LD region files are already incorporated into the GXwasR package, readily accessible for use in `AncestryCheck`. This targeted filtering is crucial in further enhancing the quality and accuracy of the genetic data being analyzed, ensuring that the resulting ancestry estimation is as precise and reliable as possible.
 
-### Genotype Data Processing for Merge:
+## Genotype Data Processing for Merge:
 The function includes a meticulous process to prepare genotype data for merging, addressing key issues that could otherwise compromise the accuracy of the analysis:
 
 **Correcting Mismatches:** The function systematically corrects mismatches in chromosome IDs, positions, and allele annotations. This step is essential to ensure that the study and reference data align accurately, providing a reliable basis for subsequent analysis. By rectifying these discrepancies, `AncestryCheck` safeguards against potential errors that could arise from inconsistencies in the datasets.
@@ -105,14 +106,14 @@ The function includes a meticulous process to prepare genotype data for merging,
 
 Through these comprehensive steps, `AncestryCheck` ensures that the genotype datasets are optimally prepared for merging, laying a solid foundation for accurate and reliable ancestry estimation.
 
-### Principal Component Analysis (PCA):
+## Principal Component Analysis (PCA):
 **Merging Datasets:** After preprocessing, the study and reference datasets are merged.
 
 **Executing PCA:** PCA is then performed on the combined dataset, providing insights into the genetic variance and ancestral components. 
 
 By implementing PCA on the harmonized genetic data, `AncestryCheck` effectively translates the nuanced genetic variations into interpretable patterns, facilitating a deeper understanding of the ancestral backgrounds inherent in the study population. This step is fundamental in transforming raw genetic data into meaningful insights about human ancestry and genetic diversity.
 
-### Reference Populations:
+## Reference Populations:
 
 **HapMap:** 
 We combined and used HapMap data for the following populations:
@@ -130,19 +131,19 @@ SAS = BEB (Bengali in Bangladesh), GIH (Gujarati Indian in Houston,TX), ITU (Ind
 
 More information can be found here: http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/phase3/20131219.populations.tsv
 
-### Outlier Detection and Ancestry Assignment Analysis:
+## Outlier Detection and Ancestry Assignment Analysis:
 **Flexibility in Reference Population Selection:** A key feature of the function is its versatility in handling various reference populations. Users have the freedom to select a specific reference population against which the study samples' ancestry labels are compared. For instance, setting the parameter `outlierOf` to EUR (i.e., `Ref_EUR`) enables the identification of non-European outliers in a European context. Other reference populations like AFR (African), EAS (East Asian), and SAS (South Asian) can also be used, allowing for a wide range of comparative ancestral analyses. This flexibility ensures that `AncestryCheck` can cater to diverse research needs and objectives.
 
 **Setting Outlier/Prediction Thresholds:** The function allows users to define specific thresholds for outlier detection/ancestry assignement, adding a layer of customization to the analysis. It employs a methodical approach by calculating PC1 and PC2 Z-scores for each subject in relation to mean and standard deviation of PC1 and PC2 for each reference population. Samples with PC1 and PC2 Z-scores within the user-defined threshold are predicted as having the same ancestry as that reference population. For example, in the case of European reference samples, the function computes the mean and standard deviation of the first two principal components (`mean(PC1 of Ref_EUR)`, `sd(PC1 of Ref_EUR`), `mean(PC2 of Ref_EUR)`, `sd(PC2 of Ref_EUR)`). It then calculates Z-scores for PC1 and PC2 (`Z-score PC1 of Ref_EUR <- (PC1 - mean(PC1 of Ref_EUR))/sd(PC1 of Ref_EUR)`, `Z-score PC2 of Ref_EUR <- (PC2 - mean(PC2 of Ref_EUR))/sd(PC2 of Ref_EUR)` ) for the samples in relation to the European Reference. Any study sample whose PC1 and PC2 Z-score is considered an outlier of the European population. This approach is particularly effective in pinpointing samples with ancestral backgrounds that significantly deviate from the selected reference population, providing a clear and quantifiable method to identify and analyze outliers.
 
-### Visualization and Reporting:
+## Visualization and Reporting:
 **PCA Plot Visualization:** One of the most insightful aspects of `AncestryCheck` is its ability to visually present the results of the PCA. This is done through a color-coded scatter plot that displays the first two principal components. This graphical representation is instrumental in highlighting the genetic similarities and differences among the analyzed populations. By plotting individuals on this scatter plot, researchers can easily discern the underlying genetic structure and observe how study samples cluster with or diverge from various reference populations.
 
 **Resultant Dataframe:** Following the PCA and outlier analysis, `AncestryCheck` generates a dataframe that lists the identified outlier samples. This output is particularly useful for researchers, as it provides a clear and organized view of the samples that significantly differ genetically from the chosen reference population. This information is crucial for further detailed investigations and interpretations of genetic ancestry.
 
 **Comprehensive Reporting:** In addition to the visual and tabular outputs, the function also produces detailed reports covering various aspects of the analysis. These reports include information on allele flips and a thorough breakdown of the outlier analysis. Such comprehensive reporting enhances the overall understanding of the genetic structure and ancestry estimations, providing a multi-dimensional view of the results. This feature of `AncestryCheck` is particularly valuable for researchers who require in-depth documentation and interpretation of their genetic data. 
 
-## `AncestryCheck` parameters in brief
+# `AncestryCheck` parameters in brief
 The ``AncestryCheck`` function takes several arguments to customize its operations:
 
 - `DataDir`: Directory containing input PLINK files.
@@ -158,7 +159,7 @@ The ``AncestryCheck`` function takes several arguments to customize its operatio
 - `outlierOf`: Reference ancestry name for detecting outlier samples.
 - `outlier_threshold`: Numeric threshold for outlier detection.
 
-## Detailed parameter description
+# Detailed parameter description
 Before exploring the practical application of the `AncestryCheck` function, it is essential to understand the details of the above arguments and their implications:
 
 - `DataDir`: This parameter requires a character string specifying the file path for the input PLINK binary files. It is essential for indicating where the study's genetic data is stored.
@@ -181,7 +182,7 @@ Before exploring the practical application of the `AncestryCheck` function, it i
 These parameters and their default values allow for a significant degree of customization in the `AncestryCheck` function, enabling users to tailor the analysis to their specific research needs.
 
 
-## AncestryCheck Usage using HapMapIII Reference
+# AncestryCheck Usage using HapMapIII Reference
 
 The function can be used in the following manner with our study data and reference data as HapMapIII:
 
@@ -227,7 +228,7 @@ The points are spread across the PCA plot, with each cluster likely representing
 
 Since the study dataset was simulated from CEU 1000 Genome dataset, it is not surprising that we do see some outlier samples. Specifically, TSI population is not highly similar to CEU. 
 
-## AncestryCheck Using ThousandGenome Reference
+# AncestryCheck Using ThousandGenome Reference
 
 The function can be used in the following manner with our study data and reference data as ThousandGenome:
 
@@ -263,11 +264,11 @@ The lack of outlier samples—those that would be significantly distanced from t
 
 The precise clustering and absence of outliers not only reaffirm the simulation parameters but also shows the reliability of the ancestry estimation methods employed. Such accuracy is crucial in genetic studies, as it reinforces confidence in the PCA's ability to discern and delineate ancestry with precision.
 
-## Conclusion
+# Conclusion
 
 The combination of genotype datasets from study populations with comprehensive reference datasets, followed by PCA, provides a nuanced view of ancestry. The GXwasR package simplifies this process, offering researchers and enthusiasts a robust tool for ancestry estimation. This efficient approach not only enhances our understanding of genetic diversity but also strengthens our connection to our ancestral past.
 
-## References
+# References
 (1) Purcell et. al.,(2007). PLINK: A Tool Set for Whole-Genome Association and Population-Based Linkage Analyses. The American Journal of Human Genetics, 81(3), 559-575. https://doi.org/10.1086/519795.
 
 (2) The International HapMap 3 Consortium. Integrating common and rare genetic variation in diverse human populations. Nature 467, 52–58 (2010). https://doi.org/10.1038/nature09298
@@ -276,7 +277,7 @@ The combination of genotype datasets from study populations with comprehensive r
 
 (4) Anderson CA, Pettersson FH, Clarke GM, Cardon LR, Morris AP, Zondervan KT. Data quality control in genetic case-control association studies. Nat Protoc. 2010 Sep;5(9):1564-73. doi: 10.1038/nprot.2010.116. Epub 2010 Aug 26. PMID: 21085122; PMCID: PMC3025522.
 
-## Citing `GXwasR`
+# Citing `GXwasR`
 
 We hope that `r BiocStyle::Biocpkg("GXwasR")` will be useful for your research. Please use the following information to cite the package and the overall approach. Thank you!
 
@@ -310,7 +311,7 @@ session_info()
 
 
 
-# Bibliography
+## Bibliography
 
 This vignette was generated using `r BiocStyle::Biocpkg("BiocStyle")` `r Citep(bib[["BiocStyle"]])`
 with `r BiocStyle::CRANpkg("knitr")` `r Citep(bib[["knitr"]])` and `r BiocStyle::CRANpkg("rmarkdown")` `r Citep(bib[["rmarkdown"]])` running behind the scenes.
