@@ -77,7 +77,7 @@ These plink files contain genotypes for 276 individuals (males and females) simu
 
 - **Filter for Needed Chromosomes:** Focus is narrowed to autosomes and sex chromosomes, as these are typically the most relevant for genetic studies. This step streamlines the dataset to the chromosomes of interest.
 
-- **Second Round of SNP Filtering:** This more stringent phase includes filters for minor allele frequency (MAF) < 0.01, call rate < 0.02, case-control differential missingness, Hardy-Weinberg equilibrium (cases < e-10; conrtols < e-06), and the removal of monomorphic SNPs. This rigorous filtering ensures that only the most reliable SNPs are retained for analysis.
+- **Second Round of SNP Filtering:** This more stringent phase includes filters for minor allele frequency (MAF) < 0.01, call rate < 0.02, case-control differential missingness, Hardy-Weinberg equilibrium (cases < e-10; controls < e-06), and the removal of monomorphic SNPs. This rigorous filtering ensures that only the most reliable SNPs are retained for analysis.
 
 - **Second Round of Sample Filtering:** Here, we apply stringent thresholds for call rate (< 0.02), heterozygosity, and relatedness (IBD F-stat < 0.2). This step further refines the sample pool, ensuring that only high-quality samples are included.
 
@@ -389,5 +389,5 @@ Citations made with `r BiocStyle::CRANpkg("RefManageR")` `r Citep(bib[["RefManag
 
 ```{r vignetteBiblio, results = "asis", echo = FALSE, warning = FALSE, message = FALSE}
 ## Print bibliography
-PrintBibliography(bib, .opts = list(hyperlink = "to.doc", style = "html"))
+RefManageR::PrintBibliography(bib, .opts = list(hyperlink = "to.doc", style = "html"))
 ```
