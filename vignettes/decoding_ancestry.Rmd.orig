@@ -8,7 +8,7 @@ author:
     email: banabithi.bose@gmail.com
 output: 
   BiocStyle::html_document:
-    self_contained: yes
+    self_contained: false
     toc: true
     toc_float: true
     toc_depth: 2
@@ -23,7 +23,7 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-    fig.path = "figures/",
+    fig.path = "./",
     fig.width = 8, fig.height = 6,
     collapse = TRUE,
     comment = "#>",
@@ -62,7 +62,7 @@ GXwasR is readily available on Bioconductor and can be installed using BiocManag
 Let's see more details of this genotype dataset that we will call 'Study data'.
 ```{r load_GXwasR}
 library(GXwasR)
-DataDir <- system.file("extdata", package = "GXwasR")
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 x <- PlinkSummary(DataDir, ResultDir, finput)
@@ -194,7 +194,7 @@ data("example_data_study_sample_ancestry", package = "GXwasR")
 
 # Call the AncestryCheck function
 hapmap_results <- AncestryCheck(
-    DataDir = system.file("extdata", package = "GXwasR"),
+    DataDir = GXwasR:::GXwasR_data(),
     ResultDir = tempdir(),
     finput = "GXwasR_example",
     reference = "HapMapIII_NCBI36",
@@ -238,7 +238,7 @@ data("highLD_hg19", package = "GXwasR")
 data("example_data_study_sample_ancestry", package = "GXwasR")
 
 thousandgenome_results <- AncestryCheck(
-  DataDir = system.file("extdata", package = "GXwasR"), 
+  DataDir = GXwasR:::GXwasR_data(), 
   ResultDir = tempdir(), 
   finput = "GXwasR_example", 
   reference = "ThousandGenome", 

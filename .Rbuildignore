@@ -18,3 +18,5 @@
 ^LICENSE\.md$
 ^doc$
 ^Meta$
+^vignettes/decoding_ancestry\.Rmd\.orig$
+^vignettes/preimputationQC\.Rmd\.orig$

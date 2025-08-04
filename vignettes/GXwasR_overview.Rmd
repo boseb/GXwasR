@@ -8,7 +8,7 @@ author:
     email: banabithi.bose@gmail.com
 output: 
   BiocStyle::html_document:
-    self_contained: true
+    self_contained: false
     toc: true
     toc_float: true
     toc_depth: 2
