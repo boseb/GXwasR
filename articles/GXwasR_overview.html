@@ -70,7 +70,7 @@ Bose</h4>
 Campus<br><a class="author_email" href="mailto:#"></a><a href="mailto:banabithi.bose@gmail.com" class="email">banabithi.bose@gmail.com</a>
       </address>
                   
-            <h4 data-toc-skip class="date">1 August 2025</h4>
+            <h4 data-toc-skip class="date">4 August 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/main/vignettes/GXwasR_overview.Rmd" class="external-link"><code>vignettes/GXwasR_overview.Rmd</code></a></small>
       <div class="d-none name"><code>GXwasR_overview.Rmd</code></div>
@@ -605,7 +605,7 @@ in cases vs controls, respectively. Output plink binary files in the working dir
 
 <h4>Examples</h4>
 
-<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
+<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"Test_output"</span></span>
@@ -802,7 +802,7 @@ autosomal genotype observations and, Method-of-moments F coefficient estimate, r
 
 <h4>Examples</h4>
 
-<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
+<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"Test_output"</span></span>
@@ -1029,7 +1029,7 @@ outside this distance will be considered as outlier. The default is 3.</p>
 
 <pre><code class="language-R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"highLD_hg19"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_data_study_sample_ancestry"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
+<span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
 <span><span class="va">reference</span> <span class="op">&lt;-</span> <span class="st">"HapMapIII_NCBI36"</span></span>
@@ -1218,7 +1218,7 @@ to use <code>compute_freq</code> = <code>TRUE</code> for computing MAF from an i
 
 <h4>Examples</h4>
 
-<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
+<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
 <span><span class="va">LD</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
@@ -1321,7 +1321,7 @@ produced inside <code>DataDir</code>.
 
 <h4>Examples</h4>
 
-<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
+<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"Test_output"</span></span>
@@ -1418,7 +1418,7 @@ files will be produced inside <code>DataDir</code>.
 
 <h4>Examples</h4>
 
-<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
+<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"Test_output"</span></span>
@@ -1577,7 +1577,7 @@ filtering and other one will have the discarded SNPs.
 
 <h4>Examples</h4>
 
-<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
+<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_QC1"</span></span>
@@ -1919,7 +1919,7 @@ Princeton University Press, Princeton, NJ.<br><br> Su Y, Hu J, Yin P, Jiang H, C
 <h4>Examples</h4>
 
 <pre><code class="language-R"><span></span>
-<span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
+<span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
 <span><span class="va">standard_beta</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
@@ -2836,7 +2836,7 @@ functions. For “PCA”, there will be the “ncomponents” (the number of the
 
 <pre><code class="language-R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"CI"</span><span class="op">)</span> <span class="op">==</span> <span class="st">"true"</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.info.html" class="external-link">Sys.info</a></span><span class="op">(</span><span class="op">)</span><span class="op">[[</span><span class="st">"sysname"</span><span class="op">]</span><span class="op">]</span> <span class="op">==</span> <span class="st">"Darwin"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"XWAS_Summary_Example"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span>    <span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
+<span>    <span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>    <span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>    <span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
 <span>    <span class="va">sumstat</span> <span class="op">&lt;-</span> <span class="va">XWAS_Summary_Example</span></span>
@@ -3129,7 +3129,7 @@ For case-control data, it shows PRS distribution among cases and controls and RO
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Example_covarfile"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Example_pthresoldfile"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"highLD_hg19"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
+<span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
 <span><span class="va">summarystat</span> <span class="op">&lt;-</span> <span class="va">Summary_Stat_Ex1</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">12</span><span class="op">)</span><span class="op">]</span></span>
@@ -3548,7 +3548,7 @@ If <code>byCHR</code> is <code>FALSE</code>, then the first five columns will no
 
 <pre><code class="language-R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Summary_Stat_Ex1"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"highLD_hg19"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
+<span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">precomputedLD</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
@@ -3752,7 +3752,7 @@ needs to be in the <code>DataDir</code>. The default is <code>NULL</code>.</p>
 
 <h4>Examples</h4>
 
-<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
+<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"casesPlink"</span></span>
@@ -3899,7 +3899,7 @@ FID (i.e., Family ID). The other columns are PCs.
 <h4>Examples</h4>
 
 <pre><code class="language-R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"highLD_hg19"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
+<span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
 <span><span class="va">highLD_regions</span> <span class="op">&lt;-</span> <span class="va">highLD_hg19</span></span>
@@ -4076,7 +4076,7 @@ association test of the SNP), and "CHR" (the chromosome on which the SNP is loca
 
 <pre><code class="language-R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Summary_Stat_Ex1"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Summary_Stat_Ex2"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
+<span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
 <span><span class="va">SNPdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">Summary_Stat_Ex1</span>, <span class="va">Summary_Stat_Ex2</span><span class="op">)</span></span>
@@ -4184,7 +4184,7 @@ association test of the SNP), and "CHR" (the chromosome on which the SNP is loca
 
 <h4>Examples</h4>
 
-<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
+<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"Test_output"</span></span>
@@ -4306,7 +4306,7 @@ The default is <code>NULL</code>.</p>
 
 <pre><code class="language-R"><span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span> <span class="co"># Plink file</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example1"</span></span>
-<span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
+<span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">PtoV</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
 <span><span class="va">VtoP</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
@@ -4403,7 +4403,7 @@ The default is <code>NULL</code>.</p>
 
 <h4>Examples</h4>
 
-<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
+<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">finput1</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
 <span><span class="va">finput2</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example_imputed"</span></span>
@@ -4479,7 +4479,7 @@ this file will be produced after filtering out these variants.</p>
 
 <h4>Examples</h4>
 
-<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
+<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"Filter_Test"</span></span>
@@ -4541,7 +4541,7 @@ this file will be produced after filtering out these variants.</p>
 
 <h4>Examples</h4>
 
-<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
+<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
 <span></span>
@@ -4624,7 +4624,7 @@ The default is "FALSE".</p>
 <h4>Examples</h4>
 
 <pre><code class="language-R"><span></span>
-<span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
+<span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">SNPvec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rs6529954"</span>, <span class="st">"rs12858640"</span>, <span class="st">"rs5962098"</span><span class="op">)</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
@@ -4712,7 +4712,7 @@ Sample ID) and rest of the columns are covariates.</p>
 
 <h4>Examples</h4>
 
-<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
+<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">bfile</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
 <span><span class="va">incovar</span> <span class="op">&lt;-</span> <span class="st">"covarfile_w_pc_age.txt"</span></span>
@@ -5097,7 +5097,7 @@ linkage disequilibrium with each other within specified windows.
 
 <h4>Examples</h4>
 
-<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
+<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
 <span><span class="va">prunedSNPs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/LDPrune.html">LDPrune</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">finput</span>, <span class="va">ResultDir</span>, <span class="fl">50</span>, <span class="fl">5</span>, <span class="fl">0.2</span><span class="op">)</span></span></code></pre>
@@ -5159,7 +5159,7 @@ runs the PLINK command, and returns the MAF results as a DataFrame. Intermediate
 
 <h4>Examples</h4>
 
-<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
+<pre><code class="language-R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
 <span><span class="va">maf_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/executePlinkMAF.html">executePlinkMAF</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span><span class="op">)</span></span></code></pre>
@@ -5240,7 +5240,7 @@ SNPs or within specific chromosomes.
 <h4>Examples</h4>
 
 <pre><code class="language-R"><span><span class="va">snpld</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputeLD.html">ComputeLD</a></span><span class="op">(</span></span>
-<span>    DataDir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span>, ResultDir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    DataDir <span class="op">=</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span>, ResultDir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    finput <span class="op">=</span> <span class="st">"GXwasR_example"</span>, ByCHR <span class="op">=</span> <span class="cn">TRUE</span>, CHRnum <span class="op">=</span> <span class="fl">1</span>, r2_LD <span class="op">=</span> <span class="fl">0.2</span></span>
 <span><span class="op">)</span></span></code></pre>
 
@@ -5333,7 +5333,7 @@ Cheng, Chang, and Iannone, 2024)</li>
 <span><span class="co">#&gt;  collate  C.UTF-8</span></span>
 <span><span class="co">#&gt;  ctype    C.UTF-8</span></span>
 <span><span class="co">#&gt;  tz       UTC</span></span>
-<span><span class="co">#&gt;  date     2025-08-01</span></span>
+<span><span class="co">#&gt;  date     2025-08-04</span></span>
 <span><span class="co">#&gt;  pandoc   3.1.11 @ /opt/hostedtoolcache/pandoc/3.1.11/x64/ (via rmarkdown)</span></span>
 <span><span class="co">#&gt;  quarto   NA</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -5397,7 +5397,7 @@ Cheng, Chang, and Iannone, 2024)</li>
 <span><span class="co">#&gt;  glue                   1.8.0     <span style="color: #555555;">2024-09-30</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
 <span><span class="co">#&gt;  gridExtra              2.3       <span style="color: #555555;">2017-09-09</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
 <span><span class="co">#&gt;  gtable                 0.3.6     <span style="color: #555555;">2024-10-25</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
-<span><span class="co">#&gt;  GXwasR               * 0.99.0    <span style="color: #555555;">2025-08-01</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">local</span></span></span>
+<span><span class="co">#&gt;  GXwasR               * 0.99.0    <span style="color: #555555;">2025-08-04</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">local</span></span></span>
 <span><span class="co">#&gt;  hms                    1.1.3     <span style="color: #555555;">2023-03-21</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
 <span><span class="co">#&gt;  htmltools              0.5.8.1   <span style="color: #555555;">2024-04-04</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
 <span><span class="co">#&gt;  httr                   1.4.7     <span style="color: #555555;">2023-08-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
@@ -5427,6 +5427,9 @@ Cheng, Chang, and Iannone, 2024)</li>
 <span><span class="co">#&gt;  progress               1.2.3     <span style="color: #555555;">2023-12-06</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
 <span><span class="co">#&gt;  purrr                  1.1.0     <span style="color: #555555;">2025-07-10</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
 <span><span class="co">#&gt;  qqman                  0.1.9     <span style="color: #555555;">2023-08-23</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  R.methodsS3            1.8.2     <span style="color: #555555;">2022-06-13</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  R.oo                   1.27.1    <span style="color: #555555;">2025-05-02</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
+<span><span class="co">#&gt;  R.utils                2.13.0    <span style="color: #555555;">2025-02-24</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
 <span><span class="co">#&gt;  R6                     2.6.1     <span style="color: #555555;">2025-02-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
 <span><span class="co">#&gt;  ragg                   1.4.0     <span style="color: #555555;">2025-04-10</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
 <span><span class="co">#&gt;  rbibutils              2.3       <span style="color: #555555;">2024-10-04</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM</span></span></span>
