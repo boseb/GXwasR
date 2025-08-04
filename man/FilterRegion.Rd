@@ -71,7 +71,7 @@ user-defined regions from input plink files. Only one type of filtering can be d
 \code{filterXTR} and \code{filterAmpliconic.}
 }
 \examples{
-DataDir <- GXwasR:::example_data()
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 foutput <- "PostimputeEX_QC1"

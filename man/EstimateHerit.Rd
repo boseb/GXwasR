@@ -173,7 +173,7 @@ Prior to using this function, it is recommended to apply QCsnp and QCsample to e
 \examples{
 data("Summary_Stat_Ex1", package = "GXwasR")
 data("highLD_hg19", package = "GXwasR")
-DataDir <- GXwasR:::example_data()
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 precomputedLD <- NULL
 finput <- "GXwasR_example"

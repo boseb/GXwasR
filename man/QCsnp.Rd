@@ -94,7 +94,7 @@ like minor allele frequency, Hardy-Weinberg equilibrium, call rate, and differen
 It also handles monomorphic SNPs and applies linkage disequilibrium-based filtering if specified.
 }
 \examples{
-DataDir <- GXwasR:::example_data()
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 foutput <- "Test_output"

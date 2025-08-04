@@ -178,7 +178,7 @@ For details about the different XWAS model, please follow the associated publica
 }
 \examples{
 
-DataDir <- GXwasR:::example_data()
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 standard_beta <- TRUE
