@@ -8,7 +8,7 @@ author:
     email: banabithi.bose@gmail.com
 output: 
   BiocStyle::html_document:
-    self_contained: true
+    self_contained: false
     toc: true
     toc_float: true
     toc_depth: 2
@@ -23,7 +23,7 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-    fig.path = "figures/",
+    fig.path = "./",
     fig.width = 8, fig.height = 6,
     collapse = TRUE,
     comment = "#>",
@@ -109,7 +109,7 @@ browseVignettes("GXwasR")
 **Dataset: GXwasR_example**
 
 ```{r}
-DataDir <- system.file("extdata", package = "GXwasR")
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 x <- PlinkSummary(DataDir, ResultDir, finput)
