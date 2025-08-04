@@ -185,6 +185,7 @@ SKAT
 SKATO
 SNPSEX
 SNPdata
+SNPsPlot
 SNP’
 SexCheck
 SexDiff
@@ -200,6 +201,7 @@ TestXGene
 ThousandGenome
 Toscani
 UCSC
+UniqueLoci
 Uper
 Ushey
 VCF
