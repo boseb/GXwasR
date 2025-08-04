@@ -1,5 +1,5 @@
 ---
-title: "computing polygenic risk score using GXwasR"
+title: "Computing Polygenic Risk Score using GXwasR"
 author: 
   - name: "Banabithi Bose"
     affiliation:
