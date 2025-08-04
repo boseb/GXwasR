@@ -122,7 +122,7 @@ For more information about the algorithms, please see the associated paper.
 \examples{
 data("Summary_Stat_Ex1", package = "GXwasR")
 data("Summary_Stat_Ex2", package = "GXwasR")
-DataDir <- system.file("extdata", package = "GXwasR")
+DataDir <- GXwasR:::example_data()
 ResultDir <- tempdir()
 SummData <- list(Summary_Stat_Ex1, Summary_Stat_Ex2)
 SNPfile <- "UniqueLoci"

@@ -69,7 +69,7 @@ then examine the distribution of the F estimates (there should be a clear gap be
 females everywhere else). Then, rerun the function with the parameters that correspond to this gap.
 }
 \examples{
-DataDir <- system.file("extdata", package = "GXwasR")
+DataDir <- GXwasR:::example_data()
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 LD <- TRUE
