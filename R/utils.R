@@ -81,3 +81,46 @@ log_output <- function(..., output.file, sep = "\n", timestamp = TRUE) {
     }
     invisible(NULL)
 }
+
+#' Extract and decompress example data files
+#'
+#' Creates a temporary subdirectory, decompresses any .bz2 files from the
+#' package's extdata folder, and returns the path to the extracted data.
+#'
+#' @importFrom R.utils bunzip2
+#' @return Path to the temp directory containing extracted files
+example_data <- function() {
+  # Ensure R.utils is available
+  if (!requireNamespace("R.utils", quietly = TRUE)) {
+    stop("The 'R.utils' package is required. Please install it with install.packages('R.utils').")
+  }
+
+  # 1. Locate extdata
+  data_dir <- system.file("extdata", package = "GXwasR")
+  if (!nzchar(data_dir)) {
+    stop("Could not find 'extdata' in the installed GXwasR package.")
+  }
+
+  # 2. Create a unique temp subdirectory (cross-session-safe)
+  out_dir <- file.path(tempdir(), paste0("GXwasR_data_", basename(tempfile())))
+  dir.create(out_dir, recursive = TRUE)
+
+  # 3. List and process files
+  files <- list.files(data_dir, full.names = TRUE)
+
+  for (f in files) {
+    fname <- basename(f)
+
+    if (grepl("\\.bz2$", fname)) {
+      # Decompress .bz2 into the new temp directory
+      dest_file <- file.path(out_dir, sub("\\.bz2$", "", fname))
+      R.utils::bunzip2(f, destname = dest_file, overwrite = TRUE, remove = FALSE)
+    } else {
+      # Copy all other files as-is
+      file.copy(f, file.path(out_dir, fname), overwrite = TRUE)
+    }
+  }
+
+  # 4. Return the path
+  return(out_dir)
+}
