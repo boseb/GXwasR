@@ -155,15 +155,15 @@ hweControl <- 1e-06
 monomorphicSNPs <- FALSE
 caldiffmiss <- FALSE
 ld_prunning <- FALSE
-x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput,foutput = foutput, geno = geno, maf = maf,hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss)
+x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss)
 ```
  
 
 Copying the plink files from ResultDir to DataDir.
 
 ```{r}
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PostimputeEX_QC1")
-file.copy(paste0(ResultDir,"/",ftemp),DataDir)
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_QC1")
+file.copy(paste0(ResultDir, "/", ftemp), DataDir)
 ```
 
 # Step 3: Flag PAR, XTR and Ampliconic Regions
@@ -174,14 +174,14 @@ Now, we will filter Pseudo-Autosomal Region (PAR), X-transposed region (XTR) and
 finput <- "PostimputeEX_QC1"
 x <- PlinkSummary(DataDir, ResultDir, finput)
 foutput <- "PostimputeEX_QC2_Dummy"
-x <- FilterRegion(DataDir = DataDir,ResultDir = ResultDir,finput = finput,foutput = foutput,CHRX = TRUE,CHRY = FALSE, filterPAR = TRUE,filterXTR = TRUE,filterAmpliconic = TRUE,regionfile = FALSE,filterCHR = NULL, Hg = "38",exclude = FALSE)
+x <- FilterRegion(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, CHRX = TRUE, CHRY = FALSE, filterPAR = TRUE, filterXTR = TRUE, filterAmpliconic = TRUE, regionfile = FALSE, filterCHR = NULL, Hg = "38", exclude = FALSE)
 
 XTR_SNPs <- x$XTR
 Ampli_SNPs <- x$Ampliconic
 PAR_SNPs <- x$PAR
-save(XTR_SNPs, file = paste0(ResultDir,"/Postimpute_XTR_SNPs.Rda"))
-save(Ampli_SNPs, file = paste0(ResultDir,"/Postimpute_Ampli_SNPs.Rda"))
-save(PAR_SNPs, file = paste0(ResultDir,"/Postimpute_PAR_SNPs.Rda"))
+save(XTR_SNPs, file = paste0(ResultDir, "/Postimpute_XTR_SNPs.Rda"))
+save(Ampli_SNPs, file = paste0(ResultDir, "/Postimpute_Ampli_SNPs.Rda"))
+save(PAR_SNPs, file = paste0(ResultDir, "/Postimpute_PAR_SNPs.Rda"))
 ```
 
 ```{r}
@@ -190,10 +190,10 @@ save(PAR_SNPs, file = paste0(ResultDir,"/Postimpute_PAR_SNPs.Rda"))
 PAR_SNPs <- x$PAR ## No PAR SNP
 # SNPs in XTR
 XTR_SNPs <- x$XTR ## 42 SNPs
-knitr::kable(XTR_SNPs, caption = 'SNPs in XTR.')
+knitr::kable(XTR_SNPs, caption = "SNPs in XTR.")
 # SNPs in Ampliconic region
 Ampliconic_SNPs <- x$Ampliconic # 7 SNPs
-knitr::kable(Ampliconic_SNPs, caption = 'SNPs in Ampliconic region.')
+knitr::kable(Ampliconic_SNPs, caption = "SNPs in Ampliconic region.")
 ```
 
 **Note: We will not perform step 4, since we do not have any PAR regions. The steps are provided for the users in the case if they have PAR regions in their dataset.**
@@ -204,7 +204,7 @@ knitr::kable(Ampliconic_SNPs, caption = 'SNPs in Ampliconic region.')
 finput <- "PostimputeEX_QC1"
 x <- PlinkSummary(DataDir, ResultDir, finput)
 foutput <- "PostimputeEX_QC2"
-x <- FilterRegion(DataDir = DataDir,ResultDir = ResultDir,finput = finput,foutput = foutput,CHRX = TRUE,CHRY = FALSE, filterPAR = TRUE,filterXTR = FALSE,filterAmpliconic = FALSE,regionfile = FALSE,filterCHR = NULL, Hg = "38",exclude = TRUE)
+x <- FilterRegion(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, CHRX = TRUE, CHRY = FALSE, filterPAR = TRUE, filterXTR = FALSE, filterAmpliconic = FALSE, regionfile = FALSE, filterCHR = NULL, Hg = "38", exclude = TRUE)
 ```
 
 Now, users need to move the QC-ed files (i.e., "PostimputeEX_QC2" and “PostimputeEX_QC2_snps_extracted”) to DataDir to be used as input datasets for the next step of the pipeline.
@@ -212,8 +212,8 @@ Now, users need to move the QC-ed files (i.e., "PostimputeEX_QC2" and “Postimp
 Copying the plink files from ResultDir to DataDir.
 
 ```{r}
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PostimputeEX_QC2")
-file.copy(paste0(ResultDir,"/",ftemp),DataDir)
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_QC2")
+file.copy(paste0(ResultDir, "/", ftemp), DataDir)
 ```
 
 # Step 5: Preparing autosomal and X-chromosomal plink binary files
@@ -224,15 +224,15 @@ Now, we will prepare two sets of plink binary files from “PostimputeEX_QC1” 
 finput <- "PostimputeEX_QC1"
 foutput <- "PostimputeEX_QC3"
 
-y <- FilterRegion(DataDir = DataDir,ResultDir = ResultDir,finput = finput,foutput = foutput,CHRX = FALSE,CHRY = FALSE, filterPAR = FALSE,filterXTR = FALSE,filterAmpliconic = FALSE,regionfile = FALSE,filterCHR = 23, Hg = "38",exclude = TRUE)
+y <- FilterRegion(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, CHRX = FALSE, CHRY = FALSE, filterPAR = FALSE, filterXTR = FALSE, filterAmpliconic = FALSE, regionfile = FALSE, filterCHR = 23, Hg = "38", exclude = TRUE)
 ```
 
 “PostimputeEX_QC3_snps_extracted” contains X-chromosome, while “PostimputeEX_QC3” contains autosomal SNPs.
 
 ```{r}
-#Now, copying these files to DataDir.
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PostimputeEX_QC3")
-invisible(file.copy(paste0(ResultDir,"/",ftemp),DataDir))
+# Now, copying these files to DataDir.
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_QC3")
+invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
 ```
 
 **Note: We will not perform step 6, since we do not have any PAR regions. The steps are provided for the users in the case if they have PAR regions in their dataset.**
@@ -247,8 +247,8 @@ finput2 <- "PostimputeEX_QC2_snps_extracted"
 foutput <- "PostimputeEX_QC3_autopar"
 y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput, use_common_snps = FALSE)
 ## Copying the files to DataDir
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PostimputeEX_QC3_autopar")
-invisible(file.copy(paste0(ResultDir,"/",ftemp),DataDir))
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_QC3_autopar")
+invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
 ```
 
 With “PostimputeEX_QC3”, we will flag the SNPs in the controls with a sex difference in MAF, since the differences may be due to technical confounding or sampling biases for the study cohorts.
@@ -258,7 +258,7 @@ With “PostimputeEX_QC3”, we will flag the SNPs in the controls with a sex di
 ```{r}
 finput <- "PostimputeEX_QC3"
 foutput <- "Test_output"
-x <- MAFdiffSexControl(DataDir, ResultDir, finput,foutput, filterSNP = FALSE)
+x <- MAFdiffSexControl(DataDir, ResultDir, finput, foutput, filterSNP = FALSE)
 ```
 
 Since no SNP is having MAF difference in sexes in controls, we will proceed to the next steps of the pipeline.
@@ -269,27 +269,27 @@ Since no SNP is having MAF difference in sexes in controls, we will proceed to t
 finput <- "PostimputeEX_QC3"
 foutput <- "PostimputeEX_QC4_Female"
 sex <- "females"
-x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput,sex = sex, xplink = FALSE, autoplink = FALSE)
+x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, sex = sex, xplink = FALSE, autoplink = FALSE)
 # Making male plink files
 foutput <- "PostimputeEX_QC4_Male"
 sex <- "males"
-x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput,sex = sex, xplink = FALSE, autoplink = FALSE)
+x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, sex = sex, xplink = FALSE, autoplink = FALSE)
 ```
 
 Removing the previous QC-ed file from DataDir and copying the new QC-ed file to DataDir.
 
 ```{r}
 ## Removing the previous QC-ed file from DataDir and copying the new QC-ed file to DataDir.
-ftemp <- list.files(paste0(DataDir,"/"),pattern = "PostimputeEX_QC1")
-invisible(file.remove(paste0(DataDir,"/",ftemp)))
+ftemp <- list.files(paste0(DataDir, "/"), pattern = "PostimputeEX_QC1")
+invisible(file.remove(paste0(DataDir, "/", ftemp)))
 
 ## Removing the previous QC-ed file from DataDir and copying the new QC-ed file to DataDir.
-ftemp <- list.files(paste0(DataDir,"/"),pattern = "PostimputeEX_QC2")
-invisible(file.remove(paste0(DataDir,"/",ftemp)))
+ftemp <- list.files(paste0(DataDir, "/"), pattern = "PostimputeEX_QC2")
+invisible(file.remove(paste0(DataDir, "/", ftemp)))
 
 ## Copying new plink files to DataDir
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PostimputeEX_QC4")
-invisible(file.copy(paste0(ResultDir,"/",ftemp),DataDir))
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_QC4")
+invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
 ```
 
 # Step 9: Remove SNPs with MAF < 0.05 from each sex from the sex-specific autosomal plink files
@@ -313,25 +313,25 @@ hweCase <- NULL
 monomorphicSNPs <- TRUE
 caldiffmiss <- TRUE
 ld_prunning <- FALSE
-x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput,foutput = foutput, geno = geno, maf = maf,hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss)
+x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss)
 
 # Applying filter to male-specific plink files
 finput <- "PostimputeEX_QC4_Male"
 foutput <- "PostimputeEX_QC5_Male"
-x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput,foutput = foutput, geno = geno, maf = maf,hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss)
+x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss)
 ```
 
 Removing the previous QC-ed file from DataDir and copying the new QC-ed file to DataDir.
 
 ```{r}
-ftemp <- list.files(paste0(DataDir,"/"),pattern = "PostimputeEX_QC4")
-invisible(file.remove(paste0(DataDir,"/",ftemp)))
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PostimputeEX_QC4")
-invisible(file.remove(paste0(ResultDir,"/",ftemp)))
+ftemp <- list.files(paste0(DataDir, "/"), pattern = "PostimputeEX_QC4")
+invisible(file.remove(paste0(DataDir, "/", ftemp)))
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_QC4")
+invisible(file.remove(paste0(ResultDir, "/", ftemp)))
 
 # Copying the new QC-ed file to DataDir.
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PostimputeEX_QC5")
-invisible(file.copy(paste0(ResultDir,"/",ftemp),DataDir))
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_QC5")
+invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
 ```
 
 # Step 10: Combine sex-specific autosomal QC-ed files using common SNPs:
@@ -346,17 +346,17 @@ y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput, use_common_snps 
 Removing the previous QC-ed file from DataDir and copying the new QC-ed file to DataDir.
 
 ```{r}
-ftemp <- list.files(paste0(DataDir,"/"),pattern = "PostimputeEX_QC5")
-invisible(file.remove(paste0(DataDir,"/",ftemp)))
+ftemp <- list.files(paste0(DataDir, "/"), pattern = "PostimputeEX_QC5")
+invisible(file.remove(paste0(DataDir, "/", ftemp)))
 
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PostimputeEX_Auto")
-invisible(file.copy(paste0(ResultDir,"/",ftemp),DataDir))
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_Auto")
+invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
 
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PostimputeEX_QC5")
-invisible(file.remove(paste0(ResultDir,"/",ftemp)))
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_QC5")
+invisible(file.remove(paste0(ResultDir, "/", ftemp)))
 
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PostimputeEX_Auto")
-invisible(file.remove(paste0(ResultDir,"/",ftemp)))
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_Auto")
+invisible(file.remove(paste0(ResultDir, "/", ftemp)))
 ```
 
 # Step 11: Get sex-specific X-chromosomal plink files
@@ -370,14 +370,14 @@ finput <- "PostimputeEX_QC3_snps_extracted"
 foutput <- "PostimputeEX_QC3_XFemale"
 # Making female-specific plink files X chromosome
 sex <- "females"
-x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput,sex = sex, xplink = FALSE, autoplink = FALSE)
+x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, sex = sex, xplink = FALSE, autoplink = FALSE)
 # Making male-specific plink files X chromosome
 foutput <- "PostimputeEX_QC3_XMale"
 sex <- "males"
-x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput,sex = sex, xplink = FALSE, autoplink = FALSE)
+x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, sex = sex, xplink = FALSE, autoplink = FALSE)
 ## Copying sex-specific plink files
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PostimputeEX_QC3_X")
-invisible(file.copy(paste0(ResultDir,"/",ftemp),DataDir))
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_QC3_X")
+invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
 ```
 
 # Step 12: QC of sex-specific X-chromosomal SNPs
@@ -390,8 +390,8 @@ For this, we will use `QCsnp()` function.
 ## Female-specific QC
 finput <- "PostimputeEX_QC3_XFemale"
 foutput <- "PostimputeEX_QC4_XFemale"
-geno <- 0.05 
-maf <- 0.01 
+geno <- 0.05
+maf <- 0.01
 casecontrol <- TRUE
 hweControl <- NULL
 hweCase <- NULL
@@ -400,27 +400,27 @@ caldiffmiss <- TRUE
 diffmissFilter <- TRUE
 dmissX <- TRUE # Since our input has X chromosome, setting this as TRUE wouldn’t change the result.
 dmissAutoY <- FALSE # Since our input has X chromosome, setting this as TRUE wouldn’t change the result.
-x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput,foutput = foutput, geno = geno, maf = maf,hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, diffmissFilter = diffmissFilter, dmissX = dmissX, dmissAutoY = dmissAutoY)
+x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, diffmissFilter = diffmissFilter, dmissX = dmissX, dmissAutoY = dmissAutoY)
 
 ## For male-specific QC:
 finput <- "PostimputeEX_QC3_XMale"
 foutput <- "PostimputeEX_QC4_XMale"
-x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput,foutput = foutput, geno = geno, maf = maf,hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, diffmissFilter = diffmissFilter, dmissX = dmissX, dmissAutoY = dmissAutoY)
+x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, diffmissFilter = diffmissFilter, dmissX = dmissX, dmissAutoY = dmissAutoY)
 ```
 
 ```{r}
 ## Removing the previous QC-ed file from DataDir and copying the new QC-ed file to DataDir.
-ftemp <- list.files(paste0(DataDir,"/"),pattern = "PostimputeEX_QC3")
-invisible(file.remove(paste0(DataDir,"/",ftemp)))
+ftemp <- list.files(paste0(DataDir, "/"), pattern = "PostimputeEX_QC3")
+invisible(file.remove(paste0(DataDir, "/", ftemp)))
 ## Removing the previous QC-ed file from DataDir and copying the new QC-ed file to DataDir.
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PostimputeEX_QC3")
-invisible(file.remove(paste0(ResultDir,"/",ftemp)))
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_QC3")
+invisible(file.remove(paste0(ResultDir, "/", ftemp)))
 
 ## Copying sex-specific plink files
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PostimputeEX_QC4_X")
-invisible(file.copy(paste0(ResultDir,"/",ftemp),DataDir))
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PostimputeEX_QC4")
-invisible(file.remove(paste0(ResultDir,"/",ftemp)))
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_QC4_X")
+invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_QC4")
+invisible(file.remove(paste0(ResultDir, "/", ftemp)))
 ```
 
 # Step 13: Combine sex-specific QC-ed X chromosomal dataset using common SNPs
@@ -434,12 +434,12 @@ y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput, use_common_snps 
 
 ```{r}
 ## Copying merged plink files to DataDir
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PostimputeEX_QC5_Xchr")
-invisible(file.copy(paste0(ResultDir,"/",ftemp),DataDir))
-invisible(file.remove(paste0(ResultDir,"/",ftemp)))
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_QC5_Xchr")
+invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
+invisible(file.remove(paste0(ResultDir, "/", ftemp)))
 ## Removing other QC-ed files from DataDir
-ftemp <- list.files(paste0(DataDir,"/"),pattern = "PostimputeEX_QC4")
-invisible(file.remove(paste0(DataDir,"/",ftemp)))
+ftemp <- list.files(paste0(DataDir, "/"), pattern = "PostimputeEX_QC4")
+invisible(file.remove(paste0(DataDir, "/", ftemp)))
 ```
 
 # Step 14: Test for HWE across the X chromosomes in females
@@ -453,19 +453,19 @@ x <- Xhwe(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = f
 
 ```{r}
 ## No. of the SNPs failed the test.
-length(x)# 2 SNPs in X chr in females failed HWE test.
+length(x) # 2 SNPs in X chr in females failed HWE test.
 ## The failed SNPs
 x
 ```
 
 ```{r}
 ## Removing the previous QC-ed file from DataDir and copying the new QC-ed file to DataDir.
-ftemp <- list.files(paste0(DataDir,"/"),pattern = "PostimputeEX_QC5_Xchr")
-invisible(file.remove(paste0(DataDir,"/",ftemp)))
+ftemp <- list.files(paste0(DataDir, "/"), pattern = "PostimputeEX_QC5_Xchr")
+invisible(file.remove(paste0(DataDir, "/", ftemp)))
 
 ## Copying new QC-ed plink files to DataDir
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PostimputeEX_Xchr")
-invisible(file.copy(paste0(ResultDir,"/",ftemp),DataDir))
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_Xchr")
+invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
 ```
 
 # Step 15: Checking for X-chromosomal SNPs having MAF difference in sexes in controls
@@ -475,8 +475,8 @@ This test should be performed only for binary traits. We will flag the failed SN
 ```{r}
 finput <- "PostimputeEX_Xchr"
 foutput <- "Test_output"
-x <- MAFdiffSexControl(DataDir, ResultDir, finput,filterSNP = FALSE,foutput = foutput)
-x 
+x <- MAFdiffSexControl(DataDir, ResultDir, finput, filterSNP = FALSE, foutput = foutput)
+x
 ```
 
 # Step 16: Combining autosomal and X-chromosomal QC-ed datasets
@@ -485,18 +485,18 @@ x
 finput1 <- "PostimputeEX_Auto"
 finput2 <- "PostimputeEX_Xchr"
 foutput <- "PostimputeQC"
-use_common_snps = FALSE
+use_common_snps <- FALSE
 y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput, use_common_snps = FALSE)
 ```
 
 ```{r}
 ## Removing the previous QC-ed file from DataDir and copying the new QC-ed file to DataDir.
-ftemp <- list.files(paste0(DataDir,"/"),pattern = "PostimputeEX")
-invisible(file.remove(paste0(DataDir,"/",ftemp)))
+ftemp <- list.files(paste0(DataDir, "/"), pattern = "PostimputeEX")
+invisible(file.remove(paste0(DataDir, "/", ftemp)))
 
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PostimputeQC")
-invisible(file.copy(paste0(ResultDir,"/",ftemp),DataDir))
-invisible(file.remove(paste0(ResultDir,"/",ftemp)))
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeQC")
+invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
+invisible(file.remove(paste0(ResultDir, "/", ftemp)))
 ```
 
 # Step 17: Preparing separate male and female genotype dataset for sample level QC
@@ -506,24 +506,24 @@ invisible(file.remove(paste0(ResultDir,"/",ftemp)))
 finput <- "PostimputeQC"
 foutput <- "Postimpute_Female"
 sex <- "females"
-x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput,sex = sex, xplink = FALSE, autoplink = FALSE)
+x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, sex = sex, xplink = FALSE, autoplink = FALSE)
 
 # Making male-specific plink files
 finput <- "PostimputeQC"
 foutput <- "Postimpute_Male"
 sex <- "males"
-x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput,sex = sex, xplink = FALSE, autoplink = FALSE)
+x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, sex = sex, xplink = FALSE, autoplink = FALSE)
 ```
 
 ```{r}
 ## Copying sex-specific plink files to DataDir
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "Postimpute_Female")
-invisible(file.copy(paste0(ResultDir,"/",ftemp),DataDir))
-invisible(file.remove(paste0(ResultDir,"/",ftemp)))
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "Postimpute_Female")
+invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
+invisible(file.remove(paste0(ResultDir, "/", ftemp)))
 
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "Postimpute_Male")
-invisible(file.copy(paste0(ResultDir,"/",ftemp),DataDir))
-invisible(file.remove(paste0(ResultDir,"/",ftemp)))
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "Postimpute_Male")
+invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
+invisible(file.remove(paste0(ResultDir, "/", ftemp)))
 ```
 
 # Step 18: Sex-specific sample level QC
@@ -535,30 +535,30 @@ For this, we will use `QCsample()`.
 ## Running the function female-specific QC
 finput <- "Postimpute_Female"
 foutput <- "Postimpute_Female1"
-imiss = 0.02
-#Since het = 3 was removing a lot of samples (185), I decided to increase the threshold after looking at the plot.
-het = 3
-small_sample_mod = TRUE
-IBD = 0.2
-x = QCsample(DataDir = DataDir,ResultDir = ResultDir, finput = finput,foutput = foutput, imiss = imiss,het = het, small_sample_mod = small_sample_mod, IBD = IBD)
+imiss <- 0.02
+# Since het = 3 was removing a lot of samples (185), I decided to increase the threshold after looking at the plot.
+het <- 3
+small_sample_mod <- TRUE
+IBD <- 0.2
+x <- QCsample(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, imiss = imiss, het = het, small_sample_mod = small_sample_mod, IBD = IBD)
 
 ## Running the function male-specific QC
 
 finput <- "Postimpute_Male"
 foutput <- "Postimpute_Male1"
-imiss = 0.02
-#Since het = 3 was removing a lot of samples (185), I decided to increase the threshold after looking at the plot.
-het = 5
-small_sample_mod = TRUE
-IBD = 0.2
-x = QCsample(DataDir = DataDir,ResultDir = ResultDir, small_sample_mod = small_sample_mod, finput = finput,foutput = foutput, imiss = imiss,het = het, IBD = IBD)
+imiss <- 0.02
+# Since het = 3 was removing a lot of samples (185), I decided to increase the threshold after looking at the plot.
+het <- 5
+small_sample_mod <- TRUE
+IBD <- 0.2
+x <- QCsample(DataDir = DataDir, ResultDir = ResultDir, small_sample_mod = small_sample_mod, finput = finput, foutput = foutput, imiss = imiss, het = het, IBD = IBD)
 ```
 
 ```{r}
 ## Copying filtered plink files to DataDir
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "Postimpute_")
-invisible(file.copy(paste0(ResultDir,"/",ftemp),DataDir))
-invisible(file.remove(paste0(ResultDir,"/",ftemp)))
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "Postimpute_")
+invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
+invisible(file.remove(paste0(ResultDir, "/", ftemp)))
 ```
 
 # Step 19: Combine male and female-specific Qc-ed genotype datasets
@@ -566,15 +566,15 @@ invisible(file.remove(paste0(ResultDir,"/",ftemp)))
 ## Combine male and female-specific files
 ## Running the function
 finput1 <- "Postimpute_Female1"
-finput2 <- "Postimpute_Male1" 
+finput2 <- "Postimpute_Male1"
 foutput <- "PostimputeFinal"
 y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput, use_common_snps = TRUE)
 ```
 
 ```{r}
 ## Removing the not needed files from DataDir.
-ftemp <- list.files(paste0(DataDir,"/"),pattern = "Postimpute_")
-invisible(file.remove(paste0(DataDir,"/",ftemp)))
+ftemp <- list.files(paste0(DataDir, "/"), pattern = "Postimpute_")
+invisible(file.remove(paste0(DataDir, "/", ftemp)))
 ```
 
 # Final Summary of the final QC-ed genotype dataset

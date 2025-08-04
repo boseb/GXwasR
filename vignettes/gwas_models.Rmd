@@ -106,50 +106,50 @@ help(GXwas, package = GXwasR)
 ```{r}
 ## Running
 DataDir <- GXwasR:::GXwasR_data()
-ResultDir = tempdir()
+ResultDir <- tempdir()
 finput <- "GXwasR_example"
-standard_beta = TRUE
-xsex = FALSE
-sex = TRUE
-Inphenocov = NULL
-covartest = NULL
-interaction = FALSE
-MF.na.rm = FALSE
-B = 10000
-MF.zero.sub = 0.00001
-trait = "binary"
-xmodel = "FMstratified"
-combtest = "fisher.method"
-snp_pval = 1e-08
-covarfile = NULL
-ncores = 0
-plot.jpeg = FALSE
-MF.mc.cores = 1
-genomewideline = 7.3
-suggestiveline = 5
-plotname = "GXwas.plot"
-annotateTopSnp = FALSE
-MF.na.rm = FALSE
-B = 10000
-MF.zero.sub = 0.00001
-MF.p.corr = "none"
-plotname = "GXwas.plot"
-ResultGXwas <- GXwas(DataDir = DataDir,ResultDir = ResultDir, finput = finput, xmodel = xmodel, trait = trait, covarfile = covarfile, sex = sex, xsex = xsex, combtest = combtest, MF.p.corr = "none", snp_pval = snp_pval, plot.jpeg = plot.jpeg, suggestiveline = 5, genomewideline = 7.3,MF.mc.cores = 1, ncores = ncores)
+standard_beta <- TRUE
+xsex <- FALSE
+sex <- TRUE
+Inphenocov <- NULL
+covartest <- NULL
+interaction <- FALSE
+MF.na.rm <- FALSE
+B <- 10000
+MF.zero.sub <- 0.00001
+trait <- "binary"
+xmodel <- "FMstratified"
+combtest <- "fisher.method"
+snp_pval <- 1e-08
+covarfile <- NULL
+ncores <- 0
+plot.jpeg <- FALSE
+MF.mc.cores <- 1
+genomewideline <- 7.3
+suggestiveline <- 5
+plotname <- "GXwas.plot"
+annotateTopSnp <- FALSE
+MF.na.rm <- FALSE
+B <- 10000
+MF.zero.sub <- 0.00001
+MF.p.corr <- "none"
+plotname <- "GXwas.plot"
+ResultGXwas <- GXwas(DataDir = DataDir, ResultDir = ResultDir, finput = finput, xmodel = xmodel, trait = trait, covarfile = covarfile, sex = sex, xsex = xsex, combtest = combtest, MF.p.corr = "none", snp_pval = snp_pval, plot.jpeg = plot.jpeg, suggestiveline = 5, genomewideline = 7.3, MF.mc.cores = 1, ncores = ncores)
 ```
 
 ```{r}
 # Outputs
-knitr::kable(ResultGXwas$CombinedWAS[1:5,], caption = 'Dataframe containing the result of stratified model')
-knitr::kable(ResultGXwas$MaleWAS[1:5,], caption = 'Stratified GWAS result with male cohort.')
-knitr::kable(ResultGXwas$FemaleWAS[1:5,], caption = 'Stratified GWAS result with female cohort.')
+knitr::kable(ResultGXwas$CombinedWAS[1:5, ], caption = "Dataframe containing the result of stratified model")
+knitr::kable(ResultGXwas$MaleWAS[1:5, ], caption = "Stratified GWAS result with male cohort.")
+knitr::kable(ResultGXwas$FemaleWAS[1:5, ], caption = "Stratified GWAS result with female cohort.")
 ```
 
 ```{r}
 ## Top ten associations in female-specific study:
 load("FemaleWAS.Rda")
 x1 <- FemaleWAS
-x2 <- x1[x1$TEST=="ADD",]
-x3 <- x2[order(x2$P),]
+x2 <- x1[x1$TEST == "ADD", ]
+x3 <- x2[order(x2$P), ]
 x <- x3[1:10, -c(5:6)]
 ```
 
@@ -157,8 +157,8 @@ x <- x3[1:10, -c(5:6)]
 ## Top ten associations in male-specific study:
 load("MaleWAS.Rda")
 x1 <- MaleWAS
-x2 <- x1[x1$TEST=="ADD",]
-x3 <- x2[order(x2$P),]
+x2 <- x1[x1$TEST == "ADD", ]
+x3 <- x2[order(x2$P), ]
 x <- x3[1:10, -c(5:6)]
 ```
 
@@ -166,8 +166,8 @@ x <- x3[1:10, -c(5:6)]
 ## Top ten associations in FM02comb model:
 load("CombinedWAS.Rda")
 x1 <- CombinedWAS
-x2 <- x1[order(x1$P),]
-x <- x2[1:10,]
+x2 <- x1[order(x1$P), ]
+x <- x2[1:10, ]
 ```
 
 To know more about the function GXwas() to run different GWAS and XWAS models with different arguments, please follow this tutorial: [https://boseb.github.io/GXwasR/articles/GXwasR_overview.html](https://boseb.github.io/GXwasR/articles/GXwasR_overview.html)
@@ -188,21 +188,21 @@ help(SexDiff, package = GXwasR)
 ## Running
 ## Running the function
 x1 <- MaleWAS
-x1 <- x1[x1$TEST=="ADD",]
-x1 <- x1[,c(1:4,7:8)]
-colnames(x1)<- c("CHR","SNP","BP","A1","BETA_M","SE_M")
+x1 <- x1[x1$TEST == "ADD", ]
+x1 <- x1[, c(1:4, 7:8)]
+colnames(x1) <- c("CHR", "SNP", "BP", "A1", "BETA_M", "SE_M")
 x2 <- FemaleWAS
-x2 <- x2[x2$TEST=="ADD",]
-x2 <- x2[,c(1:4,7:8)]
-colnames(x2)<- c("CHR","SNP","BP","A1","BETA_F","SE_F")
-Difftest <- SexDiff(Mfile=x1,Ffile=x2)
+x2 <- x2[x2$TEST == "ADD", ]
+x2 <- x2[, c(1:4, 7:8)]
+colnames(x2) <- c("CHR", "SNP", "BP", "A1", "BETA_F", "SE_F")
+Difftest <- SexDiff(Mfile = x1, Ffile = x2)
 ```
 
 ```{r}
 ## Significant SNPs with sex-differential effect
-sig.snps <- Difftest[Difftest$adjP <0.05,]
-colnames(sig.snps) <- c("SNP","CHR","BP","A1","T_statistic","Pvalue","Adjusted_Pvalue")
-knitr::kable(sig.snps, caption = 'SNPs with significant sex-differential effect.')
+sig.snps <- Difftest[Difftest$adjP < 0.05, ]
+colnames(sig.snps) <- c("SNP", "CHR", "BP", "A1", "T_statistic", "Pvalue", "Adjusted_Pvalue")
+knitr::kable(sig.snps, caption = "SNPs with significant sex-differential effect.")
 ```
 
 # Citing `GXwasR`
