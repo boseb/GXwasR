@@ -73,7 +73,7 @@ Check one of the summary statistics data
 ```{r}
 data(Summary_Stat_Ex1)
 ## Visualize three rows and all the columns
-Summary_Stat_Ex1[1:3,]
+Summary_Stat_Ex1[1:3, ]
 ```
 
 Among these 12 columns, some columns are mandatory for this tutorial, such as: ‘SNP’ (i.e., SNP identifier), ‘BETA’ (i.e., effect-size or logarithm of odds ratio), ‘SE’ (i.e., standard error of BETA), ‘P’ (i.e., p-values) and 'NMISS' (i.e., effective sample size). The other columns are, 'CHR' (i.e., chromosome code), 'BP' (i.e., base pair position), A1 (i.e., disease allele), TEST (i.e., association test type), L95 (i.e., lower limit of 95 percentile confidence interval), U95 (i.e., upper limit of 95 percentile confidence interval) and STAT (i.e., test statistic).
@@ -91,7 +91,7 @@ library(rmarkdown)
 # The function for meta analysis:
 **MetaGWAS()**
 ```{r}
-help(MetaGWAS,package = GXwasR)
+help(MetaGWAS, package = GXwasR)
 ```
 
 # Running MetaGWAS
@@ -99,22 +99,22 @@ help(MetaGWAS,package = GXwasR)
 ```{r}
 data(Summary_Stat_Ex1)
 data(Summary_Stat_Ex2)
-DataDir = GXwasR:::GXwasR_data()
-ResultDir = tempdir()
-SummData <- list(Summary_Stat_Ex1,Summary_Stat_Ex2)
-SNPfile = "UniqueLoci"
-useSNPposition = FALSE
-UseA1 = TRUE
-GCse = TRUE
-byCHR = FALSE
-pval_filter = "R"
-top_snp_pval = 1e-08
-max_top_snps = 10
-chosen_snps_file = NULL
-pval_threshold_manplot = 1e-05
-plotname = "Meta_Analysis.plot"
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+SummData <- list(Summary_Stat_Ex1, Summary_Stat_Ex2)
+SNPfile <- "UniqueLoci"
+useSNPposition <- FALSE
+UseA1 <- TRUE
+GCse <- TRUE
+byCHR <- FALSE
+pval_filter <- "R"
+top_snp_pval <- 1e-08
+max_top_snps <- 10
+chosen_snps_file <- NULL
+pval_threshold_manplot <- 1e-05
+plotname <- "Meta_Analysis.plot"
 
-x <- MetaGWAS(DataDir = DataDir, SummData = SummData,ResultDir=ResultDir, SNPfile = NULL, useSNPposition = TRUE, UseA1 = UseA1,GCse = GCse, plotname = "Meta_Analysis.plot", pval_filter, top_snp_pval, max_top_snps, chosen_snps_file = NULL, byCHR, pval_threshold_manplot)
+x <- MetaGWAS(DataDir = DataDir, SummData = SummData, ResultDir = ResultDir, SNPfile = NULL, useSNPposition = TRUE, UseA1 = UseA1, GCse = GCse, plotname = "Meta_Analysis.plot", pval_filter, top_snp_pval, max_top_snps, chosen_snps_file = NULL, byCHR, pval_threshold_manplot)
 ```
 
 # Random effect result
@@ -122,8 +122,8 @@ x <- MetaGWAS(DataDir = DataDir, SummData = SummData,ResultDir=ResultDir, SNPfil
 ```{r}
 # Dataframe with the fixed effect result
 x1 <- x$Resultrandom
-x2 <- x1[order(x1$P),]
-knitr::kable(x2[1:10,], caption = 'Top ten associations from random effect model.')
+x2 <- x1[order(x1$P), ]
+knitr::kable(x2[1:10, ], caption = "Top ten associations from random effect model.")
 ```
 
 # Fixed effect result
@@ -131,8 +131,8 @@ knitr::kable(x2[1:10,], caption = 'Top ten associations from random effect model
 ```{r}
 # Dataframe with the fixed effect result
 x1 <- x$Resultfixed
-x2 <- x1[order(x1$P),]
-knitr::kable(x2[1:10,], caption = 'Top ten associations from fixed effect model.')
+x2 <- x1[order(x1$P), ]
+knitr::kable(x2[1:10, ], caption = "Top ten associations from fixed effect model.")
 ```
 
 # Weighted effect result
@@ -140,8 +140,8 @@ knitr::kable(x2[1:10,], caption = 'Top ten associations from fixed effect model.
 ```{r}
 # Dataframe with the fixed effect result
 x1 <- x$Resultweighted
-x2 <- x1[order(x1$P),]
-knitr::kable(x2[1:10,], caption = 'Top ten associations from weighted effect model.')
+x2 <- x1[order(x1$P), ]
+knitr::kable(x2[1:10, ], caption = "Top ten associations from weighted effect model.")
 ```
 
 # Metadata of the meta analysis
@@ -149,8 +149,8 @@ knitr::kable(x2[1:10,], caption = 'Top ten associations from weighted effect mod
 ```{r}
 # Dataframe with the metadata
 x1 <- x$Metadata
-x2 <- x1[order(x1$Q),]
-knitr::kable(x2[1:10,], caption = 'Metadata of the top ten associations based on Cochrane’s Q statistics.')
+x2 <- x1[order(x1$Q), ]
+knitr::kable(x2[1:10, ], caption = "Metadata of the top ten associations based on Cochrane’s Q statistics.")
 ```
 
 # Problematic SNPs
@@ -158,7 +158,7 @@ knitr::kable(x2[1:10,], caption = 'Metadata of the top ten associations based on
 ```{r}
 # Dataframe with the problematic SNPs
 x1 <- x$ProblemSNP
-knitr::kable(x1[1:10,], caption = 'Top ten probematic SNPs.')
+knitr::kable(x1[1:10, ], caption = "Top ten probematic SNPs.")
 ```
 
 # Including Plots
