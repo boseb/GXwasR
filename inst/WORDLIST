@@ -130,6 +130,7 @@ MKK
 MSL
 MWAS
 Maasai
+MacFadden
 MaleWAS
 Mende
 MergeRegion
@@ -194,7 +195,9 @@ SexRegress
 Sri
 Stouffer's
 Stouffer’s
+SumstatFemale
 SumstatGenCorr
+SumstatMale
 THOUSANDGENOME
 TSI
 TestXGene
@@ -247,6 +250,7 @@ derivLH
 diffmissFilter
 discoverable
 doi
+dplyr
 effectsize
 eigen
 et
@@ -270,6 +274,7 @@ highLD
 hom
 homozygosity
 homozygotes
+hwe
 imputated
 indels
 intron
@@ -300,6 +305,7 @@ pleiotropic
 plink
 plinkVCF
 ploted
+ploygenic
 polygenic
 poolr
 pre
@@ -330,6 +336,7 @@ sumchi
 tempdir
 testthat
 thousandgenome
+tidyverse
 toolset
 vcf
 xABC
