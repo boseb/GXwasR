@@ -105,7 +105,7 @@ library(rmarkdown)
 
 **Before beginning the pre-imputation quality control (QC), it is recommended that users familiarize themselves with all the functions in the GXwasR package. This knowledge will help them understand the required input arguments, how to execute the functions, and what outputs to expect.**
 
-To explore all available functions, users should first load the GXwasR library and then use the browseVignettes() function:
+To explore all available functions, users should first load the GXwasR library and then use the `browseVignettes()` function:
 
 ```
 library(GXwasR)
