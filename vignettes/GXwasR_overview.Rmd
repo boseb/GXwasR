@@ -16,7 +16,7 @@ output:
 date: "`r BiocStyle::doc_date()`"
 package: "`r BiocStyle::pkg_ver('GXwasR')`"
 vignette: >
-  %\VignetteIndexEntry{function_overview}
+  %\VignetteIndexEntry{GXwasR_overview}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
