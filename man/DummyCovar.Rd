@@ -28,7 +28,7 @@ One level is automatically excluded from the dummy variables which serves as the
 implicitly sets the excluded that category as the baseline against which other categories are compared.
 }
 \examples{
-DataDir <- GXwasR:::example_data()
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 bfile <- "GXwasR_example"
 incovar <- "covarfile_w_pc_age.txt"

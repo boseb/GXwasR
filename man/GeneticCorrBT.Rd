@@ -105,7 +105,7 @@ correlation chromosome-wise.
 }
 \examples{
 data("Example_phenofile", package = "GXwasR")
-DataDir <- GXwasR:::example_data()
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 byCHR <- TRUE

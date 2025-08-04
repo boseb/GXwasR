@@ -83,7 +83,7 @@ Having the correct designation of sex is important to obtain accurate genotype r
 removing samples, etc. Details can be accessed from the paper.
 }
 \examples{
-DataDir <- GXwasR:::example_data()
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 foutput <- "Test_output"

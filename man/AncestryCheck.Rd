@@ -93,7 +93,7 @@ datasets to the same build.
 \examples{
 data("highLD_hg19", package = "GXwasR")
 data("example_data_study_sample_ancestry", package = "GXwasR")
-DataDir <- GXwasR:::example_data()
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 reference <- "HapMapIII_NCBI36"

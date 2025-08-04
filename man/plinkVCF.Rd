@@ -49,7 +49,7 @@ and missing sex.
 \examples{
 finput <- "GXwasR_example" # Plink file
 foutput <- "GXwasR_example1"
-DataDir <- GXwasR:::example_data()
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 PtoV <- TRUE
 VtoP <- FALSE

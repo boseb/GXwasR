@@ -5633,7 +5633,7 @@ loadAndProcessReferenceAncestry <- function(ResultDir, reference) {
     if (reference == "HapMapIII_NCBI36") {
         ref_ancestry1 <-
             vroom::vroom(
-                file = file.path(example_data(), "hapmap_relationships_w_pops_121708.txt"),
+                file = file.path(GXwasR_data(), "hapmap_relationships_w_pops_121708.txt"),
                 col_names = TRUE,
                 delim = "\t",
                 show_col_types = FALSE
@@ -5682,7 +5682,7 @@ loadAndProcessReferenceAncestry <- function(ResultDir, reference) {
     } else if (reference %in% c("ThousandGenome", "Ref10Kgenome")) {
         ref_ancestry <-
             vroom::vroom(
-                file = file.path(example_data(), "1000genomesampleinfo.txt"),
+                file = file.path(GXwasR_data(), "1000genomesampleinfo.txt"),
                 col_names = TRUE,
                 show_col_types = FALSE
             )[, c("Sample", "superpop")]

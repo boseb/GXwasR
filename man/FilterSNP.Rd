@@ -28,7 +28,7 @@ FilterSNP: Filter out SNPs.
 }
 \examples{
 
-DataDir <- GXwasR:::example_data()
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 SNPvec <- c("rs6529954", "rs12858640", "rs5962098")
 finput <- "GXwasR_example"

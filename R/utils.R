@@ -82,14 +82,16 @@ log_output <- function(..., output.file, sep = "\n", timestamp = TRUE) {
     invisible(NULL)
 }
 
-#' Extract and decompress example data files
+#' GXwasR Data
+#' 
+#' Extract and decompress GXwasR and example data files.
 #'
 #' Creates a temporary subdirectory, decompresses any .bz2 files from the
 #' package's extdata folder, and returns the path to the extracted data.
 #'
 #' @importFrom R.utils bunzip2
 #' @return Path to the temp directory containing extracted files
-example_data <- function() {
+GXwasR_data <- function() {
   # Ensure R.utils is available
   if (!requireNamespace("R.utils", quietly = TRUE)) {
     stop("The 'R.utils' package is required. Please install it with install.packages('R.utils').")
