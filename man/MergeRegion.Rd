@@ -35,7 +35,7 @@ The output plink files will be saved in ResultDir.
 This function combines the two genotype datasets based on either common SNPs or all the SNPs between them.
 }
 \examples{
-DataDir <- system.file("extdata", package = "GXwasR")
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 finput1 <- "GXwasR_example"
 finput2 <- "GXwasR_example_imputed"

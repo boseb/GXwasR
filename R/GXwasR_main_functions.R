@@ -95,7 +95,7 @@
 #' @examples
 #' data("highLD_hg19", package = "GXwasR")
 #' data("example_data_study_sample_ancestry", package = "GXwasR")
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' reference <- "HapMapIII_NCBI36"
@@ -536,7 +536,7 @@ AncestryCheck <-
 #' @examples
 #' if (!(Sys.getenv("CI") == "true" && Sys.info()[["sysname"]] == "Darwin")) {
 #'     data("XWAS_Summary_Example", package = "GXwasR")
-#'     DataDir <- system.file("extdata", package = "GXwasR")
+#'     DataDir <- GXwasR:::GXwasR_data()
 #'     ResultDir <- tempdir()
 #'     finput <- "GXwasR_example"
 #'     sumstat <- XWAS_Summary_Example
@@ -999,7 +999,7 @@ SexDiff <- function(Mfile, Ffile) {
 #' @export
 #'
 #' @examples
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "Test_output"
@@ -1328,7 +1328,7 @@ QCsnp <-
 #' @examples
 #' data("Summary_Stat_Ex1", package = "GXwasR")
 #' data("highLD_hg19", package = "GXwasR")
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' precomputedLD <- NULL
 #' finput <- "GXwasR_example"
@@ -1494,7 +1494,7 @@ EstimateHerit <- function(
 #'
 #' @examples
 #' data("highLD_hg19", package = "GXwasR")
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' highLD_regions <- highLD_hg19
@@ -1765,7 +1765,7 @@ ComputeGeneticPC <- function(
 #' data("Example_covarfile", package = "GXwasR")
 #' data("Example_pthresoldfile", package = "GXwasR")
 #' data("highLD_hg19", package = "GXwasR")
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' summarystat <- Summary_Stat_Ex1[, c(2, 4, 7, 1, 3, 12)]
@@ -1967,7 +1967,7 @@ ComputePRS <- function(
 #' @export
 #'
 #' @examples
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' finput1 <- "GXwasR_example"
 #' finput2 <- "GXwasR_example_imputed"
@@ -2099,7 +2099,7 @@ MergeRegion <- function(DataDir, ResultDir, finput1, finput2, foutput, use_commo
 #' @examples
 #' finput <- "GXwasR_example" # Plink file
 #' foutput <- "GXwasR_example1"
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' PtoV <- TRUE
 #' VtoP <- FALSE
@@ -2268,7 +2268,7 @@ plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput,
 #' \insertAllCited{}
 #'
 #' @examples
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' LD <- TRUE
@@ -2485,7 +2485,7 @@ SexCheck <-
 #' @export
 #'
 #' @examples
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "casesPlink"
@@ -2616,7 +2616,7 @@ FilterPlinkSample <- function(
 #' @export
 #'
 #' @examples
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "Test_output"
@@ -2746,7 +2746,7 @@ GetMFPlink <- function(
 #' @export
 #'
 #' @examples
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "Test_output"
@@ -2921,7 +2921,7 @@ Xhwe <- function(DataDir, ResultDir = tempdir(), finput, filterSNP = TRUE, foutp
 #' @export
 #'
 #' @examples
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "Test_output"
@@ -3148,7 +3148,7 @@ MAFdiffSexControl <- function(DataDir,
 #' @export
 #'
 #' @examples
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "Test_output"
@@ -3646,7 +3646,7 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #'
 #' @examples
 #'
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' standard_beta <- TRUE
@@ -3892,7 +3892,7 @@ GXwas <- function(
 #' @examples
 #' data("Summary_Stat_Ex1", package = "GXwasR")
 #' data("Summary_Stat_Ex2", package = "GXwasR")
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' SummData <- list(Summary_Stat_Ex1, Summary_Stat_Ex2)
 #' SNPfile <- "UniqueLoci"
@@ -4195,7 +4195,7 @@ MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile =
 #' @examples
 #' data("Summary_Stat_Ex1", package = "GXwasR")
 #' data("Summary_Stat_Ex2", package = "GXwasR")
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' SNPdata <- list(Summary_Stat_Ex1, Summary_Stat_Ex2)
@@ -4641,7 +4641,7 @@ SexDiffZscore <- function(inputdata) {
 #'
 #' @examples
 #' data("Example_phenofile", package = "GXwasR")
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' byCHR <- TRUE
@@ -4970,7 +4970,7 @@ SexRegress <- function(fdata, regressor_index, response_index) {
 #' @export
 #'
 #' @examples
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "PostimputeEX_QC1"
@@ -5004,7 +5004,7 @@ FilterRegion <-
 
         tryCatch(
             {
-                DataDir1 <- system.file("extdata", package = "GXwasR")
+                DataDir1 <- GXwasR_data()
 
                 # Set filter parameters
                 para <- setFilterParameters(CHRX, CHRY, filterCHR, regionfile, filterPAR, filterXTR, filterAmpliconic)
@@ -5149,7 +5149,7 @@ FilterRegion <-
 #' @importFrom rlang abort warn
 #'
 #' @examples
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #'
@@ -5245,7 +5245,7 @@ PlinkSummary <- function(DataDir, ResultDir = tempdir(), finput) {
 #' @export
 #'
 #' @examples
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "Filter_Test"
@@ -5561,7 +5561,7 @@ PvalComb <- function(SumstatMale, SumstatFemale,
 #'
 #' @examples
 #'
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' SNPvec <- c("rs6529954", "rs12858640", "rs5962098")
 #' finput <- "GXwasR_example"
@@ -5736,7 +5736,7 @@ validate_reference_data <- function(refdata) {
 #' \insertAllCited{}
 #'
 #' @examples
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' bfile <- "GXwasR_example"
 #' incovar <- "covarfile_w_pc_age.txt"
@@ -5804,7 +5804,7 @@ DummyCovar <- function(DataDir, ResultDir = DataDir, bfile, incovar, outcovar) {
 #' @export
 #'
 #' @examples
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' maf_data <- executePlinkMAF(DataDir, ResultDir, finput)
@@ -5885,7 +5885,7 @@ executePlinkMAF <- function(DataDir, ResultDir, finput) {
 #' @export
 #'
 #' @examples
-#' DataDir <- system.file("extdata", package = "GXwasR")
+#' DataDir <- GXwasR:::GXwasR_data()
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' prunedSNPs <- LDPrune(DataDir, finput, ResultDir, 50, 5, 0.2)
@@ -6107,7 +6107,7 @@ SumstatGenCorr <- function(
 #'
 #' @examples
 #' snpld <- ComputeLD(
-#'     DataDir = system.file("extdata", package = "GXwasR"), ResultDir = tempdir(),
+#'     DataDir = GXwasR:::GXwasR_data(), ResultDir = tempdir(),
 #'     finput = "GXwasR_example", ByCHR = TRUE, CHRnum = 1, r2_LD = 0.2
 #' )
 ComputeLD <- function(DataDir, ResultDir, finput, ByCHR = FALSE, CHRnum = NULL, r2_LD) {

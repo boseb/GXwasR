@@ -23,7 +23,7 @@ this file will be produced after filtering out these variants.}
 This function filters out the multi-allelic SNPs from the input dataset.
 }
 \examples{
-DataDir <- system.file("extdata", package = "GXwasR")
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 foutput <- "Filter_Test"
