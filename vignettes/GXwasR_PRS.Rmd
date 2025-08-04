@@ -138,11 +138,11 @@ Here's the quality control procedure:
 
 **(A) Discovery Data: Remove multi-allelic, indels and ambiguous (A/T or C/G) SNPs. Then remove SNPs with minor allele frequency (MAF) < 0.05 and quality info score < 0.1.  For this filtering, R packages like data.table, dplyr, tidyverse can be used.**
 
-**(B) Target Data: Remove multi-allelic, indels and ambiguous (A/T or C/G) SNPs. Then remove SNPs with MAF < 0.05 and Hardy Weinberg Equilibrium (hwe) > e-10. For this filtering steps, users should use FilterAllele() and QCsnp() functions in R.**
+**(B) Target Data: Remove multi-allelic, indels and ambiguous (A/T or C/G) SNPs. Then remove SNPs with MAF < 0.05 and Hardy Weinberg Equilibrium (hwe) > e-10. For this filtering steps, users should use `FilterAllele()` and `QCsnp()` functions in R.**
 
 Let's see how to use these functions. For the details of these utility functions, please follow [https://boseb.github.io/GXwasR/articles/GXwasR_overview.html](https://boseb.github.io/GXwasR/articles/GXwasR_overview.html).
 
-We will use FilterAllele() on target data to filter out the multi-allelic SNPs. Also, note that GXwasR doesn't work with multi-allelic variants. So this filtering step is important.
+We will use `FilterAllele()` on target data to filter out the multi-allelic SNPs. Also, note that GXwasR doesn't work with multi-allelic variants. So this filtering step is important.
 
 ```{r}
 # Target data
@@ -153,7 +153,7 @@ foutput <- "filtered_multiallelic"
 x <- FilterAllele(DataDir, ResultDir, finput, foutput)
 ```
 
-Now, we will use QCsnp() to remove ambiguous (A/T or C/G) SNPs and SNPs with MAF < 0.05 and Hardy Weinberg Equilibrium (hwe) > e-10.
+Now, we will use `QCsnp()` to remove ambiguous (A/T or C/G) SNPs and SNPs with MAF < 0.05 and Hardy Weinberg Equilibrium (hwe) > e-10.
 
 ```{r}
 ## Since there was no multiallelic SNPs, we will continue with original input data.
@@ -214,7 +214,7 @@ Now, our discovery data and target data are ready. We will proceed towards compu
 
 **(C) Select best threshold based on R-square (for quantitative trait) or MacFadden R-square (for binary trait) using generalized linear model with covariates, such as genetic PCs.**
 
-We will utilize the ComputePRS() to perform the steps (A), (B) and (C).
+We will utilize the `ComputePRS()` to perform the steps (A), (B) and (C).
 
 ```{r, fig.width=10,fig.height=6}
 # Running
@@ -262,9 +262,10 @@ In this regression, we could include genetic PCs and other covariates as well.
 
 **PRS ~ Sex + PCs + Other Covariates.**
 
-For this test, we will use SexRegress() function.
+For this test, we will use `SexRegress()` function.
 
 # About SexRegress()
+
 ```{r}
 help(SexRegress, package = GXwasR)
 ```
@@ -299,7 +300,7 @@ We will use SumstatMale and SumstatFemale for these.
 
 **(B) Prepare separate male and female target datasets.**
 
-For this, we will utilize GetMFPlink().
+For this, we will utilize `GetMFPlink()`.
 
 ```{r}
 library(GXwasR)
@@ -320,7 +321,7 @@ x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutp
 
 **(E) Select best threshold based on R-square (for quantitative trait) or MacFadden R-square (for binary trait) using generalized linear model with covariates, such as genetic PCs.**
 
-We will utilize the ComputePRS() to perform the steps (C), (D) and (E).
+We will utilize the `ComputePRS()` to perform the steps (C), (D) and (E).
 
 ```{r, fig.width=10,fig.height=6}
 # Running
@@ -444,20 +445,6 @@ We hope that `r BiocStyle::Biocpkg("GXwasR")` will be useful for your research. 
 ## Citation info
 citation("GXwasR")
 ```
-
-# Quick start to using `GXwasR`
-
-```{r "start", message=FALSE}
-library("GXwasR")
-```
-
-Edit this as you see fit =)
-
-Here is an example of you can cite your package inside the vignette:
-
-* `r BiocStyle::Biocpkg("GXwasR")` `r Citep(bib[["GXwasR"]])`
-
-
 
 # Reproducibility
 
