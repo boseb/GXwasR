@@ -184,7 +184,7 @@ For the details about the different tests, please follow the associated paper.
 \examples{
 if (!(Sys.getenv("CI") == "true" && Sys.info()[["sysname"]] == "Darwin")) {
     data("XWAS_Summary_Example", package = "GXwasR")
-    DataDir <- system.file("extdata", package = "GXwasR")
+    DataDir <- GXwasR:::example_data()
     ResultDir <- tempdir()
     finput <- "GXwasR_example"
     sumstat <- XWAS_Summary_Example

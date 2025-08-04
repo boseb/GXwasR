@@ -79,7 +79,7 @@ Based on the genotype data, the SNP with the highest LD will be the same for all
 \examples{
 data("Summary_Stat_Ex1", package = "GXwasR")
 data("Summary_Stat_Ex2", package = "GXwasR")
-DataDir <- system.file("extdata", package = "GXwasR")
+DataDir <- GXwasR:::example_data()
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 SNPdata <- list(Summary_Stat_Ex1, Summary_Stat_Ex2)

@@ -54,7 +54,7 @@ population stratification
 }
 \examples{
 data("highLD_hg19", package = "GXwasR")
-DataDir <- system.file("extdata", package = "GXwasR")
+DataDir <- GXwasR:::example_data()
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 highLD_regions <- highLD_hg19
