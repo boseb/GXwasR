@@ -36,7 +36,7 @@ None
 This function prepares separate male and female PLINK binary files from combined PLINK files.
 }
 \examples{
-DataDir <- system.file("extdata", package = "GXwasR")
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 foutput <- "Test_output"

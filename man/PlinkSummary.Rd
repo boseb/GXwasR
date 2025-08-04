@@ -20,7 +20,7 @@ This function is called for its side effect: printing summary statistics to the 
 PlinkSummary: Summary of plink format genotype dataset
 }
 \examples{
-DataDir <- system.file("extdata", package = "GXwasR")
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 
