@@ -6,6 +6,9 @@ articles:
     navbar: ~
     contents:
       - GXwasR_overview
-      - decoding_ancestry
       - preimputationQC
+      - postimputationQC
+      - gwas_models
+      - GXwasR_PRS
+      - decoding_ancestry
       - meta_analysis

@@ -1,0 +1,250 @@
+---
+title: "Running GWAS, XWAS and Sex-differential tests Using GXwasR"
+author: 
+  - name: "Banabithi Bose"
+    affiliation:
+    - Northwestern University
+    - University of Colorado Anschutz Medical Campus
+    email: banabithi.bose@gmail.com
+output: 
+  BiocStyle::html_document:
+    self_contained: false
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    code_folding: show
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('GXwasR')`"
+vignette: >
+  %\VignetteIndexEntry{gwas_models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}  
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>",
+    crop = NULL ## Related to https://stat.ethz.ch/pipermail/bioc-devel/2020-April/016656.html
+)
+```
+
+
+```{r vignetteSetup, echo=FALSE, message=FALSE, warning = FALSE}
+## Bib setup
+library("RefManageR")
+
+## Write bibliography information
+bib <- c(
+    R = citation(),
+    BiocStyle = citation("BiocStyle")[1],
+    knitr = citation("knitr")[1],
+    RefManageR = citation("RefManageR")[1],
+    rmarkdown = citation("rmarkdown")[1],
+    sessioninfo = citation("sessioninfo")[1],
+    testthat = citation("testthat")[1],
+    GXwasR = citation("GXwasR")[1]
+)
+```
+
+# Introduction
+This document contains an example of running a GWAS with XWAS model and Sex-differential tests. 
+
+Users must perform pre-imputation and post-imputation quality control (QC) on genotype dataset and then proceed with this tutorial in actual scenario. Please follow the detailed QC-ed steps provided in: [GXwasR_Preimputation](https://boseb.github.io/GXwasR/articles/preimputationQC.html) and [GXwasR_Postimputation](https://boseb.github.io/GXwasR/articles/postimputationQC.html).
+
+
+# Example Datasets
+
+The PLINK bed, bim, and fam files are the three mandatory files representing a genotype dataset to run this tutorial. To know about these file extensions, please check https://www.cog-genomics.org/plink/1.9/formats.
+
+**GXwasR_example:**
+
+- GXwasR_example.bed
+
+- GXwasR_example.bim
+
+- GXwasR_example.fam
+
+These plink files contain genotypes for 276 individuals (males and females) simulated from 1000Genome from European decent with 26515 variants across twelve chromosomes (1-10,23,24). This dataset contains 125 males, 151 females, 108 cases and 168 controls. We will utilize this set of plink files as proxy of pre-imputated genotype data.
+
+# Loading the GXwasR library
+
+```{r}
+## Call some libraries
+library(GXwasR)
+library(printr)
+library(rmarkdown)
+```
+
+# Learn about all the GXwasR functions
+
+```{r, eval = FALSE}
+browseVignettes("GXwasR")
+```
+
+# Example Dataset Summary
+
+**Dataset: GXwasR_example**
+
+```{r}
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+x <- PlinkSummary(DataDir, ResultDir, finput)
+```
+
+# Sex-combined and sex-stratified GWAS with XWAS
+
+## Function: GXwas()
+
+```{r}
+help(GXwas, package = GXwasR)
+```
+
+## <a id = "Running GXwas"> </a> Running GXwas
+
+```{r}
+## Running
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir = tempdir()
+finput <- "GXwasR_example"
+standard_beta = TRUE
+xsex = FALSE
+sex = TRUE
+Inphenocov = NULL
+covartest = NULL
+interaction = FALSE
+MF.na.rm = FALSE
+B = 10000
+MF.zero.sub = 0.00001
+trait = "binary"
+xmodel = "FMstratified"
+combtest = "fisher.method"
+snp_pval = 1e-08
+covarfile = NULL
+ncores = 0
+plot.jpeg = FALSE
+MF.mc.cores = 1
+genomewideline = 7.3
+suggestiveline = 5
+plotname = "GXwas.plot"
+annotateTopSnp = FALSE
+MF.na.rm = FALSE
+B = 10000
+MF.zero.sub = 0.00001
+MF.p.corr = "none"
+plotname = "GXwas.plot"
+ResultGXwas <- GXwas(DataDir = DataDir,ResultDir = ResultDir, finput = finput, xmodel = xmodel, trait = trait, covarfile = covarfile, sex = sex, xsex = xsex, combtest = combtest, MF.p.corr = "none", snp_pval = snp_pval, plot.jpeg = plot.jpeg, suggestiveline = 5, genomewideline = 7.3,MF.mc.cores = 1, ncores = ncores)
+```
+
+```{r}
+# Outputs
+knitr::kable(ResultGXwas$CombinedWAS[1:5,], caption = 'Dataframe containing the result of stratified model')
+knitr::kable(ResultGXwas$MaleWAS[1:5,], caption = 'Stratified GWAS result with male cohort.')
+knitr::kable(ResultGXwas$FemaleWAS[1:5,], caption = 'Stratified GWAS result with female cohort.')
+```
+
+```{r}
+## Top ten associations in female-specific study:
+load("FemaleWAS.Rda")
+x1 <- FemaleWAS
+x2 <- x1[x1$TEST=="ADD",]
+x3 <- x2[order(x2$P),]
+x <- x3[1:10, -c(5:6)]
+```
+
+```{r}
+## Top ten associations in male-specific study:
+load("MaleWAS.Rda")
+x1 <- MaleWAS
+x2 <- x1[x1$TEST=="ADD",]
+x3 <- x2[order(x2$P),]
+x <- x3[1:10, -c(5:6)]
+```
+
+```{r}
+## Top ten associations in FM02comb model:
+load("CombinedWAS.Rda")
+x1 <- CombinedWAS
+x2 <- x1[order(x1$P),]
+x <- x2[1:10,]
+```
+
+To know more about the function GXwas() to run different GWAS and XWAS models with different arguments, please follow this tutorial: [https://boseb.github.io/GXwasR/articles/GXwasR_overview.html](https://boseb.github.io/GXwasR/articles/GXwasR_overview.html)
+
+# Performing sex-differential test
+
+Now, we will perform a sex-differential test:
+
+## Function: SexDiff()
+
+```{r}
+help(SexDiff, package = GXwasR)
+```
+
+## Running SexDiff
+
+```{r}
+## Running
+## Running the function
+x1 <- MaleWAS
+x1 <- x1[x1$TEST=="ADD",]
+x1 <- x1[,c(1:4,7:8)]
+colnames(x1)<- c("CHR","SNP","BP","A1","BETA_M","SE_M")
+x2 <- FemaleWAS
+x2 <- x2[x2$TEST=="ADD",]
+x2 <- x2[,c(1:4,7:8)]
+colnames(x2)<- c("CHR","SNP","BP","A1","BETA_F","SE_F")
+Difftest <- SexDiff(Mfile=x1,Ffile=x2)
+```
+
+```{r}
+## Significant SNPs with sex-differential effect
+sig.snps <- Difftest[Difftest$adjP <0.05,]
+colnames(sig.snps) <- c("SNP","CHR","BP","A1","T_statistic","Pvalue","Adjusted_Pvalue")
+knitr::kable(sig.snps, caption = 'SNPs with significant sex-differential effect.')
+```
+
+# Citing `GXwasR`
+
+We hope that `r BiocStyle::Biocpkg("GXwasR")` will be useful for your research. Please use the following information to cite the package and the overall approach. Thank you!
+
+```{r "citation"}
+## Citation info
+citation("GXwasR")
+```
+
+# Reproducibility
+
+The `r BiocStyle::Biocpkg("GXwasR")` package `r Citep(bib[["GXwasR"]])` was made possible thanks to:
+
+* R `r Citep(bib[["R"]])`
+* `r BiocStyle::Biocpkg("BiocStyle")` `r Citep(bib[["BiocStyle"]])`
+* `r BiocStyle::CRANpkg("knitr")` `r Citep(bib[["knitr"]])`
+* `r BiocStyle::CRANpkg("RefManageR")` `r Citep(bib[["RefManageR"]])`
+* `r BiocStyle::CRANpkg("rmarkdown")` `r Citep(bib[["rmarkdown"]])`
+* `r BiocStyle::CRANpkg("sessioninfo")` `r Citep(bib[["sessioninfo"]])`
+* `r BiocStyle::CRANpkg("testthat")` `r Citep(bib[["testthat"]])`
+
+This package was developed using `r BiocStyle::Biocpkg("biocthis")`.
+
+`R` session information.
+
+```{r reproduce3, echo=FALSE}
+## Session info
+library("sessioninfo")
+options(width = 120)
+session_info()
+```
+
+# Bibliography
+
+This vignette was generated using `r BiocStyle::Biocpkg("BiocStyle")` `r Citep(bib[["BiocStyle"]])`
+with `r BiocStyle::CRANpkg("knitr")` `r Citep(bib[["knitr"]])` and `r BiocStyle::CRANpkg("rmarkdown")` `r Citep(bib[["rmarkdown"]])` running behind the scenes.
+
+Citations made with `r BiocStyle::CRANpkg("RefManageR")` `r Citep(bib[["RefManageR"]])`.
+
+```{r vignetteBiblio, results = "asis", echo = FALSE, warning = FALSE, message = FALSE}
+## Print bibliography
+PrintBibliography(bib, .opts = list(hyperlink = "to.doc", style = "html"))
+```
