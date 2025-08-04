@@ -107,7 +107,7 @@ library(rmarkdown)
 
 To explore all available functions, users should first load the GXwasR library and then use the `browseVignettes()` function:
 
-```
+```{r, eval = FALSE}
 library(GXwasR)
 browseVignettes("GXwasR")
 ```
