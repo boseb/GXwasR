@@ -159,7 +159,7 @@ knitr::kable(x2[1:10, ], caption = "Metadata of the top ten associations based o
 ```{r}
 # Dataframe with the problematic SNPs
 x1 <- x$ProblemSNP
-knitr::kable(x1[1:10, ], caption = "Top ten probematic SNPs.")
+knitr::kable(x1[1:10, ], caption = "Top ten problematic SNPs.")
 ```
 
 # Including Plots
