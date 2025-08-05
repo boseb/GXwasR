@@ -181,7 +181,7 @@ help(TestXGene, package = "GXwasR")
 
 ### Function 14
 ```{r}
-help(MetaGXwas, package = "GXwasR")
+help(MetaGWAS, package = "GXwasR")
 ```
 
 ### Function 15
