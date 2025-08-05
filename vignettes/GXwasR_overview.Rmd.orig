@@ -73,48 +73,41 @@ BiocManager::valid()
 This document lists all the functions in GXwasR package.It offers thirty-three distinct functions, which are organized into six main categories: A) Pre-imputation QC, B) Post-imputation QC, C) Sex-combined and sex-stratified GWAS with specialized analysis for XWAS, D) Sex-differential test, E) High level analysis and a range of F) Utility Functions. These categories and their respective functions are detailed in the below Table.
 
 ## Table of Functions
-| Function        | Description                                                                                                     | Category                             |
-|-----------------|-----------------------------------------------------------------------------------------------------------------|--------------------------------------|
-| QCsnp()         | Performs quality control for SNPs in PLINK binary files.                                                        | Pre-imputation QC, Post-imputation QC |
-| QCsample()      | Identifies outlier individuals based on heterozygosity and missing genotype rates.                              | Pre-imputation QC, Post-imputation QC |
-| AncestryCheck() | Evaluates samples' ancestry and flags outliers using PCA.                                                       | Pre-imputation QC                     |
-| SexCheck()      | Compares sex assignments with predictions from X chromosome inbreeding coefficients.                            | Pre-imputation QC                     |
-| Xhwe()          | Filters X-chromosome variants violating Hardy-Weinberg Equilibrium in females.                                  | Post-imputation QC                    |
-| MAFdiffSexControl() | Tests for significant MAF differences between sexes in control samples.                                     | Post-imputation QC                    |
-| FilterRegion()  | Filters out specific chromosomal regions from input PLINK files.                                                | Post-imputation QC, Utility Functions |
-| GXwas()         | Runs GWAS models in autosomes with XWAS models like "FMcomb01", "FMcomb02", "FMstratified" for binary and quantitative traits, and "GWAScxci" for binary traits. Focuses on additive SNP effects, multi-collinearity issues, and includes multiple covariates and their interactions. | Sex-combined and sex-stratified GWAS with XWAS |
-| PvalComb()      | Combines p-values from separate GWAS using various statistical methods and corrects summary p-values.           | Sex-combined and sex-stratified GWAS with XWAS |
-| SexDiff()       | Evaluates sex differences in genetic effect size for each SNP.                                                  | Sex-differential test                 |
-| SexDiffZscore() | Presumably analyzes sex differences using Z-score methodology, comparing genetic effect sizes between males and females. | Sex-differential test                 |
-| DiffZeroOne()   | Assesses Z-scores for deviation from one and zero for statistics like genetic correlation.                      | Sex-differential test                 |
-| TestXGene()     | Performs gene-based association tests using GWAS/XWAS summary statistics.                                       | High level analysis                   |
-| MetaGXwas()     | Combines summary-level GWAS results using fixed-effect and random-effect models.                                | High level analysis                   |
-| ComputePRS()    | Calculates polygenic risk scores from GWAS summary statistics.                                                  | High level analysis                   |
-| GeneticCorrBT() | Computes genetic correlation between to traits.                      | High level analysis                   |
-| EstimateHerit() | Computes SNP heritability using GREML or LDSC models.                                                          | High level analysis                   |
-| SexRegress()    | Not previously described. Presumably involves regression analyses specific to sex-stratified data.             | High level analysis                   |
-| FilterPlinkSample() | Prepares PLINK binary files with desired samples based on specified criteria.                                 | Utility Functions                     |
-| ComputeGeneticPC() | Computes principal components from a genetic relationship matrix for population stratification correction.    | Utility Functions                     |
-| ClumpLD()       | Performs linkage disequilibrium clumping of SNPs.                                                              | Utility Functions                     |
-| GetMFPlink()    | Prepares separate male and female PLINK binary files from combined files.                                      | Utility Functions                     |
-| plinkVCF()      | Converts VCF files to plink binary formats and vice versa, including creation of dummy FAM files.              | Utility Functions                     |
-| MergeRegion()   | Combines two genotype datasets based on common or all SNPs.                                                    | Utility Functions                     |
-| FilterAllele()  | Filters out multi-allelic variants from the genetic dataset, essential for maintaining dataset integrity and simplifying genetic analyses. | Utility Functions                     |
-| PlinkSummary()  | Provides a summary of genotype datasets in plink format.                                                       | Utility Functions                     |
-| FilterSNP()     | Filters out specific SNPs from the dataset based on user-defined criteria.                                     | Utility Functions                     |
-| DummyCovar()    | Recodes a categorical covariate into binary dummy variables for statistical analysis in GXwasR.                | Utility Functions                     |
-| GXWASmiami()    | Generates Miami plots for GWAS and XWAS.                
-               | Utility Functions                     |
-| Download_reference()    | Download Hapmap phase 3 and 1000 Genome phase 3 Data.                
-               | Utility Functions                     |     
-| SumstatGenCorr()    | Genetic Correlation Calculation from GWAS Summary Statistics.                
-               | High level analysis                     |     
-| LDPrune()    | Performs LD pruning on SNP data.                
-               | Utility Functions                     | 
-| executePlinkMAF()    | Calculate minor allele frequencies.                
-               | Utility Functions                     |    
-| ComputeLD()    | Calculate LD matrix.                
-               | Utility Functions                     | 
+| Function        | Description                                                                                                                                    | Category                                       |
+|---------------------|--------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------|
+| QCsnp()             | Performs quality control for SNPs in PLINK binary files.                                                                                   | Pre-imputation QC, Post-imputation QC          |
+| QCsample()          | Identifies outlier individuals based on heterozygosity and missing genotype rates.                                                         | Pre-imputation QC, Post-imputation QC          |
+| AncestryCheck()     | Evaluates samples' ancestry and flags outliers using PCA.                                                                                  | Pre-imputation QC                              |
+| SexCheck()          | Compares sex assignments with predictions from X chromosome inbreeding coefficients.                                                       | Pre-imputation QC                              |
+| Xhwe()              | Filters X-chromosome variants violating Hardy-Weinberg Equilibrium in females.                                                             | Post-imputation QC                             |
+| MAFdiffSexControl() | Tests for significant MAF differences between sexes in control samples.                                                                    | Post-imputation QC                             |
+| FilterRegion()      | Filters out specific chromosomal regions from input PLINK files.                                                                           | Post-imputation QC, Utility Functions          |
+| GXwas()             | Runs GWAS models in autosomes with XWAS models like "FMcomb01", "FMcomb02", "FMstratified" for binary and quantitative traits, and "GWAScxci" for binary traits. Focuses on additive SNP effects, multi-collinearity issues, and includes multiple covariates and their interactions. | Sex-combined and sex-stratified GWAS with XWAS |
+| PvalComb()          | Combines p-values from separate GWAS using various statistical methods and corrects summary p-values.                                      | Sex-combined and sex-stratified GWAS with XWAS |
+| SexDiff()           | Evaluates sex differences in genetic effect size for each SNP.                                                                             | Sex-differential test                          |
+| SexDiffZscore()     | Presumably analyzes sex differences using Z-score methodology, comparing genetic effect sizes between males and females.                   | Sex-differential test                          |
+| DiffZeroOne()       | Assesses Z-scores for deviation from one and zero for statistics like genetic correlation.                                                 | Sex-differential test                          |
+| TestXGene()         | Performs gene-based association tests using GWAS/XWAS summary statistics.                                                                  | High level analysis                            |
+| MetaGWAS()          | Combines summary-level GWAS results using fixed-effect and random-effect models.                                                           | High level analysis                            |
+| ComputePRS()        | Calculates polygenic risk scores from GWAS summary statistics.                                                                             | High level analysis                            |
+| GeneticCorrBT()     | Computes genetic correlation between to traits.                                                                                            | High level analysis                            |
+| EstimateHerit()     | Computes SNP heritability using GREML or LDSC models.                                                                                      | High level analysis                            |
+| SexRegress()        | Not previously described. Presumably involves regression analyses specific to sex-stratified data.                                         | High level analysis                            |
+| FilterPlinkSample() | Prepares PLINK binary files with desired samples based on specified criteria.                                                              | Utility Functions                              |
+| ComputeGeneticPC()  | Computes principal components from a genetic relationship matrix for population stratification correction.                                 | Utility Functions                              |
+| ClumpLD()           | Performs linkage disequilibrium clumping of SNPs.                                                                                          | Utility Functions                              |
+| GetMFPlink()        | Prepares separate male and female PLINK binary files from combined files.                                                                  | Utility Functions                              |
+| plinkVCF()          | Converts VCF files to plink binary formats and vice versa, including creation of dummy FAM files.                                          | Utility Functions                              |
+| MergeRegion()       | Combines two genotype datasets based on common or all SNPs.                                                                                | Utility Functions                              |
+| FilterAllele()      | Filters out multi-allelic variants from the genetic dataset, essential for maintaining dataset integrity and simplifying genetic analyses. | Utility Functions                              |
+| PlinkSummary()      | Provides a summary of genotype datasets in plink format.                                                                                   | Utility Functions                              |
+| FilterSNP()         | Filters out specific SNPs from the dataset based on user-defined criteria.                                                                 | Utility Functions                              |
+| DummyCovar()        | Recodes a categorical covariate into binary dummy variables for statistical analysis in GXwasR.                                            | Utility Functions                              |
+| GXWASmiami()        | Generates Miami plots for GWAS and XWAS.                                                                                                   | Utility Functions                              |
+| SumstatGenCorr()    | Genetic Correlation Calculation from GWAS Summary Statistics.                                                                              | High level analysis                            |
+| LDPrune()           | Performs LD pruning on SNP data.                                                                                                           | Utility Functions                              | 
+| executePlinkMAF()   | Calculate minor allele frequencies.                                                                                                        | Utility Functions                              |    
+| ComputeLD()         | Calculate LD matrix.                                                                                                                       | Utility Functions                              | 
 ```{r}
 library(GXwasR)
 library(printr)
@@ -198,7 +191,7 @@ help(ComputePRS, package = "GXwasR")
 
 ### Function 16
 ```{r}
-help(ComputeCorrBT, package = "GXwasR")
+help(GeneticCorrBT, package = "GXwasR")
 ```
 
 ### Function 17
@@ -260,31 +253,28 @@ help(FilterSNP, package = "GXwasR")
 ```{r}
 help(DummyCovar, package = "GXwasR")
 ```
+
 ### Function 29
 ```{r}
 help(GXWASmiami, package = "GXwasR")
 ```
-### Function 30
-```{r}
-help(Download_reference, package = "GXwasR")
-```
 
-### Function 31
+### Function 30
 ```{r}
 help(SumstatGenCorr, package = "GXwasR")
 ```
 
-### Function 32
+### Function 31
 ```{r}
 help(LDPrune, package = "GXwasR")
 ```
 
-### Function 33
+### Function 32
 ```{r}
 help(executePlinkMAF, package = "GXwasR")
 ```
 
-### Function 34
+### Function 33
 ```{r}
 help(ComputeLD, package = "GXwasR")
 ```
@@ -296,8 +286,11 @@ Please follow these tutorials to know more about the functionality of the packag
 Tutorial for performing post-imputation QC followed by sex-aware association tests: (vignette:Use of GXwasR)
 
 * Tutorial for performing pre-imputation QC using GXwasR: [https://boseb.github.io/GXwasR/articles/preimputationQC.html](https://boseb.github.io/GXwasR/articles/preimputationQC.html)
-* Tutorial for performing post-imputation QC using GXwasR: [https://boseb.github.io/Processing_1000Genome/tutorial.html](https://boseb.github.io/Processing_1000Genome/tutorial.html)
+* Tutorial for performing post-imputation QC using GXwasR: [https://boseb.github.io/GXwasR/articles/postimputationQC.html](https://boseb.github.io/GXwasR/articles/postimputationQC.html)
+* Tutorial for running GWAS, XWAS and Sex-differential Tests using GXwasR: [https://boseb.github.io/GXwasR/articles/gwas_models.html](https://boseb.github.io/GXwasR/articles/gwas_models.html)
+* Tutorial for computing Polygenic Risk Score using GXwasR: [https://boseb.github.io/GXwasR/articles/GXwasR_PRS.html](https://boseb.github.io/GXwasR/articles/GXwasR_PRS.html)
 * Tutorial for ancestry estimation: [https://boseb.github.io/GXwasR/articles/decoding_ancestry.html](https://boseb.github.io/GXwasR/articles/decoding_ancestry.html)
+* Tutorial for meta analysis using GXwasR: [https://boseb.github.io/GXwasR/articles/meta_analysis.html](https://boseb.github.io/GXwasR/articles/meta_analysis.html)
 
 # Citing `GXwasR`
 
