@@ -74,7 +74,7 @@ Bose</h4>
 Campus<br><a class="author_email" href="mailto:#"></a><a href="mailto:banabithi.bose@gmail.com" class="email">banabithi.bose@gmail.com</a>
       </address>
                   
-            <h4 data-toc-skip class="date">4 August 2025</h4>
+            <h4 data-toc-skip class="date">5 August 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/main/vignettes/GXwasR_PRS.Rmd" class="external-link"><code>vignettes/GXwasR_PRS.Rmd</code></a></small>
       <div class="d-none name"><code>GXwasR_PRS.Rmd</code></div>
@@ -138,20 +138,204 @@ utilizing GXwasR R package.</strong></p>
 <span><span class="va">ldclump</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span><span class="va">pheno_type</span> <span class="op">&lt;-</span> <span class="st">"binary"</span></span>
 <span><span class="va">PRSresult</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputePRS.html">ComputePRS</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span>, <span class="va">summarystat</span>, <span class="va">phenofile</span>, <span class="va">covarfile</span>, effectsize <span class="op">=</span> <span class="st">"BETA"</span>, LDreference <span class="op">=</span> <span class="st">"GXwasR_example"</span>, ldclump <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">clump_p1</span>, <span class="va">clump_p2</span>, <span class="va">clump_r2</span>, <span class="va">clump_kb</span>, byCHR <span class="op">=</span> <span class="cn">TRUE</span>, pthreshold <span class="op">=</span> <span class="va">pthreshold</span>, highLD_regions <span class="op">=</span> <span class="va">highLD_regions</span>, ld_prunning <span class="op">=</span> <span class="cn">TRUE</span>, window_size <span class="op">=</span> <span class="fl">50</span>, step_size <span class="op">=</span> <span class="fl">5</span>, r2_threshold <span class="op">=</span> <span class="fl">0.02</span>, nPC <span class="op">=</span> <span class="fl">6</span>, pheno_type <span class="op">=</span> <span class="st">"binary"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp0uzDD3/temp_libpathfc4116ff9158', reason 'Directory not empty'</span></span>
-<span><span class="co">#&gt; An error occurred: attempt to set 'colnames' on an object with less than two dimensions</span></span>
-<span><span class="co">#&gt; Error in ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, : object 'pheno.prs' not found</span></span>
-<span></span>
-<span><span class="co">## This table shows 10 samples with phenotype, covariates and a PRS column.</span></span>
+<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpdyNNez/temp_libpath548126ba7acf', reason 'Directory not empty'</span></span>
+<span><span class="co">#&gt; ℹ 0.001</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.001</span></span>
+<span><span class="co">#&gt; ℹ 0.05</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.05</span></span>
+<span><span class="co">#&gt; ℹ 0.1</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.1</span></span>
+<span><span class="co">#&gt; ℹ 0.2</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.2</span></span>
+<span><span class="co">#&gt; ℹ 0.3</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.3</span></span>
+<span><span class="co">#&gt; ℹ 0.4</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.4</span></span>
+<span><span class="co">#&gt; ℹ 0.5</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.5</span></span>
+<span><span class="va">PRSresult</span><span class="op">$</span><span class="va">PRS_plot</span></span>
+<span><span class="co">#&gt; Error in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, : Metric information not available for this family/device</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## This table shows 10 samples with phenotype, covariates and a PRS column.</span></span>
 <span><span class="va">PRS</span> <span class="op">&lt;-</span> <span class="va">PRSresult</span><span class="op">$</span><span class="va">PRS</span></span>
-<span><span class="co">#&gt; Error: object 'PRSresult' not found</span></span>
-<span><span class="va">PRS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span></span>
-<span><span class="co">#&gt; Error: object 'PRS' not found</span></span>
-<span><span class="co">## The best threshold</span></span>
+<span><span class="va">PRS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="7%">
+<col width="7%">
+<col width="6%">
+<col width="3%">
+<col width="8%">
+<col width="8%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="8%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">FID</th>
+<th align="left">IID</th>
+<th align="right">Pheno1</th>
+<th align="right">AGE</th>
+<th align="right">testcovar</th>
+<th align="right">PC1</th>
+<th align="right">PC2</th>
+<th align="right">PC3</th>
+<th align="right">PC4</th>
+<th align="right">PC5</th>
+<th align="right">PC6</th>
+<th align="right">SCORE</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00171</td>
+<td align="right">1</td>
+<td align="right">36</td>
+<td align="right">1</td>
+<td align="right">0.0964618</td>
+<td align="right">-0.0382514</td>
+<td align="right">0.0090380</td>
+<td align="right">-0.0895293</td>
+<td align="right">-0.0252291</td>
+<td align="right">0.0146543</td>
+<td align="right">0.0484212</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00173</td>
+<td align="right">1</td>
+<td align="right">81</td>
+<td align="right">1</td>
+<td align="right">0.0743932</td>
+<td align="right">-0.0567271</td>
+<td align="right">0.0396994</td>
+<td align="right">0.0205343</td>
+<td align="right">0.0230410</td>
+<td align="right">-0.0360380</td>
+<td align="right">0.0293742</td>
+</tr>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00174</td>
+<td align="right">1</td>
+<td align="right">83</td>
+<td align="right">1</td>
+<td align="right">0.0645349</td>
+<td align="right">-0.0561035</td>
+<td align="right">-0.0145786</td>
+<td align="right">-0.0264343</td>
+<td align="right">-0.0018095</td>
+<td align="right">0.0144521</td>
+<td align="right">0.0099674</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00176</td>
+<td align="right">2</td>
+<td align="right">75</td>
+<td align="right">0</td>
+<td align="right">0.0832472</td>
+<td align="right">-0.0560208</td>
+<td align="right">0.0302654</td>
+<td align="right">-0.0011077</td>
+<td align="right">-0.0530371</td>
+<td align="right">-0.0335803</td>
+<td align="right">0.1042060</td>
+</tr>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00177</td>
+<td align="right">1</td>
+<td align="right">88</td>
+<td align="right">1</td>
+<td align="right">0.0775687</td>
+<td align="right">-0.0094644</td>
+<td align="right">0.0451785</td>
+<td align="right">-0.0373215</td>
+<td align="right">-0.0617431</td>
+<td align="right">-0.0719951</td>
+<td align="right">0.0314303</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00178</td>
+<td align="right">1</td>
+<td align="right">24</td>
+<td align="right">1</td>
+<td align="right">0.0661714</td>
+<td align="right">-0.0504906</td>
+<td align="right">0.0248539</td>
+<td align="right">-0.0828066</td>
+<td align="right">0.0409418</td>
+<td align="right">0.0055953</td>
+<td align="right">0.0722689</td>
+</tr>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00179</td>
+<td align="right">2</td>
+<td align="right">78</td>
+<td align="right">1</td>
+<td align="right">0.0806110</td>
+<td align="right">-0.0115409</td>
+<td align="right">-0.0075072</td>
+<td align="right">-0.0328823</td>
+<td align="right">0.0355973</td>
+<td align="right">0.0424512</td>
+<td align="right">0.1165240</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00180</td>
+<td align="right">1</td>
+<td align="right">39</td>
+<td align="right">1</td>
+<td align="right">0.0840638</td>
+<td align="right">0.0011783</td>
+<td align="right">0.0128646</td>
+<td align="right">0.0591540</td>
+<td align="right">0.0547667</td>
+<td align="right">-0.0101595</td>
+<td align="right">0.0617159</td>
+</tr>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00182</td>
+<td align="right">1</td>
+<td align="right">50</td>
+<td align="right">1</td>
+<td align="right">0.1029760</td>
+<td align="right">-0.0430046</td>
+<td align="right">0.0199971</td>
+<td align="right">-0.0302365</td>
+<td align="right">-0.0901911</td>
+<td align="right">-0.0378515</td>
+<td align="right">0.0283703</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00183</td>
+<td align="right">1</td>
+<td align="right">58</td>
+<td align="right">0</td>
+<td align="right">0.0827103</td>
+<td align="right">-0.0386530</td>
+<td align="right">0.0509366</td>
+<td align="right">-0.0015378</td>
+<td align="right">-0.1045610</td>
+<td align="right">0.0623634</td>
+<td align="right">0.0386297</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## The best threshold</span></span>
 <span><span class="va">BestPvalue</span> <span class="op">&lt;-</span> <span class="va">PRSresult</span><span class="op">$</span><span class="va">BestP</span><span class="op">$</span><span class="va">Threshold</span></span>
-<span><span class="co">#&gt; Error: object 'PRSresult' not found</span></span>
 <span><span class="va">BestPvalue</span></span>
-<span><span class="co">#&gt; Error: object 'BestPvalue' not found</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.05</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -163,14 +347,14 @@ utilizing GXwasR R package.</strong></p>
 <p><strong>Discovery Data</strong> i.e., GWAS summary statistics with
 mandatory columns such as “SNP”(SNP names), “A1”(effect allele),
 “BETA”(effect size in beta value) and “P”(p-value).</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example discovery data is included in GXwasR</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/boseb/GXwasR/" class="external-link">GXwasR</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Summary_Stat_Ex1</span><span class="op">)</span></span>
 <span><span class="va">summarystat</span> <span class="op">&lt;-</span> <span class="va">Summary_Stat_Ex1</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">12</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <p><strong>Target Data</strong> i.e., genotype dataset in plink .bed,
 .bim and .fam format.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example target data is included in GXwasR</span></span>
 <span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span></code></pre></div>
@@ -195,7 +379,7 @@ utility functions, please follow <a href="https://boseb.github.io/GXwasR/article
 <p>We will use <code><a href="../reference/FilterAllele.html">FilterAllele()</a></code> on target data to filter out
 the multi-allelic SNPs. Also, note that GXwasR doesn’t work with
 multi-allelic variants. So this filtering step is important.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Target data</span></span>
 <span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -206,7 +390,7 @@ multi-allelic variants. So this filtering step is important.</p>
 <p>Now, we will use <code><a href="../reference/QCsnp.html">QCsnp()</a></code> to remove ambiguous (A/T or
 C/G) SNPs and SNPs with MAF &lt; 0.05 and Hardy Weinberg Equilibrium
 (hwe) &gt; e-10.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Since there was no multiallelic SNPs, we will continue with original input data.</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"filtered_step1"</span></span>
@@ -238,7 +422,7 @@ C/G) SNPs and SNPs with MAF &lt; 0.05 and Hardy Weinberg Equilibrium
 <p><strong>(C) Check whether SNPs present in discovery data are in
 target data.</strong></p>
 <p>Let’s gather the common SNPs between these.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">SNP1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">summarystat</span><span class="op">$</span><span class="va">SNP</span><span class="op">)</span></span>
 <span><span class="va">targetbim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/filtered_step1.bim"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">SNP2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">targetbim</span><span class="op">$</span><span class="va">V2</span><span class="op">)</span></span>
@@ -247,7 +431,7 @@ target data.</strong></p>
 <div class="section level3">
 <h3 id="filtering-discovery-data-and-target-data-with-common-snps">Filtering discovery data and target data with common SNPs<a class="anchor" aria-label="anchor" href="#filtering-discovery-data-and-target-data-with-common-snps"></a>
 </h3>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">commonSNP</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">commonSNP</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">commonSNP</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"SNP"</span></span>
 <span><span class="va">NewDiscoveryData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">commonSNP</span>, <span class="va">summarystat</span>, by <span class="op">=</span> <span class="st">"SNP"</span><span class="op">)</span></span>
@@ -260,7 +444,7 @@ target data.</strong></p>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"NewtargetData"</span></span>
 <span><span class="fu"><a href="../reference/FilterSNP.html">FilterSNP</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span>, <span class="va">foutput</span>, <span class="va">SNPvec</span>, extract <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ 991 SNPs are extracted</span></span>
-<span><span class="co">#&gt; ✔ Plink files with extracted SNPs are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3 prefixed as NewtargetData</span></span>
+<span><span class="co">#&gt; ✔ Plink files with extracted SNPs are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez prefixed as NewtargetData</span></span>
 <span><span class="co">#&gt; NULL</span></span></code></pre></div>
 <p>Now, our discovery data and target data are ready. We will proceed
 towards computing first sex-combined PRS and then sex-stratified
@@ -279,7 +463,7 @@ trait) or MacFadden R-square (for binary trait) using generalized linear
 model with covariates, such as genetic PCs.</strong></p>
 <p>We will utilize the <code><a href="../reference/ComputePRS.html">ComputePRS()</a></code> to perform the steps
 (A), (B) and (C).</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Running</span></span>
 <span><span class="co"># Filtered target data needs to be copied from ResultDir to DataDir.</span></span>
 <span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"NewtargetData"</span><span class="op">)</span></span>
@@ -308,20 +492,204 @@ model with covariates, such as genetic PCs.</strong></p>
 <span><span class="va">effectsize</span> <span class="op">&lt;-</span> <span class="st">"BETA"</span></span>
 <span><span class="va">ldclump</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span><span class="va">PRSresult</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputePRS.html">ComputePRS</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span>, <span class="va">summarystat</span>, <span class="va">phenofile</span>, <span class="va">covarfile</span>, effectsize <span class="op">=</span> <span class="st">"BETA"</span>, LDreference <span class="op">=</span> <span class="st">"GXwasR_example"</span>, ldclump <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">clump_p1</span>, <span class="va">clump_p2</span>, <span class="va">clump_r2</span>, <span class="va">clump_kb</span>, byCHR <span class="op">=</span> <span class="cn">TRUE</span>, pthreshold <span class="op">=</span> <span class="va">pthreshold</span>, highLD_regions <span class="op">=</span> <span class="va">highLD_regions</span>, ld_prunning <span class="op">=</span> <span class="cn">TRUE</span>, window_size <span class="op">=</span> <span class="fl">50</span>, step_size <span class="op">=</span> <span class="fl">5</span>, r2_threshold <span class="op">=</span> <span class="fl">0.02</span>, nPC <span class="op">=</span> <span class="fl">6</span>, pheno_type <span class="op">=</span> <span class="st">"binary"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp0uzDD3/temp_libpathfc4116ff9158', reason 'Directory not empty'</span></span>
-<span><span class="co">#&gt; An error occurred: attempt to set 'colnames' on an object with less than two dimensions</span></span>
-<span><span class="co">#&gt; Error in ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, : object 'pheno.prs' not found</span></span>
-<span></span>
-<span><span class="co">## This table shows 10 samples with phenotype, covariates and a PRS column.</span></span>
+<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpdyNNez/temp_libpath548126ba7acf', reason 'Directory not empty'</span></span>
+<span><span class="co">#&gt; ℹ 0.001</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.001</span></span>
+<span><span class="co">#&gt; ℹ 0.05</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.05</span></span>
+<span><span class="co">#&gt; ℹ 0.1</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.1</span></span>
+<span><span class="co">#&gt; ℹ 0.2</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.2</span></span>
+<span><span class="co">#&gt; ℹ 0.3</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.3</span></span>
+<span><span class="co">#&gt; ℹ 0.4</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.4</span></span>
+<span><span class="co">#&gt; ℹ 0.5</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.5</span></span>
+<span><span class="va">PRSresult</span><span class="op">$</span><span class="va">PRS_plot</span></span>
+<span><span class="co">#&gt; Error in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, : Metric information not available for this family/device</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## This table shows 10 samples with phenotype, covariates and a PRS column.</span></span>
 <span><span class="va">PRS</span> <span class="op">&lt;-</span> <span class="va">PRSresult</span><span class="op">$</span><span class="va">PRS</span></span>
-<span><span class="co">#&gt; Error: object 'PRSresult' not found</span></span>
-<span><span class="va">PRS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span></span>
-<span><span class="co">#&gt; Error: object 'PRS' not found</span></span>
-<span><span class="co">## The best threshold</span></span>
+<span><span class="va">PRS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span></span></code></pre></div>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="7%">
+<col width="7%">
+<col width="6%">
+<col width="3%">
+<col width="8%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">FID</th>
+<th align="left">IID</th>
+<th align="right">Pheno1</th>
+<th align="right">AGE</th>
+<th align="right">testcovar</th>
+<th align="right">PC1</th>
+<th align="right">PC2</th>
+<th align="right">PC3</th>
+<th align="right">PC4</th>
+<th align="right">PC5</th>
+<th align="right">PC6</th>
+<th align="right">SCORE</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00171</td>
+<td align="right">1</td>
+<td align="right">36</td>
+<td align="right">1</td>
+<td align="right">0.0816192</td>
+<td align="right">0.0088405</td>
+<td align="right">0.0457488</td>
+<td align="right">-0.0458072</td>
+<td align="right">0.0361127</td>
+<td align="right">-0.0444544</td>
+<td align="right">0.0446702</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00173</td>
+<td align="right">1</td>
+<td align="right">81</td>
+<td align="right">1</td>
+<td align="right">0.0783950</td>
+<td align="right">0.0793499</td>
+<td align="right">-0.0203422</td>
+<td align="right">0.0507417</td>
+<td align="right">0.0060022</td>
+<td align="right">0.0682457</td>
+<td align="right">0.0227245</td>
+</tr>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00174</td>
+<td align="right">1</td>
+<td align="right">83</td>
+<td align="right">1</td>
+<td align="right">0.0417082</td>
+<td align="right">-0.0182760</td>
+<td align="right">-0.0141222</td>
+<td align="right">-0.0796694</td>
+<td align="right">-0.1079240</td>
+<td align="right">0.0417553</td>
+<td align="right">-0.0021202</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00176</td>
+<td align="right">2</td>
+<td align="right">75</td>
+<td align="right">0</td>
+<td align="right">0.0330363</td>
+<td align="right">-0.0687181</td>
+<td align="right">0.0420013</td>
+<td align="right">0.0035531</td>
+<td align="right">-0.0326060</td>
+<td align="right">0.0546183</td>
+<td align="right">0.1291310</td>
+</tr>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00177</td>
+<td align="right">1</td>
+<td align="right">88</td>
+<td align="right">1</td>
+<td align="right">0.1078350</td>
+<td align="right">0.0402309</td>
+<td align="right">-0.0575659</td>
+<td align="right">0.0204330</td>
+<td align="right">-0.0190359</td>
+<td align="right">-0.1153630</td>
+<td align="right">0.0456979</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00178</td>
+<td align="right">1</td>
+<td align="right">24</td>
+<td align="right">1</td>
+<td align="right">0.0446610</td>
+<td align="right">-0.0178283</td>
+<td align="right">-0.0541228</td>
+<td align="right">-0.1293990</td>
+<td align="right">0.0191170</td>
+<td align="right">0.0419359</td>
+<td align="right">0.0974915</td>
+</tr>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00179</td>
+<td align="right">2</td>
+<td align="right">78</td>
+<td align="right">1</td>
+<td align="right">-0.0079884</td>
+<td align="right">0.0495156</td>
+<td align="right">-0.0417300</td>
+<td align="right">-0.0908318</td>
+<td align="right">-0.1013690</td>
+<td align="right">-0.0286235</td>
+<td align="right">0.1043860</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00180</td>
+<td align="right">1</td>
+<td align="right">39</td>
+<td align="right">1</td>
+<td align="right">-0.0643263</td>
+<td align="right">-0.0789866</td>
+<td align="right">-0.0961588</td>
+<td align="right">-0.0117982</td>
+<td align="right">0.0919479</td>
+<td align="right">-0.0083767</td>
+<td align="right">0.0943266</td>
+</tr>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00182</td>
+<td align="right">1</td>
+<td align="right">50</td>
+<td align="right">1</td>
+<td align="right">0.0477393</td>
+<td align="right">0.0258317</td>
+<td align="right">0.1084700</td>
+<td align="right">-0.0102109</td>
+<td align="right">-0.0949523</td>
+<td align="right">0.0224777</td>
+<td align="right">0.0248974</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00183</td>
+<td align="right">1</td>
+<td align="right">58</td>
+<td align="right">0</td>
+<td align="right">0.0181373</td>
+<td align="right">-0.0707456</td>
+<td align="right">0.0252158</td>
+<td align="right">-0.0319165</td>
+<td align="right">-0.0351717</td>
+<td align="right">-0.0521393</td>
+<td align="right">0.0521662</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## The best threshold</span></span>
 <span><span class="va">BestPvalue</span> <span class="op">&lt;-</span> <span class="va">PRSresult</span><span class="op">$</span><span class="va">BestP</span><span class="op">$</span><span class="va">Threshold</span></span>
-<span><span class="co">#&gt; Error: object 'PRSresult' not found</span></span>
 <span><span class="va">BestPvalue</span></span>
-<span><span class="co">#&gt; Error: object 'BestPvalue' not found</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.05</span></span></code></pre></div>
 <p><strong>(D) Perform regression to test the association of PRS and
 sex.</strong></p>
 <p><strong>(E) Perform the regression using different thresholds of PRS
@@ -334,37 +702,30 @@ as well.</p>
 <div class="section level2">
 <h2 id="about-sexregress">About SexRegress()<a class="anchor" aria-label="anchor" href="#about-sexregress"></a>
 </h2>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">SexRegress</span>, package <span class="op">=</span> <span class="va">GXwasR</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Rendering development documentation for "SexRegress"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="running-sexregress">Running SexRegress()<a class="anchor" aria-label="anchor" href="#running-sexregress"></a>
 </h2>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Running</span></span>
 <span><span class="co"># First, we need to make fdata object.</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/boseb/GXwasR/" class="external-link">GXwasR</a></span><span class="op">)</span></span>
 <span><span class="va">famfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/NewtargetData.fam"</span><span class="op">)</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">famfile</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FID"</span>, <span class="st">"IID"</span>, <span class="st">"Sex"</span><span class="op">)</span></span>
 <span><span class="va">prefdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">famfile</span>, <span class="va">PRS</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"IID"</span>, <span class="st">"FID"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error: object 'PRS' not found</span></span>
 <span></span>
 <span><span class="va">fdata</span> <span class="op">&lt;-</span> <span class="va">prefdata</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">13</span>, <span class="fl">3</span><span class="op">:</span><span class="fl">12</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt; Error: object 'prefdata' not found</span></span>
 <span><span class="va">fdata</span><span class="op">$</span><span class="va">Sex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">fdata</span><span class="op">$</span><span class="va">Sex</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error: object 'fdata' not found</span></span>
 <span><span class="va">response_index</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span><span class="va">regressor_index</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
 <span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SexRegress.html">SexRegress</a></span><span class="op">(</span><span class="va">fdata</span>, <span class="va">regressor_index</span>, <span class="va">response_index</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error: object 'fdata' not found</span></span>
 <span><span class="va">x</span></span>
-<span><span class="co">#&gt; $MonomorSNPs</span></span>
-<span><span class="co">#&gt; NULL</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $DiffMissSNPs</span></span>
-<span><span class="co">#&gt; NULL</span></span></code></pre></div>
+<span><span class="co">#&gt;     Estimate   Std. Error      t value     Pr(&gt;|t|) </span></span>
+<span><span class="co">#&gt; -0.005453123  0.005495108 -0.992359622  0.321927372</span></span></code></pre></div>
 <p>In this case, the association between PRS and sex seems
 insignificant. Users can check with different thresholds of PRS as
 mentioned in step (D).</p>
@@ -378,19 +739,19 @@ stratified GWAS.</strong></p>
 <p><strong>(B) Prepare separate male and female target
 datasets.</strong></p>
 <p>For this, we will utilize <code><a href="../reference/GetMFPlink.html">GetMFPlink()</a></code>.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/boseb/GXwasR/" class="external-link">GXwasR</a></span><span class="op">)</span></span>
 <span><span class="co">## We will use NewtargetData as input for this function.</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"NewtargetData"</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"maletarget"</span></span>
 <span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="st">"males"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetMFPlink.html">GetMFPlink</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, sex <span class="op">=</span> <span class="va">sex</span>, xplink <span class="op">=</span> <span class="cn">FALSE</span>, autoplink <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Output plink files, prefixed as maletarget, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3</span></span>
+<span><span class="co">#&gt; ✔ Output plink files, prefixed as maletarget, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez</span></span>
 <span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"femaletarget"</span></span>
 <span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="st">"females"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetMFPlink.html">GetMFPlink</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, sex <span class="op">=</span> <span class="va">sex</span>, xplink <span class="op">=</span> <span class="cn">FALSE</span>, autoplink <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Output plink files, prefixed as femaletarget, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3</span></span></code></pre></div>
+<span><span class="co">#&gt; ✔ Output plink files, prefixed as femaletarget, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez</span></span></code></pre></div>
 <p><strong>(C) Perform LD clumping separately in both discovery
 data.</strong></p>
 <p><strong>(D) Compute PRS at a variety of p-value thresholds, using
@@ -401,7 +762,7 @@ trait) or MacFadden R-square (for binary trait) using generalized linear
 model with covariates, such as genetic PCs.</strong></p>
 <p>We will utilize the <code><a href="../reference/ComputePRS.html">ComputePRS()</a></code> to perform the steps
 (C), (D) and (E).</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Running</span></span>
 <span><span class="co"># Male and female target datasets need to be copied from ResultDir to DataDir.</span></span>
 <span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"target"</span><span class="op">)</span></span>
@@ -412,7 +773,7 @@ model with covariates, such as genetic PCs.</strong></p>
 <h2 id="computing-prs-for-female-only-target-data-using-male-only-discovery-data">Computing PRS for female-only target data using male-only discovery
 data<a class="anchor" aria-label="anchor" href="#computing-prs-for-female-only-target-data-using-male-only-discovery-data"></a>
 </h2>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># DataDir &lt;- GXwasR:::GXwasR_data()</span></span>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"femaletarget"</span></span>
@@ -443,26 +804,222 @@ data<a class="anchor" aria-label="anchor" href="#computing-prs-for-female-only-t
 <span><span class="va">ldclump</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span><span class="va">effectsize</span> <span class="op">&lt;-</span> <span class="st">"BETA"</span></span>
 <span><span class="va">PRSresultFemale</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputePRS.html">ComputePRS</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span>, <span class="va">summarystat</span>, <span class="va">phenofile</span>, <span class="va">covarfile</span>, effectsize <span class="op">=</span> <span class="st">"BETA"</span>, LDreference <span class="op">=</span> <span class="st">"GXwasR_example"</span>, ldclump <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">clump_p1</span>, <span class="va">clump_p2</span>, <span class="va">clump_r2</span>, <span class="va">clump_kb</span>, byCHR <span class="op">=</span> <span class="cn">TRUE</span>, pthreshold <span class="op">=</span> <span class="va">pthreshold</span>, highLD_regions <span class="op">=</span> <span class="va">highLD_regions</span>, ld_prunning <span class="op">=</span> <span class="cn">TRUE</span>, window_size <span class="op">=</span> <span class="fl">50</span>, step_size <span class="op">=</span> <span class="fl">5</span>, r2_threshold <span class="op">=</span> <span class="fl">0.02</span>, nPC <span class="op">=</span> <span class="fl">6</span>, pheno_type <span class="op">=</span> <span class="st">"binary"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp0uzDD3/temp_libpathfc4116ff9158', reason 'Directory not empty'</span></span>
-<span><span class="co">#&gt; An error occurred: attempt to set 'colnames' on an object with less than two dimensions</span></span>
-<span><span class="co">#&gt; Error in ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, : object 'pheno.prs' not found</span></span>
-<span></span>
-<span><span class="co">## This table shows 10 samples with phenotype, covariates and a PRS column.</span></span>
+<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpdyNNez/temp_libpath548126ba7acf', reason 'Directory not empty'</span></span>
+<span><span class="co">#&gt; ℹ 0.001</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.001</span></span>
+<span><span class="co">#&gt; ℹ 0.05</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.05</span></span>
+<span><span class="co">#&gt; ℹ 0.1</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.1</span></span>
+<span><span class="co">#&gt; ℹ 0.2</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.2</span></span>
+<span><span class="co">#&gt; ℹ 0.3</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.3</span></span>
+<span><span class="co">#&gt; ℹ 0.4</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.4</span></span>
+<span><span class="co">#&gt; ℹ 0.5</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.5</span></span>
+<span><span class="va">PRSresultFemale</span><span class="op">$</span><span class="va">PRS_plot</span></span>
+<span><span class="co">#&gt; Error in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, : Metric information not available for this family/device</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## This table shows 10 samples with phenotype, covariates and a PRS column.</span></span>
 <span><span class="va">PRSfemale</span> <span class="op">&lt;-</span> <span class="va">PRSresultFemale</span><span class="op">$</span><span class="va">PRS</span></span>
-<span><span class="co">#&gt; Error: object 'PRSresultFemale' not found</span></span>
-<span><span class="va">PRSfemale</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span></span>
-<span><span class="co">#&gt; Error: object 'PRSfemale' not found</span></span>
-<span><span class="co">## The best threshold</span></span>
+<span><span class="va">PRSfemale</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="6%">
+<col width="6%">
+<col width="5%">
+<col width="3%">
+<col width="3%">
+<col width="8%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="8%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">FID</th>
+<th align="left">IID</th>
+<th align="right">Pheno1</th>
+<th align="right">Sex</th>
+<th align="right">AGE</th>
+<th align="right">testcovar</th>
+<th align="right">PC1</th>
+<th align="right">PC2</th>
+<th align="right">PC3</th>
+<th align="right">PC4</th>
+<th align="right">PC5</th>
+<th align="right">PC6</th>
+<th align="right">SCORE</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00171</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">36</td>
+<td align="right">1</td>
+<td align="right">0.0358056</td>
+<td align="right">-0.0103993</td>
+<td align="right">0.0304770</td>
+<td align="right">0.0804331</td>
+<td align="right">-0.0316828</td>
+<td align="right">0.2308030</td>
+<td align="right">-0.975333</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00173</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">81</td>
+<td align="right">1</td>
+<td align="right">-0.0259195</td>
+<td align="right">0.0522046</td>
+<td align="right">0.0338950</td>
+<td align="right">-0.0783466</td>
+<td align="right">-0.0301168</td>
+<td align="right">0.0481648</td>
+<td align="right">-0.327300</td>
+</tr>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00174</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">83</td>
+<td align="right">1</td>
+<td align="right">0.0690632</td>
+<td align="right">0.1000850</td>
+<td align="right">0.0177107</td>
+<td align="right">-0.0062435</td>
+<td align="right">0.2347970</td>
+<td align="right">-0.1600570</td>
+<td align="right">-0.975333</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00176</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">75</td>
+<td align="right">0</td>
+<td align="right">0.0464837</td>
+<td align="right">-0.0611293</td>
+<td align="right">-0.0300357</td>
+<td align="right">-0.1261310</td>
+<td align="right">0.0221893</td>
+<td align="right">-0.0430133</td>
+<td align="right">0.320733</td>
+</tr>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00177</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">88</td>
+<td align="right">1</td>
+<td align="right">0.0175615</td>
+<td align="right">-0.0407396</td>
+<td align="right">-0.1278730</td>
+<td align="right">0.1634300</td>
+<td align="right">0.1062830</td>
+<td align="right">0.0622563</td>
+<td align="right">-0.975333</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00178</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">24</td>
+<td align="right">1</td>
+<td align="right">0.1526140</td>
+<td align="right">0.1886470</td>
+<td align="right">-0.0341148</td>
+<td align="right">-0.0824660</td>
+<td align="right">-0.0736962</td>
+<td align="right">-0.0412650</td>
+<td align="right">0.320733</td>
+</tr>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00179</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">78</td>
+<td align="right">1</td>
+<td align="right">0.0881766</td>
+<td align="right">0.0494024</td>
+<td align="right">0.1288620</td>
+<td align="right">0.0523562</td>
+<td align="right">-0.0191810</td>
+<td align="right">0.0078241</td>
+<td align="right">-0.327300</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00180</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">39</td>
+<td align="right">1</td>
+<td align="right">0.0459778</td>
+<td align="right">0.0170708</td>
+<td align="right">0.0761808</td>
+<td align="right">-0.0344214</td>
+<td align="right">-0.0240829</td>
+<td align="right">0.0729217</td>
+<td align="right">-0.327300</td>
+</tr>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00266</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">64</td>
+<td align="right">1</td>
+<td align="right">0.0238295</td>
+<td align="right">-0.0127790</td>
+<td align="right">-0.1954810</td>
+<td align="right">-0.0758269</td>
+<td align="right">-0.0017235</td>
+<td align="right">0.0638968</td>
+<td align="right">0.320733</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00268</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">66</td>
+<td align="right">1</td>
+<td align="right">-0.1570560</td>
+<td align="right">-0.0401398</td>
+<td align="right">0.1022290</td>
+<td align="right">0.0203453</td>
+<td align="right">-0.0103913</td>
+<td align="right">0.0914439</td>
+<td align="right">-0.327300</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## The best threshold</span></span>
 <span><span class="va">BestPvalue</span> <span class="op">&lt;-</span> <span class="va">PRSresultFemale</span><span class="op">$</span><span class="va">BestP</span><span class="op">$</span><span class="va">Threshold</span></span>
-<span><span class="co">#&gt; Error: object 'PRSresultFemale' not found</span></span>
 <span><span class="va">BestPvalue</span></span>
-<span><span class="co">#&gt; Error: object 'BestPvalue' not found</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.001</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="computing-prs-for-male-only-target-data-using-female-only-discovery-data">Computing PRS for male-only target data using female-only discovery
 data<a class="anchor" aria-label="anchor" href="#computing-prs-for-male-only-target-data-using-female-only-discovery-data"></a>
 </h2>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/boseb/GXwasR/" class="external-link">GXwasR</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Summary_Stat_Ex2</span><span class="op">)</span></span>
 <span><span class="co"># DataDir &lt;- system.file("extdata", package = "GXwasR")</span></span>
@@ -495,43 +1052,236 @@ data<a class="anchor" aria-label="anchor" href="#computing-prs-for-male-only-tar
 <span><span class="va">ldclump</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span><span class="va">effectsize</span> <span class="op">&lt;-</span> <span class="st">"BETA"</span></span>
 <span><span class="va">PRSresultmale</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputePRS.html">ComputePRS</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span>, <span class="va">summarystat</span>, <span class="va">phenofile</span>, <span class="va">covarfile</span>, effectsize <span class="op">=</span> <span class="st">"BETA"</span>, LDreference <span class="op">=</span> <span class="st">"GXwasR_example"</span>, ldclump <span class="op">=</span> <span class="cn">FALSE</span>, clump_p1 <span class="op">=</span> <span class="va">clump_p1</span>, clump_p2 <span class="op">=</span> <span class="va">clump_p2</span>, clump_r2 <span class="op">=</span> <span class="va">clump_r2</span>, clump_kb <span class="op">=</span> <span class="va">clump_kb</span>, byCHR <span class="op">=</span> <span class="cn">TRUE</span>, pthreshold <span class="op">=</span> <span class="va">pthreshold</span>, highLD_regions <span class="op">=</span> <span class="va">highLD_regions</span>, ld_prunning <span class="op">=</span> <span class="cn">TRUE</span>, window_size <span class="op">=</span> <span class="fl">50</span>, step_size <span class="op">=</span> <span class="fl">5</span>, r2_threshold <span class="op">=</span> <span class="fl">0.02</span>, nPC <span class="op">=</span> <span class="fl">6</span>, pheno_type <span class="op">=</span> <span class="st">"binary"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp0uzDD3/temp_libpathfc4116ff9158', reason 'Directory not empty'</span></span>
-<span><span class="co">#&gt; An error occurred: attempt to set 'colnames' on an object with less than two dimensions</span></span>
-<span><span class="co">#&gt; Error in ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, : object 'pheno.prs' not found</span></span>
-<span></span>
-<span><span class="co">## This table shows 10 samples with phenotype, covariates and a PRS column.</span></span>
+<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpdyNNez/temp_libpath548126ba7acf', reason 'Directory not empty'</span></span>
+<span><span class="co">#&gt; ℹ 0.001</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.001</span></span>
+<span><span class="co">#&gt; ℹ 0.05</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.05</span></span>
+<span><span class="co">#&gt; ℹ 0.1</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.1</span></span>
+<span><span class="co">#&gt; ℹ 0.2</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.2</span></span>
+<span><span class="co">#&gt; ℹ 0.3</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.3</span></span>
+<span><span class="co">#&gt; ℹ 0.4</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.4</span></span>
+<span><span class="co">#&gt; ℹ 0.5</span></span>
+<span><span class="co">#&gt; • Computing PRS for threshold 0.5</span></span>
+<span><span class="va">PRSresultmale</span><span class="op">$</span><span class="va">PRS_plot</span></span>
+<span><span class="co">#&gt; Error in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, : Metric information not available for this family/device</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## This table shows 10 samples with phenotype, covariates and a PRS column.</span></span>
 <span><span class="va">PRSmale</span> <span class="op">&lt;-</span> <span class="va">PRSresultmale</span><span class="op">$</span><span class="va">PRS</span></span>
-<span><span class="co">#&gt; Error: object 'PRSresultmale' not found</span></span>
-<span><span class="va">PRSmale</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span></span>
-<span><span class="co">#&gt; Error: object 'PRSmale' not found</span></span>
-<span><span class="co">## The best threshold</span></span>
+<span><span class="va">PRSmale</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span></span></code></pre></div>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="6%">
+<col width="6%">
+<col width="5%">
+<col width="3%">
+<col width="3%">
+<col width="8%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">FID</th>
+<th align="left">IID</th>
+<th align="right">Pheno1</th>
+<th align="right">Sex</th>
+<th align="right">AGE</th>
+<th align="right">testcovar</th>
+<th align="right">PC1</th>
+<th align="right">PC2</th>
+<th align="right">PC3</th>
+<th align="right">PC4</th>
+<th align="right">PC5</th>
+<th align="right">PC6</th>
+<th align="right">SCORE</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00182</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">50</td>
+<td align="right">1</td>
+<td align="right">0.0647406</td>
+<td align="right">-0.0928744</td>
+<td align="right">-0.0671189</td>
+<td align="right">0.1612960</td>
+<td align="right">0.0577821</td>
+<td align="right">-0.0080738</td>
+<td align="right">-0.7348330</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00183</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">58</td>
+<td align="right">0</td>
+<td align="right">-0.1385060</td>
+<td align="right">-0.0695656</td>
+<td align="right">-0.0741905</td>
+<td align="right">-0.0772780</td>
+<td align="right">0.0448000</td>
+<td align="right">0.0203577</td>
+<td align="right">-0.0018333</td>
+</tr>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00185</td>
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="right">22</td>
+<td align="right">1</td>
+<td align="right">-0.0149102</td>
+<td align="right">-0.1042650</td>
+<td align="right">-0.0490031</td>
+<td align="right">0.0909954</td>
+<td align="right">-0.1272400</td>
+<td align="right">0.0736424</td>
+<td align="right">-0.0018333</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00186</td>
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="right">52</td>
+<td align="right">0</td>
+<td align="right">0.0936989</td>
+<td align="right">-0.0658094</td>
+<td align="right">-0.1384690</td>
+<td align="right">0.0711780</td>
+<td align="right">-0.1307370</td>
+<td align="right">-0.2262310</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00187</td>
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="right">49</td>
+<td align="right">1</td>
+<td align="right">-0.0495608</td>
+<td align="right">-0.0536840</td>
+<td align="right">-0.0351695</td>
+<td align="right">0.0991132</td>
+<td align="right">0.0429508</td>
+<td align="right">0.1034500</td>
+<td align="right">0.4873330</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00188</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">47</td>
+<td align="right">1</td>
+<td align="right">-0.0168334</td>
+<td align="right">-0.0884520</td>
+<td align="right">-0.0100132</td>
+<td align="right">0.0212827</td>
+<td align="right">0.0980303</td>
+<td align="right">0.0024415</td>
+<td align="right">-0.4883330</td>
+</tr>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00189</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">27</td>
+<td align="right">1</td>
+<td align="right">0.0926677</td>
+<td align="right">-0.0486674</td>
+<td align="right">-0.0237400</td>
+<td align="right">0.0180525</td>
+<td align="right">-0.0864605</td>
+<td align="right">-0.0121730</td>
+<td align="right">-0.7348330</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00190</td>
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="right">42</td>
+<td align="right">0</td>
+<td align="right">0.1214390</td>
+<td align="right">0.1955690</td>
+<td align="right">0.0718894</td>
+<td align="right">0.0852533</td>
+<td align="right">0.0009986</td>
+<td align="right">-0.0935724</td>
+<td align="right">-0.7348330</td>
+</tr>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00267</td>
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="right">36</td>
+<td align="right">1</td>
+<td align="right">0.0838363</td>
+<td align="right">-0.1059630</td>
+<td align="right">-0.0289262</td>
+<td align="right">-0.0295922</td>
+<td align="right">0.0224057</td>
+<td align="right">-0.1815780</td>
+<td align="right">-0.7348330</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00271</td>
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="right">51</td>
+<td align="right">1</td>
+<td align="right">0.0015542</td>
+<td align="right">-0.0608128</td>
+<td align="right">0.0592212</td>
+<td align="right">-0.0144662</td>
+<td align="right">-0.0084652</td>
+<td align="right">-0.2149010</td>
+<td align="right">0.2408330</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## The best threshold</span></span>
 <span><span class="va">BestPvalue</span> <span class="op">&lt;-</span> <span class="va">PRSresultmale</span><span class="op">$</span><span class="va">BestP</span><span class="op">$</span><span class="va">Threshold</span></span>
-<span><span class="co">#&gt; Error: object 'PRSresultmale' not found</span></span>
 <span><span class="va">BestPvalue</span></span>
-<span><span class="co">#&gt; Error: object 'BestPvalue' not found</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.001</span></span></code></pre></div>
 <p><strong>(F) Perform regression to test the association of PRS for a
 trait in one sex and case status in other sex.</strong></p>
 <p><strong>PRS ~ trait + PCs + other covariates</strong></p>
 <p>Let’s check the association between PRS and trait in female.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Running</span></span>
 <span><span class="co"># First, we need to make fdata object.</span></span>
 <span><span class="va">famfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/femaletarget.fam"</span><span class="op">)</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">6</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">famfile</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FID"</span>, <span class="st">"IID"</span>, <span class="st">"Trait"</span><span class="op">)</span></span>
 <span><span class="va">prefdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">famfile</span>, <span class="va">PRS</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"IID"</span>, <span class="st">"FID"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error: object 'PRS' not found</span></span>
 <span></span>
 <span><span class="va">fdata</span> <span class="op">&lt;-</span> <span class="va">prefdata</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">13</span>, <span class="fl">3</span><span class="op">:</span><span class="fl">12</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt; Error: object 'prefdata' not found</span></span>
 <span><span class="va">fdata</span><span class="op">$</span><span class="va">Sex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">fdata</span><span class="op">$</span><span class="va">Trait</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error: object 'fdata' not found</span></span>
 <span><span class="va">response_index</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span><span class="va">regressor_index</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
 <span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SexRegress.html">SexRegress</a></span><span class="op">(</span><span class="va">fdata</span>, <span class="va">regressor_index</span>, <span class="va">response_index</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error: object 'fdata' not found</span></span>
 <span><span class="va">x</span></span>
-<span><span class="co">#&gt; NULL</span></span>
+<span><span class="co">#&gt;     Estimate   Std. Error      t value     Pr(&gt;|t|) </span></span>
+<span><span class="co">#&gt; 4.942281e-02 6.939184e-03 7.122280e+00 4.988950e-11</span></span>
 <span><span class="co"># In this case, there is a significant association between PRS and trait value.</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="citing-gxwasr">Citing <code>GXwasR</code><a class="anchor" aria-label="anchor" href="#citing-gxwasr"></a>
@@ -539,7 +1289,7 @@ trait in one sex and case status in other sex.</strong></p>
 <p>We hope that <em><a href="https://bioconductor.org/packages/3.21/GXwasR" class="external-link">GXwasR</a></em>
 will be useful for your research. Please use the following information
 to cite the package and the overall approach. Thank you!</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Citation info</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"GXwasR"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; To cite package 'GXwasR' in publications use:</span></span>
@@ -599,14 +1349,13 @@ to:</p>
 <span><span class="co">#&gt;  collate  en_US.UTF-8</span></span>
 <span><span class="co">#&gt;  ctype    en_US.UTF-8</span></span>
 <span><span class="co">#&gt;  tz       America/New_York</span></span>
-<span><span class="co">#&gt;  date     2025-08-04</span></span>
+<span><span class="co">#&gt;  date     2025-08-05</span></span>
 <span><span class="co">#&gt;  pandoc   3.6.3 @ /Applications/Positron.app/Contents/Resources/app/quarto/bin/tools/aarch64/ (via rmarkdown)</span></span>
 <span><span class="co">#&gt;  quarto   1.7.32 @ /usr/local/bin/quarto</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt;  ! package              * version    date (UTC) lib source</span></span>
 <span><span class="co">#&gt;    abind                  1.4-8      2024-09-12 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    askpass                1.2.1      2024-10-04 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    backports              1.5.0      2024-05-23 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    bibtex                 0.5.1      2023-01-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    bigassertr             0.1.7      2025-06-27 [2] CRAN (R 4.5.1)</span></span>
@@ -620,7 +1369,6 @@ to:</p>
 <span><span class="co">#&gt;    BiocManager            1.30.26    2025-06-05 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    BiocParallel           1.42.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    BiocStyle              2.36.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    biocthis               1.18.0     2025-04-15 [2] Bioconduc~</span></span>
 <span><span class="co">#&gt;    Biostrings             2.76.0     2025-04-15 [2] Bioconduc~</span></span>
 <span><span class="co">#&gt;    bit                    4.6.0      2025-03-06 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    bit64                  4.6.0-1    2025-01-16 [2] CRAN (R 4.5.1)</span></span>
@@ -638,7 +1386,6 @@ to:</p>
 <span><span class="co">#&gt;    commonmark             2.0.0      2025-07-07 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    cowplot                1.2.0      2025-07-07 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    crayon                 1.5.3      2024-06-20 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    credentials            2.0.2      2024-10-04 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    curl                   6.4.0      2025-06-22 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    data.table             1.17.8     2025-07-10 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    DelayedArray           0.34.1     2025-04-17 [2] Bioconduc~</span></span>
@@ -662,13 +1409,10 @@ to:</p>
 <span><span class="co">#&gt;    GenomeInfoDbData       1.2.14     2025-04-21 [2] Bioconductor</span></span>
 <span><span class="co">#&gt;    GenomicAlignments      1.44.0     2025-04-15 [2] Bioconduc~</span></span>
 <span><span class="co">#&gt;    GenomicRanges          1.60.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    gert                   2.1.5      2025-03-25 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    ggplot2                3.5.2      2025-04-09 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    ggpubr                 0.6.1      2025-06-27 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    ggrepel                0.9.6      2024-09-07 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    ggsignif               0.6.4      2022-10-13 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    gh                     1.5.0      2025-05-26 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    gitcreds               0.1.2      2022-09-08 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    glue                   1.8.0      2024-09-30 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    gridExtra              2.3        2017-09-09 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    gtable                 0.3.6      2024-10-25 [2] CRAN (R 4.5.0)</span></span>
@@ -678,7 +1422,6 @@ to:</p>
 <span><span class="co">#&gt;    htmlwidgets            1.6.4      2023-12-06 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    httpuv                 1.6.16     2025-04-16 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    httr                   1.4.7      2023-08-15 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    httr2                  1.2.1      2025-07-22 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    hunspell               3.0.6      2025-03-22 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    IRanges                2.42.0     2025-04-15 [2] Bioconduc~</span></span>
 <span><span class="co">#&gt;    iterators              1.0.14     2022-02-05 [2] CRAN (R 4.5.0)</span></span>
@@ -698,7 +1441,6 @@ to:</p>
 <span><span class="co">#&gt;    memoise                2.0.1      2021-11-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    mime                   0.13       2025-03-17 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    miniUI                 0.1.2      2025-04-17 [3] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    openssl                2.3.3      2025-05-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    pillar                 1.11.0     2025-07-04 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    pkgbuild               1.4.8      2025-05-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.5.0)</span></span>
@@ -716,13 +1458,11 @@ to:</p>
 <span><span class="co">#&gt;    ps                     1.9.1      2025-04-12 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    purrr                  1.1.0      2025-07-10 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    qqman                  0.1.9      2023-08-23 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    R.cache                0.17.0     2025-05-02 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    R.methodsS3            1.8.2      2022-06-13 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    R.oo                   1.27.1     2025-05-02 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    R.utils                2.13.0     2025-02-24 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    R6                     2.6.1      2025-02-15 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    ragg                   1.4.0      2025-04-10 [3] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    rappdirs               0.3.3      2021-01-31 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    rbibutils              2.3        2024-10-04 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    rcmdcheck              1.4.0      2021-09-27 [3] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    RColorBrewer           1.1-3      2022-04-03 [2] CRAN (R 4.5.0)</span></span>
@@ -754,7 +1494,6 @@ to:</p>
 <span><span class="co">#&gt;    spelling               2.3.1      2024-10-04 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    stringi                1.8.7      2025-03-27 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    stringr                1.5.1      2023-11-14 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    styler                 1.10.3     2024-04-07 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    sumFREGAT              1.2.5      2022-06-07 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    SummarizedExperiment   1.38.1     2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    sys                    3.4.3      2024-10-04 [2] CRAN (R 4.5.0)</span></span>
@@ -771,7 +1510,6 @@ to:</p>
 <span><span class="co">#&gt;    usethis              * 3.1.0      2024-11-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    vctrs                  0.6.5      2023-12-01 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    vroom                  1.6.5      2023-12-05 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    whisker                0.4.1      2022-12-05 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    withr                  3.0.2      2024-10-28 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    xfun                   0.52       2025-04-02 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    XML                    3.99-0.18  2025-01-01 [2] CRAN (R 4.5.0)</span></span>
@@ -781,7 +1519,7 @@ to:</p>
 <span><span class="co">#&gt;    XVector                0.48.0     2025-04-15 [2] Bioconduc~</span></span>
 <span><span class="co">#&gt;    yaml                   2.3.10     2024-07-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp0uzDD3/temp_libpathfc4164c8f551</span></span>
+<span><span class="co">#&gt;  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpdyNNez/temp_libpath548171db3e3e</span></span>
 <span><span class="co">#&gt;  [2] /Users/mayerdav/Library/R/arm64/4.5/library</span></span>
 <span><span class="co">#&gt;  [3] /opt/homebrew/lib/R/4.5/site-library</span></span>
 <span><span class="co">#&gt;  [4] /opt/homebrew/Cellar/r/4.5.1/lib/R/library</span></span>

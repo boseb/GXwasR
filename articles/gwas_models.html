@@ -74,7 +74,7 @@ Bose</h4>
 Campus<br><a class="author_email" href="mailto:#"></a><a href="mailto:banabithi.bose@gmail.com" class="email">banabithi.bose@gmail.com</a>
       </address>
                   
-            <h4 data-toc-skip class="date">4 August 2025</h4>
+            <h4 data-toc-skip class="date">5 August 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/main/vignettes/gwas_models.Rmd" class="external-link"><code>vignettes/gwas_models.Rmd</code></a></small>
       <div class="d-none name"><code>gwas_models.Rmd</code></div>
@@ -211,14 +211,18 @@ set of plink files as proxy of pre-imputated genotype data.</p>
 <span><span class="co">#&gt; • Stratified test is running for females</span></span>
 <span><span class="co">#&gt; • Stratified test is running for males</span></span>
 <span><span class="co">#&gt; ℹ Plots are initiated.</span></span>
-<span><span class="co">#&gt; ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3/Stratified_GWAS.png</span></span>
-<span><span class="co">#&gt; ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3/Stratified_XWAS.png</span></span>
-<span><span class="co">#&gt; Three data frames have been created and saved:</span></span>
+<span><span class="co">#&gt; ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez/Stratified_GWAS.png</span></span></code></pre></div>
+<div class="float">
+<img src="gwas_models-gxwas-1.png" alt="plot of chunk gwas_models-gxwas"><div class="figcaption">plot of chunk gwas_models-gxwas</div>
+</div>
+<pre><code><span><span class="co">#&gt; ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez/Stratified_XWAS.png</span></span></code></pre>
+<p><img src="gwas_models-gxwas-2.png" alt="plot of chunk gwas_models-gxwas"><img src="gwas_models-gxwas-3.png" alt="plot of chunk gwas_models-gxwas"><img src="gwas_models-gxwas-4.png" alt="plot of chunk gwas_models-gxwas"><img src="gwas_models-gxwas-5.png" alt="plot of chunk gwas_models-gxwas"><img src="gwas_models-gxwas-6.png" alt="plot of chunk gwas_models-gxwas"></p>
+<pre><code><span><span class="co">#&gt; Three data frames have been created and saved:</span></span>
 <span><span class="co">#&gt; • CombinedWAS</span></span>
 <span><span class="co">#&gt; • MaleWAS</span></span>
 <span><span class="co">#&gt; • FemaleWAS</span></span>
-<span><span class="co">#&gt; ℹ You can find them in the directory: /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt; ℹ You can find them in the directory: /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez</span></span></code></pre>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Outputs</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">ResultGXwas</span><span class="op">$</span><span class="va">CombinedWAS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="op">]</span>, caption <span class="op">=</span> <span class="st">"Dataframe containing the result of stratified model"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -262,7 +266,7 @@ set of plink files as proxy of pre-imputated genotype data.</p>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">ResultGXwas</span><span class="op">$</span><span class="va">MaleWAS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="op">]</span>, caption <span class="op">=</span> <span class="st">"Stratified GWAS result with male cohort."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Stratified GWAS result with male cohort.</caption>
@@ -367,7 +371,7 @@ set of plink files as proxy of pre-imputated genotype data.</p>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">ResultGXwas</span><span class="op">$</span><span class="va">FemaleWAS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="op">]</span>, caption <span class="op">=</span> <span class="st">"Stratified GWAS result with female cohort."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Stratified GWAS result with female cohort.</caption>
@@ -472,21 +476,21 @@ set of plink files as proxy of pre-imputated genotype data.</p>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Top ten associations in female-specific study:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"FemaleWAS.Rda"</span><span class="op">)</span></span>
 <span><span class="va">x1</span> <span class="op">&lt;-</span> <span class="va">FemaleWAS</span></span>
 <span><span class="va">x2</span> <span class="op">&lt;-</span> <span class="va">x1</span><span class="op">[</span><span class="va">x1</span><span class="op">$</span><span class="va">TEST</span> <span class="op">==</span> <span class="st">"ADD"</span>, <span class="op">]</span></span>
 <span><span class="va">x3</span> <span class="op">&lt;-</span> <span class="va">x2</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">x2</span><span class="op">$</span><span class="va">P</span><span class="op">)</span>, <span class="op">]</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">x3</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Top ten associations in male-specific study:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"MaleWAS.Rda"</span><span class="op">)</span></span>
 <span><span class="va">x1</span> <span class="op">&lt;-</span> <span class="va">MaleWAS</span></span>
 <span><span class="va">x2</span> <span class="op">&lt;-</span> <span class="va">x1</span><span class="op">[</span><span class="va">x1</span><span class="op">$</span><span class="va">TEST</span> <span class="op">==</span> <span class="st">"ADD"</span>, <span class="op">]</span></span>
 <span><span class="va">x3</span> <span class="op">&lt;-</span> <span class="va">x2</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">x2</span><span class="op">$</span><span class="va">P</span><span class="op">)</span>, <span class="op">]</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">x3</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Top ten associations in FM02comb model:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"CombinedWAS.Rda"</span><span class="op">)</span></span>
 <span><span class="va">x1</span> <span class="op">&lt;-</span> <span class="va">CombinedWAS</span></span>
@@ -503,14 +507,14 @@ XWAS models with different arguments, please follow this tutorial: <a href="http
 <div class="section level3">
 <h3 id="function-sexdiff">Function: SexDiff()<a class="anchor" aria-label="anchor" href="#function-sexdiff"></a>
 </h3>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">SexDiff</span>, package <span class="op">=</span> <span class="va">GXwasR</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Rendering development documentation for "SexDiff"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="running-sexdiff">Running SexDiff<a class="anchor" aria-label="anchor" href="#running-sexdiff"></a>
 </h3>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Running</span></span>
 <span><span class="co">## Running the function</span></span>
 <span><span class="va">x1</span> <span class="op">&lt;-</span> <span class="va">MaleWAS</span></span>
@@ -523,9 +527,9 @@ XWAS models with different arguments, please follow this tutorial: <a href="http
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">x2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CHR"</span>, <span class="st">"SNP"</span>, <span class="st">"BP"</span>, <span class="st">"A1"</span>, <span class="st">"BETA_F"</span>, <span class="st">"SE_F"</span><span class="op">)</span></span>
 <span><span class="va">Difftest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SexDiff.html">SexDiff</a></span><span class="op">(</span>Mfile <span class="op">=</span> <span class="va">x1</span>, Ffile <span class="op">=</span> <span class="va">x2</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="unnamed-chunk-11-1.png" alt="plot of chunk unnamed-chunk-11"><div class="figcaption">plot of chunk unnamed-chunk-11</div>
+<img src="sex-differentiated-effect-1.png" alt="plot of chunk sex-differentiated-effect"><div class="figcaption">plot of chunk sex-differentiated-effect</div>
 </div>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Significant SNPs with sex-differential effect</span></span>
 <span><span class="va">sig.snps</span> <span class="op">&lt;-</span> <span class="va">Difftest</span><span class="op">[</span><span class="va">Difftest</span><span class="op">$</span><span class="va">adjP</span> <span class="op">&lt;</span> <span class="fl">0.05</span>, <span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">sig.snps</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SNP"</span>, <span class="st">"CHR"</span>, <span class="st">"BP"</span>, <span class="st">"A1"</span>, <span class="st">"T_statistic"</span>, <span class="st">"Pvalue"</span>, <span class="st">"Adjusted_Pvalue"</span><span class="op">)</span></span>
@@ -551,7 +555,7 @@ XWAS models with different arguments, please follow this tutorial: <a href="http
 <p>We hope that <em><a href="https://bioconductor.org/packages/3.21/GXwasR" class="external-link">GXwasR</a></em>
 will be useful for your research. Please use the following information
 to cite the package and the overall approach. Thank you!</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Citation info</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"GXwasR"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; To cite package 'GXwasR' in publications use:</span></span>
@@ -610,14 +614,13 @@ to:</p>
 <span><span class="co">#&gt;  collate  en_US.UTF-8</span></span>
 <span><span class="co">#&gt;  ctype    en_US.UTF-8</span></span>
 <span><span class="co">#&gt;  tz       America/New_York</span></span>
-<span><span class="co">#&gt;  date     2025-08-04</span></span>
+<span><span class="co">#&gt;  date     2025-08-05</span></span>
 <span><span class="co">#&gt;  pandoc   3.6.3 @ /Applications/Positron.app/Contents/Resources/app/quarto/bin/tools/aarch64/ (via rmarkdown)</span></span>
 <span><span class="co">#&gt;  quarto   1.7.32 @ /usr/local/bin/quarto</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt;  ! package              * version    date (UTC) lib source</span></span>
 <span><span class="co">#&gt;    abind                  1.4-8      2024-09-12 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    askpass                1.2.1      2024-10-04 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    backports              1.5.0      2024-05-23 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    bibtex                 0.5.1      2023-01-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    bigassertr             0.1.7      2025-06-27 [2] CRAN (R 4.5.1)</span></span>
@@ -631,7 +634,6 @@ to:</p>
 <span><span class="co">#&gt;    BiocManager            1.30.26    2025-06-05 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    BiocParallel           1.42.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    BiocStyle              2.36.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    biocthis               1.18.0     2025-04-15 [2] Bioconduc~</span></span>
 <span><span class="co">#&gt;    Biostrings             2.76.0     2025-04-15 [2] Bioconduc~</span></span>
 <span><span class="co">#&gt;    bit                    4.6.0      2025-03-06 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    bit64                  4.6.0-1    2025-01-16 [2] CRAN (R 4.5.1)</span></span>
@@ -649,7 +651,6 @@ to:</p>
 <span><span class="co">#&gt;    commonmark             2.0.0      2025-07-07 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    cowplot                1.2.0      2025-07-07 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    crayon                 1.5.3      2024-06-20 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    credentials            2.0.2      2024-10-04 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    curl                   6.4.0      2025-06-22 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    data.table             1.17.8     2025-07-10 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    DelayedArray           0.34.1     2025-04-17 [2] Bioconduc~</span></span>
@@ -673,13 +674,10 @@ to:</p>
 <span><span class="co">#&gt;    GenomeInfoDbData       1.2.14     2025-04-21 [2] Bioconductor</span></span>
 <span><span class="co">#&gt;    GenomicAlignments      1.44.0     2025-04-15 [2] Bioconduc~</span></span>
 <span><span class="co">#&gt;    GenomicRanges          1.60.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    gert                   2.1.5      2025-03-25 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    ggplot2                3.5.2      2025-04-09 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    ggpubr                 0.6.1      2025-06-27 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    ggrepel                0.9.6      2024-09-07 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    ggsignif               0.6.4      2022-10-13 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    gh                     1.5.0      2025-05-26 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    gitcreds               0.1.2      2022-09-08 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    glue                   1.8.0      2024-09-30 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    gridExtra              2.3        2017-09-09 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    gtable                 0.3.6      2024-10-25 [2] CRAN (R 4.5.0)</span></span>
@@ -689,7 +687,6 @@ to:</p>
 <span><span class="co">#&gt;    htmlwidgets            1.6.4      2023-12-06 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    httpuv                 1.6.16     2025-04-16 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    httr                   1.4.7      2023-08-15 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    httr2                  1.2.1      2025-07-22 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    hunspell               3.0.6      2025-03-22 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    IRanges                2.42.0     2025-04-15 [2] Bioconduc~</span></span>
 <span><span class="co">#&gt;    iterators              1.0.14     2022-02-05 [2] CRAN (R 4.5.0)</span></span>
@@ -709,7 +706,6 @@ to:</p>
 <span><span class="co">#&gt;    memoise                2.0.1      2021-11-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    mime                   0.13       2025-03-17 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    miniUI                 0.1.2      2025-04-17 [3] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    openssl                2.3.3      2025-05-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    pillar                 1.11.0     2025-07-04 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    pkgbuild               1.4.8      2025-05-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.5.0)</span></span>
@@ -727,13 +723,11 @@ to:</p>
 <span><span class="co">#&gt;    ps                     1.9.1      2025-04-12 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    purrr                  1.1.0      2025-07-10 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    qqman                  0.1.9      2023-08-23 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    R.cache                0.17.0     2025-05-02 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    R.methodsS3            1.8.2      2022-06-13 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    R.oo                   1.27.1     2025-05-02 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    R.utils                2.13.0     2025-02-24 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    R6                     2.6.1      2025-02-15 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    ragg                   1.4.0      2025-04-10 [3] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    rappdirs               0.3.3      2021-01-31 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    rbibutils              2.3        2024-10-04 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    rcmdcheck              1.4.0      2021-09-27 [3] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    RColorBrewer           1.1-3      2022-04-03 [2] CRAN (R 4.5.0)</span></span>
@@ -765,7 +759,6 @@ to:</p>
 <span><span class="co">#&gt;    spelling               2.3.1      2024-10-04 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    stringi                1.8.7      2025-03-27 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    stringr                1.5.1      2023-11-14 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    styler                 1.10.3     2024-04-07 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    sumFREGAT              1.2.5      2022-06-07 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    SummarizedExperiment   1.38.1     2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    sys                    3.4.3      2024-10-04 [2] CRAN (R 4.5.0)</span></span>
@@ -782,7 +775,6 @@ to:</p>
 <span><span class="co">#&gt;    usethis              * 3.1.0      2024-11-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    vctrs                  0.6.5      2023-12-01 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    vroom                  1.6.5      2023-12-05 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    whisker                0.4.1      2022-12-05 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    withr                  3.0.2      2024-10-28 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    xfun                   0.52       2025-04-02 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    XML                    3.99-0.18  2025-01-01 [2] CRAN (R 4.5.0)</span></span>
@@ -792,7 +784,7 @@ to:</p>
 <span><span class="co">#&gt;    XVector                0.48.0     2025-04-15 [2] Bioconduc~</span></span>
 <span><span class="co">#&gt;    yaml                   2.3.10     2024-07-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp0uzDD3/temp_libpathfc4116ff9158</span></span>
+<span><span class="co">#&gt;  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpdyNNez/temp_libpath5481679d3a1d</span></span>
 <span><span class="co">#&gt;  [2] /Users/mayerdav/Library/R/arm64/4.5/library</span></span>
 <span><span class="co">#&gt;  [3] /opt/homebrew/lib/R/4.5/site-library</span></span>
 <span><span class="co">#&gt;  [4] /opt/homebrew/Cellar/r/4.5.1/lib/R/library</span></span>

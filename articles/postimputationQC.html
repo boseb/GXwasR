@@ -74,7 +74,7 @@ Bose</h4>
 Campus<br><a class="author_email" href="mailto:#"></a><a href="mailto:banabithi.bose@gmail.com" class="email">banabithi.bose@gmail.com</a>
       </address>
                   
-            <h4 data-toc-skip class="date">4 August 2025</h4>
+            <h4 data-toc-skip class="date">5 August 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/main/vignettes/postimputationQC.Rmd" class="external-link"><code>vignettes/postimputationQC.Rmd</code></a></small>
       <div class="d-none name"><code>postimputationQC.Rmd</code></div>
@@ -91,10 +91,9 @@ based on their specific needs.</p>
 </h2>
 <p>We will run the post-imputation QC pipeline in this vignette
 utilizing the functions from GXwasR package.</p>
-</div>
-<div class="section level2">
-<h2 id="example-datasets">Example Datasets<a class="anchor" aria-label="anchor" href="#example-datasets"></a>
-</h2>
+<div class="section level3">
+<h3 id="example-datasets">Example Datasets<a class="anchor" aria-label="anchor" href="#example-datasets"></a>
+</h3>
 <p>The PLINK bed, bim, and fam files are the three mandatory files
 representing a genotype dataset to run this pipeline. To know about
 these file extensions, please check <a href="https://www.cog-genomics.org/plink/1.9/formats" class="external-link uri">https://www.cog-genomics.org/plink/1.9/formats</a>.</p>
@@ -110,9 +109,9 @@ variants across twelve chromosomes (1-10,23,24). This dataset contains
 125 males, 151 females, 108 cases and 168 controls. We will utilize this
 set of plink files as proxy of pre-imputated genotype data.</p>
 </div>
-<div class="section level2">
-<h2 id="post-imputation-qc-steps">Post-imputation QC steps<a class="anchor" aria-label="anchor" href="#post-imputation-qc-steps"></a>
-</h2>
+<div class="section level3">
+<h3 id="post-imputation-qc-steps">Post-imputation QC steps<a class="anchor" aria-label="anchor" href="#post-imputation-qc-steps"></a>
+</h3>
 <p>-<strong>(A) Sex-combined QC:</strong> 1.Remove SNPs with IMPUTE2
 info score &lt; 0.6 and certainty &lt; 0.8 This part should be done in
 the imputation server with the VCF files.</p>
@@ -148,18 +147,18 @@ if:</strong> 1.Remove individual with missing genotype rate &gt; 0.1
 statistic &gt; 0.20 3.Remove pair of individuals with IBD statistics
 pihat &gt; 0.2.</p>
 </div>
-<div class="section level2">
-<h2 id="loading-the-gxwasr-library">Loading the GXwasR library<a class="anchor" aria-label="anchor" href="#loading-the-gxwasr-library"></a>
-</h2>
+<div class="section level3">
+<h3 id="loading-the-gxwasr-library">Loading the GXwasR library<a class="anchor" aria-label="anchor" href="#loading-the-gxwasr-library"></a>
+</h3>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Call some libraries</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/boseb/GXwasR/" class="external-link">GXwasR</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/printr/" class="external-link">printr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rstudio/rmarkdown" class="external-link">rmarkdown</a></span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="learn-about-all-the-gxwasr-functions">Learn about all the GXwasR functions<a class="anchor" aria-label="anchor" href="#learn-about-all-the-gxwasr-functions"></a>
-</h2>
+<div class="section level3">
+<h3 id="learn-about-all-the-gxwasr-functions">Learn about all the GXwasR functions<a class="anchor" aria-label="anchor" href="#learn-about-all-the-gxwasr-functions"></a>
+</h3>
 <p><strong>Before beginning the pre-imputation quality control (QC), it
 is recommended that users familiarize themselves with all the functions
 in the GXwasR package. This knowledge will help them understand the
@@ -172,13 +171,14 @@ function:</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/boseb/GXwasR/" class="external-link">GXwasR</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/browseVignettes.html" class="external-link">browseVignettes</a></span><span class="op">(</span><span class="st">"GXwasR"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="post-imputation-qc-pipeline">Post-imputation QC pipeline<a class="anchor" aria-label="anchor" href="#post-imputation-qc-pipeline"></a>
-</h2>
+<div class="section level3">
+<h3 id="post-imputation-qc-pipeline">Post-imputation QC pipeline<a class="anchor" aria-label="anchor" href="#post-imputation-qc-pipeline"></a>
+</h3>
 <p>We will use plink binary files from DataDir, prefixed as
 “GXwasR_example” for the input of the post-imputation QC functions and
 considered that the SNPs are passed IMPUTE2 info score &lt; 0.6 and
 certainty &lt; 0.8.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="example-dataset-summary">Example Dataset Summary<a class="anchor" aria-label="anchor" href="#example-dataset-summary"></a>
@@ -215,10 +215,9 @@ certainty &lt; 0.8.</p>
 <span><span class="co">#&gt;   - Chr: 24</span></span>
 <span><span class="co">#&gt; ℹ Total number of SNPs: 26527</span></span>
 <span><span class="co">#&gt; ℹ Total number of samples: 276</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="step1-filtering-multi-allelic-variants">Step1: Filtering multi-allelic variants<a class="anchor" aria-label="anchor" href="#step1-filtering-multi-allelic-variants"></a>
-</h2>
+<div class="section level3">
+<h3 id="step1-filtering-multi-allelic-variants">Step1: Filtering multi-allelic variants<a class="anchor" aria-label="anchor" href="#step1-filtering-multi-allelic-variants"></a>
+</h3>
 <p>GXwasR cannot work with multi-allelic variants</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_QC"</span></span>
@@ -227,10 +226,10 @@ certainty &lt; 0.8.</p>
 <p>Since there is no multi-allelic SNPs, proceed with the same input
 dataset.</p>
 </div>
-<div class="section level2">
-<h2 id="step-2-filtering-ambiguous-snps-indels-and-snps-failed-for-hwe">Step 2: Filtering Ambiguous SNPs, indels and SNPs failed for
+<div class="section level3">
+<h3 id="step-2-filtering-ambiguous-snps-indels-and-snps-failed-for-hwe">Step 2: Filtering Ambiguous SNPs, indels and SNPs failed for
 HWE<a class="anchor" aria-label="anchor" href="#step-2-filtering-ambiguous-snps-indels-and-snps-failed-for-hwe"></a>
-</h2>
+</h3>
 <p>For this we will use <code><a href="../reference/QCsnp.html">QCsnp()</a></code> blocking all other
 filtering. The function will implicitly perform filtering based on
 ambiguous SNPs.</p>
@@ -260,14 +259,14 @@ ambiguous SNPs.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span>, <span class="va">ftemp</span><span class="op">)</span>, <span class="va">DataDir</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE TRUE TRUE TRUE</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="step-3-flag-par-xtr-and-ampliconic-regions">Step 3: Flag PAR, XTR and Ampliconic Regions<a class="anchor" aria-label="anchor" href="#step-3-flag-par-xtr-and-ampliconic-regions"></a>
-</h2>
+<div class="section level3">
+<h3 id="step-3-flag-par-xtr-and-ampliconic-regions">Step 3: Flag PAR, XTR and Ampliconic Regions<a class="anchor" aria-label="anchor" href="#step-3-flag-par-xtr-and-ampliconic-regions"></a>
+</h3>
 <p>Now, we will filter Pseudo-Autosomal Region (PAR), X-transposed
 region (XTR) and Ampliconic regions from the X-chromosome and will
 combine these regions with autosomes for autosomal QC.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Running</span></span>
+<code class="sourceCode R"><span><span class="co">## Running</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_QC1"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PlinkSummary.html">PlinkSummary</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Dataset: PostimputeEX_QC1</span></span>
@@ -313,15 +312,15 @@ combine these regions with autosomes for autosomal QC.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/save.html" class="external-link">save</a></span><span class="op">(</span><span class="va">Ampli_SNPs</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/Postimpute_Ampli_SNPs.Rda"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/save.html" class="external-link">save</a></span><span class="op">(</span><span class="va">PAR_SNPs</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/Postimpute_PAR_SNPs.Rda"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Output</span></span>
-<span><span class="co"># SNPs in PAR</span></span>
+<code class="sourceCode R"><span><span class="co">## Output</span></span>
+<span><span class="co">## SNPs in PAR</span></span>
 <span><span class="va">PAR_SNPs</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">$</span><span class="va">PAR</span> <span class="co">## No PAR SNP</span></span>
-<span><span class="co"># SNPs in XTR</span></span>
+<span><span class="co">## SNPs in XTR</span></span>
 <span><span class="va">XTR_SNPs</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">$</span><span class="va">XTR</span> <span class="co">## 42 SNPs</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">XTR_SNPs</span>, caption <span class="op">=</span> <span class="st">"SNPs in XTR."</span><span class="op">)</span></span></code></pre></div>
 <p>Table: SNPs in XTR.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># SNPs in Ampliconic region</span></span>
+<code class="sourceCode R"><span><span class="co">## SNPs in Ampliconic region</span></span>
 <span><span class="va">Ampliconic_SNPs</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">$</span><span class="va">Ampliconic</span> <span class="co"># 7 SNPs</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">Ampliconic_SNPs</span>, caption <span class="op">=</span> <span class="st">"SNPs in Ampliconic region."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -405,9 +404,9 @@ combine these regions with autosomes for autosomal QC.</p>
 PAR regions. The steps are provided for the users in the case if they
 have PAR regions in their dataset.</strong></p>
 </div>
-<div class="section level2">
-<h2 id="step-4-filter-only-par-regions-from-x-chromosome">Step 4: Filter only PAR Regions from X-chromosome<a class="anchor" aria-label="anchor" href="#step-4-filter-only-par-regions-from-x-chromosome"></a>
-</h2>
+<div class="section level3">
+<h3 id="step-4-filter-only-par-regions-from-x-chromosome">Step 4: Filter only PAR Regions from X-chromosome<a class="anchor" aria-label="anchor" href="#step-4-filter-only-par-regions-from-x-chromosome"></a>
+</h3>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_QC1"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PlinkSummary.html">PlinkSummary</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span><span class="op">)</span></span>
@@ -422,10 +421,10 @@ datasets for the next step of the pipeline.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span>, <span class="va">ftemp</span><span class="op">)</span>, <span class="va">DataDir</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="step-5-preparing-autosomal-and-x-chromosomal-plink-binary-files">Step 5: Preparing autosomal and X-chromosomal plink binary
+<div class="section level3">
+<h3 id="step-5-preparing-autosomal-and-x-chromosomal-plink-binary-files">Step 5: Preparing autosomal and X-chromosomal plink binary
 files<a class="anchor" aria-label="anchor" href="#step-5-preparing-autosomal-and-x-chromosomal-plink-binary-files"></a>
-</h2>
+</h3>
 <p>Now, we will prepare two sets of plink binary files from
 “PostimputeEX_QC1” containing autosomes and X-chromosomes, respectively.
 For this purpose, we will again use <code><a href="../reference/FilterRegion.html">FilterRegion()</a></code>.</p>
@@ -444,9 +443,9 @@ For this purpose, we will again use <code><a href="../reference/FilterRegion.htm
 PAR regions. The steps are provided for the users in the case if they
 have PAR regions in their dataset.</strong></p>
 </div>
-<div class="section level2">
-<h2 id="step-6-merging-the-autosomal-regions-with-par-regions">Step 6: Merging the autosomal regions with PAR regions<a class="anchor" aria-label="anchor" href="#step-6-merging-the-autosomal-regions-with-par-regions"></a>
-</h2>
+<div class="section level3">
+<h3 id="step-6-merging-the-autosomal-regions-with-par-regions">Step 6: Merging the autosomal regions with PAR regions<a class="anchor" aria-label="anchor" href="#step-6-merging-the-autosomal-regions-with-par-regions"></a>
+</h3>
 <p>We will now merge the autosomal files with PAR regions using
 <code><a href="../reference/MergeRegion.html">MergeRegion()</a></code>.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
@@ -461,10 +460,10 @@ have PAR regions in their dataset.</strong></p>
 sex difference in MAF, since the differences may be due to technical
 confounding or sampling biases for the study cohorts.</p>
 </div>
-<div class="section level2">
-<h2 id="step-7-flag-the-snps-in-the-controls-with-a-sex-difference-in-maf">Step 7: Flag the SNPs in the controls with a sex difference in
+<div class="section level3">
+<h3 id="step-7-flag-the-snps-in-the-controls-with-a-sex-difference-in-maf">Step 7: Flag the SNPs in the controls with a sex difference in
 MAF<a class="anchor" aria-label="anchor" href="#step-7-flag-the-snps-in-the-controls-with-a-sex-difference-in-maf"></a>
-</h2>
+</h3>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_QC3"</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"Test_output"</span></span>
@@ -473,23 +472,23 @@ MAF<a class="anchor" aria-label="anchor" href="#step-7-flag-the-snps-in-the-cont
 <p>Since no SNP is having MAF difference in sexes in controls, we will
 proceed to the next steps of the pipeline.</p>
 </div>
-<div class="section level2">
-<h2 id="step-8-prepare-separate-male-and-female-subsets-of-the-genotypes-">Step 8: Prepare separate male and female subsets of the
+<div class="section level3">
+<h3 id="step-8-prepare-separate-male-and-female-subsets-of-the-genotypes-">Step 8: Prepare separate male and female subsets of the
 genotypes.<a class="anchor" aria-label="anchor" href="#step-8-prepare-separate-male-and-female-subsets-of-the-genotypes-"></a>
-</h2>
+</h3>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_QC3"</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_QC4_Female"</span></span>
 <span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="st">"females"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetMFPlink.html">GetMFPlink</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, sex <span class="op">=</span> <span class="va">sex</span>, xplink <span class="op">=</span> <span class="cn">FALSE</span>, autoplink <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ✔ Output plink files, prefixed as PostimputeEX_QC4_Female, are in</span></span>
-<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3</span></span>
-<span><span class="co"># Making male plink files</span></span>
+<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez</span></span>
+<span><span class="co">## Making male plink files</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_QC4_Male"</span></span>
 <span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="st">"males"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetMFPlink.html">GetMFPlink</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, sex <span class="op">=</span> <span class="va">sex</span>, xplink <span class="op">=</span> <span class="cn">FALSE</span>, autoplink <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ✔ Output plink files, prefixed as PostimputeEX_QC4_Male, are in</span></span>
-<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3</span></span></code></pre></div>
+<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez</span></span></code></pre></div>
 <p>Removing the previous QC-ed file from DataDir and copying the new
 QC-ed file to DataDir.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
@@ -505,10 +504,10 @@ QC-ed file to DataDir.</p>
 <span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"PostimputeEX_QC4"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span>, <span class="va">ftemp</span><span class="op">)</span>, <span class="va">DataDir</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="step-9-remove-snps-with-maf-0-05-from-each-sex-from-the-sex-specific-autosomal-plink-files">Step 9: Remove SNPs with MAF &lt; 0.05 from each sex from the
+<div class="section level3">
+<h3 id="step-9-remove-snps-with-maf-0-05-from-each-sex-from-the-sex-specific-autosomal-plink-files">Step 9: Remove SNPs with MAF &lt; 0.05 from each sex from the
 sex-specific autosomal plink files<a class="anchor" aria-label="anchor" href="#step-9-remove-snps-with-maf-0-05-from-each-sex-from-the-sex-specific-autosomal-plink-files"></a>
-</h2>
+</h3>
 <p>Here, we will perform QC of SNPs using MAF, call rate, monomorphism
 and differential missingness in cases vs controls from each sex from the
 sex-specific autosomal datasets.</p>
@@ -536,7 +535,7 @@ and females for analyses of common variants.</p>
 <span><span class="co">#&gt; • In cases, </span></span>
 <span><span class="co">#&gt; • In controls, </span></span>
 <span><span class="co">#&gt; ✔ Merging is done using the common SNPs between the input genotype files.</span></span>
-<span><span class="co">#&gt; ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3 prefixed as filtered_temp2</span></span>
+<span><span class="co">#&gt; ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez prefixed as filtered_temp2</span></span>
 <span><span class="co">#&gt; ℹ There are no monomorphic SNPs.</span></span>
 <span><span class="co">#&gt; ℹ Filtering for differential missingness between cases and controls is turned off.</span></span>
 <span><span class="co">#&gt; ℹ No SNP with differential missingness between cases and controls.</span></span>
@@ -544,7 +543,7 @@ and females for analyses of common variants.</p>
 <span><span class="co">#&gt; ℹ Input file has 21330 SNPs.</span></span>
 <span><span class="co">#&gt; ℹ Output file has 15956 SNPs after filtering.</span></span>
 <span></span>
-<span><span class="co"># Applying filter to male-specific plink files</span></span>
+<span><span class="co">## Applying filter to male-specific plink files</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_QC4_Male"</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_QC5_Male"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/QCsnp.html">QCsnp</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, geno <span class="op">=</span> <span class="va">geno</span>, maf <span class="op">=</span> <span class="va">maf</span>, hweCase <span class="op">=</span> <span class="va">hweCase</span>, hweControl <span class="op">=</span> <span class="va">hweControl</span>, ld_prunning <span class="op">=</span> <span class="va">ld_prunning</span>, casecontrol <span class="op">=</span> <span class="va">casecontrol</span>, monomorphicSNPs <span class="op">=</span> <span class="va">monomorphicSNPs</span>, caldiffmiss <span class="op">=</span> <span class="va">caldiffmiss</span><span class="op">)</span></span>
@@ -555,7 +554,7 @@ and females for analyses of common variants.</p>
 <span><span class="co">#&gt; • In cases, </span></span>
 <span><span class="co">#&gt; • In controls, </span></span>
 <span><span class="co">#&gt; ✔ Merging is done using the common SNPs between the input genotype files.</span></span>
-<span><span class="co">#&gt; ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3 prefixed as filtered_temp2</span></span>
+<span><span class="co">#&gt; ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez prefixed as filtered_temp2</span></span>
 <span><span class="co">#&gt; ℹ There are no monomorphic SNPs.</span></span>
 <span><span class="co">#&gt; ℹ Filtering for differential missingness between cases and controls is turned off.</span></span>
 <span><span class="co">#&gt; ℹ No SNP with differential missingness between cases and controls.</span></span>
@@ -570,21 +569,21 @@ QC-ed file to DataDir.</p>
 <span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"PostimputeEX_QC4"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.remove</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span>, <span class="va">ftemp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Copying the new QC-ed file to DataDir.</span></span>
+<span><span class="co">## Copying the new QC-ed file to DataDir.</span></span>
 <span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"PostimputeEX_QC5"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span>, <span class="va">ftemp</span><span class="op">)</span>, <span class="va">DataDir</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="step-10-combine-sex-specific-autosomal-qc-ed-files-using-common-snps">Step 10: Combine sex-specific autosomal QC-ed files using common
+<div class="section level3">
+<h3 id="step-10-combine-sex-specific-autosomal-qc-ed-files-using-common-snps">Step 10: Combine sex-specific autosomal QC-ed files using common
 SNPs:<a class="anchor" aria-label="anchor" href="#step-10-combine-sex-specific-autosomal-qc-ed-files-using-common-snps"></a>
-</h2>
+</h3>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">finput1</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_QC5_Female"</span></span>
 <span><span class="va">finput2</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_QC5_Male"</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_Auto"</span></span>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MergeRegion.html">MergeRegion</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput1</span>, <span class="va">finput2</span>, <span class="va">foutput</span>, use_common_snps <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ✔ Merging is done using the common SNPs between the input genotype files.</span></span>
-<span><span class="co">#&gt; ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3 prefixed as PostimputeEX_Auto</span></span></code></pre></div>
+<span><span class="co">#&gt; ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez prefixed as PostimputeEX_Auto</span></span></code></pre></div>
 <p>Removing the previous QC-ed file from DataDir and copying the new
 QC-ed file to DataDir.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
@@ -600,9 +599,9 @@ QC-ed file to DataDir.</p>
 <span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"PostimputeEX_Auto"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.remove</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span>, <span class="va">ftemp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="step-11-get-sex-specific-x-chromosomal-plink-files">Step 11: Get sex-specific X-chromosomal plink files<a class="anchor" aria-label="anchor" href="#step-11-get-sex-specific-x-chromosomal-plink-files"></a>
-</h2>
+<div class="section level3">
+<h3 id="step-11-get-sex-specific-x-chromosomal-plink-files">Step 11: Get sex-specific X-chromosomal plink files<a class="anchor" aria-label="anchor" href="#step-11-get-sex-specific-x-chromosomal-plink-files"></a>
+</h3>
 <p>For this, we will use plink files prefixed as
 “PostimputeEX_QC3_snps_extracted”. As a reminder, these plink files
 contain X chromosome.</p>
@@ -612,24 +611,24 @@ from ResultDir to DataDir and will run the sex-specific QC steps.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_QC3_snps_extracted"</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_QC3_XFemale"</span></span>
-<span><span class="co"># Making female-specific plink files X chromosome</span></span>
+<span><span class="co">## Making female-specific plink files X chromosome</span></span>
 <span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="st">"females"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetMFPlink.html">GetMFPlink</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, sex <span class="op">=</span> <span class="va">sex</span>, xplink <span class="op">=</span> <span class="cn">FALSE</span>, autoplink <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ✔ Output plink files, prefixed as PostimputeEX_QC3_XFemale, are in</span></span>
-<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3</span></span>
-<span><span class="co"># Making male-specific plink files X chromosome</span></span>
+<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez</span></span>
+<span><span class="co">## Making male-specific plink files X chromosome</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_QC3_XMale"</span></span>
 <span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="st">"males"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetMFPlink.html">GetMFPlink</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, sex <span class="op">=</span> <span class="va">sex</span>, xplink <span class="op">=</span> <span class="cn">FALSE</span>, autoplink <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ✔ Output plink files, prefixed as PostimputeEX_QC3_XMale, are in</span></span>
-<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3</span></span>
+<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez</span></span>
 <span><span class="co">## Copying sex-specific plink files</span></span>
 <span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"PostimputeEX_QC3_X"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span>, <span class="va">ftemp</span><span class="op">)</span>, <span class="va">DataDir</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="step-12-qc-of-sex-specific-x-chromosomal-snps">Step 12: QC of sex-specific X-chromosomal SNPs<a class="anchor" aria-label="anchor" href="#step-12-qc-of-sex-specific-x-chromosomal-snps"></a>
-</h2>
+<div class="section level3">
+<h3 id="step-12-qc-of-sex-specific-x-chromosomal-snps">Step 12: QC of sex-specific X-chromosomal SNPs<a class="anchor" aria-label="anchor" href="#step-12-qc-of-sex-specific-x-chromosomal-snps"></a>
+</h3>
 <p>Here, we will remove SNPs with a missingness difference in cases vs
 controls, separately in each sex, and will filter out SNPs based on 1%
 MAF, 5% missingness per genotype, and monomorphic SNPs. We recommend
@@ -658,7 +657,7 @@ analyses of common variants.</p>
 <span><span class="co">#&gt; • In cases, </span></span>
 <span><span class="co">#&gt; • In controls, </span></span>
 <span><span class="co">#&gt; ✔ Merging is done using the common SNPs between the input genotype files.</span></span>
-<span><span class="co">#&gt; ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3 prefixed as filtered_temp2</span></span>
+<span><span class="co">#&gt; ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez prefixed as filtered_temp2</span></span>
 <span><span class="co">#&gt; ℹ No SNP with differential missingness between cases and controls.</span></span>
 <span><span class="co">#&gt; ✔ Output plink files prefixed as ,PostimputeEX_QC4_XFemale, with passed SNPs are saved in ResultDir.</span></span>
 <span><span class="co">#&gt; ℹ Input file has 983 SNPs.</span></span>
@@ -675,7 +674,7 @@ analyses of common variants.</p>
 <span><span class="co">#&gt; • In cases, </span></span>
 <span><span class="co">#&gt; • In controls, </span></span>
 <span><span class="co">#&gt; ✔ Merging is done using the common SNPs between the input genotype files.</span></span>
-<span><span class="co">#&gt; ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3 prefixed as filtered_temp2</span></span>
+<span><span class="co">#&gt; ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez prefixed as filtered_temp2</span></span>
 <span><span class="co">#&gt; ℹ No SNP with differential missingness between cases and controls.</span></span>
 <span><span class="co">#&gt; ✔ Output plink files prefixed as ,PostimputeEX_QC4_XMale, with passed SNPs are saved in ResultDir.</span></span>
 <span><span class="co">#&gt; ℹ Input file has 983 SNPs.</span></span>
@@ -694,17 +693,17 @@ analyses of common variants.</p>
 <span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"PostimputeEX_QC4"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.remove</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span>, <span class="va">ftemp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="step-13-combine-sex-specific-qc-ed-x-chromosomal-dataset-using-common-snps">Step 13: Combine sex-specific QC-ed X chromosomal dataset using
+<div class="section level3">
+<h3 id="step-13-combine-sex-specific-qc-ed-x-chromosomal-dataset-using-common-snps">Step 13: Combine sex-specific QC-ed X chromosomal dataset using
 common SNPs<a class="anchor" aria-label="anchor" href="#step-13-combine-sex-specific-qc-ed-x-chromosomal-dataset-using-common-snps"></a>
-</h2>
+</h3>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">finput1</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_QC4_XFemale"</span></span>
 <span><span class="va">finput2</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_QC4_XMale"</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_QC5_Xchr"</span></span>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MergeRegion.html">MergeRegion</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput1</span>, <span class="va">finput2</span>, <span class="va">foutput</span>, use_common_snps <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ✔ Merging is done using the common SNPs between the input genotype files.</span></span>
-<span><span class="co">#&gt; ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3 prefixed as PostimputeEX_QC5_Xchr</span></span></code></pre></div>
+<span><span class="co">#&gt; ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez prefixed as PostimputeEX_QC5_Xchr</span></span></code></pre></div>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Copying merged plink files to DataDir</span></span>
 <span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"PostimputeEX_QC5_Xchr"</span><span class="op">)</span></span>
@@ -714,19 +713,19 @@ common SNPs<a class="anchor" aria-label="anchor" href="#step-13-combine-sex-spec
 <span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="st">"/"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"PostimputeEX_QC4"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.remove</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="st">"/"</span>, <span class="va">ftemp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="step-14-test-for-hwe-across-the-x-chromosomes-in-females">Step 14: Test for HWE across the X chromosomes in females<a class="anchor" aria-label="anchor" href="#step-14-test-for-hwe-across-the-x-chromosomes-in-females"></a>
-</h2>
+<div class="section level3">
+<h3 id="step-14-test-for-hwe-across-the-x-chromosomes-in-females">Step 14: Test for HWE across the X chromosomes in females<a class="anchor" aria-label="anchor" href="#step-14-test-for-hwe-across-the-x-chromosomes-in-females"></a>
+</h3>
 <p>Test for HWE across the X in females (cases and controls combined)
 and remove these regions from analysis for all samples.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_QC5_Xchr"</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_Xchr"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Xhwe.html">Xhwe</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, filterSNP <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Output plink files, prefixed as female, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3</span></span>
+<span><span class="co">#&gt; ✔ Output plink files, prefixed as female, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez</span></span>
 <span><span class="co">#&gt; This test is running on a case-control dataset with female samples.</span></span>
 <span><span class="co">#&gt; ℹ Failed SNPs are excluded from the output plink files prefixed as PostimputeEX_Xchr is in</span></span>
-<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3</span></span></code></pre></div>
+<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez</span></span></code></pre></div>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## No. of the SNPs failed the test.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="co"># 2 SNPs in X chr in females failed HWE test.</span></span>
@@ -743,10 +742,10 @@ and remove these regions from analysis for all samples.</p>
 <span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"PostimputeEX_Xchr"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span>, <span class="va">ftemp</span><span class="op">)</span>, <span class="va">DataDir</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="step-15-checking-for-x-chromosomal-snps-having-maf-difference-in-sexes-in-controls">Step 15: Checking for X-chromosomal SNPs having MAF difference in
+<div class="section level3">
+<h3 id="step-15-checking-for-x-chromosomal-snps-having-maf-difference-in-sexes-in-controls">Step 15: Checking for X-chromosomal SNPs having MAF difference in
 sexes in controls<a class="anchor" aria-label="anchor" href="#step-15-checking-for-x-chromosomal-snps-having-maf-difference-in-sexes-in-controls"></a>
-</h2>
+</h3>
 <p>This test should be performed only for binary traits. We will flag
 the failed SNPs if any.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
@@ -756,6 +755,7 @@ the failed SNPs if any.</p>
 <span><span class="co">#&gt; ℹ No SNP to be flagged or excluded.</span></span>
 <span><span class="va">x</span></span>
 <span><span class="co">#&gt; NULL</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="step-16-combining-autosomal-and-x-chromosomal-qc-ed-datasets">Step 16: Combining autosomal and X-chromosomal QC-ed datasets<a class="anchor" aria-label="anchor" href="#step-16-combining-autosomal-and-x-chromosomal-qc-ed-datasets"></a>
@@ -767,7 +767,7 @@ the failed SNPs if any.</p>
 <span><span class="va">use_common_snps</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MergeRegion.html">MergeRegion</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput1</span>, <span class="va">finput2</span>, <span class="va">foutput</span>, use_common_snps <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ✔ Merging is done with all the SNPs i.e., union of the SNPs.</span></span>
-<span><span class="co">#&gt; ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3 prefixed as PostimputeQC</span></span></code></pre></div>
+<span><span class="co">#&gt; ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez prefixed as PostimputeQC</span></span></code></pre></div>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Removing the previous QC-ed file from DataDir and copying the new QC-ed file to DataDir.</span></span>
 <span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="st">"/"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"PostimputeEX"</span><span class="op">)</span></span>
@@ -776,26 +776,25 @@ the failed SNPs if any.</p>
 <span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"PostimputeQC"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span>, <span class="va">ftemp</span><span class="op">)</span>, <span class="va">DataDir</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.remove</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span>, <span class="va">ftemp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="step-17-preparing-separate-male-and-female-genotype-dataset-for-sample-level-qc">Step 17: Preparing separate male and female genotype dataset for
+<div class="section level3">
+<h3 id="step-17-preparing-separate-male-and-female-genotype-dataset-for-sample-level-qc">Step 17: Preparing separate male and female genotype dataset for
 sample level QC<a class="anchor" aria-label="anchor" href="#step-17-preparing-separate-male-and-female-genotype-dataset-for-sample-level-qc"></a>
-</h2>
+</h3>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Making female-specific plink files</span></span>
+<code class="sourceCode R"><span><span class="co">## Making female-specific plink files</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeQC"</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"Postimpute_Female"</span></span>
 <span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="st">"females"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetMFPlink.html">GetMFPlink</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, sex <span class="op">=</span> <span class="va">sex</span>, xplink <span class="op">=</span> <span class="cn">FALSE</span>, autoplink <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ✔ Output plink files, prefixed as Postimpute_Female, are in</span></span>
-<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3</span></span>
+<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez</span></span>
 <span></span>
-<span><span class="co"># Making male-specific plink files</span></span>
+<span><span class="co">## Making male-specific plink files</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeQC"</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"Postimpute_Male"</span></span>
 <span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="st">"males"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetMFPlink.html">GetMFPlink</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, sex <span class="op">=</span> <span class="va">sex</span>, xplink <span class="op">=</span> <span class="cn">FALSE</span>, autoplink <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Output plink files, prefixed as Postimpute_Male, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3</span></span></code></pre></div>
+<span><span class="co">#&gt; ✔ Output plink files, prefixed as Postimpute_Male, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez</span></span></code></pre></div>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Copying sex-specific plink files to DataDir</span></span>
 <span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"Postimpute_Female"</span><span class="op">)</span></span>
@@ -806,9 +805,9 @@ sample level QC<a class="anchor" aria-label="anchor" href="#step-17-preparing-se
 <span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span>, <span class="va">ftemp</span><span class="op">)</span>, <span class="va">DataDir</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.remove</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span>, <span class="va">ftemp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="step-18-sex-specific-sample-level-qc">Step 18: Sex-specific sample level QC<a class="anchor" aria-label="anchor" href="#step-18-sex-specific-sample-level-qc"></a>
-</h2>
+<div class="section level3">
+<h3 id="step-18-sex-specific-sample-level-qc">Step 18: Sex-specific sample level QC<a class="anchor" aria-label="anchor" href="#step-18-sex-specific-sample-level-qc"></a>
+</h3>
 <p>From each sex-specific plink files, remove individuals with missing
 genotype rate &gt; 0.1, with absolute value of the heterozygosity F
 statistic &gt; 0.20 and IBD statistics pihat &gt; 0.2.</p>
@@ -818,14 +817,14 @@ statistic &gt; 0.20 and IBD statistics pihat &gt; 0.2.</p>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"Postimpute_Female"</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"Postimpute_Female1"</span></span>
 <span><span class="va">imiss</span> <span class="op">&lt;-</span> <span class="fl">0.02</span></span>
-<span><span class="co"># Since het = 3 was removing a lot of samples (185), I decided to increase the threshold after looking at the plot.</span></span>
+<span><span class="co">## Since het = 3 was removing a lot of samples (185), I decided to increase the threshold after looking at the plot.</span></span>
 <span><span class="va">het</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
 <span><span class="va">small_sample_mod</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
 <span><span class="va">IBD</span> <span class="op">&lt;-</span> <span class="fl">0.2</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/QCsample.html">QCsample</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, imiss <span class="op">=</span> <span class="va">imiss</span>, het <span class="op">=</span> <span class="va">het</span>, small_sample_mod <span class="op">=</span> <span class="va">small_sample_mod</span>, IBD <span class="op">=</span> <span class="va">IBD</span><span class="op">)</span></span>
 <span><span class="co">#&gt; • Plots are initiated.</span></span></code></pre></div>
 <div class="float">
-<img src="unnamed-chunk-34-1.png" alt="plot of chunk unnamed-chunk-34"><div class="figcaption">plot of chunk unnamed-chunk-34</div>
+<img src="female-missingness-1.png" alt="plot of chunk female-missingness"><div class="figcaption">plot of chunk female-missingness</div>
 </div>
 <pre><code><span><span class="co">#&gt; ℹ No. of samples filtered/flagged for missingness: 0</span></span>
 <span><span class="co">#&gt; ℹ No. of samples filtered/flagged for heterozygosity threshold: 2</span></span>
@@ -833,21 +832,20 @@ statistic &gt; 0.20 and IBD statistics pihat &gt; 0.2.</p>
 <span><span class="co">#&gt; ℹ No sample is filtered out for IDB after missingness and heterozygosity filter.</span></span>
 <span><span class="co">#&gt; ℹ No. of samples in input plink files: 151</span></span>
 <span><span class="co">#&gt; ℹ No. of samples in output plink files: 149</span></span>
-<span><span class="co">#&gt; ✔ Output plink files, Postimpute_Female1 with final samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3.</span></span>
-<span></span>
-<span><span class="co">## Running the function male-specific QC</span></span>
-<span></span>
+<span><span class="co">#&gt; ✔ Output plink files, Postimpute_Female1 with final samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez.</span></span></code></pre>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Running the function male-specific QC</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"Postimpute_Male"</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"Postimpute_Male1"</span></span>
 <span><span class="va">imiss</span> <span class="op">&lt;-</span> <span class="fl">0.02</span></span>
-<span><span class="co"># Since het = 3 was removing a lot of samples (185), I decided to increase the threshold after looking at the plot.</span></span>
+<span><span class="co">## Since het = 3 was removing a lot of samples (185), I decided to increase the threshold after looking at the plot.</span></span>
 <span><span class="va">het</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
 <span><span class="va">small_sample_mod</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
 <span><span class="va">IBD</span> <span class="op">&lt;-</span> <span class="fl">0.2</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/QCsample.html">QCsample</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, small_sample_mod <span class="op">=</span> <span class="va">small_sample_mod</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, imiss <span class="op">=</span> <span class="va">imiss</span>, het <span class="op">=</span> <span class="va">het</span>, IBD <span class="op">=</span> <span class="va">IBD</span><span class="op">)</span></span>
-<span><span class="co">#&gt; • Plots are initiated.</span></span></code></pre>
+<span><span class="co">#&gt; • Plots are initiated.</span></span></code></pre></div>
 <div class="float">
-<img src="unnamed-chunk-34-2.png" alt="plot of chunk unnamed-chunk-34"><div class="figcaption">plot of chunk unnamed-chunk-34</div>
+<img src="male-missingness-1.png" alt="plot of chunk male-missingness"><div class="figcaption">plot of chunk male-missingness</div>
 </div>
 <pre><code><span><span class="co">#&gt; ℹ No. of samples filtered/flagged for missingness: 0</span></span>
 <span><span class="co">#&gt; ℹ No. of samples filtered/flagged for heterozygosity: 0</span></span>
@@ -855,18 +853,18 @@ statistic &gt; 0.20 and IBD statistics pihat &gt; 0.2.</p>
 <span><span class="co">#&gt; ℹ No sample is filtered out for IDB after missingness and heterozygosity filter.</span></span>
 <span><span class="co">#&gt; ℹ No. of samples in input plink files: 125</span></span>
 <span><span class="co">#&gt; ℹ No. of samples in output plink files: 125</span></span>
-<span><span class="co">#&gt; ✔ Output plink files, Postimpute_Male1 with final samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3.</span></span></code></pre>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt; ✔ Output plink files, Postimpute_Male1 with final samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez.</span></span></code></pre>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Copying filtered plink files to DataDir</span></span>
 <span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"Postimpute_"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span>, <span class="va">ftemp</span><span class="op">)</span>, <span class="va">DataDir</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.remove</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span>, <span class="va">ftemp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="step-19-combine-male-and-female-specific-qc-ed-genotype-datasets">Step 19: Combine male and female-specific Qc-ed genotype
+<div class="section level3">
+<h3 id="step-19-combine-male-and-female-specific-qc-ed-genotype-datasets">Step 19: Combine male and female-specific Qc-ed genotype
 datasets<a class="anchor" aria-label="anchor" href="#step-19-combine-male-and-female-specific-qc-ed-genotype-datasets"></a>
-</h2>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+</h3>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Combine male and female-specific files</span></span>
 <span><span class="co">## Running the function</span></span>
 <span><span class="va">finput1</span> <span class="op">&lt;-</span> <span class="st">"Postimpute_Female1"</span></span>
@@ -874,16 +872,17 @@ datasets<a class="anchor" aria-label="anchor" href="#step-19-combine-male-and-fe
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeFinal"</span></span>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MergeRegion.html">MergeRegion</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput1</span>, <span class="va">finput2</span>, <span class="va">foutput</span>, use_common_snps <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ✔ Merging is done using the common SNPs between the input genotype files.</span></span>
-<span><span class="co">#&gt; ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3 prefixed as PostimputeFinal</span></span></code></pre></div>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt; ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez prefixed as PostimputeFinal</span></span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Removing the not needed files from DataDir.</span></span>
 <span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="st">"/"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"Postimpute_"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.remove</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="st">"/"</span>, <span class="va">ftemp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
+</div>
 <div class="section level2">
 <h2 id="final-summary-of-the-final-qc-ed-genotype-dataset">Final Summary of the final QC-ed genotype dataset<a class="anchor" aria-label="anchor" href="#final-summary-of-the-final-qc-ed-genotype-dataset"></a>
 </h2>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeFinal"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PlinkSummary.html">PlinkSummary</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Dataset: PostimputeFinal</span></span>
@@ -918,7 +917,7 @@ datasets<a class="anchor" aria-label="anchor" href="#step-19-combine-male-and-fe
 <p>We hope that <em><a href="https://bioconductor.org/packages/3.21/GXwasR" class="external-link">GXwasR</a></em>
 will be useful for your research. Please use the following information
 to cite the package and the overall approach. Thank you!</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Citation info</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"GXwasR"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; To cite package 'GXwasR' in publications use:</span></span>
@@ -977,14 +976,13 @@ to:</p>
 <span><span class="co">#&gt;  collate  en_US.UTF-8</span></span>
 <span><span class="co">#&gt;  ctype    en_US.UTF-8</span></span>
 <span><span class="co">#&gt;  tz       America/New_York</span></span>
-<span><span class="co">#&gt;  date     2025-08-04</span></span>
+<span><span class="co">#&gt;  date     2025-08-05</span></span>
 <span><span class="co">#&gt;  pandoc   3.6.3 @ /Applications/Positron.app/Contents/Resources/app/quarto/bin/tools/aarch64/ (via rmarkdown)</span></span>
 <span><span class="co">#&gt;  quarto   1.7.32 @ /usr/local/bin/quarto</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt;  ! package              * version    date (UTC) lib source</span></span>
 <span><span class="co">#&gt;    abind                  1.4-8      2024-09-12 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    askpass                1.2.1      2024-10-04 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    backports              1.5.0      2024-05-23 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    bibtex                 0.5.1      2023-01-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    bigassertr             0.1.7      2025-06-27 [2] CRAN (R 4.5.1)</span></span>
@@ -998,7 +996,6 @@ to:</p>
 <span><span class="co">#&gt;    BiocManager            1.30.26    2025-06-05 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    BiocParallel           1.42.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    BiocStyle              2.36.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    biocthis               1.18.0     2025-04-15 [2] Bioconduc~</span></span>
 <span><span class="co">#&gt;    Biostrings             2.76.0     2025-04-15 [2] Bioconduc~</span></span>
 <span><span class="co">#&gt;    bit                    4.6.0      2025-03-06 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    bit64                  4.6.0-1    2025-01-16 [2] CRAN (R 4.5.1)</span></span>
@@ -1016,7 +1013,6 @@ to:</p>
 <span><span class="co">#&gt;    commonmark             2.0.0      2025-07-07 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    cowplot                1.2.0      2025-07-07 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    crayon                 1.5.3      2024-06-20 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    credentials            2.0.2      2024-10-04 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    curl                   6.4.0      2025-06-22 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    data.table             1.17.8     2025-07-10 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    DelayedArray           0.34.1     2025-04-17 [2] Bioconduc~</span></span>
@@ -1040,13 +1036,10 @@ to:</p>
 <span><span class="co">#&gt;    GenomeInfoDbData       1.2.14     2025-04-21 [2] Bioconductor</span></span>
 <span><span class="co">#&gt;    GenomicAlignments      1.44.0     2025-04-15 [2] Bioconduc~</span></span>
 <span><span class="co">#&gt;    GenomicRanges          1.60.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    gert                   2.1.5      2025-03-25 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    ggplot2                3.5.2      2025-04-09 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    ggpubr                 0.6.1      2025-06-27 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    ggrepel                0.9.6      2024-09-07 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    ggsignif               0.6.4      2022-10-13 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    gh                     1.5.0      2025-05-26 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    gitcreds               0.1.2      2022-09-08 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    glue                   1.8.0      2024-09-30 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    gridExtra              2.3        2017-09-09 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    gtable                 0.3.6      2024-10-25 [2] CRAN (R 4.5.0)</span></span>
@@ -1056,7 +1049,6 @@ to:</p>
 <span><span class="co">#&gt;    htmlwidgets            1.6.4      2023-12-06 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    httpuv                 1.6.16     2025-04-16 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    httr                   1.4.7      2023-08-15 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    httr2                  1.2.1      2025-07-22 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    hunspell               3.0.6      2025-03-22 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    IRanges                2.42.0     2025-04-15 [2] Bioconduc~</span></span>
 <span><span class="co">#&gt;    iterators              1.0.14     2022-02-05 [2] CRAN (R 4.5.0)</span></span>
@@ -1076,7 +1068,6 @@ to:</p>
 <span><span class="co">#&gt;    memoise                2.0.1      2021-11-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    mime                   0.13       2025-03-17 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    miniUI                 0.1.2      2025-04-17 [3] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    openssl                2.3.3      2025-05-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    pillar                 1.11.0     2025-07-04 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    pkgbuild               1.4.8      2025-05-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.5.0)</span></span>
@@ -1094,13 +1085,11 @@ to:</p>
 <span><span class="co">#&gt;    ps                     1.9.1      2025-04-12 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    purrr                  1.1.0      2025-07-10 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    qqman                  0.1.9      2023-08-23 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    R.cache                0.17.0     2025-05-02 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    R.methodsS3            1.8.2      2022-06-13 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    R.oo                   1.27.1     2025-05-02 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    R.utils                2.13.0     2025-02-24 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    R6                     2.6.1      2025-02-15 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    ragg                   1.4.0      2025-04-10 [3] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    rappdirs               0.3.3      2021-01-31 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    rbibutils              2.3        2024-10-04 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    rcmdcheck              1.4.0      2021-09-27 [3] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    RColorBrewer           1.1-3      2022-04-03 [2] CRAN (R 4.5.0)</span></span>
@@ -1132,7 +1121,6 @@ to:</p>
 <span><span class="co">#&gt;    spelling               2.3.1      2024-10-04 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    stringi                1.8.7      2025-03-27 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    stringr                1.5.1      2023-11-14 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    styler                 1.10.3     2024-04-07 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    sumFREGAT              1.2.5      2022-06-07 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;    SummarizedExperiment   1.38.1     2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    sys                    3.4.3      2024-10-04 [2] CRAN (R 4.5.0)</span></span>
@@ -1149,7 +1137,6 @@ to:</p>
 <span><span class="co">#&gt;    usethis              * 3.1.0      2024-11-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    vctrs                  0.6.5      2023-12-01 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    vroom                  1.6.5      2023-12-05 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    whisker                0.4.1      2022-12-05 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    withr                  3.0.2      2024-10-28 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    xfun                   0.52       2025-04-02 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;    XML                    3.99-0.18  2025-01-01 [2] CRAN (R 4.5.0)</span></span>
@@ -1159,7 +1146,7 @@ to:</p>
 <span><span class="co">#&gt;    XVector                0.48.0     2025-04-15 [2] Bioconduc~</span></span>
 <span><span class="co">#&gt;    yaml                   2.3.10     2024-07-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp0uzDD3/temp_libpathfc4153405fdb</span></span>
+<span><span class="co">#&gt;  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpdyNNez/temp_libpath548171db3e3e</span></span>
 <span><span class="co">#&gt;  [2] /Users/mayerdav/Library/R/arm64/4.5/library</span></span>
 <span><span class="co">#&gt;  [3] /opt/homebrew/lib/R/4.5/site-library</span></span>
 <span><span class="co">#&gt;  [4] /opt/homebrew/Cellar/r/4.5.1/lib/R/library</span></span>
