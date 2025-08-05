@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>GXwasR Overview • GXwasR</title>
+<title>Running GWAS, XWAS and Sex-differential tests Using GXwasR • GXwasR</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -15,7 +15,7 @@
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="GXwasR Overview">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Running GWAS, XWAS and Sex-differential tests Using GXwasR">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -66,7 +66,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.svg" class="logo" alt=""><h1>GXwasR Overview</h1>
+      <img src="../logo.svg" class="logo" alt=""><h1>Running GWAS, XWAS and Sex-differential tests Using GXwasR</h1>
                         <h4 data-toc-skip class="author">Banabithi
 Bose</h4>
             <address class="author_afil">
@@ -76,563 +76,474 @@ Campus<br><a class="author_email" href="mailto:#"></a><a href="mailto:banabithi.
                   
             <h4 data-toc-skip class="date">4 August 2025</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/main/vignettes/GXwasR_overview.Rmd" class="external-link"><code>vignettes/GXwasR_overview.Rmd</code></a></small>
-      <div class="d-none name"><code>GXwasR_overview.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/main/vignettes/gwas_models.Rmd" class="external-link"><code>vignettes/gwas_models.Rmd</code></a></small>
+      <div class="d-none name"><code>gwas_models.Rmd</code></div>
     </div>
 
     
     
 <div class="section level2">
-<h2 id="gxwasr-description">
-<a id="GXwasR Description"></a> GXwasR Description:<a class="anchor" aria-label="anchor" href="#gxwasr-description"></a>
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>This package implements various statistical genetics models for
-Genome-Wide Association (GWA) and X-Chromosome Wide Association (XWA)
-analyses in a sex-combined or sex-stratified way considering
-X-Chromosome Inactivation (XCI) pattern. In addition to association
-analysis, the package also enables testing for sex differences in
-genetic effects, including the implementation of specific models and
-applying best practices for additional quality control (QC) of genetic
-data required for these tests. The package includes thirty different
-functions in six different categories (A-F) which enable a comprehensive
-pipeline for sex-aware genetic association analysis of common variants
-with unrelated individuals.</p>
+<p>This document contains an example of running a GWAS with XWAS model
+and Sex-differential tests.</p>
+<p>Users must perform pre-imputation and post-imputation quality control
+(QC) on genotype dataset and then proceed with this tutorial in actual
+scenario. Please follow the detailed QC-ed steps provided in: <a href="https://boseb.github.io/GXwasR/articles/preimputationQC.html" class="external-link">GXwasR_Preimputation</a>
+and <a href="https://boseb.github.io/GXwasR/articles/postimputationQC.html" class="external-link">GXwasR_Postimputation</a>.</p>
 </div>
 <div class="section level2">
-<h2 id="basics">Basics<a class="anchor" aria-label="anchor" href="#basics"></a>
+<h2 id="example-datasets">Example Datasets<a class="anchor" aria-label="anchor" href="#example-datasets"></a>
 </h2>
-<div class="section level3">
-<h3 id="install-gxwasr">Install <code>GXwasR</code><a class="anchor" aria-label="anchor" href="#install-gxwasr"></a>
-</h3>
-<p><code>R</code> is an open-source statistical environment which can be
-easily modified to enhance its functionality via packages. <em><a href="https://bioconductor.org/packages/3.21/GXwasR" class="external-link">GXwasR</a></em> is
-a <code>R</code> package available via the <a href="http://bioconductor.org" class="external-link">Bioconductor</a> repository for packages.
-<code>R</code> can be installed on any operating system from <a href="https://cran.r-project.org/" class="external-link">CRAN</a> after which you can install
-<em><a href="https://bioconductor.org/packages/3.21/GXwasR" class="external-link">GXwasR</a></em> by
-using the following commands in your <code>R</code> session:</p>
+<p>The PLINK bed, bim, and fam files are the three mandatory files
+representing a genotype dataset to run this tutorial. To know about
+these file extensions, please check <a href="https://www.cog-genomics.org/plink/1.9/formats" class="external-link uri">https://www.cog-genomics.org/plink/1.9/formats</a>.</p>
+<p><strong>GXwasR_example:</strong></p>
+<ul>
+<li><p>GXwasR_example.bed</p></li>
+<li><p>GXwasR_example.bim</p></li>
+<li><p>GXwasR_example.fam</p></li>
+</ul>
+<p>These plink files contain genotypes for 276 individuals (males and
+females) simulated from 1000Genome from European decent with 26515
+variants across twelve chromosomes (1-10,23,24). This dataset contains
+125 males, 151 females, 108 cases and 168 controls. We will utilize this
+set of plink files as proxy of pre-imputated genotype data.</p>
+</div>
+<div class="section level2">
+<h2 id="loading-the-gxwasr-library">Loading the GXwasR library<a class="anchor" aria-label="anchor" href="#loading-the-gxwasr-library"></a>
+</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">## Check that you have a valid Bioconductor installation</span></span>
-<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/valid.html" class="external-link">valid</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-</div>
+<code class="sourceCode R"><span><span class="co">## Call some libraries</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/boseb/GXwasR/" class="external-link">GXwasR</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/printr/" class="external-link">printr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rstudio/rmarkdown" class="external-link">rmarkdown</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="functions-overview">Functions Overview<a class="anchor" aria-label="anchor" href="#functions-overview"></a>
+<h2 id="learn-about-all-the-gxwasr-functions">Learn about all the GXwasR functions<a class="anchor" aria-label="anchor" href="#learn-about-all-the-gxwasr-functions"></a>
 </h2>
-<p>This document lists all the functions in GXwasR package.It offers
-thirty-three distinct functions, which are organized into six main
-categories: A) Pre-imputation QC, B) Post-imputation QC, C) Sex-combined
-and sex-stratified GWAS with specialized analysis for XWAS, D)
-Sex-differential test, E) High level analysis and a range of F) Utility
-Functions. These categories and their respective functions are detailed
-in the below Table.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/browseVignettes.html" class="external-link">browseVignettes</a></span><span class="op">(</span><span class="st">"GXwasR"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="example-dataset-summary">Example Dataset Summary<a class="anchor" aria-label="anchor" href="#example-dataset-summary"></a>
+</h2>
+<p><strong>Dataset: GXwasR_example</strong></p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PlinkSummary.html">PlinkSummary</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ Dataset: GXwasR_example</span></span>
+<span><span class="co">#&gt; ℹ Number of missing phenotypes: 0</span></span>
+<span><span class="co">#&gt; ℹ Number of males: 125</span></span>
+<span><span class="co">#&gt; ℹ Number of females: 151</span></span>
+<span><span class="co">#&gt; ℹ This is case-control data</span></span>
+<span><span class="co">#&gt; ℹ Number of cases: 108</span></span>
+<span><span class="co">#&gt; ℹ Number of controls: 168</span></span>
+<span><span class="co">#&gt; ℹ Number of cases in males: 53</span></span>
+<span><span class="co">#&gt; ℹ Number of controls in males: 72</span></span>
+<span><span class="co">#&gt; ℹ Number of cases in females: 55</span></span>
+<span><span class="co">#&gt; ℹ Number of controls in females: 96</span></span>
+<span><span class="co">#&gt; ℹ Number of chromosomes: 12</span></span>
+<span><span class="co">#&gt;   - Chr: 1</span></span>
+<span><span class="co">#&gt;   - Chr: 2</span></span>
+<span><span class="co">#&gt;   - Chr: 3</span></span>
+<span><span class="co">#&gt;   - Chr: 4</span></span>
+<span><span class="co">#&gt;   - Chr: 5</span></span>
+<span><span class="co">#&gt;   - Chr: 6</span></span>
+<span><span class="co">#&gt;   - Chr: 7</span></span>
+<span><span class="co">#&gt;   - Chr: 8</span></span>
+<span><span class="co">#&gt;   - Chr: 9</span></span>
+<span><span class="co">#&gt;   - Chr: 10</span></span>
+<span><span class="co">#&gt;   - Chr: 23</span></span>
+<span><span class="co">#&gt;   - Chr: 24</span></span>
+<span><span class="co">#&gt; ℹ Total number of SNPs: 26527</span></span>
+<span><span class="co">#&gt; ℹ Total number of samples: 276</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="sex-combined-and-sex-stratified-gwas-with-xwas">Sex-combined and sex-stratified GWAS with XWAS<a class="anchor" aria-label="anchor" href="#sex-combined-and-sex-stratified-gwas-with-xwas"></a>
+</h2>
 <div class="section level3">
-<h3 id="table-of-functions">Table of Functions<a class="anchor" aria-label="anchor" href="#table-of-functions"></a>
+<h3 id="function-gxwas">Function: GXwas()<a class="anchor" aria-label="anchor" href="#function-gxwas"></a>
 </h3>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">GXwas</span>, package <span class="op">=</span> <span class="va">GXwasR</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ Rendering development documentation for "GXwas"</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="running-gxwas">
+<a id="Running GXwas"> </a> Running GXwas<a class="anchor" aria-label="anchor" href="#running-gxwas"></a>
+</h3>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Running</span></span>
+<span><span class="va">DataDir</span> <span class="op">&lt;-</span> <span class="fu">GXwasR</span><span class="fu">:::</span><span class="fu"><a href="../reference/GXwasR_data.html">GXwasR_data</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
+<span><span class="va">standard_beta</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
+<span><span class="va">xsex</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
+<span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
+<span><span class="va">Inphenocov</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
+<span><span class="va">covartest</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
+<span><span class="va">interaction</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
+<span><span class="va">MF.na.rm</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
+<span><span class="va">B</span> <span class="op">&lt;-</span> <span class="fl">10000</span></span>
+<span><span class="va">MF.zero.sub</span> <span class="op">&lt;-</span> <span class="fl">0.00001</span></span>
+<span><span class="va">trait</span> <span class="op">&lt;-</span> <span class="st">"binary"</span></span>
+<span><span class="va">xmodel</span> <span class="op">&lt;-</span> <span class="st">"FMstratified"</span></span>
+<span><span class="va">combtest</span> <span class="op">&lt;-</span> <span class="st">"fisher.method"</span></span>
+<span><span class="va">snp_pval</span> <span class="op">&lt;-</span> <span class="fl">1e-08</span></span>
+<span><span class="va">covarfile</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
+<span><span class="va">ncores</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span><span class="va">plot.jpeg</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
+<span><span class="va">MF.mc.cores</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span><span class="va">genomewideline</span> <span class="op">&lt;-</span> <span class="fl">7.3</span></span>
+<span><span class="va">suggestiveline</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
+<span><span class="va">plotname</span> <span class="op">&lt;-</span> <span class="st">"GXwas.plot"</span></span>
+<span><span class="va">annotateTopSnp</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
+<span><span class="va">MF.na.rm</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
+<span><span class="va">B</span> <span class="op">&lt;-</span> <span class="fl">10000</span></span>
+<span><span class="va">MF.zero.sub</span> <span class="op">&lt;-</span> <span class="fl">0.00001</span></span>
+<span><span class="va">MF.p.corr</span> <span class="op">&lt;-</span> <span class="st">"none"</span></span>
+<span><span class="va">plotname</span> <span class="op">&lt;-</span> <span class="st">"GXwas.plot"</span></span>
+<span><span class="va">ResultGXwas</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GXwas.html">GXwas</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, xmodel <span class="op">=</span> <span class="va">xmodel</span>, trait <span class="op">=</span> <span class="va">trait</span>, covarfile <span class="op">=</span> <span class="va">covarfile</span>, sex <span class="op">=</span> <span class="va">sex</span>, xsex <span class="op">=</span> <span class="va">xsex</span>, combtest <span class="op">=</span> <span class="va">combtest</span>, MF.p.corr <span class="op">=</span> <span class="st">"none"</span>, snp_pval <span class="op">=</span> <span class="va">snp_pval</span>, plot.jpeg <span class="op">=</span> <span class="va">plot.jpeg</span>, suggestiveline <span class="op">=</span> <span class="fl">5</span>, genomewideline <span class="op">=</span> <span class="fl">7.3</span>, MF.mc.cores <span class="op">=</span> <span class="fl">1</span>, ncores <span class="op">=</span> <span class="va">ncores</span><span class="op">)</span></span>
+<span><span class="co">#&gt; • Running FMstratified model</span></span>
+<span><span class="co">#&gt; • Stratified test is running for females</span></span>
+<span><span class="co">#&gt; • Stratified test is running for males</span></span>
+<span><span class="co">#&gt; ℹ Plots are initiated.</span></span>
+<span><span class="co">#&gt; ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3/Stratified_GWAS.png</span></span>
+<span><span class="co">#&gt; ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3/Stratified_XWAS.png</span></span>
+<span><span class="co">#&gt; Three data frames have been created and saved:</span></span>
+<span><span class="co">#&gt; • CombinedWAS</span></span>
+<span><span class="co">#&gt; • MaleWAS</span></span>
+<span><span class="co">#&gt; • FemaleWAS</span></span>
+<span><span class="co">#&gt; ℹ You can find them in the directory: /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Outputs</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">ResultGXwas</span><span class="op">$</span><span class="va">CombinedWAS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="op">]</span>, caption <span class="op">=</span> <span class="st">"Dataframe containing the result of stratified model"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<colgroup>
-<col width="10%">
-<col width="67%">
-<col width="22%">
-</colgroup>
+<caption>Dataframe containing the result of stratified model</caption>
 <thead><tr class="header">
-<th>Function</th>
-<th>Description</th>
-<th>Category</th>
+<th align="left">SNP</th>
+<th align="right">CHR</th>
+<th align="right">BP</th>
+<th align="right">P</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>QCsnp()</td>
-<td>Performs quality control for SNPs in PLINK binary files.</td>
-<td>Pre-imputation QC, Post-imputation QC</td>
+<td align="left">rs10000405</td>
+<td align="right">4</td>
+<td align="right">47716881</td>
+<td align="right">0.9768464</td>
 </tr>
 <tr class="even">
-<td>QCsample()</td>
-<td>Identifies outlier individuals based on heterozygosity and missing
-genotype rates.</td>
-<td>Pre-imputation QC, Post-imputation QC</td>
+<td align="left">rs10000452</td>
+<td align="right">4</td>
+<td align="right">63234460</td>
+<td align="right">0.6969710</td>
 </tr>
 <tr class="odd">
-<td>AncestryCheck()</td>
-<td>Evaluates samples’ ancestry and flags outliers using PCA.</td>
-<td>Pre-imputation QC</td>
+<td align="left">rs10000465</td>
+<td align="right">4</td>
+<td align="right">120835814</td>
+<td align="right">0.5378310</td>
 </tr>
 <tr class="even">
-<td>SexCheck()</td>
-<td>Compares sex assignments with predictions from X chromosome
-inbreeding coefficients.</td>
-<td>Pre-imputation QC</td>
+<td align="left">rs10000605</td>
+<td align="right">4</td>
+<td align="right">13875675</td>
+<td align="right">0.7221672</td>
 </tr>
 <tr class="odd">
-<td>Xhwe()</td>
-<td>Filters X-chromosome variants violating Hardy-Weinberg Equilibrium
-in females.</td>
-<td>Post-imputation QC</td>
-</tr>
-<tr class="even">
-<td>MAFdiffSexControl()</td>
-<td>Tests for significant MAF differences between sexes in control
-samples.</td>
-<td>Post-imputation QC</td>
-</tr>
-<tr class="odd">
-<td>FilterRegion()</td>
-<td>Filters out specific chromosomal regions from input PLINK
-files.</td>
-<td>Post-imputation QC, Utility Functions</td>
-</tr>
-<tr class="even">
-<td>GXwas()</td>
-<td>Runs GWAS models in autosomes with XWAS models like “FMcomb01”,
-“FMcomb02”, “FMstratified” for binary and quantitative traits, and
-“GWAScxci” for binary traits. Focuses on additive SNP effects,
-multi-collinearity issues, and includes multiple covariates and their
-interactions.</td>
-<td>Sex-combined and sex-stratified GWAS with XWAS</td>
-</tr>
-<tr class="odd">
-<td>PvalComb()</td>
-<td>Combines p-values from separate GWAS using various statistical
-methods and corrects summary p-values.</td>
-<td>Sex-combined and sex-stratified GWAS with XWAS</td>
-</tr>
-<tr class="even">
-<td>SexDiff()</td>
-<td>Evaluates sex differences in genetic effect size for each SNP.</td>
-<td>Sex-differential test</td>
-</tr>
-<tr class="odd">
-<td>SexDiffZscore()</td>
-<td>Presumably analyzes sex differences using Z-score methodology,
-comparing genetic effect sizes between males and females.</td>
-<td>Sex-differential test</td>
-</tr>
-<tr class="even">
-<td>DiffZeroOne()</td>
-<td>Assesses Z-scores for deviation from one and zero for statistics
-like genetic correlation.</td>
-<td>Sex-differential test</td>
-</tr>
-<tr class="odd">
-<td>TestXGene()</td>
-<td>Performs gene-based association tests using GWAS/XWAS summary
-statistics.</td>
-<td>High level analysis</td>
-</tr>
-<tr class="even">
-<td>MetaGXwas()</td>
-<td>Combines summary-level GWAS results using fixed-effect and
-random-effect models.</td>
-<td>High level analysis</td>
-</tr>
-<tr class="odd">
-<td>ComputePRS()</td>
-<td>Calculates polygenic risk scores from GWAS summary statistics.</td>
-<td>High level analysis</td>
-</tr>
-<tr class="even">
-<td>GeneticCorrBT()</td>
-<td>Computes genetic correlation between to traits.</td>
-<td>High level analysis</td>
-</tr>
-<tr class="odd">
-<td>EstimateHerit()</td>
-<td>Computes SNP heritability using GREML or LDSC models.</td>
-<td>High level analysis</td>
-</tr>
-<tr class="even">
-<td>SexRegress()</td>
-<td>Not previously described. Presumably involves regression analyses
-specific to sex-stratified data.</td>
-<td>High level analysis</td>
-</tr>
-<tr class="odd">
-<td>FilterPlinkSample()</td>
-<td>Prepares PLINK binary files with desired samples based on specified
-criteria.</td>
-<td>Utility Functions</td>
-</tr>
-<tr class="even">
-<td>ComputeGeneticPC()</td>
-<td>Computes principal components from a genetic relationship matrix for
-population stratification correction.</td>
-<td>Utility Functions</td>
-</tr>
-<tr class="odd">
-<td>ClumpLD()</td>
-<td>Performs linkage disequilibrium clumping of SNPs.</td>
-<td>Utility Functions</td>
-</tr>
-<tr class="even">
-<td>GetMFPlink()</td>
-<td>Prepares separate male and female PLINK binary files from combined
-files.</td>
-<td>Utility Functions</td>
-</tr>
-<tr class="odd">
-<td>plinkVCF()</td>
-<td>Converts VCF files to plink binary formats and vice versa, including
-creation of dummy FAM files.</td>
-<td>Utility Functions</td>
-</tr>
-<tr class="even">
-<td>MergeRegion()</td>
-<td>Combines two genotype datasets based on common or all SNPs.</td>
-<td>Utility Functions</td>
-</tr>
-<tr class="odd">
-<td>FilterAllele()</td>
-<td>Filters out multi-allelic variants from the genetic dataset,
-essential for maintaining dataset integrity and simplifying genetic
-analyses.</td>
-<td>Utility Functions</td>
-</tr>
-<tr class="even">
-<td>PlinkSummary()</td>
-<td>Provides a summary of genotype datasets in plink format.</td>
-<td>Utility Functions</td>
-</tr>
-<tr class="odd">
-<td>FilterSNP()</td>
-<td>Filters out specific SNPs from the dataset based on user-defined
-criteria.</td>
-<td>Utility Functions</td>
-</tr>
-<tr class="even">
-<td>DummyCovar()</td>
-<td>Recodes a categorical covariate into binary dummy variables for
-statistical analysis in GXwasR.</td>
-<td>Utility Functions</td>
-</tr>
-<tr class="odd">
-<td>GXWASmiami()</td>
-<td>Generates Miami plots for GWAS and XWAS.</td>
-<td></td>
-</tr>
-<tr class="even">
-<td>Utility Functions</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>Download_reference()</td>
-<td>Download Hapmap phase 3 and 1000 Genome phase 3 Data.</td>
-<td></td>
-</tr>
-<tr class="even">
-<td>Utility Functions</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>SumstatGenCorr()</td>
-<td>Genetic Correlation Calculation from GWAS Summary Statistics.</td>
-<td></td>
-</tr>
-<tr class="even">
-<td>High level analysis</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>LDPrune()</td>
-<td>Performs LD pruning on SNP data.</td>
-<td></td>
-</tr>
-<tr class="even">
-<td>Utility Functions</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>executePlinkMAF()</td>
-<td>Calculate minor allele frequencies.</td>
-<td></td>
-</tr>
-<tr class="even">
-<td>Utility Functions</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>ComputeLD()</td>
-<td>Calculate LD matrix.</td>
-<td></td>
-</tr>
-<tr class="even">
-<td>Utility Functions</td>
-<td></td>
-<td></td>
+<td align="left">rs10000675</td>
+<td align="right">4</td>
+<td align="right">121520624</td>
+<td align="right">0.8246220</td>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/boseb/GXwasR/" class="external-link">GXwasR</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/printr/" class="external-link">printr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rstudio/rmarkdown" class="external-link">rmarkdown</a></span><span class="op">)</span></span></code></pre></div>
-<div class="section level4">
-<h4 id="function-1">Function 1<a class="anchor" aria-label="anchor" href="#function-1"></a>
-</h4>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">QCsnp</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "QCsnp"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-2">Function 2<a class="anchor" aria-label="anchor" href="#function-2"></a>
-</h4>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">QCsample</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "QCsample"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-3">Function 3<a class="anchor" aria-label="anchor" href="#function-3"></a>
-</h4>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">AncestryCheck</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "AncestryCheck"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-4">Function 4<a class="anchor" aria-label="anchor" href="#function-4"></a>
-</h4>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">SexCheck</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "SexCheck"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-5">Function 5<a class="anchor" aria-label="anchor" href="#function-5"></a>
-</h4>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">Xhwe</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "Xhwe"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-6">Function 6<a class="anchor" aria-label="anchor" href="#function-6"></a>
-</h4>
+<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">ResultGXwas</span><span class="op">$</span><span class="va">MaleWAS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="op">]</span>, caption <span class="op">=</span> <span class="st">"Stratified GWAS result with male cohort."</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<caption>Stratified GWAS result with male cohort.</caption>
+<colgroup>
+<col width="4%">
+<col width="14%">
+<col width="9%">
+<col width="3%">
+<col width="5%">
+<col width="7%">
+<col width="9%">
+<col width="8%">
+<col width="9%">
+<col width="8%">
+<col width="9%">
+<col width="9%">
+</colgroup>
+<thead><tr class="header">
+<th align="right">CHR</th>
+<th align="left">SNP</th>
+<th align="right">BP</th>
+<th align="left">A1</th>
+<th align="left">TEST</th>
+<th align="right">NMISS</th>
+<th align="right">BETA</th>
+<th align="right">SE</th>
+<th align="right">L95</th>
+<th align="right">U95</th>
+<th align="right">STAT</th>
+<th align="right">P</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">rs143773730</td>
+<td align="right">73841</td>
+<td align="left">T</td>
+<td align="left">ADD</td>
+<td align="right">125</td>
+<td align="right">-0.0789</td>
+<td align="right">0.2643</td>
+<td align="right">-0.5968</td>
+<td align="right">0.4390</td>
+<td align="right">-0.2986</td>
+<td align="right">0.76530</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="left">rs147281566</td>
+<td align="right">775125</td>
+<td align="left">T</td>
+<td align="left">ADD</td>
+<td align="right">125</td>
+<td align="right">-0.3959</td>
+<td align="right">1.2380</td>
+<td align="right">-2.8230</td>
+<td align="right">2.0310</td>
+<td align="right">-0.3197</td>
+<td align="right">0.74920</td>
+</tr>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">rs35854196</td>
+<td align="right">863863</td>
+<td align="left">A</td>
+<td align="left">ADD</td>
+<td align="right">125</td>
+<td align="right">1.0500</td>
+<td align="right">0.8858</td>
+<td align="right">-0.6864</td>
+<td align="right">2.7860</td>
+<td align="right">1.1850</td>
+<td align="right">0.23600</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="left">rs12041521</td>
+<td align="right">1109154</td>
+<td align="left">A</td>
+<td align="left">ADD</td>
+<td align="right">125</td>
+<td align="right">-0.4451</td>
+<td align="right">0.3387</td>
+<td align="right">-1.1090</td>
+<td align="right">0.2188</td>
+<td align="right">-1.3140</td>
+<td align="right">0.18890</td>
+</tr>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">rs148527527</td>
+<td align="right">1127860</td>
+<td align="left">G</td>
+<td align="left">ADD</td>
+<td align="right">125</td>
+<td align="right">1.6770</td>
+<td align="right">0.6864</td>
+<td align="right">0.3317</td>
+<td align="right">3.0220</td>
+<td align="right">2.4430</td>
+<td align="right">0.01456</td>
+</tr>
+</tbody>
+</table>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">MAFdiffSexControl</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "MAFdiffSexControl"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-7">Function 7<a class="anchor" aria-label="anchor" href="#function-7"></a>
-</h4>
+<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">ResultGXwas</span><span class="op">$</span><span class="va">FemaleWAS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="op">]</span>, caption <span class="op">=</span> <span class="st">"Stratified GWAS result with female cohort."</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<caption>Stratified GWAS result with female cohort.</caption>
+<colgroup>
+<col width="4%">
+<col width="13%">
+<col width="9%">
+<col width="3%">
+<col width="5%">
+<col width="6%">
+<col width="9%">
+<col width="8%">
+<col width="9%">
+<col width="10%">
+<col width="9%">
+<col width="9%">
+</colgroup>
+<thead><tr class="header">
+<th align="right">CHR</th>
+<th align="left">SNP</th>
+<th align="right">BP</th>
+<th align="left">A1</th>
+<th align="left">TEST</th>
+<th align="right">NMISS</th>
+<th align="right">BETA</th>
+<th align="right">SE</th>
+<th align="right">L95</th>
+<th align="right">U95</th>
+<th align="right">STAT</th>
+<th align="right">P</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">rs143773730</td>
+<td align="right">73841</td>
+<td align="left">T</td>
+<td align="left">ADD</td>
+<td align="right">151</td>
+<td align="right">0.3459</td>
+<td align="right">0.2818</td>
+<td align="right">-0.2064</td>
+<td align="right">0.89820</td>
+<td align="right">1.2270</td>
+<td align="right">0.21970</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="left">rs147281566</td>
+<td align="right">775125</td>
+<td align="left">T</td>
+<td align="left">ADD</td>
+<td align="right">151</td>
+<td align="right">0.1568</td>
+<td align="right">0.9290</td>
+<td align="right">-1.6640</td>
+<td align="right">1.97800</td>
+<td align="right">0.1688</td>
+<td align="right">0.86590</td>
+</tr>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">rs35854196</td>
+<td align="right">863863</td>
+<td align="left">A</td>
+<td align="left">ADD</td>
+<td align="right">151</td>
+<td align="right">-0.1446</td>
+<td align="right">0.7282</td>
+<td align="right">-1.5720</td>
+<td align="right">1.28300</td>
+<td align="right">-0.1985</td>
+<td align="right">0.84260</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="left">rs115490086</td>
+<td align="right">928969</td>
+<td align="left">T</td>
+<td align="left">ADD</td>
+<td align="right">151</td>
+<td align="right">0.5649</td>
+<td align="right">1.4240</td>
+<td align="right">-2.2270</td>
+<td align="right">3.35700</td>
+<td align="right">0.3966</td>
+<td align="right">0.69170</td>
+</tr>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">rs12041521</td>
+<td align="right">1109154</td>
+<td align="left">A</td>
+<td align="left">ADD</td>
+<td align="right">151</td>
+<td align="right">-0.6697</td>
+<td align="right">0.3314</td>
+<td align="right">-1.3190</td>
+<td align="right">-0.02008</td>
+<td align="right">-2.0210</td>
+<td align="right">0.04332</td>
+</tr>
+</tbody>
+</table>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">FilterRegion</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "FilterRegion"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-8">Function 8<a class="anchor" aria-label="anchor" href="#function-8"></a>
-</h4>
+<code class="sourceCode R"><span><span class="co">## Top ten associations in female-specific study:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"FemaleWAS.Rda"</span><span class="op">)</span></span>
+<span><span class="va">x1</span> <span class="op">&lt;-</span> <span class="va">FemaleWAS</span></span>
+<span><span class="va">x2</span> <span class="op">&lt;-</span> <span class="va">x1</span><span class="op">[</span><span class="va">x1</span><span class="op">$</span><span class="va">TEST</span> <span class="op">==</span> <span class="st">"ADD"</span>, <span class="op">]</span></span>
+<span><span class="va">x3</span> <span class="op">&lt;-</span> <span class="va">x2</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">x2</span><span class="op">$</span><span class="va">P</span><span class="op">)</span>, <span class="op">]</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">x3</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">GXwas</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "GXwas"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-9">Function 9<a class="anchor" aria-label="anchor" href="#function-9"></a>
-</h4>
+<code class="sourceCode R"><span><span class="co">## Top ten associations in male-specific study:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"MaleWAS.Rda"</span><span class="op">)</span></span>
+<span><span class="va">x1</span> <span class="op">&lt;-</span> <span class="va">MaleWAS</span></span>
+<span><span class="va">x2</span> <span class="op">&lt;-</span> <span class="va">x1</span><span class="op">[</span><span class="va">x1</span><span class="op">$</span><span class="va">TEST</span> <span class="op">==</span> <span class="st">"ADD"</span>, <span class="op">]</span></span>
+<span><span class="va">x3</span> <span class="op">&lt;-</span> <span class="va">x2</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">x2</span><span class="op">$</span><span class="va">P</span><span class="op">)</span>, <span class="op">]</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">x3</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">PvalComb</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "PvalComb"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-10">Function 10<a class="anchor" aria-label="anchor" href="#function-10"></a>
-</h4>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">SexDiff</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "SexDiff"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-11">Function 11<a class="anchor" aria-label="anchor" href="#function-11"></a>
-</h4>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">SexDiffZscore</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "SexDiffZscore"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-12">Function 12<a class="anchor" aria-label="anchor" href="#function-12"></a>
-</h4>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">DiffZeroOne</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "DiffZeroOne"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-13">Function 13<a class="anchor" aria-label="anchor" href="#function-13"></a>
-</h4>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">TestXGene</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "TestXGene"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-14">Function 14<a class="anchor" aria-label="anchor" href="#function-14"></a>
-</h4>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">MetaGXwas</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in `dev_help()`:</span></span>
-<span><span class="co">#&gt; ! Can't find development topic `MetaGXwas`.</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-15">Function 15<a class="anchor" aria-label="anchor" href="#function-15"></a>
-</h4>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">ComputePRS</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "ComputePRS"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-16">Function 16<a class="anchor" aria-label="anchor" href="#function-16"></a>
-</h4>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">ComputeCorrBT</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in `dev_help()`:</span></span>
-<span><span class="co">#&gt; ! Can't find development topic `ComputeCorrBT`.</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-17">Function 17<a class="anchor" aria-label="anchor" href="#function-17"></a>
-</h4>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">EstimateHerit</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "EstimateHerit"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-18">Function 18<a class="anchor" aria-label="anchor" href="#function-18"></a>
-</h4>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">SexRegress</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "SexRegress"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-19">Function 19<a class="anchor" aria-label="anchor" href="#function-19"></a>
-</h4>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">FilterPlinkSample</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "FilterPlinkSample"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-20">Function 20<a class="anchor" aria-label="anchor" href="#function-20"></a>
-</h4>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">ComputeGeneticPC</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "ComputeGeneticPC"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-21">Function 21<a class="anchor" aria-label="anchor" href="#function-21"></a>
-</h4>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">ClumpLD</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "ClumpLD"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-22">Function 22<a class="anchor" aria-label="anchor" href="#function-22"></a>
-</h4>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">GetMFPlink</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "GetMFPlink"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-23">Function 23<a class="anchor" aria-label="anchor" href="#function-23"></a>
-</h4>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">plinkVCF</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "plinkVCF"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-24">Function 24<a class="anchor" aria-label="anchor" href="#function-24"></a>
-</h4>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">MergeRegion</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "MergeRegion"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-25">Function 25<a class="anchor" aria-label="anchor" href="#function-25"></a>
-</h4>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">FilterAllele</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "FilterAllele"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-26">Function 26<a class="anchor" aria-label="anchor" href="#function-26"></a>
-</h4>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">PlinkSummary</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "PlinkSummary"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-27">Function 27<a class="anchor" aria-label="anchor" href="#function-27"></a>
-</h4>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">FilterSNP</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "FilterSNP"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-28">Function 28<a class="anchor" aria-label="anchor" href="#function-28"></a>
-</h4>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">DummyCovar</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "DummyCovar"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-29">Function 29<a class="anchor" aria-label="anchor" href="#function-29"></a>
-</h4>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">GXWASmiami</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "GXWASmiami"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-30">Function 30<a class="anchor" aria-label="anchor" href="#function-30"></a>
-</h4>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">Download_reference</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in `dev_help()`:</span></span>
-<span><span class="co">#&gt; ! Can't find development topic `Download_reference`.</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-31">Function 31<a class="anchor" aria-label="anchor" href="#function-31"></a>
-</h4>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">SumstatGenCorr</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "SumstatGenCorr"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-32">Function 32<a class="anchor" aria-label="anchor" href="#function-32"></a>
-</h4>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">LDPrune</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "LDPrune"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-33">Function 33<a class="anchor" aria-label="anchor" href="#function-33"></a>
-</h4>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">executePlinkMAF</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "executePlinkMAF"</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="function-34">Function 34<a class="anchor" aria-label="anchor" href="#function-34"></a>
-</h4>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">ComputeLD</span>, package <span class="op">=</span> <span class="st">"GXwasR"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "ComputeLD"</span></span></code></pre></div>
-</div>
+<code class="sourceCode R"><span><span class="co">## Top ten associations in FM02comb model:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"CombinedWAS.Rda"</span><span class="op">)</span></span>
+<span><span class="va">x1</span> <span class="op">&lt;-</span> <span class="va">CombinedWAS</span></span>
+<span><span class="va">x2</span> <span class="op">&lt;-</span> <span class="va">x1</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">x1</span><span class="op">$</span><span class="va">P</span><span class="op">)</span>, <span class="op">]</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">x2</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span></span></code></pre></div>
+<p>To know more about the function GXwas() to run different GWAS and
+XWAS models with different arguments, please follow this tutorial: <a href="https://boseb.github.io/GXwasR/articles/GXwasR_overview.html" class="external-link">https://boseb.github.io/GXwasR/articles/GXwasR_overview.html</a></p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="tutorials">Tutorials<a class="anchor" aria-label="anchor" href="#tutorials"></a>
+<h2 id="performing-sex-differential-test">Performing sex-differential test<a class="anchor" aria-label="anchor" href="#performing-sex-differential-test"></a>
 </h2>
-<p>Please follow these tutorials to know more about the functionality of
-the package GXwasR.</p>
-<p>Tutorial for performing post-imputation QC followed by sex-aware
-association tests: (vignette:Use of GXwasR)</p>
-<ul>
-<li>Tutorial for performing pre-imputation QC using GXwasR: <a href="https://boseb.github.io/GXwasR/articles/preimputationQC.html" class="external-link">https://boseb.github.io/GXwasR/articles/preimputationQC.html</a>
-</li>
-<li>Tutorial for performing post-imputation QC using GXwasR: <a href="https://boseb.github.io/Processing_1000Genome/tutorial.html" class="external-link">https://boseb.github.io/Processing_1000Genome/tutorial.html</a>
-</li>
-<li>Tutorial for ancestry estimation: <a href="https://boseb.github.io/GXwasR/articles/decoding_ancestry.html" class="external-link">https://boseb.github.io/GXwasR/articles/decoding_ancestry.html</a>
-</li>
-</ul>
+<p>Now, we will perform a sex-differential test:</p>
+<div class="section level3">
+<h3 id="function-sexdiff">Function: SexDiff()<a class="anchor" aria-label="anchor" href="#function-sexdiff"></a>
+</h3>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">SexDiff</span>, package <span class="op">=</span> <span class="va">GXwasR</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ Rendering development documentation for "SexDiff"</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="running-sexdiff">Running SexDiff<a class="anchor" aria-label="anchor" href="#running-sexdiff"></a>
+</h3>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Running</span></span>
+<span><span class="co">## Running the function</span></span>
+<span><span class="va">x1</span> <span class="op">&lt;-</span> <span class="va">MaleWAS</span></span>
+<span><span class="va">x1</span> <span class="op">&lt;-</span> <span class="va">x1</span><span class="op">[</span><span class="va">x1</span><span class="op">$</span><span class="va">TEST</span> <span class="op">==</span> <span class="st">"ADD"</span>, <span class="op">]</span></span>
+<span><span class="va">x1</span> <span class="op">&lt;-</span> <span class="va">x1</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="fl">7</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">x1</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CHR"</span>, <span class="st">"SNP"</span>, <span class="st">"BP"</span>, <span class="st">"A1"</span>, <span class="st">"BETA_M"</span>, <span class="st">"SE_M"</span><span class="op">)</span></span>
+<span><span class="va">x2</span> <span class="op">&lt;-</span> <span class="va">FemaleWAS</span></span>
+<span><span class="va">x2</span> <span class="op">&lt;-</span> <span class="va">x2</span><span class="op">[</span><span class="va">x2</span><span class="op">$</span><span class="va">TEST</span> <span class="op">==</span> <span class="st">"ADD"</span>, <span class="op">]</span></span>
+<span><span class="va">x2</span> <span class="op">&lt;-</span> <span class="va">x2</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="fl">7</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">x2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CHR"</span>, <span class="st">"SNP"</span>, <span class="st">"BP"</span>, <span class="st">"A1"</span>, <span class="st">"BETA_F"</span>, <span class="st">"SE_F"</span><span class="op">)</span></span>
+<span><span class="va">Difftest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SexDiff.html">SexDiff</a></span><span class="op">(</span>Mfile <span class="op">=</span> <span class="va">x1</span>, Ffile <span class="op">=</span> <span class="va">x2</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="unnamed-chunk-11-1.png" alt="plot of chunk unnamed-chunk-11"><div class="figcaption">plot of chunk unnamed-chunk-11</div>
+</div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Significant SNPs with sex-differential effect</span></span>
+<span><span class="va">sig.snps</span> <span class="op">&lt;-</span> <span class="va">Difftest</span><span class="op">[</span><span class="va">Difftest</span><span class="op">$</span><span class="va">adjP</span> <span class="op">&lt;</span> <span class="fl">0.05</span>, <span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">sig.snps</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SNP"</span>, <span class="st">"CHR"</span>, <span class="st">"BP"</span>, <span class="st">"A1"</span>, <span class="st">"T_statistic"</span>, <span class="st">"Pvalue"</span>, <span class="st">"Adjusted_Pvalue"</span><span class="op">)</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">sig.snps</span>, caption <span class="op">=</span> <span class="st">"SNPs with significant sex-differential effect."</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<caption>SNPs with significant sex-differential effect.</caption>
+<thead><tr class="header">
+<th align="left">SNP</th>
+<th align="right">CHR</th>
+<th align="right">BP</th>
+<th align="left">A1</th>
+<th align="right">T_statistic</th>
+<th align="right">Pvalue</th>
+<th align="right">Adjusted_Pvalue</th>
+</tr></thead>
+<tbody></tbody>
+</table>
+</div>
 </div>
 <div class="section level2">
 <h2 id="citing-gxwasr">Citing <code>GXwasR</code><a class="anchor" aria-label="anchor" href="#citing-gxwasr"></a>
@@ -640,7 +551,7 @@ association tests: (vignette:Use of GXwasR)</p>
 <p>We hope that <em><a href="https://bioconductor.org/packages/3.21/GXwasR" class="external-link">GXwasR</a></em>
 will be useful for your research. Please use the following information
 to cite the package and the overall approach. Thank you!</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Citation info</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"GXwasR"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; To cite package 'GXwasR' in publications use:</span></span>
@@ -687,6 +598,7 @@ to:</p>
 <em><a href="https://CRAN.R-project.org/package=testthat" class="external-link">testthat</a></em>
 (Wickham, 2011)</li>
 </ul>
+<p>This package was developed using <em><a href="https://bioconductor.org/packages/3.21/biocthis" class="external-link">biocthis</a></em>.</p>
 <p><code>R</code> session information.</p>
 <pre><code><span><span class="co">#&gt; ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt;  setting  value</span></span>
@@ -880,7 +792,7 @@ to:</p>
 <span><span class="co">#&gt;    XVector                0.48.0     2025-04-15 [2] Bioconduc~</span></span>
 <span><span class="co">#&gt;    yaml                   2.3.10     2024-07-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp0uzDD3/temp_libpathfc41b4144d</span></span>
+<span><span class="co">#&gt;  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp0uzDD3/temp_libpathfc4116ff9158</span></span>
 <span><span class="co">#&gt;  [2] /Users/mayerdav/Library/R/arm64/4.5/library</span></span>
 <span><span class="co">#&gt;  [3] /opt/homebrew/lib/R/4.5/site-library</span></span>
 <span><span class="co">#&gt;  [4] /opt/homebrew/Cellar/r/4.5.1/lib/R/library</span></span>
