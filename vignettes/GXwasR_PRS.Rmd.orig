@@ -73,7 +73,7 @@ help(ComputePRS, package = GXwasR)
 
 ## Running ComputePRS()
 
-```{r, fig.width=10,fig.height=6}
+```{r, compute_prs, fig.width=10,fig.height=6}
 # Running
 data(Summary_Stat_Ex1)
 data(Example_phenofile)
@@ -102,7 +102,10 @@ pheno_type <- "binary"
 ldclump <- FALSE
 pheno_type <- "binary"
 PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
+PRSresult$PRS_plot
+```
 
+```{r}
 ## This table shows 10 samples with phenotype, covariates and a PRS column.
 PRS <- PRSresult$PRS
 PRS[1:10, ]
@@ -217,7 +220,7 @@ Now, our discovery data and target data are ready. We will proceed towards compu
 
 We will utilize the `ComputePRS()` to perform the steps (A), (B) and (C).
 
-```{r, fig.width=10,fig.height=6}
+```{r, compute_prs_2, fig.width=10,fig.height=6}
 # Running
 # Filtered target data needs to be copied from ResultDir to DataDir.
 ftemp <- list.files(paste0(ResultDir, "/"), pattern = "NewtargetData")
@@ -246,7 +249,10 @@ pheno_type <- "binary"
 effectsize <- "BETA"
 ldclump <- FALSE
 PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
+PRSresult$PRS_plot
+```
 
+```{r}
 ## This table shows 10 samples with phenotype, covariates and a PRS column.
 PRS <- PRSresult$PRS
 PRS[1:10, ]
@@ -333,7 +339,7 @@ invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
 
 # Computing PRS for female-only target data using male-only discovery data
 
-```{r, fig.width=10,fig.height=6}
+```{r, compute_prs_female, fig.width=10,fig.height=6}
 # DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 finput <- "femaletarget"
@@ -364,7 +370,10 @@ pheno_type <- "binary"
 ldclump <- FALSE
 effectsize <- "BETA"
 PRSresultFemale <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
+PRSresultFemale$PRS_plot
+```
 
+```{r}
 ## This table shows 10 samples with phenotype, covariates and a PRS column.
 PRSfemale <- PRSresultFemale$PRS
 PRSfemale[1:10, ]
@@ -374,7 +383,7 @@ BestPvalue
 ```
 
 # Computing PRS for male-only target data using female-only discovery data
-```{r, fig.width=10,fig.height=6}
+```{r, compute_prs_male, fig.width=10,fig.height=6}
 library(GXwasR)
 data(Summary_Stat_Ex2)
 # DataDir <- system.file("extdata", package = "GXwasR")
@@ -407,7 +416,10 @@ pheno_type <- "binary"
 ldclump <- FALSE
 effectsize <- "BETA"
 PRSresultmale <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1 = clump_p1, clump_p2 = clump_p2, clump_r2 = clump_r2, clump_kb = clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
+PRSresultmale$PRS_plot
+```
 
+```{r}
 ## This table shows 10 samples with phenotype, covariates and a PRS column.
 PRSmale <- PRSresultmale$PRS
 PRSmale[1:10, ]

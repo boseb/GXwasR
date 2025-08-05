@@ -574,46 +574,47 @@ AncestryCheck <- function(
 #'         omit_linear_variant
 #'     )
 #' }
-TestXGene <- function(DataDir,
-    ResultDir = tempdir(),
-    finput,
-    sumstat,
-    gene_file,
-    gene_range = 500000,
-    score_file,
-    ref_data = NULL,
-    max_gene = NULL,
-    sample_size = NULL,
-    genebasedTest = c(
-        "SKAT",
-        "SKATO",
-        "sumchi",
-        "ACAT",
-        "BT",
-        "PCA",
-        "FLM",
-        "simpleM",
-        "minp"
-    ),
-    gene_approximation = TRUE,
-    beta_par,
-    weights_function,
-    geno_variance_weights,
-    kernel_p_method = "kuonen",
-    acc_devies = 1e-8,
-    lim_devies = 1e+6,
-    rho = TRUE,
-    skato_p_threshold = 0.8,
-    anno_type = "",
-    mac_threshold,
-    reference_matrix_used,
-    regularize_fun,
-    pca_var_fraction = 0.85,
-    flm_basis_function = "fourier",
-    flm_num_basis = 25,
-    flm_poly_order = 4,
-    flip_genotypes = FALSE,
-    omit_linear_variant = FALSE) {
+TestXGene <- function(
+        DataDir,
+        ResultDir = tempdir(),
+        finput,
+        sumstat,
+        gene_file,
+        gene_range = 500000,
+        score_file,
+        ref_data = NULL,
+        max_gene = NULL,
+        sample_size = NULL,
+        genebasedTest = c(
+            "SKAT",
+            "SKATO",
+            "sumchi",
+            "ACAT",
+            "BT",
+            "PCA",
+            "FLM",
+            "simpleM",
+            "minp"
+        ),
+        gene_approximation = TRUE,
+        beta_par,
+        weights_function,
+        geno_variance_weights,
+        kernel_p_method = "kuonen",
+        acc_devies = 1e-8,
+        lim_devies = 1e+6,
+        rho = TRUE,
+        skato_p_threshold = 0.8,
+        anno_type = "",
+        mac_threshold,
+        reference_matrix_used,
+        regularize_fun,
+        pca_var_fraction = 0.85,
+        flm_basis_function = "fourier",
+        flm_num_basis = 25,
+        flm_poly_order = 4,
+        flip_genotypes = FALSE,
+        omit_linear_variant = FALSE) {
     tryCatch(
         withCallingHandlers(
             {
@@ -683,9 +684,7 @@ TestXGene <- function(DataDir,
                 rlang::inform(rlang::format_error_bullets("SNP-SNP correlation matrices are being created..."))
 
                 snpcorrFun <- function(g) {
-                    # g <- gene_snp$gene_name
                     snps <- gene_snp[gene_snp$gene_name == g, 2, drop = FALSE]
-                    # print(g)
                     write.table(
                         snps,
                         file = normalizePath(file.path(ResultDir, "cor_snps.txt"), mustWork = FALSE),
@@ -888,7 +887,7 @@ SexDiff <- function(Mfile, Ffile) {
             lamdaGC <- median(chisq) / qchisq(0.5, 1)
             gc(reset = TRUE)
             par(mar = c(1, 1, 1, 1))
-            qqman::qq(y$P, main = paste0(("QQ-plots for test of sex-differentiated/n effect size with GIF = "), round(lamdaGC, 3)))
+            qqman::qq(y$P, main = paste0(("QQ-plots for test of sex-differentiated\n effect size with GIF = "), round(lamdaGC, 3)))
             gc(reset = TRUE)
             return(y)
         },
@@ -1504,9 +1503,10 @@ EstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL, 
 #'     DataDir = DataDir, ResultDir = ResultDir,
 #'     finput = finput, highLD_regions = highLD_hg19, countPC = 20
 #' )
-ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 10, plotPC = TRUE,
-    highLD_regions = NULL, ld_prunning = TRUE,
-    window_size = 50, step_size = 5, r2_threshold = 0.02) {
+ComputeGeneticPC <- function(
+        DataDir, ResultDir = tempdir(), finput, countPC = 10, plotPC = TRUE,
+        highLD_regions = NULL, ld_prunning = TRUE,
+        window_size = 50, step_size = 5, r2_threshold = 0.02) {
     # Validate inputs
     if (!validateInputForComputeGeneticPC(DataDir, ResultDir, finput, countPC, plotPC, highLD_regions, ld_prunning, window_size, step_size, r2_threshold)) {
         stop("Please verify all inputs.")
@@ -1534,10 +1534,8 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
                 invisible(sys::exec_wait(
                     plink(),
                     args = c(
-                        "--bfile",
-                        processed_file,
-                        "--exclude", "range",
-                        highLD_regions_file,
+                        "--bfile", processed_file,
+                        "--exclude", "range", highLD_regions_file,
                         "--make-bed",
                         "--out", normalizePath(file.path(ResultDir, paste0("no_highLD_", finput)), mustWork = FALSE),
                         "--silent"
@@ -1556,8 +1554,7 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
                 invisible(sys::exec_wait(
                     plink(),
                     args = c(
-                        "--bfile",
-                        processed_file,
+                        "--bfile", processed_file,
                         "--indep-pairwise",
                         window_size,
                         step_size,
@@ -1609,7 +1606,7 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
             EV <- scan(normalizePath(file.path(ResultDir, "pcfile.eigenval"), mustWork = FALSE))
             Percent.var <- data.frame(PC = seq_len(ncol(PCs)), Percent.var = EV / sum(EV) * 100)
 
-            # Plot PCA results
+            # Plot PCA results if requested
             if (plotPC) {
                 p1 <- ggplot2::ggplot(data = Percent.var, ggplot2::aes(x = .data$PC, y = .data$Percent.var)) +
                     ggplot2::geom_bar(stat = "identity") +
@@ -1623,7 +1620,13 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
                     ggplot2::theme_light() +
                     ggplot2::coord_equal()
 
-                print(ggpubr::ggarrange(p1, p2, labels = c("A", "B"), ncol = 2, nrow = 1))
+                combined_plot <- ggpubr::ggarrange(p1, p2, labels = c("A", "B"), ncol = 2, nrow = 1)
+
+                #   # Render Plot
+                #   if (interactive()) {
+                #     grid::grid.newpage()
+                #     grid::grid.draw(combined_plot)
+                #   }
             }
 
             # Clean up temporary files
@@ -1632,7 +1635,16 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
             }
             file.remove(list.files(normalizePath(file.path(ResultDir), mustWork = FALSE), pattern = "temp", full.names = TRUE))
 
-            return(PCs1)
+            return(
+                list(
+                    PCs1 = PCs1,
+                    plot = if (plotPC) {
+                        combined_plot
+                    } else {
+                        NA
+                    }
+                )
+            )
         },
         error = function(e) {
             message("An error occurred: ", e$message)
@@ -1640,6 +1652,18 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
         },
         warning = function(w) {
             message("Warning: ", w$message)
+            if (str_detect(conditionMessage(w), "cannot remove")) {
+                return(
+                    list(
+                        PCs1 = PCs1,
+                        plot = if (plotPC) {
+                            combined_plot
+                        } else {
+                            NA
+                        }
+                    )
+                )
+            }
         }
     )
 }
@@ -1739,8 +1763,8 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 #' Character string, specifying the .txt file name with known genomic regions with high LD. The default is `NULL`.
 #'
 #' @return
-#' A list object containing a dataframe and a numeric value. The dataframe,PRS, contains four mandatory columns, such as,
-#' IID (i.e., Individual ID), FID (i.e., Family ID), Pheno1 (i.e., the trait for PRS) and Score (i.e., the best PRS).
+#' A list object containing a dataframe a numeric value, a GeneticPC plot (if requested), and a PRS plot. The dataframe,PRS, contains four mandatory
+#' columns, such as, IID (i.e., Individual ID), FID (i.e., Family ID), Pheno1 (i.e., the trait for PRS) and Score (i.e., the best PRS).
 #' Other columns of covariates could be there. The numeric value, BestP contains the threshold of
 #' of the best p-value for the best pRS model fit.
 #'
@@ -1750,6 +1774,7 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 #' @importFrom dplyr distinct
 #' @importFrom stats lm predict logLik
 #' @importFrom ggplot2 theme_classic theme element_text ggtitle geom_density xlab aes scale_y_continuous geom_bar scale_fill_gradient2
+#' @importFrom grid grid.newpage grid.draw
 #' @importFrom data.table as.data.table
 #' @importFrom ggpubr ggarrange
 #' @export
@@ -1794,10 +1819,11 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 #' ## The best threshold
 #' BestPvalue <- PRSresult$BestP$Threshold
 #' BestPvalue
-ComputePRS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phenofile, covarfile = NULL,
-    effectsize = c("BETA", "OR"), ldclump = FALSE, LDreference, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE,
-    pthreshold = c(0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5), highLD_regions, ld_prunning = FALSE,
-    window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary") {
+ComputePRS <- function(
+        DataDir, ResultDir = tempdir(), finput, summarystat, phenofile, covarfile = NULL,
+        effectsize = c("BETA", "OR"), ldclump = FALSE, LDreference, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE,
+        pthreshold = c(0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5), highLD_regions, ld_prunning = FALSE,
+        window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary") {
     # Validate inputs
     if (!validateInputForComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize, ldclump, LDreference, clump_p1, clump_p2, clump_r2, clump_kb, byCHR, pthreshold, highLD_regions, ld_prunning, window_size, step_size, r2_threshold, nPC, pheno_type)) {
         stop("Please validate all inputs")
@@ -1834,11 +1860,11 @@ ComputePRS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phen
 
             # Read the covariates (here, it is sex)
             if (is.null(covarfile)) {
-                pheno <- merge(phenotype, GP, by = c("FID", "IID"))
+                pheno <- merge(phenotype, GP$PCs1, by = c("FID", "IID"))
             } else {
                 covariate <- covarfile
                 # Now merge the files
-                pheno <- merge(merge(phenotype, covariate, by = c("FID", "IID")), GP, by = c("FID", "IID"))
+                pheno <- merge(merge(phenotype, covariate, by = c("FID", "IID")), GP$PCs1, by = c("FID", "IID"))
             }
 
             # We can then calculate the null model (model with PRS) using a linear regression
@@ -1905,15 +1931,20 @@ ComputePRS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phen
             # Basic density plot with custom color
             p2 <- createSexDistributionPlot(dat)
 
+            # rlang::inform(rlang::format_error_bullets(c("i" = "Plots are initiated.")))
+
             if (pheno_type == "binary") {
-                rlang::inform(rlang::format_error_bullets(c("i" = "Plots are initiated.")))
-                print(createBinaryPhenotypePlots(dat, p1, p2))
-                rlang::inform(rlang::format_error_bullets(c("v" = "Plots are printed.")))
+                plot_out <- createBinaryPhenotypePlots(dat, p1, p2)
             } else {
-                rlang::inform(rlang::format_error_bullets(c("i" = "Plots are initiated.")))
-                print(ggpubr::ggarrange(p1, p2))
-                rlang::inform(rlang::format_error_bullets(c("v" = "Plots are printed.")))
+                plot_out <- ggpubr::ggarrange(p1, p2)
             }
+
+            # if (interactive()) {
+            #   grid::grid.newpage()
+            #   grid::grid.draw(plot_out)
+            # }
+
+            # rlang::inform(rlang::format_error_bullets(c("v" = "Plots are printed.")))
 
             # Define patterns for files to be removed
             filePatternsToRemove <- c("pruned_", "PRS", "Clump", "pcfile")
@@ -1937,7 +1968,7 @@ ComputePRS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phen
         }
     )
 
-    return(list(PRS = pheno.prs, BestP = bestP))
+    return(list(PRS = pheno.prs, BestP = bestP, GeneticPC_plot = GP$plot, PRS_plot = plot_out))
 }
 
 
@@ -3157,22 +3188,23 @@ MAFdiffSexControl <- function(
 #'     foutput = foutput, imiss = imiss, het = het, IBD = IBD,
 #'     ambi_out = ambi_out
 #' )
-QCsample <- function(DataDir,
-    ResultDir,
-    finput,
-    foutput = NULL,
-    imiss,
-    het,
-    small_sample_mod = FALSE,
-    IBD,
-    IBDmatrix = FALSE,
-    ambi_out = TRUE,
-    legend_text_size = 8,
-    legend_title_size = 7,
-    axis_text_size = 5,
-    axis_title_size = 7,
-    title_size = 9,
-    filterSample = TRUE) {
+QCsample <- function(
+        DataDir,
+        ResultDir,
+        finput,
+        foutput = NULL,
+        imiss,
+        het,
+        small_sample_mod = FALSE,
+        IBD,
+        IBDmatrix = FALSE,
+        ambi_out = TRUE,
+        legend_text_size = 8,
+        legend_title_size = 7,
+        axis_text_size = 5,
+        axis_title_size = 7,
+        title_size = 9,
+        filterSample = TRUE) {
     # Validate parameters
     validateInputForQCsample(DataDir, ResultDir, finput, foutput, imiss, het, small_sample_mod, IBD, IBDmatrix, ambi_out, legend_text_size, legend_title_size, axis_text_size, axis_title_size, title_size, filterSample = TRUE)
 
@@ -3254,7 +3286,15 @@ QCsample <- function(DataDir,
 
 
                 ## Plot
-                print(createHeterozygosityPlot(hetermiss, hetfail, imissfail, het, imiss, legend_text_size, legend_title_size, axis_text_size, axis_title_size, title_size))
+                het_plot <- createHeterozygosityPlot(
+                    hetermiss, hetfail, imissfail, het, imiss,
+                    legend_text_size, legend_title_size,
+                    axis_text_size, axis_title_size, title_size
+                )
+
+                if (interactive()) {
+                    print(het_plot)
+                }
 
                 printSampleFilterResults(imissfail, hetfail, failed_het_imiss)
 
@@ -4973,19 +5013,20 @@ SexRegress <- function(fdata, regressor_index, response_index) {
 #'     regionfile = FALSE, filterCHR = NULL, Hg = "38", exclude = TRUE
 #' )
 FilterRegion <-
-    function(DataDir,
-    ResultDir,
-    finput,
-    foutput,
-    CHRX = TRUE,
-    CHRY = FALSE,
-    filterPAR = TRUE,
-    filterXTR = TRUE,
-    filterAmpliconic = TRUE,
-    regionfile = FALSE,
-    filterCHR = NULL,
-    Hg = "19",
-    exclude = TRUE) {
+    function(
+        DataDir,
+        ResultDir,
+        finput,
+        foutput,
+        CHRX = TRUE,
+        CHRY = FALSE,
+        filterPAR = TRUE,
+        filterXTR = TRUE,
+        filterAmpliconic = TRUE,
+        regionfile = FALSE,
+        filterCHR = NULL,
+        Hg = "19",
+        exclude = TRUE) {
         # Validate parameters
         validateFilterRegionParams(DataDir, ResultDir, finput, foutput, CHRX, CHRY, filterPAR, filterXTR, filterAmpliconic, regionfile, filterCHR, Hg, exclude)
 
@@ -5016,7 +5057,6 @@ FilterRegion <-
                         CHR <- "chrY"
                     }
 
-                    # print("line 3491")
                     rlang::inform(rlang::format_error_bullets(c("i" = CHR)))
                     if (exclude == TRUE) {
                         if (regionfile == FALSE) {
