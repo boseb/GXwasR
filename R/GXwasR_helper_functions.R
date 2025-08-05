@@ -1213,7 +1213,7 @@ prsFun <- function(pthreshold, ResultDir, DataDir, finput, clumpExtract, clumpSN
         std_out = FALSE,
         std_err = FALSE
     ))
-    
+
     prs <- read.table(normalizePath(file.path(ResultDir, paste0("PRS.", pthreshold, ".profile")), mustWork = FALSE), header = TRUE)
     pheno.prs <- merge(pheno, prs[, c("FID", "IID", "SCORE")], by = c("FID", "IID"))
 
@@ -3867,29 +3867,29 @@ PlotHeritability <- function(Hdata, miMAF, maMAF, plotjpeg, plotname, ResultDir)
 
     ## Modified in V7.0
     # Create the annotated figure
-  annotated_plot <- ggpubr::annotate_figure(
-    plot1,
-    top = ggpubr::text_grob(
-        paste0(miMAF, ",", maMAF),
-        color = "red", face = "bold", size = 10
+    annotated_plot <- ggpubr::annotate_figure(
+        plot1,
+        top = ggpubr::text_grob(
+            paste0(miMAF, ",", maMAF),
+            color = "red", face = "bold", size = 10
+        )
     )
-  )
-  
-  if (plotjpeg) {
-    # Save to JPEG file
-    jpeg(
-        normalizePath(file.path(ResultDir, paste0(plotname, ".jpeg")), mustWork = FALSE),
-        width = 1000, height = 1000, res = 100
-    )
-    grid::grid.newpage()
-    grid::grid.draw(annotated_plot)
-    dev.off()
-    
-    rlang::inform(rlang::format_error_bullets(c(
-        "v" = paste0("Plots are saved in ", ResultDir, " with name ", plotname, ".jpeg")
-    )))
-  }
-  invisible(annotated_plot)
+
+    if (plotjpeg) {
+        # Save to JPEG file
+        jpeg(
+            normalizePath(file.path(ResultDir, paste0(plotname, ".jpeg")), mustWork = FALSE),
+            width = 1000, height = 1000, res = 100
+        )
+        grid::grid.newpage()
+        grid::grid.draw(annotated_plot)
+        dev.off()
+
+        rlang::inform(rlang::format_error_bullets(c(
+            "v" = paste0("Plots are saved in ", ResultDir, " with name ", plotname, ".jpeg")
+        )))
+    }
+    invisible(annotated_plot)
 }
 
 ## Function 82
