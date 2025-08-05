@@ -43,6 +43,7 @@ ChrX
 Chracter
 ClumpLD
 Cochrane's
+Cochrane’s
 ComputeGeneticPC
 ComputeLD
 ComputePRS
@@ -173,6 +174,7 @@ Preimputation
 ProblemSNP
 Protoc
 PvalComb
+Pvalue
 P’
 QCed
 QCsample
@@ -185,6 +187,7 @@ Rda
 RefManageR
 Renviron
 ResultDir
+Rtmp
 SDEs
 SE’
 SKAT
@@ -264,10 +267,13 @@ europeanRef
 executePlinkMAF
 extdata
 fam
+fbfcbqjh
 filterCHR
 finput
 fourier
+gp
 grm
+gtwl
 hapmap
 hemizygous
 heritabilities
@@ -334,6 +340,7 @@ se
 sessioninfo
 seximputed
 simpleM
+sj
 skato
 snp
 snps
@@ -346,6 +353,7 @@ testthat
 thousandgenome
 tidyverse
 toolset
+uzDD
 vcf
 xABC
 xmodel

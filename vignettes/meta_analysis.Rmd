@@ -246,12 +246,12 @@ Table: Metadata of the top ten associations based on Cochrane’s Q statistics.
 ``` r
 # Dataframe with the problematic SNPs
 x1 <- x$ProblemSNP
-knitr::kable(x1[1:10, ], caption = "Top ten probematic SNPs.")
+knitr::kable(x1[1:10, ], caption = "Top ten problematic SNPs.")
 ```
 
 
 
-Table: Top ten probematic SNPs.
+Table: Top ten problematic SNPs.
 
 |File                                                                          |SNP        |Problem         |
 |:-----------------------------------------------------------------------------|:----------|:---------------|
