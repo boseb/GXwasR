@@ -2,7 +2,6 @@ ACAT
 ACB
 ADHD
 ASW
-Actkins
 AllClump
 Allaire
 Ampliconic
@@ -36,7 +35,6 @@ CHS
 CMD
 COV
 Cardon
-Cheng
 Chr
 ChrNumber
 ChrX
@@ -47,7 +45,6 @@ Cochrane’s
 ComputeGeneticPC
 ComputeLD
 ComputePRS
-Congivaram
 CrossMap
 Dai
 DataDir
@@ -106,7 +103,6 @@ Hochberg
 IBD
 IBS
 ITU
-Iannone
 Indels
 Italia
 JPT
@@ -124,7 +120,6 @@ Leone
 Lifecycle
 Liftover
 Luhya
-Luraschi
 MACs
 MAF
 MAFdiffSexControl
@@ -139,14 +134,11 @@ MaleWAS
 Mende
 MergeRegion
 MetaGWAS
-MetaGXwas
 Mfixed
 Minh
 Mrandom
 Mweighted
-Müller
 NMISS
-Niarchou
 Nref
 ORCID
 Oleś
@@ -177,6 +169,7 @@ Protoc
 PvalComb
 Pvalue
 P’
+QCSample
 QCed
 QCsample
 QCsnp
@@ -188,7 +181,7 @@ Rda
 RefManageR
 Renviron
 ResultDir
-Rtmp
+RtmpdyNNez
 SDEs
 SE’
 SKAT
@@ -215,7 +208,6 @@ Toscani
 UCSC
 UniqueLoci
 Uper
-Ushey
 VCF
 Vp
 VtoP
@@ -275,6 +267,8 @@ fourier
 gp
 grm
 gtwl
+gwas
+gxwas
 hapmap
 hemizygous
 heritabilities
@@ -302,6 +296,7 @@ matrix’
 maxDist
 maxMAF
 mb
+metaGWAS
 minMAF
 minp
 missense
@@ -324,7 +319,7 @@ ploygenic
 polygenic
 poolr
 pre
-prs
+preimpute
 pval
 pvalue
 quantitative’
@@ -356,7 +351,6 @@ testthat
 thousandgenome
 tidyverse
 toolset
-uzDD
 vcf
 xABC
 xmodel
