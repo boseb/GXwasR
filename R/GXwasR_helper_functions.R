@@ -268,46 +268,6 @@ plinkExcludeExtract <- function(DataDir, finput, ResultDir, foutput, region_file
     executePlink(plinkArgsExtract, ResultDir)
 }
 
-## Function 7
-########## Added in 3.0
-# processRegionFile <- function(DataDir, finput, ResultDir, foutput, genomic_feature, region_file_path, HG, exclude) {
-#   DataDir1 <- system.file("extdata", package = "GXwasR")
-#   region_data <- read.table(file.path(DataDir1, paste0(genomic_feature, "_genomic_features_", HG, ".bed.txt")), header = FALSE, sep = "")
-#   write.table(region_data, file = region_file_path, quote = FALSE, row.names = FALSE, col.names = FALSE, eol = "\r\n", sep = " ")
-#
-#   if (exclude) {
-#     plinkExcludeExtract(DataDir, finput, ResultDir, foutput, region_file_path)
-#   }
-# }
-
-## Function 8
-########## Added in 3.0
-# processCHRFilter <- function(DataDir, finput, ResultDir, foutput, filterCHR, exclude) {
-#   if (exclude) {
-#     plinkArgsExclude <- c("--bfile", file.path(DataDir, finput), "--not-chr", filterCHR, "--make-bed", "--out", file.path(ResultDir, foutput), "--silent")
-#     plinkArgsExtract <- c("--bfile", file.path(DataDir, finput), "--chr", filterCHR, "--make-bed", "--out", file.path(ResultDir, paste0(foutput, "_snps_extracted")), "--silent")
-#     executePlink(plinkArgsExclude)
-#     executePlink(plinkArgsExtract)
-#   }
-# }
-
-## Function 9
-########## Added in 3.0
-# finalProcessing <- function(DataDir, ResultDir, finput, foutput, exclude, regionfile) {
-#   bim <- read.table(file.path(ResultDir, paste0(foutput, ".bim")))
-#   bim1 <- read.table(file.path(DataDir, paste0(finput, ".bim")))
-#   num_marker_excluded <- nrow(bim1) - nrow(bim)
-#
-#   print(paste0(num_marker_excluded, " SNPs are discarded."))
-#   print(paste0("Plink files with passed SNPs are in ", ResultDir, " prefixed as ", foutput))
-#   print(paste0("Plink files with discarded SNPs are in ", ResultDir, " prefixed as ", foutput, "_snps_extracted"))
-#
-#   if (!regionfile) {
-#     ftemp <- list.files(ResultDir, pattern = "region")
-#     invisible(file.remove(file.path(ResultDir, ftemp)))
-#   }
-# }
-
 ## Function 10
 ######### Added in 3.0
 outersect <- function(x, y, ...) {
@@ -1203,7 +1163,7 @@ preparePhenotypeData <- function(phenofile, nPC, DataDir, ResultDir, finput, hig
             DataDir = DataDir, ResultDir = ResultDir, finput = finput, countPC = nPC, highLD_regions = highLD_regions,
             ld_prunning = ld_prunning, window_size = window_size, step_size = step_size, r2_threshold = r2_threshold, plotPC = FALSE
         )
-        colnames(GP) <- c("FID", "IID", paste0("PC", seq_len(nPC)))
+        colnames(GP$PCs1) <- c("FID", "IID", paste0("PC", seq_len(nPC)))
         return(GP)
     } else {
         rlang::inform(rlang::format_error_bullets(c("i" = "Parameter 'nPC' is either zero or negative. Genetic PC will not be computed.")))
@@ -1280,7 +1240,7 @@ prsFun <- function(pthreshold, ResultDir, DataDir, finput, clumpExtract, clumpSN
 createPRSPlot <- function(prsResult) {
     p1 <- ggplot2::ggplot(data = prsResult, ggplot2::aes(x = factor(prsResult$Threshold), y = prsResult$R2)) +
         ggplot2::geom_text(
-            ggplot2::aes(label = paste(prsResult$WriteP)),
+            ggplot2::aes(label = paste(prsResult$P)),
             vjust = -1.5,
             hjust = 0,
             angle = 45,
@@ -2907,7 +2867,6 @@ XCMAX4_data2 <- function(Snp, DataDir, genosnp, P, covarfile, Samp) {
 ## Function 65
 ## Added in 3.0
 xcmaParaCovar <- function(chunks, chunk, Snp, DataDir, genosnp, P, covarfile, Samp) {
-    # print(chunks)
     if (length(Snp) >= (chunks + chunk)) {
         snp_names <- Snp[chunks:(chunks + chunk)]
     } else {
@@ -3907,20 +3866,30 @@ PlotHeritability <- function(Hdata, miMAF, maMAF, plotjpeg, plotname, ResultDir)
     )
 
     ## Modified in V7.0
-    if (plotjpeg == FALSE) {
-        print(ggpubr::annotate_figure(plot1, top = ggpubr::text_grob(paste0(miMAF, ",", maMAF),
+    # Create the annotated figure
+    annotated_plot <- ggpubr::annotate_figure(
+        plot1,
+        top = ggpubr::text_grob(
+            paste0(miMAF, ",", maMAF),
             color = "red", face = "bold", size = 10
-        )))
-    } else {
-        jpeg(normalizePath(file.path(ResultDir, paste0(plotname, ".jpeg")), mustWork = FALSE), width = 1000, height = 1000, res = 100)
+        )
+    )
 
-        print(ggpubr::annotate_figure(plot1, top = ggpubr::text_grob(paste0(miMAF, ",", maMAF),
-            color = "red", face = "bold", size = 10
-        )))
+    if (plotjpeg) {
+        # Save to JPEG file
+        jpeg(
+            normalizePath(file.path(ResultDir, paste0(plotname, ".jpeg")), mustWork = FALSE),
+            width = 1000, height = 1000, res = 100
+        )
+        grid::grid.newpage()
+        grid::grid.draw(annotated_plot)
         dev.off()
 
-        rlang::inform(rlang::format_error_bullets(c("v" = paste0("Plots are saved in ", ResultDir, " with name ", plotname, ".jpeg"))))
+        rlang::inform(rlang::format_error_bullets(c(
+            "v" = paste0("Plots are saved in ", ResultDir, " with name ", plotname, ".jpeg")
+        )))
     }
+    invisible(annotated_plot)
 }
 
 ## Function 82
@@ -5815,86 +5784,7 @@ detectOutliers <- function(tab, ResultDir, DataDir, finput, outlier, outlierOf, 
     ref_pop_EUR <- tab[tab$pop == "Ref_EUR", ]
     ref_pop_SAS <- tab[tab$pop == "Ref_SAS", ]
 
-    # ref_pc1_median_AFR <- median(ref_pop_AFR$PC1)
-    # ref_pc2_median_AFR <- median(ref_pop_AFR$PC2)
-    # ref_pc1_median_EAS <- median(ref_pop_EAS$PC1)
-    # ref_pc2_median_EAS <- median(ref_pop_EAS$PC2)
-    # ref_pc1_median_EUR <- median(ref_pop_EUR$PC1)
-    # ref_pc2_median_EUR <- median(ref_pop_EUR$PC2)
-    # ref_pc1_median_SAS <- median(ref_pop_SAS$PC1)
-    # ref_pc2_median_SAS <- median(ref_pop_SAS$PC2)
-    #
-    #   ref_pop_AFR$dis <- sqrt((ref_pop_AFR$PC1 - ref_pc1_median_AFR) ^ 2 + (ref_pop_AFR$PC2 - ref_pc2_median_AFR) ^ 2)
-    #   ref_max_dis_AFR <- max(ref_pop_AFR$dis)
-    #   ref_mean_dis_AFR <- mean(ref_pop_AFR$dis)
-    #   ref_median_dis_AFR <- median(ref_pop_AFR$dis)
-    #   ref_Q3_dis_AFR <- summary(ref_pop_AFR$dis)[[5]]
-    #
-    #
-    #   ref_pop_EAS$dis <- sqrt((ref_pop_EAS$PC1 - ref_pc1_median_EAS) ^ 2 + (ref_pop_EAS$PC2 - ref_pc2_median_EAS) ^ 2)
-    #   ref_max_dis_EAS <- max(ref_pop_EAS$dis)
-    #   ref_mean_dis_EAS <- mean(ref_pop_EAS$dis)
-    #   ref_median_dis_EAS <- median(ref_pop_EAS$dis)
-    #   ref_Q3_dis_EAS <- summary(ref_pop_EAS$dis)[[5]]
-    #
-    #
-    #   ref_pop_EUR$dis <- sqrt((ref_pop_EUR$PC1 - ref_pc1_median_EUR) ^ 2 + (ref_pop_EUR$PC2 - ref_pc2_median_EUR) ^ 2)
-    #   ref_max_dis_EUR <- max(ref_pop_EUR$dis)
-    #   ref_mean_dis_EUR <- mean(ref_pop_EUR$dis)
-    #   ref_median_dis_EUR <- median(ref_pop_EUR$dis)
-    #   ref_Q3_dis_EUR <- summary(ref_pop_EUR$dis)[[5]]
-    #
-    #
-    #   ref_pop_SAS$dis <- sqrt((ref_pop_SAS$PC1 - ref_pc1_median_SAS) ^ 2 + (ref_pop_SAS$PC2 - ref_pc2_median_SAS) ^ 2)
-    #   ref_max_dis_SAS <- max(ref_pop_SAS$dis)
-    #   ref_mean_dis_SAS <- mean(ref_pop_SAS$dis)
-    #   ref_median_dis_SAS <- median(ref_pop_SAS$dis)
-    #   ref_Q3_dis_SAS <- summary(ref_pop_SAS$dis)[[5]]
-
     study_pop <- tab[grepl("Study_.*", tab$pop), ]
-
-    # study_pop$dis_AFR <- sqrt((study_pop$PC1 - ref_pc1_median_AFR) ^ 2 + (study_pop$PC2 - ref_pc2_median_AFR) ^ 2)
-    # study_pop$dis_EAS <- sqrt((study_pop$PC1 - ref_pc1_median_EAS) ^ 2 + (study_pop$PC2 - ref_pc2_median_EAS) ^ 2)
-    # study_pop$dis_EUR <- sqrt((study_pop$PC1 - ref_pc1_median_EUR) ^ 2 + (study_pop$PC2 - ref_pc2_median_EUR) ^ 2)
-    # study_pop$dis_SAS <- sqrt((study_pop$PC1 - ref_pc1_median_SAS) ^ 2 + (study_pop$PC2 - ref_pc2_median_SAS) ^ 2)
-    #
-    # study_pop$Assigned_Pop_Mean <- rep("Outlier",NROW(study_pop))
-    # study_pop$Assigned_Pop_Median <- rep("Outlier",NROW(study_pop))
-    # study_pop$Assigned_Pop_Max <- rep("Outlier",NROW(study_pop))
-    # study_pop$Assigned_Pop_Q3 <- rep("Outlier",NROW(study_pop))
-    #
-    #
-    # study_pop[study_pop$dis_AFR <= ref_mean_dis_AFR * outlier_threshold, ]$Assigned_Pop_Mean <- "AFR"
-    # study_pop[study_pop$dis_EAS <= ref_mean_dis_EAS * outlier_threshold, ]$Assigned_Pop_Mean <- "EAS"
-    # study_pop[study_pop$dis_EUR <= ref_mean_dis_EUR * outlier_threshold, ]$Assigned_Pop_Mean <- "EUR"
-    # study_pop[study_pop$dis_SAS <= ref_mean_dis_SAS * outlier_threshold, ]$Assigned_Pop_Mean <- "SAS"
-    #
-    # study_pop[study_pop$dis_AFR <= ref_median_dis_AFR * outlier_threshold, ]$Assigned_Pop_Median <- "AFR"
-    # study_pop[study_pop$dis_EAS <= ref_median_dis_EAS * outlier_threshold, ]$Assigned_Pop_Median <- "EAS"
-    # study_pop[study_pop$dis_EUR <= ref_median_dis_EUR * outlier_threshold, ]$Assigned_Pop_Median <- "EUR"
-    # study_pop[study_pop$dis_SAS <= ref_median_dis_SAS * outlier_threshold, ]$Assigned_Pop_Median <- "SAS"
-    #
-    # study_pop[study_pop$dis_AFR <= ref_max_dis_AFR * outlier_threshold, ]$Assigned_Pop_Max <- "AFR"
-    # study_pop[study_pop$dis_EAS <= ref_max_dis_EAS * outlier_threshold, ]$Assigned_Pop_Max <- "EAS"
-    # study_pop[study_pop$dis_SAS <= ref_max_dis_SAS * outlier_threshold, ]$Assigned_Pop_Max <- "SAS"
-    # study_pop[study_pop$dis_EUR <= ref_max_dis_EUR * outlier_threshold, ]$Assigned_Pop_Max <- "EUR"
-    #
-    # study_pop$Assigned_Pop_Max_AFR <- rep("Outlier",NROW(study_pop))
-    # study_pop$Assigned_Pop_Max_EAS <- rep("Outlier",NROW(study_pop))
-    # study_pop$Assigned_Pop_Max_EUR <- rep("Outlier",NROW(study_pop))
-    # study_pop$Assigned_Pop_Max_SAS <- rep("Outlier",NROW(study_pop))
-    #
-    # study_pop[study_pop$dis_AFR <= ref_max_dis_AFR * outlier_threshold, ]$Assigned_Pop_Max_AFR <- "AFR"
-    # study_pop[study_pop$dis_EAS <= ref_max_dis_EAS * outlier_threshold, ]$Assigned_Pop_Max_EAS <- "EAS"
-    # study_pop[study_pop$dis_SAS <= ref_max_dis_SAS * outlier_threshold, ]$Assigned_Pop_Max_SAS <- "SAS"
-    # study_pop[study_pop$dis_EUR <= ref_max_dis_EUR * outlier_threshold, ]$Assigned_Pop_Max_EUR <- "EUR"
-    # study_pop$Combined_Assigned_Pop_Max <- paste(study_pop$Assigned_Pop_Max_AFR,study_pop$Assigned_Pop_Max_EAS,study_pop$Assigned_Pop_Max_EUR,study_pop$Assigned_Pop_Max_SAS,sep='_')
-    #
-    # study_pop[study_pop$dis_AFR <= ref_Q3_dis_AFR * outlier_threshold, ]$Assigned_Pop_Q3 <- "AFR"
-    # study_pop[study_pop$dis_EAS <= ref_Q3_dis_EAS * outlier_threshold, ]$Assigned_Pop_Q3 <- "EAS"
-    # study_pop[study_pop$dis_SAS <= ref_Q3_dis_SAS * outlier_threshold, ]$Assigned_Pop_Q3 <- "SAS"
-    # study_pop[study_pop$dis_EUR <= ref_Q3_dis_EUR * outlier_threshold, ]$Assigned_Pop_Q3 <- "EUR"
-
 
     ## Added by CS
     # Z-scores
@@ -5908,12 +5798,6 @@ detectOutliers <- function(tab, ResultDir, DataDir, finput, outlier, outlierOf, 
     study_pop$z_score_PC2_SAS <- (study_pop$PC2 - mean(ref_pop_SAS$PC2)) / sd(ref_pop_SAS$PC2)
 
     study_pop$Assigned_Pop_ZScore <- rep("Outlier", NROW(study_pop))
-
-    ## Added by CS
-    # study_pop[abs(study_pop$z_score_PC1_AFR) < outlier_threshold & abs(study_pop$z_score_PC2_AFR) < outlier_threshold,]$Assigned_Pop_ZScore <- 'AFR'
-    # study_pop[abs(study_pop$z_score_PC1_EAS) < outlier_threshold & abs(study_pop$z_score_PC2_EAS) < outlier_threshold,]$Assigned_Pop_ZScore <- 'EAS'
-    # study_pop[abs(study_pop$z_score_PC1_EUR) < outlier_threshold & abs(study_pop$z_score_PC2_EUR) < outlier_threshold,]$Assigned_Pop_ZScore <- 'EUR'
-    # study_pop[abs(study_pop$z_score_PC1_SAS) < outlier_threshold & abs(study_pop$z_score_PC2_SAS) < outlier_threshold,]$Assigned_Pop_ZScore <- 'SAS'
 
     ## Updated by BB
     # First, initiate Assigned_Pop_ZScore with NA or another default value
@@ -5929,10 +5813,6 @@ detectOutliers <- function(tab, ResultDir, DataDir, finput, outlier, outlierOf, 
             abs(z_score_PC1_SAS) < outlier_threshold & abs(z_score_PC2_SAS) < outlier_threshold ~ "SAS",
             TRUE ~ .data$Assigned_Pop_ZScore # This keeps the current value for rows not meeting any conditions above
         ))
-
-    # Non_Ref_Pop <- study_pop[study_pop$dis > ref_mean_dis * outlier_threshold, ]
-    # Ref_Pop <- study_pop[study_pop$dis <= (ref_mean_dis * outlier_threshold), ]
-    # Outlier_samples <- unique(Non_Ref_Pop$sample)
 
     ## Added in 5.0 by BB
     Outlier_samples <- study_pop %>%

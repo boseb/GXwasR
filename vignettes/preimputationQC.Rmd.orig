@@ -184,7 +184,11 @@ compute_freq <- FALSE
 SexCheckResult <-SexCheck(DataDir=DataDir,ResultDir = ResultDir, finput=finput,impute_sex=impute_sex,compute_freq =compute_freq,LD_window_size=LD_window_size,LD_step_size=LD_step_size,LD_r2_threshold=0.02,fmax_F = fmax_F,mmin_F=mmin_F)
 problematic_sex <- SexCheckResult[SexCheckResult$STATUS != "OK",]
 problematic_sex <- problematic_sex[,1:2]
-print(paste0("Number of samples with problematic sex assignment: ",nrow(problematic_sex)))
+```
+
+Number of samples with problematic sex assignment: `r nrow(problematic_sex)`
+
+```{r}
 write.table(problematic_sex,file = paste0(DataDir,"/problematic_sex_samples"),quote = F, row.names = F,col.names = F)
 SexCheckResult[1:5,]
 ```
@@ -254,7 +258,7 @@ PlinkSummary(DataDir, ResultDir, finput = "PreimputeEX_QC3")
 ## Step 7: Second round of sample filtering
 Here we are using stringent thresholds for sample filter.
 
-```{r}
+```{r preimpute-QCSample}
 finput <- "PreimputeEX_QC3"
 foutput <- "PreimputeEX_QC4"
 imiss = 0.02
@@ -277,7 +281,7 @@ PlinkSummary(DataDir, ResultDir, finput = "PreimputeEX_QC4")
 
 Prior to use this function, users are highly encouraged to read our tutorial ""Decoding Ancestry: A Guide to Using GXwasR for Genetic Ancestry Estimation".
 
-```{r}
+```{r preimpute-AncestryCheck}
 data("highLD_hg19", package = "GXwasR")
 data("example_data_study_sample_ancestry", package = "GXwasR")
 finput <- "PreimputeEX_QC4"

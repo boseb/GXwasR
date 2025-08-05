@@ -38,7 +38,7 @@ common variants with unrelated individuals.
 `DiffZeroOne()`
 
 **(E)High level analysis:** `TestXGene()`; `MetaGWAS()`; `ComputePRS()`;
-`ComputeCorrBT()`; `EstimateHerit()`
+`GeneticCorrBT()`; `EstimateHerit()`
 
 **(F)Utility Functions:** `FilterPlinkSample()`; `ComputeGeneticPC()`;
 `ClumpLD()`; `GetMFPlink()`; `plinkVCF()`; `MergeRegion()`;
@@ -231,14 +231,14 @@ ResultGXwas <- GXwas(
 #> • Stratified test is running for males
 #> ℹ If you want parallel computation, please provide non-zero value for argument ncores.
 #> ℹ Plots are initiated.
-#> ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpE76i92/Stratified_GWAS.png
+#> ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpMepwIu/Stratified_GWAS.png
 #> This message is displayed once every 8 hours.
 ```
 
 <img src="man/figures/README-example-1.png" width="100%" />
 
     #> ℹ Saving plot to
-    #> /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpE76i92/Stratified_XWAS.png
+    #> /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpMepwIu/Stratified_XWAS.png
 
 <img src="man/figures/README-example-2.png" width="100%" /><img src="man/figures/README-example-3.png" width="100%" /><img src="man/figures/README-example-4.png" width="100%" /><img src="man/figures/README-example-5.png" width="100%" /><img src="man/figures/README-example-6.png" width="100%" />
 
@@ -246,7 +246,7 @@ ResultGXwas <- GXwas(
     #> • CombinedWAS
     #> • MaleWAS
     #> • FemaleWAS
-    #> ℹ You can find them in the directory: /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpE76i92
+    #> ℹ You can find them in the directory: /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpMepwIu
     ResultGXwas
     #> $CombinedWAS
     #> Key: <SNP>
