@@ -32,7 +32,7 @@ This package implements various statistical genetics models for Genome-Wide Asso
 
 **(D)Sex-differential test:** `SexDiff()`; `SexDiffZscore()`; `DiffZeroOne()`
 
-**(E)High level analysis:** `TestXGene()`; `MetaGWAS()`; `ComputePRS()`; `ComputeCorrBT()`; `EstimateHerit()`
+**(E)High level analysis:** `TestXGene()`; `MetaGWAS()`; `ComputePRS()`; `GeneticCorrBT()`; `EstimateHerit()`
 
 **(F)Utility Functions:** `FilterPlinkSample()`; `ComputeGeneticPC()`; `ClumpLD()`; `GetMFPlink()`; `plinkVCF()`; `MergeRegion()`; `FilterAllele()`; `PlinkSummary()`
 
