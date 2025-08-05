@@ -5784,86 +5784,7 @@ detectOutliers <- function(tab, ResultDir, DataDir, finput, outlier, outlierOf, 
     ref_pop_EUR <- tab[tab$pop == "Ref_EUR", ]
     ref_pop_SAS <- tab[tab$pop == "Ref_SAS", ]
 
-    # ref_pc1_median_AFR <- median(ref_pop_AFR$PC1)
-    # ref_pc2_median_AFR <- median(ref_pop_AFR$PC2)
-    # ref_pc1_median_EAS <- median(ref_pop_EAS$PC1)
-    # ref_pc2_median_EAS <- median(ref_pop_EAS$PC2)
-    # ref_pc1_median_EUR <- median(ref_pop_EUR$PC1)
-    # ref_pc2_median_EUR <- median(ref_pop_EUR$PC2)
-    # ref_pc1_median_SAS <- median(ref_pop_SAS$PC1)
-    # ref_pc2_median_SAS <- median(ref_pop_SAS$PC2)
-    #
-    #   ref_pop_AFR$dis <- sqrt((ref_pop_AFR$PC1 - ref_pc1_median_AFR) ^ 2 + (ref_pop_AFR$PC2 - ref_pc2_median_AFR) ^ 2)
-    #   ref_max_dis_AFR <- max(ref_pop_AFR$dis)
-    #   ref_mean_dis_AFR <- mean(ref_pop_AFR$dis)
-    #   ref_median_dis_AFR <- median(ref_pop_AFR$dis)
-    #   ref_Q3_dis_AFR <- summary(ref_pop_AFR$dis)[[5]]
-    #
-    #
-    #   ref_pop_EAS$dis <- sqrt((ref_pop_EAS$PC1 - ref_pc1_median_EAS) ^ 2 + (ref_pop_EAS$PC2 - ref_pc2_median_EAS) ^ 2)
-    #   ref_max_dis_EAS <- max(ref_pop_EAS$dis)
-    #   ref_mean_dis_EAS <- mean(ref_pop_EAS$dis)
-    #   ref_median_dis_EAS <- median(ref_pop_EAS$dis)
-    #   ref_Q3_dis_EAS <- summary(ref_pop_EAS$dis)[[5]]
-    #
-    #
-    #   ref_pop_EUR$dis <- sqrt((ref_pop_EUR$PC1 - ref_pc1_median_EUR) ^ 2 + (ref_pop_EUR$PC2 - ref_pc2_median_EUR) ^ 2)
-    #   ref_max_dis_EUR <- max(ref_pop_EUR$dis)
-    #   ref_mean_dis_EUR <- mean(ref_pop_EUR$dis)
-    #   ref_median_dis_EUR <- median(ref_pop_EUR$dis)
-    #   ref_Q3_dis_EUR <- summary(ref_pop_EUR$dis)[[5]]
-    #
-    #
-    #   ref_pop_SAS$dis <- sqrt((ref_pop_SAS$PC1 - ref_pc1_median_SAS) ^ 2 + (ref_pop_SAS$PC2 - ref_pc2_median_SAS) ^ 2)
-    #   ref_max_dis_SAS <- max(ref_pop_SAS$dis)
-    #   ref_mean_dis_SAS <- mean(ref_pop_SAS$dis)
-    #   ref_median_dis_SAS <- median(ref_pop_SAS$dis)
-    #   ref_Q3_dis_SAS <- summary(ref_pop_SAS$dis)[[5]]
-
     study_pop <- tab[grepl("Study_.*", tab$pop), ]
-
-    # study_pop$dis_AFR <- sqrt((study_pop$PC1 - ref_pc1_median_AFR) ^ 2 + (study_pop$PC2 - ref_pc2_median_AFR) ^ 2)
-    # study_pop$dis_EAS <- sqrt((study_pop$PC1 - ref_pc1_median_EAS) ^ 2 + (study_pop$PC2 - ref_pc2_median_EAS) ^ 2)
-    # study_pop$dis_EUR <- sqrt((study_pop$PC1 - ref_pc1_median_EUR) ^ 2 + (study_pop$PC2 - ref_pc2_median_EUR) ^ 2)
-    # study_pop$dis_SAS <- sqrt((study_pop$PC1 - ref_pc1_median_SAS) ^ 2 + (study_pop$PC2 - ref_pc2_median_SAS) ^ 2)
-    #
-    # study_pop$Assigned_Pop_Mean <- rep("Outlier",NROW(study_pop))
-    # study_pop$Assigned_Pop_Median <- rep("Outlier",NROW(study_pop))
-    # study_pop$Assigned_Pop_Max <- rep("Outlier",NROW(study_pop))
-    # study_pop$Assigned_Pop_Q3 <- rep("Outlier",NROW(study_pop))
-    #
-    #
-    # study_pop[study_pop$dis_AFR <= ref_mean_dis_AFR * outlier_threshold, ]$Assigned_Pop_Mean <- "AFR"
-    # study_pop[study_pop$dis_EAS <= ref_mean_dis_EAS * outlier_threshold, ]$Assigned_Pop_Mean <- "EAS"
-    # study_pop[study_pop$dis_EUR <= ref_mean_dis_EUR * outlier_threshold, ]$Assigned_Pop_Mean <- "EUR"
-    # study_pop[study_pop$dis_SAS <= ref_mean_dis_SAS * outlier_threshold, ]$Assigned_Pop_Mean <- "SAS"
-    #
-    # study_pop[study_pop$dis_AFR <= ref_median_dis_AFR * outlier_threshold, ]$Assigned_Pop_Median <- "AFR"
-    # study_pop[study_pop$dis_EAS <= ref_median_dis_EAS * outlier_threshold, ]$Assigned_Pop_Median <- "EAS"
-    # study_pop[study_pop$dis_EUR <= ref_median_dis_EUR * outlier_threshold, ]$Assigned_Pop_Median <- "EUR"
-    # study_pop[study_pop$dis_SAS <= ref_median_dis_SAS * outlier_threshold, ]$Assigned_Pop_Median <- "SAS"
-    #
-    # study_pop[study_pop$dis_AFR <= ref_max_dis_AFR * outlier_threshold, ]$Assigned_Pop_Max <- "AFR"
-    # study_pop[study_pop$dis_EAS <= ref_max_dis_EAS * outlier_threshold, ]$Assigned_Pop_Max <- "EAS"
-    # study_pop[study_pop$dis_SAS <= ref_max_dis_SAS * outlier_threshold, ]$Assigned_Pop_Max <- "SAS"
-    # study_pop[study_pop$dis_EUR <= ref_max_dis_EUR * outlier_threshold, ]$Assigned_Pop_Max <- "EUR"
-    #
-    # study_pop$Assigned_Pop_Max_AFR <- rep("Outlier",NROW(study_pop))
-    # study_pop$Assigned_Pop_Max_EAS <- rep("Outlier",NROW(study_pop))
-    # study_pop$Assigned_Pop_Max_EUR <- rep("Outlier",NROW(study_pop))
-    # study_pop$Assigned_Pop_Max_SAS <- rep("Outlier",NROW(study_pop))
-    #
-    # study_pop[study_pop$dis_AFR <= ref_max_dis_AFR * outlier_threshold, ]$Assigned_Pop_Max_AFR <- "AFR"
-    # study_pop[study_pop$dis_EAS <= ref_max_dis_EAS * outlier_threshold, ]$Assigned_Pop_Max_EAS <- "EAS"
-    # study_pop[study_pop$dis_SAS <= ref_max_dis_SAS * outlier_threshold, ]$Assigned_Pop_Max_SAS <- "SAS"
-    # study_pop[study_pop$dis_EUR <= ref_max_dis_EUR * outlier_threshold, ]$Assigned_Pop_Max_EUR <- "EUR"
-    # study_pop$Combined_Assigned_Pop_Max <- paste(study_pop$Assigned_Pop_Max_AFR,study_pop$Assigned_Pop_Max_EAS,study_pop$Assigned_Pop_Max_EUR,study_pop$Assigned_Pop_Max_SAS,sep='_')
-    #
-    # study_pop[study_pop$dis_AFR <= ref_Q3_dis_AFR * outlier_threshold, ]$Assigned_Pop_Q3 <- "AFR"
-    # study_pop[study_pop$dis_EAS <= ref_Q3_dis_EAS * outlier_threshold, ]$Assigned_Pop_Q3 <- "EAS"
-    # study_pop[study_pop$dis_SAS <= ref_Q3_dis_SAS * outlier_threshold, ]$Assigned_Pop_Q3 <- "SAS"
-    # study_pop[study_pop$dis_EUR <= ref_Q3_dis_EUR * outlier_threshold, ]$Assigned_Pop_Q3 <- "EUR"
-
 
     ## Added by CS
     # Z-scores
@@ -5877,12 +5798,6 @@ detectOutliers <- function(tab, ResultDir, DataDir, finput, outlier, outlierOf, 
     study_pop$z_score_PC2_SAS <- (study_pop$PC2 - mean(ref_pop_SAS$PC2)) / sd(ref_pop_SAS$PC2)
 
     study_pop$Assigned_Pop_ZScore <- rep("Outlier", NROW(study_pop))
-
-    ## Added by CS
-    # study_pop[abs(study_pop$z_score_PC1_AFR) < outlier_threshold & abs(study_pop$z_score_PC2_AFR) < outlier_threshold,]$Assigned_Pop_ZScore <- 'AFR'
-    # study_pop[abs(study_pop$z_score_PC1_EAS) < outlier_threshold & abs(study_pop$z_score_PC2_EAS) < outlier_threshold,]$Assigned_Pop_ZScore <- 'EAS'
-    # study_pop[abs(study_pop$z_score_PC1_EUR) < outlier_threshold & abs(study_pop$z_score_PC2_EUR) < outlier_threshold,]$Assigned_Pop_ZScore <- 'EUR'
-    # study_pop[abs(study_pop$z_score_PC1_SAS) < outlier_threshold & abs(study_pop$z_score_PC2_SAS) < outlier_threshold,]$Assigned_Pop_ZScore <- 'SAS'
 
     ## Updated by BB
     # First, initiate Assigned_Pop_ZScore with NA or another default value
@@ -5898,10 +5813,6 @@ detectOutliers <- function(tab, ResultDir, DataDir, finput, outlier, outlierOf, 
             abs(z_score_PC1_SAS) < outlier_threshold & abs(z_score_PC2_SAS) < outlier_threshold ~ "SAS",
             TRUE ~ .data$Assigned_Pop_ZScore # This keeps the current value for rows not meeting any conditions above
         ))
-
-    # Non_Ref_Pop <- study_pop[study_pop$dis > ref_mean_dis * outlier_threshold, ]
-    # Ref_Pop <- study_pop[study_pop$dis <= (ref_mean_dis * outlier_threshold), ]
-    # Outlier_samples <- unique(Non_Ref_Pop$sample)
 
     ## Added in 5.0 by BB
     Outlier_samples <- study_pop %>%
