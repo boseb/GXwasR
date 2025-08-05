@@ -94,8 +94,8 @@ the one that was used for imputing your target dataset. These files should be in
 \item{pheno_type}{Boolean value, ‘binary’ or ‘quantitative’, specifying the type of the trait. The default is ‘binary’.}
 }
 \value{
-A list object containing a dataframe and a numeric value. The dataframe,PRS, contains four mandatory columns, such as,
-IID (i.e., Individual ID), FID (i.e., Family ID), Pheno1 (i.e., the trait for PRS) and Score (i.e., the best PRS).
+A list object containing a dataframe a numeric value, a GeneticPC plot (if requested), and a PRS plot. The dataframe,PRS, contains four mandatory
+columns, such as, IID (i.e., Individual ID), FID (i.e., Family ID), Pheno1 (i.e., the trait for PRS) and Score (i.e., the best PRS).
 Other columns of covariates could be there. The numeric value, BestP contains the threshold of
 of the best p-value for the best pRS model fit.
 

@@ -532,7 +532,7 @@ From each sex-specific plink files, remove individuals with missing genotype rat
 
 For this, we will use `QCsample()`.
 
-```{r female-missingness, fig.caption = "Female heterozygosity by missingness across samples}
+```{r female-missingness, fig.caption = "Female heterozygosity by missingness across samples"}
 ## Running the function female-specific QC
 finput <- "Postimpute_Female"
 foutput <- "Postimpute_Female1"
@@ -544,7 +544,7 @@ IBD <- 0.2
 x <- QCsample(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, imiss = imiss, het = het, small_sample_mod = small_sample_mod, IBD = IBD)
 ```
 
-```{r male-missingness, fig.caption = "Male heterozygosity by missingness across samples}
+```{r male-missingness, fig.caption = "Male heterozygosity by missingness across samples"}
 ## Running the function male-specific QC
 finput <- "Postimpute_Male"
 foutput <- "Postimpute_Male1"

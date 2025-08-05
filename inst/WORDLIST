@@ -93,6 +93,7 @@ GXWAS
 GXWASmiami
 GXwas
 GeneticCorrBT
+GeneticPC
 GenomeIII
 GetMFPlink
 HAPMAPIII
@@ -323,6 +324,7 @@ ploygenic
 polygenic
 poolr
 pre
+prs
 pval
 pvalue
 quantitative’
@@ -349,6 +351,7 @@ subclusters
 sumFREGAT
 sumchi
 tempdir
+testcovar
 testthat
 thousandgenome
 tidyverse

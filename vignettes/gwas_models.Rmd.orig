@@ -104,7 +104,7 @@ help(GXwas, package = GXwasR)
 
 ## <a id = "Running GXwas"> </a> Running GXwas
 
-```{r}
+```{r gwas_models-gxwas}
 ## Running
 DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
@@ -185,7 +185,7 @@ help(SexDiff, package = GXwasR)
 
 ## Running SexDiff
 
-```{r}
+```{r sex-differentiated-effect, fig.caption = "QQ-plots for test of sex-differentiated effect size"}
 ## Running
 ## Running the function
 x1 <- MaleWAS
