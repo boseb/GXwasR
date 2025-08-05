@@ -1,0 +1,485 @@
+---
+title: "Computing Polygenic Risk Score using GXwasR"
+author: 
+  - name: "Banabithi Bose"
+    affiliation:
+    - Northwestern University
+    - University of Colorado Anschutz Medical Campus
+    email: banabithi.bose@gmail.com
+output: 
+  BiocStyle::html_document:
+    self_contained: false
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    code_folding: show
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('GXwasR')`"
+vignette: >
+  %\VignetteIndexEntry{GXwasR_PRS}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}  
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+    fig.path = "./",
+    collapse = TRUE,
+    comment = "#>",
+    crop = NULL ## Related to https://stat.ethz.ch/pipermail/bioc-devel/2020-April/016656.html
+)
+```
+
+
+```{r vignetteSetup, echo=FALSE, message=FALSE, warning = FALSE}
+## Bib setup
+library("RefManageR")
+
+## Write bibliography information
+bib <- c(
+    R = citation(),
+    BiocStyle = citation("BiocStyle")[1],
+    knitr = citation("knitr")[1],
+    RefManageR = citation("RefManageR")[1],
+    rmarkdown = citation("rmarkdown")[1],
+    sessioninfo = citation("sessioninfo")[1],
+    testthat = citation("testthat")[1],
+    GXwasR = citation("GXwasR")[1]
+)
+```
+
+**This document provides a tutorial for computing state-of-the-art polygenic risk score and sex-aware ploygenic risk score utilizing GXwasR R package.**
+
+```{r}
+## Call some libraries (Users can ignore this.)
+library(printr)
+library(rmarkdown)
+```
+
+## Call GXwasR library and load example datasets:
+
+```{r}
+## Call GXwasR library
+library(GXwasR)
+```
+
+# Computing standard PRS using ComputePRS():
+
+## About ComputePRS()
+
+```{r}
+help(ComputePRS, package = GXwasR)
+```
+
+## Running ComputePRS()
+
+```{r, fig.width=10,fig.height=6}
+# Running
+data(Summary_Stat_Ex1)
+data(Example_phenofile)
+data(Example_covarfile)
+data(Example_pthresoldfile)
+data(highLD_hg19)
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+summarystat <- Summary_Stat_Ex1[, c(2, 4, 7, 1, 3, 12)]
+phenofile <- Example_phenofile # Cannot be NULL, the interested phenotype column should be labeled as "Pheno1".
+covarfile <- Example_covarfile
+clump_p1 <- 0.0001
+clump_p2 <- 0.0001
+clump_kb <- 500
+clump_r2 <- 0.5
+byCHR <- TRUE
+pthreshold <- Example_pthresoldfile$Threshold
+ld_prunning <- TRUE
+highLD_regions <- highLD_hg19
+window_size <- 50
+step_size <- 5
+r2_threshold <- 0.02
+nPC <- 6 # We can incorporate PCs into our PRS analysis to account for population stratification.
+pheno_type <- "binary"
+ldclump <- FALSE
+pheno_type <- "binary"
+PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
+
+## This table shows 10 samples with phenotype, covariates and a PRS column.
+PRS <- PRSresult$PRS
+PRS[1:10, ]
+## The best threshold
+BestPvalue <- PRSresult$BestP$Threshold
+BestPvalue
+```
+
+# Computing sex-aware PRS
+
+## Datasets for computing PRS
+
+**Discovery Data** i.e., GWAS summary statistics with mandatory columns such as "SNP"(SNP names), "A1"(effect allele), "BETA"(effect size in beta value) and "P"(p-value).
+
+```{r}
+# Example discovery data is included in GXwasR
+library(GXwasR)
+data(Summary_Stat_Ex1)
+summarystat <- Summary_Stat_Ex1[, c(2, 4, 7, 1, 3, 12)]
+```
+
+**Target Data** i.e., genotype dataset in plink .bed, .bim and .fam format.
+
+```{r}
+# Example target data is included in GXwasR
+DataDir <- GXwasR:::GXwasR_data()
+finput <- "GXwasR_example"
+```
+
+## Quality control of the datasets before computing sex-aware PRS.
+
+Users must ensure that both datasets are having the **same genome built**.
+Here's the quality control procedure:
+
+**(A) Discovery Data: Remove multi-allelic, indels and ambiguous (A/T or C/G) SNPs. Then remove SNPs with minor allele frequency (MAF) < 0.05 and quality info score < 0.1.  For this filtering, R packages like data.table, dplyr, tidyverse can be used.**
+
+**(B) Target Data: Remove multi-allelic, indels and ambiguous (A/T or C/G) SNPs. Then remove SNPs with MAF < 0.05 and Hardy Weinberg Equilibrium (hwe) > e-10. For this filtering steps, users should use `FilterAllele()` and `QCsnp()` functions in R.**
+
+Let's see how to use these functions. For the details of these utility functions, please follow [https://boseb.github.io/GXwasR/articles/GXwasR_overview.html](https://boseb.github.io/GXwasR/articles/GXwasR_overview.html).
+
+We will use `FilterAllele()` on target data to filter out the multi-allelic SNPs. Also, note that GXwasR doesn't work with multi-allelic variants. So this filtering step is important.
+
+```{r}
+# Target data
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+foutput <- "filtered_multiallelic"
+x <- FilterAllele(DataDir, ResultDir, finput, foutput)
+```
+
+Now, we will use `QCsnp()` to remove ambiguous (A/T or C/G) SNPs and SNPs with MAF < 0.05 and Hardy Weinberg Equilibrium (hwe) > e-10.
+
+```{r}
+## Since there was no multiallelic SNPs, we will continue with original input data.
+finput <- "GXwasR_example"
+foutput <- "filtered_step1"
+geno <- NULL
+maf <- 0.05
+casecontrol <- FALSE
+caldiffmiss <- FALSE
+diffmissFilter <- FALSE
+dmissX <- FALSE
+dmissAutoY <- FALSE
+monomorphicSNPs <- TRUE
+ld_prunning <- FALSE
+casecontrol <- FALSE ## Since the filtering doesn't require us to run on cases and controls separately, we will make this parameter FALSE.
+hweCase <- NULL
+hweControl <- NULL
+hwe <- 1e-10
+monomorphicSNPs <- FALSE
+ld_prunning <- FALSE
+
+x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl, hwe = hwe, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, dmissX = dmissX, dmissAutoY = dmissAutoY, diffmissFilter = diffmissFilter)
+```
+
+**(C) Check whether SNPs present in discovery data are in target data.**
+
+  Let's gather the common SNPs between these.
+
+```{r}
+SNP1 <- unique(summarystat$SNP)
+targetbim <- read.table(paste0(ResultDir, "/filtered_step1.bim"))
+SNP2 <- unique(targetbim$V2)
+commonSNP <- intersect(SNP1, SNP2) ## 991 SNPs are common between our discovery data and target data
+```
+
+## Filtering discovery data and target data with common SNPs
+
+```{r}
+commonSNP <- data.table::as.data.table(commonSNP)
+colnames(commonSNP) <- "SNP"
+NewDiscoveryData <- merge(commonSNP, summarystat, by = "SNP")
+## For making target data with common SNPs, we will use FilterSNP().
+SNPvec <- commonSNP
+# Need to copy filtered_step1 file from ResultDir to DataDir
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "filtered_step1")
+invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
+finput <- "filtered_step1"
+foutput <- "NewtargetData"
+FilterSNP(DataDir, ResultDir, finput, foutput, SNPvec, extract = TRUE)
+```
+
+Now, our discovery data and target data are ready. We will proceed towards computing first sex-combined PRS and then sex-stratified PRS.
+
+# Sex-combined PRS computation
+**(A) Perform LD clumping for discovery data using target data as reference.**
+
+**(B) Compute PRS at a variety of p-value thresholds.**
+
+**(C) Select best threshold based on R-square (for quantitative trait) or MacFadden R-square (for binary trait) using generalized linear model with covariates, such as genetic PCs.**
+
+We will utilize the `ComputePRS()` to perform the steps (A), (B) and (C).
+
+```{r, fig.width=10,fig.height=6}
+# Running
+# Filtered target data needs to be copied from ResultDir to DataDir.
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "NewtargetData")
+invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
+finput <- "NewtargetData"
+
+# Filtered discovery data.
+# Need to maintain the first three coulmn of this dataset as SNP ID, Effect Allele and Effect Size
+summarystat <- NewDiscoveryData
+phenofile <- Example_phenofile # Cannot be NULL, the interested phenotype column should be labeled as "Pheno1".
+## Added "AGE" and "testcovar" as covariates.
+covarfile <- Example_covarfile
+clump_p1 <- 0.0001
+clump_p2 <- 0.0001
+clump_kb <- 500
+clump_r2 <- 0.5
+byCHR <- TRUE
+pthreshold <- Example_pthresoldfile$Threshold
+ld_prunning <- TRUE
+highLD_regions <- highLD_hg19
+window_size <- 50
+step_size <- 5
+r2_threshold <- 0.02
+nPC <- 6 # We can incorporate PCs into our PRS analysis to account for population stratification.
+pheno_type <- "binary"
+effectsize <- "BETA"
+ldclump <- FALSE
+PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
+
+## This table shows 10 samples with phenotype, covariates and a PRS column.
+PRS <- PRSresult$PRS
+PRS[1:10, ]
+## The best threshold
+BestPvalue <- PRSresult$BestP$Threshold
+BestPvalue
+```
+
+**(D) Perform regression to test the association of PRS and sex.**
+
+**(E) Perform the regression using different thresholds of PRS to check for consistent evidence of sex difference.**
+
+In this regression, we could include genetic PCs and other covariates as well.
+
+**PRS ~ Sex + PCs + Other Covariates.**
+
+For this test, we will use `SexRegress()` function.
+
+# About SexRegress()
+
+```{r}
+help(SexRegress, package = GXwasR)
+```
+
+# Running SexRegress()
+```{r, fig.width=10,fig.height=6}
+# Running
+# First, we need to make fdata object.
+library(GXwasR)
+famfile <- read.table(paste0(ResultDir, "/NewtargetData.fam"))[, c(1, 2, 5)]
+colnames(famfile) <- c("FID", "IID", "Sex")
+prefdata <- merge(famfile, PRS, by = c("IID", "FID"))
+
+fdata <- prefdata[, c(13, 3:12)]
+fdata$Sex <- as.factor(as.character(fdata$Sex))
+response_index <- 1
+regressor_index <- 2
+
+x <- SexRegress(fdata, regressor_index, response_index)
+x
+```
+
+In this case, the association between PRS and sex seems insignificant. Users can check with different thresholds of PRS as mentioned in step (D).
+
+## Sex-stratified PRS
+
+The steps are:
+
+**(A) Generate separate male and female discovery data by stratified GWAS.**
+
+We will use SumstatMale and SumstatFemale for these.
+
+**(B) Prepare separate male and female target datasets.**
+
+For this, we will utilize `GetMFPlink()`.
+
+```{r}
+library(GXwasR)
+## We will use NewtargetData as input for this function.
+finput <- "NewtargetData"
+foutput <- "maletarget"
+sex <- "males"
+x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, sex = sex, xplink = FALSE, autoplink = FALSE)
+
+foutput <- "femaletarget"
+sex <- "females"
+x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, sex = sex, xplink = FALSE, autoplink = FALSE)
+```
+
+**(C) Perform LD clumping separately in both discovery data.**
+
+**(D) Compute PRS at a variety of p-value thresholds, using male-only discovery data to compute scores for female-only target data and vice versa.**
+
+**(E) Select best threshold based on R-square (for quantitative trait) or MacFadden R-square (for binary trait) using generalized linear model with covariates, such as genetic PCs.**
+
+We will utilize the `ComputePRS()` to perform the steps (C), (D) and (E).
+
+```{r, fig.width=10,fig.height=6}
+# Running
+# Male and female target datasets need to be copied from ResultDir to DataDir.
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "target")
+invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
+```
+
+# Computing PRS for female-only target data using male-only discovery data
+
+```{r, fig.width=10,fig.height=6}
+# DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "femaletarget"
+# Filtered discovery data.
+# Need to maintain the first three coulmn of this dataset as SNP ID, Effect Allele and Effect Size
+summarystat <- Summary_Stat_Ex1[, c(2, 4, 7, 1, 3, 12)]
+## Making phenofile only with females
+famfile <- read.table(paste0(ResultDir, "/femaletarget.fam"))[, c(1, 2, 5)]
+colnames(famfile) <- c("FID", "IID", "Sex")
+famfileF <- famfile[famfile$Sex == 2, ]
+phenofile <- merge(famfileF, Example_phenofile, by = c("FID", "IID")) # Cannot be NULL, the interested phenotype column should be labeled as "Pheno1".
+## Added "AGE" and "testcovar" as covariates.
+## Making cpvarfile with females
+covarfile <- merge(famfileF, Example_covarfile, by = c("FID", "IID"))
+clump_p1 <- 0.0001
+clump_p2 <- 0.0001
+clump_kb <- 500
+clump_r2 <- 0.5
+byCHR <- TRUE
+pthreshold <- Example_pthresoldfile$Threshold
+ld_prunning <- TRUE
+highLD_regions <- highLD_hg19
+window_size <- 50
+step_size <- 5
+r2_threshold <- 0.02
+nPC <- 6 # We can incorporate PCs into our PRS analysis to account for population stratification.
+pheno_type <- "binary"
+ldclump <- FALSE
+effectsize <- "BETA"
+PRSresultFemale <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
+
+## This table shows 10 samples with phenotype, covariates and a PRS column.
+PRSfemale <- PRSresultFemale$PRS
+PRSfemale[1:10, ]
+## The best threshold
+BestPvalue <- PRSresultFemale$BestP$Threshold
+BestPvalue
+```
+
+# Computing PRS for male-only target data using female-only discovery data
+```{r, fig.width=10,fig.height=6}
+library(GXwasR)
+data(Summary_Stat_Ex2)
+# DataDir <- system.file("extdata", package = "GXwasR")
+ResultDir <- tempdir()
+finput <- "maletarget"
+# Filtered discovery data.
+# Need to maintain the first three coulmn of this dataset as SNP ID, Effect Allele and Effect Size
+summarystat <- Summary_Stat_Ex2[, c(2, 4, 7, 1, 3, 12)]
+## Making phenofile only with females
+famfile <- read.table(paste0(ResultDir, "/maletarget.fam"))[, c(1, 2, 5)]
+colnames(famfile) <- c("FID", "IID", "Sex")
+famfileM <- famfile[famfile$Sex == 1, ]
+phenofile <- merge(famfileM, Example_phenofile, by = c("FID", "IID")) # Cannot be NULL, the interested phenotype column should be labeled as "Pheno1".
+## Added "AGE" and "testcovar" as covariates.
+## Making cpvarfile with females
+covarfile <- merge(famfileM, Example_covarfile, by = c("FID", "IID"))
+clump_p1 <- 0.0001
+clump_p2 <- 0.0001
+clump_kb <- 500
+clump_r2 <- 0.5
+byCHR <- TRUE
+pthreshold <- Example_pthresoldfile$Threshold
+ld_prunning <- TRUE
+highLD_regions <- highLD_hg19
+window_size <- 50
+step_size <- 5
+r2_threshold <- 0.02
+nPC <- 6 # We can incorporate PCs into our PRS analysis to account for population stratification.
+pheno_type <- "binary"
+ldclump <- FALSE
+effectsize <- "BETA"
+PRSresultmale <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1 = clump_p1, clump_p2 = clump_p2, clump_r2 = clump_r2, clump_kb = clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
+
+## This table shows 10 samples with phenotype, covariates and a PRS column.
+PRSmale <- PRSresultmale$PRS
+PRSmale[1:10, ]
+## The best threshold
+BestPvalue <- PRSresultmale$BestP$Threshold
+BestPvalue
+```
+
+**(F) Perform regression to test the association of PRS for a trait in one sex and case status in other sex.**
+
+**PRS ~ trait + PCs + other covariates**
+
+Let's check the association between PRS and trait in female.
+```{r, fig.width=10,fig.height=6}
+# Running
+# First, we need to make fdata object.
+famfile <- read.table(paste0(ResultDir, "/femaletarget.fam"))[, c(1, 2, 6)]
+colnames(famfile) <- c("FID", "IID", "Trait")
+prefdata <- merge(famfile, PRS, by = c("IID", "FID"))
+
+fdata <- prefdata[, c(13, 3:12)]
+fdata$Sex <- as.factor(as.character(fdata$Trait))
+response_index <- 1
+regressor_index <- 2
+
+x <- SexRegress(fdata, regressor_index, response_index)
+x
+# In this case, there is a significant association between PRS and trait value.
+```
+
+## Citing `GXwasR`
+
+We hope that `r BiocStyle::Biocpkg("GXwasR")` will be useful for your research. Please use the following information to cite the package and the overall approach. Thank you!
+
+```{r "citation"}
+## Citation info
+citation("GXwasR")
+```
+
+# Reproducibility
+
+The `r BiocStyle::Biocpkg("GXwasR")` package `r Citep(bib[["GXwasR"]])` was made possible thanks to:
+
+* R `r Citep(bib[["R"]])`
+* `r BiocStyle::Biocpkg("BiocStyle")` `r Citep(bib[["BiocStyle"]])`
+* `r BiocStyle::CRANpkg("knitr")` `r Citep(bib[["knitr"]])`
+* `r BiocStyle::CRANpkg("RefManageR")` `r Citep(bib[["RefManageR"]])`
+* `r BiocStyle::CRANpkg("rmarkdown")` `r Citep(bib[["rmarkdown"]])`
+* `r BiocStyle::CRANpkg("sessioninfo")` `r Citep(bib[["sessioninfo"]])`
+* `r BiocStyle::CRANpkg("testthat")` `r Citep(bib[["testthat"]])`
+
+This package was developed using `r BiocStyle::Biocpkg("biocthis")`.
+
+`R` session information.
+
+```{r reproduce3, echo=FALSE}
+## Session info
+library("sessioninfo")
+options(width = 120)
+session_info()
+```
+
+
+
+# Bibliography
+
+This vignette was generated using `r BiocStyle::Biocpkg("BiocStyle")` `r Citep(bib[["BiocStyle"]])`
+with `r BiocStyle::CRANpkg("knitr")` `r Citep(bib[["knitr"]])` and `r BiocStyle::CRANpkg("rmarkdown")` `r Citep(bib[["rmarkdown"]])` running behind the scenes.
+
+Citations made with `r BiocStyle::CRANpkg("RefManageR")` `r Citep(bib[["RefManageR"]])`.
+
+```{r vignetteBiblio, results = "asis", echo = FALSE, warning = FALSE, message = FALSE}
+## Print bibliography
+PrintBibliography(bib, .opts = list(hyperlink = "to.doc", style = "html"))
+```
