@@ -13,7 +13,7 @@ output:
     toc_float: true
     toc_depth: 2
     code_folding: show
-date: "4 August 2025"
+date: "5 August 2025"
 package: "GXwasR 0.99.0"
 vignette: >
   %\VignetteIndexEntry{postimputationQC}
@@ -32,7 +32,7 @@ This document outlines the sex-aware post-imputation quality control (QC) steps,
 
 We will run the post-imputation QC pipeline in this vignette utilizing the functions from GXwasR package. 
 
-# Example Datasets
+## Example Datasets
 
 The PLINK bed, bim, and fam files are the three mandatory files representing a genotype dataset to run this pipeline. To know about these file extensions, please check https://www.cog-genomics.org/plink/1.9/formats.
 
@@ -46,7 +46,7 @@ The PLINK bed, bim, and fam files are the three mandatory files representing a g
 
 These plink files contain genotypes for 276 individuals (males and females) simulated from 1000Genome from European decent with 26515 variants across twelve chromosomes (1-10,23,24). This dataset contains 125 males, 151 females, 108 cases and 168 controls. We will utilize this set of plink files as proxy of pre-imputated genotype data.
 
-# Post-imputation QC steps
+## Post-imputation QC steps
 
 -**(A) Sex-combined QC:** 
 1.Remove SNPs with IMPUTE2 info score < 0.6 and certainty < 0.8
@@ -72,7 +72,7 @@ This part should be done in the imputation server with the VCF files.
 2.Remove individual with the absolute value of the heterozygosity F statistic  > 0.20 
 3.Remove pair of individuals with IBD statistics pihat > 0.2.
 
-# Loading the GXwasR library
+## Loading the GXwasR library
 
 ``` r
 ## Call some libraries
@@ -81,7 +81,7 @@ library(printr)
 library(rmarkdown)
 ```
 
-# Learn about all the GXwasR functions
+## Learn about all the GXwasR functions
 
 **Before beginning the pre-imputation quality control (QC), it is recommended that users familiarize themselves with all the functions in the GXwasR package. This knowledge will help them understand the required input arguments, how to execute the functions, and what outputs to expect.**
 
@@ -93,7 +93,7 @@ library(GXwasR)
 browseVignettes("GXwasR")
 ```
 
-# Post-imputation QC pipeline
+## Post-imputation QC pipeline
 
 We will use plink binary files from DataDir, prefixed as “GXwasR_example” for the input of the post-imputation QC functions and considered that the SNPs are passed IMPUTE2 info score < 0.6 and certainty < 0.8. 
 
@@ -136,7 +136,7 @@ x <- PlinkSummary(DataDir, ResultDir, finput)
 ```
 
 
-# Step1: Filtering multi-allelic variants
+## Step1: Filtering multi-allelic variants
 
 GXwasR cannot work with multi-allelic variants
 
@@ -149,7 +149,7 @@ x <- FilterAllele(DataDir, ResultDir, finput, foutput)
 
 Since there is no multi-allelic SNPs, proceed with the same input dataset.
 
-# Step 2: Filtering Ambiguous SNPs, indels and SNPs failed for HWE
+## Step 2: Filtering Ambiguous SNPs, indels and SNPs failed for HWE
 
 For this we will use `QCsnp()` blocking all other filtering. The function will implicitly perform filtering based on ambiguous SNPs.
 
@@ -186,12 +186,12 @@ file.copy(paste0(ResultDir, "/", ftemp), DataDir)
 #> [1] TRUE TRUE TRUE TRUE
 ```
 
-# Step 3: Flag PAR, XTR and Ampliconic Regions
+## Step 3: Flag PAR, XTR and Ampliconic Regions
 Now, we will filter Pseudo-Autosomal Region (PAR), X-transposed region (XTR) and Ampliconic regions from the X-chromosome and will combine these regions with autosomes for autosomal QC.
 
 
 ``` r
-# Running
+## Running
 finput <- "PostimputeEX_QC1"
 x <- PlinkSummary(DataDir, ResultDir, finput)
 #> ℹ Dataset: PostimputeEX_QC1
@@ -240,10 +240,10 @@ save(PAR_SNPs, file = paste0(ResultDir, "/Postimpute_PAR_SNPs.Rda"))
 
 
 ``` r
-# Output
-# SNPs in PAR
+## Output
+## SNPs in PAR
 PAR_SNPs <- x$PAR ## No PAR SNP
-# SNPs in XTR
+## SNPs in XTR
 XTR_SNPs <- x$XTR ## 42 SNPs
 knitr::kable(XTR_SNPs, caption = "SNPs in XTR.")
 ```
@@ -256,7 +256,7 @@ Table: SNPs in XTR.
 
 
 ``` r
-# SNPs in Ampliconic region
+## SNPs in Ampliconic region
 Ampliconic_SNPs <- x$Ampliconic # 7 SNPs
 knitr::kable(Ampliconic_SNPs, caption = "SNPs in Ampliconic region.")
 ```
@@ -280,7 +280,7 @@ Table: SNPs in Ampliconic region.
 
 **Note: We will not perform step 4, since we do not have any PAR regions. The steps are provided for the users in the case if they have PAR regions in their dataset.**
 
-# Step 4: Filter only PAR Regions from X-chromosome
+## Step 4: Filter only PAR Regions from X-chromosome
 
 
 ``` r
@@ -301,7 +301,7 @@ file.copy(paste0(ResultDir, "/", ftemp), DataDir)
 #> [1] FALSE
 ```
 
-# Step 5: Preparing autosomal and X-chromosomal plink binary files
+## Step 5: Preparing autosomal and X-chromosomal plink binary files
 
 Now, we will prepare two sets of plink binary files from “PostimputeEX_QC1” containing autosomes and X-chromosomes, respectively. For this purpose, we will again use `FilterRegion()`.
 
@@ -324,7 +324,7 @@ invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
 
 **Note: We will not perform step 6, since we do not have any PAR regions. The steps are provided for the users in the case if they have PAR regions in their dataset.**
 
-# Step 6: Merging the autosomal regions with PAR regions
+## Step 6: Merging the autosomal regions with PAR regions
 
 We will now merge the autosomal files with PAR regions using `MergeRegion()`.
 
@@ -341,7 +341,7 @@ invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
 
 With “PostimputeEX_QC3”, we will flag the SNPs in the controls with a sex difference in MAF, since the differences may be due to technical confounding or sampling biases for the study cohorts.
 
-# Step 7: Flag the SNPs in the controls with a sex difference in MAF
+## Step 7: Flag the SNPs in the controls with a sex difference in MAF
 
 
 ``` r
@@ -353,7 +353,7 @@ x <- MAFdiffSexControl(DataDir, ResultDir, finput, foutput, filterSNP = FALSE)
 
 Since no SNP is having MAF difference in sexes in controls, we will proceed to the next steps of the pipeline.
 
-# Step 8: Prepare separate male and female subsets of the genotypes.
+## Step 8: Prepare separate male and female subsets of the genotypes.
 
 
 ``` r
@@ -362,13 +362,13 @@ foutput <- "PostimputeEX_QC4_Female"
 sex <- "females"
 x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, sex = sex, xplink = FALSE, autoplink = FALSE)
 #> ✔ Output plink files, prefixed as PostimputeEX_QC4_Female, are in
-#> /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3
-# Making male plink files
+#> /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez
+## Making male plink files
 foutput <- "PostimputeEX_QC4_Male"
 sex <- "males"
 x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, sex = sex, xplink = FALSE, autoplink = FALSE)
 #> ✔ Output plink files, prefixed as PostimputeEX_QC4_Male, are in
-#> /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3
+#> /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez
 ```
 
 Removing the previous QC-ed file from DataDir and copying the new QC-ed file to DataDir.
@@ -388,7 +388,7 @@ ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_QC4")
 invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
 ```
 
-# Step 9: Remove SNPs with MAF < 0.05 from each sex from the sex-specific autosomal plink files
+## Step 9: Remove SNPs with MAF < 0.05 from each sex from the sex-specific autosomal plink files
 
 Here, we will perform QC of SNPs using MAF, call rate, monomorphism and differential missingness in cases vs controls from each sex from the sex-specific autosomal datasets.
 
@@ -418,7 +418,7 @@ x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = 
 #> • In cases, 
 #> • In controls, 
 #> ✔ Merging is done using the common SNPs between the input genotype files.
-#> ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3 prefixed as filtered_temp2
+#> ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez prefixed as filtered_temp2
 #> ℹ There are no monomorphic SNPs.
 #> ℹ Filtering for differential missingness between cases and controls is turned off.
 #> ℹ No SNP with differential missingness between cases and controls.
@@ -426,7 +426,7 @@ x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = 
 #> ℹ Input file has 21330 SNPs.
 #> ℹ Output file has 15956 SNPs after filtering.
 
-# Applying filter to male-specific plink files
+## Applying filter to male-specific plink files
 finput <- "PostimputeEX_QC4_Male"
 foutput <- "PostimputeEX_QC5_Male"
 x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss)
@@ -437,7 +437,7 @@ x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = 
 #> • In cases, 
 #> • In controls, 
 #> ✔ Merging is done using the common SNPs between the input genotype files.
-#> ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3 prefixed as filtered_temp2
+#> ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez prefixed as filtered_temp2
 #> ℹ There are no monomorphic SNPs.
 #> ℹ Filtering for differential missingness between cases and controls is turned off.
 #> ℹ No SNP with differential missingness between cases and controls.
@@ -455,12 +455,12 @@ invisible(file.remove(paste0(DataDir, "/", ftemp)))
 ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_QC4")
 invisible(file.remove(paste0(ResultDir, "/", ftemp)))
 
-# Copying the new QC-ed file to DataDir.
+## Copying the new QC-ed file to DataDir.
 ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_QC5")
 invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
 ```
 
-# Step 10: Combine sex-specific autosomal QC-ed files using common SNPs:
+## Step 10: Combine sex-specific autosomal QC-ed files using common SNPs:
 
 
 ``` r
@@ -469,7 +469,7 @@ finput2 <- "PostimputeEX_QC5_Male"
 foutput <- "PostimputeEX_Auto"
 y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput, use_common_snps = TRUE)
 #> ✔ Merging is done using the common SNPs between the input genotype files.
-#> ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3 prefixed as PostimputeEX_Auto
+#> ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez prefixed as PostimputeEX_Auto
 ```
 
 Removing the previous QC-ed file from DataDir and copying the new QC-ed file to DataDir.
@@ -489,7 +489,7 @@ ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_Auto")
 invisible(file.remove(paste0(ResultDir, "/", ftemp)))
 ```
 
-# Step 11: Get sex-specific X-chromosomal plink files
+## Step 11: Get sex-specific X-chromosomal plink files
 
 For this, we will use plink files prefixed as “PostimputeEX_QC3_snps_extracted”. As a reminder, these plink files contain X chromosome.
 
@@ -499,23 +499,23 @@ We will utilize `GetMFPlink()` function to get male and female plink binary file
 ``` r
 finput <- "PostimputeEX_QC3_snps_extracted"
 foutput <- "PostimputeEX_QC3_XFemale"
-# Making female-specific plink files X chromosome
+## Making female-specific plink files X chromosome
 sex <- "females"
 x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, sex = sex, xplink = FALSE, autoplink = FALSE)
 #> ✔ Output plink files, prefixed as PostimputeEX_QC3_XFemale, are in
-#> /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3
-# Making male-specific plink files X chromosome
+#> /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez
+## Making male-specific plink files X chromosome
 foutput <- "PostimputeEX_QC3_XMale"
 sex <- "males"
 x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, sex = sex, xplink = FALSE, autoplink = FALSE)
 #> ✔ Output plink files, prefixed as PostimputeEX_QC3_XMale, are in
-#> /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3
+#> /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez
 ## Copying sex-specific plink files
 ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_QC3_X")
 invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
 ```
 
-# Step 12: QC of sex-specific X-chromosomal SNPs
+## Step 12: QC of sex-specific X-chromosomal SNPs
 
 Here, we will remove SNPs with a missingness difference in cases vs controls, separately in each sex, and will filter out SNPs based on 1% MAF, 5% missingness per genotype, and monomorphic SNPs. We recommend setting the threshold filters to be the same in males and females for analyses of common variants.
 
@@ -544,7 +544,7 @@ x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = 
 #> • In cases, 
 #> • In controls, 
 #> ✔ Merging is done using the common SNPs between the input genotype files.
-#> ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3 prefixed as filtered_temp2
+#> ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez prefixed as filtered_temp2
 #> ℹ No SNP with differential missingness between cases and controls.
 #> ✔ Output plink files prefixed as ,PostimputeEX_QC4_XFemale, with passed SNPs are saved in ResultDir.
 #> ℹ Input file has 983 SNPs.
@@ -561,7 +561,7 @@ x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = 
 #> • In cases, 
 #> • In controls, 
 #> ✔ Merging is done using the common SNPs between the input genotype files.
-#> ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3 prefixed as filtered_temp2
+#> ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez prefixed as filtered_temp2
 #> ℹ No SNP with differential missingness between cases and controls.
 #> ✔ Output plink files prefixed as ,PostimputeEX_QC4_XMale, with passed SNPs are saved in ResultDir.
 #> ℹ Input file has 983 SNPs.
@@ -584,7 +584,7 @@ ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_QC4")
 invisible(file.remove(paste0(ResultDir, "/", ftemp)))
 ```
 
-# Step 13: Combine sex-specific QC-ed X chromosomal dataset using common SNPs
+## Step 13: Combine sex-specific QC-ed X chromosomal dataset using common SNPs
 
 
 ``` r
@@ -593,7 +593,7 @@ finput2 <- "PostimputeEX_QC4_XMale"
 foutput <- "PostimputeEX_QC5_Xchr"
 y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput, use_common_snps = TRUE)
 #> ✔ Merging is done using the common SNPs between the input genotype files.
-#> ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3 prefixed as PostimputeEX_QC5_Xchr
+#> ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez prefixed as PostimputeEX_QC5_Xchr
 ```
 
 
@@ -607,7 +607,7 @@ ftemp <- list.files(paste0(DataDir, "/"), pattern = "PostimputeEX_QC4")
 invisible(file.remove(paste0(DataDir, "/", ftemp)))
 ```
 
-# Step 14: Test for HWE across the X chromosomes in females
+## Step 14: Test for HWE across the X chromosomes in females
 Test for HWE across the X in females (cases and controls combined) and remove these regions from analysis for all samples. 
 
 
@@ -615,10 +615,10 @@ Test for HWE across the X in females (cases and controls combined) and remove th
 finput <- "PostimputeEX_QC5_Xchr"
 foutput <- "PostimputeEX_Xchr"
 x <- Xhwe(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, filterSNP = TRUE)
-#> ✔ Output plink files, prefixed as female, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3
+#> ✔ Output plink files, prefixed as female, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez
 #> This test is running on a case-control dataset with female samples.
 #> ℹ Failed SNPs are excluded from the output plink files prefixed as PostimputeEX_Xchr is in
-#> /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3
+#> /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez
 ```
 
 
@@ -642,7 +642,7 @@ ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_Xchr")
 invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
 ```
 
-# Step 15: Checking for X-chromosomal SNPs having MAF difference in sexes in controls
+## Step 15: Checking for X-chromosomal SNPs having MAF difference in sexes in controls
 
 This test should be performed only for binary traits. We will flag the failed SNPs if any.
 
@@ -666,7 +666,7 @@ foutput <- "PostimputeQC"
 use_common_snps <- FALSE
 y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput, use_common_snps = FALSE)
 #> ✔ Merging is done with all the SNPs i.e., union of the SNPs.
-#> ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3 prefixed as PostimputeQC
+#> ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez prefixed as PostimputeQC
 ```
 
 
@@ -680,24 +680,24 @@ invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
 invisible(file.remove(paste0(ResultDir, "/", ftemp)))
 ```
 
-# Step 17: Preparing separate male and female genotype dataset for sample level QC
+## Step 17: Preparing separate male and female genotype dataset for sample level QC
 
 
 ``` r
-# Making female-specific plink files
+## Making female-specific plink files
 finput <- "PostimputeQC"
 foutput <- "Postimpute_Female"
 sex <- "females"
 x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, sex = sex, xplink = FALSE, autoplink = FALSE)
 #> ✔ Output plink files, prefixed as Postimpute_Female, are in
-#> /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3
+#> /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez
 
-# Making male-specific plink files
+## Making male-specific plink files
 finput <- "PostimputeQC"
 foutput <- "Postimpute_Male"
 sex <- "males"
 x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, sex = sex, xplink = FALSE, autoplink = FALSE)
-#> ✔ Output plink files, prefixed as Postimpute_Male, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3
+#> ✔ Output plink files, prefixed as Postimpute_Male, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez
 ```
 
 
@@ -712,7 +712,7 @@ invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
 invisible(file.remove(paste0(ResultDir, "/", ftemp)))
 ```
 
-# Step 18: Sex-specific sample level QC
+## Step 18: Sex-specific sample level QC
 From each sex-specific plink files, remove individuals with missing genotype rate > 0.1, with absolute value of the heterozygosity F statistic  > 0.20 and IBD statistics pihat > 0.2.
 
 For this, we will use `QCsample()`.
@@ -723,7 +723,7 @@ For this, we will use `QCsample()`.
 finput <- "Postimpute_Female"
 foutput <- "Postimpute_Female1"
 imiss <- 0.02
-# Since het = 3 was removing a lot of samples (185), I decided to increase the threshold after looking at the plot.
+## Since het = 3 was removing a lot of samples (185), I decided to increase the threshold after looking at the plot.
 het <- 3
 small_sample_mod <- TRUE
 IBD <- 0.2
@@ -731,7 +731,7 @@ x <- QCsample(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput
 #> • Plots are initiated.
 ```
 
-![plot of chunk unnamed-chunk-34](./unnamed-chunk-34-1.png)
+![plot of chunk female-missingness](./female-missingness-1.png)
 
 ```
 #> ℹ No. of samples filtered/flagged for missingness: 0
@@ -740,14 +740,16 @@ x <- QCsample(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput
 #> ℹ No sample is filtered out for IDB after missingness and heterozygosity filter.
 #> ℹ No. of samples in input plink files: 151
 #> ℹ No. of samples in output plink files: 149
-#> ✔ Output plink files, Postimpute_Female1 with final samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3.
+#> ✔ Output plink files, Postimpute_Female1 with final samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez.
+```
 
+
+``` r
 ## Running the function male-specific QC
-
 finput <- "Postimpute_Male"
 foutput <- "Postimpute_Male1"
 imiss <- 0.02
-# Since het = 3 was removing a lot of samples (185), I decided to increase the threshold after looking at the plot.
+## Since het = 3 was removing a lot of samples (185), I decided to increase the threshold after looking at the plot.
 het <- 5
 small_sample_mod <- TRUE
 IBD <- 0.2
@@ -755,7 +757,7 @@ x <- QCsample(DataDir = DataDir, ResultDir = ResultDir, small_sample_mod = small
 #> • Plots are initiated.
 ```
 
-![plot of chunk unnamed-chunk-34](./unnamed-chunk-34-2.png)
+![plot of chunk male-missingness](./male-missingness-1.png)
 
 ```
 #> ℹ No. of samples filtered/flagged for missingness: 0
@@ -764,7 +766,7 @@ x <- QCsample(DataDir = DataDir, ResultDir = ResultDir, small_sample_mod = small
 #> ℹ No sample is filtered out for IDB after missingness and heterozygosity filter.
 #> ℹ No. of samples in input plink files: 125
 #> ℹ No. of samples in output plink files: 125
-#> ✔ Output plink files, Postimpute_Male1 with final samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3.
+#> ✔ Output plink files, Postimpute_Male1 with final samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez.
 ```
 
 
@@ -775,7 +777,7 @@ invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
 invisible(file.remove(paste0(ResultDir, "/", ftemp)))
 ```
 
-# Step 19: Combine male and female-specific Qc-ed genotype datasets
+## Step 19: Combine male and female-specific Qc-ed genotype datasets
 
 ``` r
 ## Combine male and female-specific files
@@ -785,7 +787,7 @@ finput2 <- "Postimpute_Male1"
 foutput <- "PostimputeFinal"
 y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput, use_common_snps = TRUE)
 #> ✔ Merging is done using the common SNPs between the input genotype files.
-#> ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3 prefixed as PostimputeFinal
+#> ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez prefixed as PostimputeFinal
 ```
 
 
@@ -882,14 +884,13 @@ This package was developed using *[biocthis](https://bioconductor.org/packages/3
 #>  collate  en_US.UTF-8
 #>  ctype    en_US.UTF-8
 #>  tz       America/New_York
-#>  date     2025-08-04
+#>  date     2025-08-05
 #>  pandoc   3.6.3 @ /Applications/Positron.app/Contents/Resources/app/quarto/bin/tools/aarch64/ (via rmarkdown)
 #>  quarto   1.7.32 @ /usr/local/bin/quarto
 #> 
 #> ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
 #>  ! package              * version    date (UTC) lib source
 #>    abind                  1.4-8      2024-09-12 [2] CRAN (R 4.5.0)
-#>    askpass                1.2.1      2024-10-04 [2] CRAN (R 4.5.0)
 #>    backports              1.5.0      2024-05-23 [2] CRAN (R 4.5.1)
 #>    bibtex                 0.5.1      2023-01-26 [2] CRAN (R 4.5.0)
 #>    bigassertr             0.1.7      2025-06-27 [2] CRAN (R 4.5.1)
@@ -903,7 +904,6 @@ This package was developed using *[biocthis](https://bioconductor.org/packages/3
 #>    BiocManager            1.30.26    2025-06-05 [2] CRAN (R 4.5.0)
 #>    BiocParallel           1.42.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
 #>    BiocStyle              2.36.0     2025-04-15 [2] Bioconduc~
-#>    biocthis               1.18.0     2025-04-15 [2] Bioconduc~
 #>    Biostrings             2.76.0     2025-04-15 [2] Bioconduc~
 #>    bit                    4.6.0      2025-03-06 [2] CRAN (R 4.5.1)
 #>    bit64                  4.6.0-1    2025-01-16 [2] CRAN (R 4.5.1)
@@ -921,7 +921,6 @@ This package was developed using *[biocthis](https://bioconductor.org/packages/3
 #>    commonmark             2.0.0      2025-07-07 [2] CRAN (R 4.5.1)
 #>    cowplot                1.2.0      2025-07-07 [2] CRAN (R 4.5.1)
 #>    crayon                 1.5.3      2024-06-20 [2] CRAN (R 4.5.0)
-#>    credentials            2.0.2      2024-10-04 [2] CRAN (R 4.5.0)
 #>    curl                   6.4.0      2025-06-22 [2] CRAN (R 4.5.1)
 #>    data.table             1.17.8     2025-07-10 [2] CRAN (R 4.5.1)
 #>    DelayedArray           0.34.1     2025-04-17 [2] Bioconduc~
@@ -945,13 +944,10 @@ This package was developed using *[biocthis](https://bioconductor.org/packages/3
 #>    GenomeInfoDbData       1.2.14     2025-04-21 [2] Bioconductor
 #>    GenomicAlignments      1.44.0     2025-04-15 [2] Bioconduc~
 #>    GenomicRanges          1.60.0     2025-04-15 [2] Bioconduc~
-#>    gert                   2.1.5      2025-03-25 [2] CRAN (R 4.5.1)
 #>    ggplot2                3.5.2      2025-04-09 [2] CRAN (R 4.5.0)
 #>    ggpubr                 0.6.1      2025-06-27 [2] CRAN (R 4.5.1)
 #>    ggrepel                0.9.6      2024-09-07 [2] CRAN (R 4.5.1)
 #>    ggsignif               0.6.4      2022-10-13 [2] CRAN (R 4.5.0)
-#>    gh                     1.5.0      2025-05-26 [2] CRAN (R 4.5.0)
-#>    gitcreds               0.1.2      2022-09-08 [2] CRAN (R 4.5.0)
 #>    glue                   1.8.0      2024-09-30 [2] CRAN (R 4.5.0)
 #>    gridExtra              2.3        2017-09-09 [2] CRAN (R 4.5.0)
 #>    gtable                 0.3.6      2024-10-25 [2] CRAN (R 4.5.0)
@@ -961,7 +957,6 @@ This package was developed using *[biocthis](https://bioconductor.org/packages/3
 #>    htmlwidgets            1.6.4      2023-12-06 [2] CRAN (R 4.5.0)
 #>    httpuv                 1.6.16     2025-04-16 [2] CRAN (R 4.5.1)
 #>    httr                   1.4.7      2023-08-15 [2] CRAN (R 4.5.0)
-#>    httr2                  1.2.1      2025-07-22 [2] CRAN (R 4.5.1)
 #>    hunspell               3.0.6      2025-03-22 [2] CRAN (R 4.5.1)
 #>    IRanges                2.42.0     2025-04-15 [2] Bioconduc~
 #>    iterators              1.0.14     2022-02-05 [2] CRAN (R 4.5.0)
@@ -981,7 +976,6 @@ This package was developed using *[biocthis](https://bioconductor.org/packages/3
 #>    memoise                2.0.1      2021-11-26 [2] CRAN (R 4.5.0)
 #>    mime                   0.13       2025-03-17 [2] CRAN (R 4.5.0)
 #>    miniUI                 0.1.2      2025-04-17 [3] CRAN (R 4.5.0)
-#>    openssl                2.3.3      2025-05-26 [2] CRAN (R 4.5.0)
 #>    pillar                 1.11.0     2025-07-04 [2] CRAN (R 4.5.1)
 #>    pkgbuild               1.4.8      2025-05-26 [2] CRAN (R 4.5.0)
 #>    pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.5.0)
@@ -999,13 +993,11 @@ This package was developed using *[biocthis](https://bioconductor.org/packages/3
 #>    ps                     1.9.1      2025-04-12 [2] CRAN (R 4.5.1)
 #>    purrr                  1.1.0      2025-07-10 [2] CRAN (R 4.5.1)
 #>    qqman                  0.1.9      2023-08-23 [2] CRAN (R 4.5.0)
-#>    R.cache                0.17.0     2025-05-02 [2] CRAN (R 4.5.0)
 #>    R.methodsS3            1.8.2      2022-06-13 [2] CRAN (R 4.5.0)
 #>    R.oo                   1.27.1     2025-05-02 [2] CRAN (R 4.5.0)
 #>    R.utils                2.13.0     2025-02-24 [2] CRAN (R 4.5.0)
 #>    R6                     2.6.1      2025-02-15 [2] CRAN (R 4.5.0)
 #>    ragg                   1.4.0      2025-04-10 [3] CRAN (R 4.5.0)
-#>    rappdirs               0.3.3      2021-01-31 [2] CRAN (R 4.5.0)
 #>    rbibutils              2.3        2024-10-04 [2] CRAN (R 4.5.1)
 #>    rcmdcheck              1.4.0      2021-09-27 [3] CRAN (R 4.5.0)
 #>    RColorBrewer           1.1-3      2022-04-03 [2] CRAN (R 4.5.0)
@@ -1037,7 +1029,6 @@ This package was developed using *[biocthis](https://bioconductor.org/packages/3
 #>    spelling               2.3.1      2024-10-04 [2] CRAN (R 4.5.0)
 #>    stringi                1.8.7      2025-03-27 [2] CRAN (R 4.5.0)
 #>    stringr                1.5.1      2023-11-14 [2] CRAN (R 4.5.0)
-#>    styler                 1.10.3     2024-04-07 [2] CRAN (R 4.5.0)
 #>    sumFREGAT              1.2.5      2022-06-07 [2] CRAN (R 4.5.1)
 #>    SummarizedExperiment   1.38.1     2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)
 #>    sys                    3.4.3      2024-10-04 [2] CRAN (R 4.5.0)
@@ -1054,7 +1045,6 @@ This package was developed using *[biocthis](https://bioconductor.org/packages/3
 #>    usethis              * 3.1.0      2024-11-26 [2] CRAN (R 4.5.0)
 #>    vctrs                  0.6.5      2023-12-01 [2] CRAN (R 4.5.0)
 #>    vroom                  1.6.5      2023-12-05 [2] CRAN (R 4.5.1)
-#>    whisker                0.4.1      2022-12-05 [2] CRAN (R 4.5.0)
 #>    withr                  3.0.2      2024-10-28 [2] CRAN (R 4.5.0)
 #>    xfun                   0.52       2025-04-02 [2] CRAN (R 4.5.0)
 #>    XML                    3.99-0.18  2025-01-01 [2] CRAN (R 4.5.0)
@@ -1064,7 +1054,7 @@ This package was developed using *[biocthis](https://bioconductor.org/packages/3
 #>    XVector                0.48.0     2025-04-15 [2] Bioconduc~
 #>    yaml                   2.3.10     2024-07-26 [2] CRAN (R 4.5.0)
 #> 
-#>  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp0uzDD3/temp_libpathfc4153405fdb
+#>  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpdyNNez/temp_libpath548171db3e3e
 #>  [2] /Users/mayerdav/Library/R/arm64/4.5/library
 #>  [3] /opt/homebrew/lib/R/4.5/site-library
 #>  [4] /opt/homebrew/Cellar/r/4.5.1/lib/R/library

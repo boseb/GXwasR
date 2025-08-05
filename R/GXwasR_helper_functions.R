@@ -268,46 +268,6 @@ plinkExcludeExtract <- function(DataDir, finput, ResultDir, foutput, region_file
     executePlink(plinkArgsExtract, ResultDir)
 }
 
-## Function 7
-########## Added in 3.0
-# processRegionFile <- function(DataDir, finput, ResultDir, foutput, genomic_feature, region_file_path, HG, exclude) {
-#   DataDir1 <- system.file("extdata", package = "GXwasR")
-#   region_data <- read.table(file.path(DataDir1, paste0(genomic_feature, "_genomic_features_", HG, ".bed.txt")), header = FALSE, sep = "")
-#   write.table(region_data, file = region_file_path, quote = FALSE, row.names = FALSE, col.names = FALSE, eol = "\r\n", sep = " ")
-#
-#   if (exclude) {
-#     plinkExcludeExtract(DataDir, finput, ResultDir, foutput, region_file_path)
-#   }
-# }
-
-## Function 8
-########## Added in 3.0
-# processCHRFilter <- function(DataDir, finput, ResultDir, foutput, filterCHR, exclude) {
-#   if (exclude) {
-#     plinkArgsExclude <- c("--bfile", file.path(DataDir, finput), "--not-chr", filterCHR, "--make-bed", "--out", file.path(ResultDir, foutput), "--silent")
-#     plinkArgsExtract <- c("--bfile", file.path(DataDir, finput), "--chr", filterCHR, "--make-bed", "--out", file.path(ResultDir, paste0(foutput, "_snps_extracted")), "--silent")
-#     executePlink(plinkArgsExclude)
-#     executePlink(plinkArgsExtract)
-#   }
-# }
-
-## Function 9
-########## Added in 3.0
-# finalProcessing <- function(DataDir, ResultDir, finput, foutput, exclude, regionfile) {
-#   bim <- read.table(file.path(ResultDir, paste0(foutput, ".bim")))
-#   bim1 <- read.table(file.path(DataDir, paste0(finput, ".bim")))
-#   num_marker_excluded <- nrow(bim1) - nrow(bim)
-#
-#   print(paste0(num_marker_excluded, " SNPs are discarded."))
-#   print(paste0("Plink files with passed SNPs are in ", ResultDir, " prefixed as ", foutput))
-#   print(paste0("Plink files with discarded SNPs are in ", ResultDir, " prefixed as ", foutput, "_snps_extracted"))
-#
-#   if (!regionfile) {
-#     ftemp <- list.files(ResultDir, pattern = "region")
-#     invisible(file.remove(file.path(ResultDir, ftemp)))
-#   }
-# }
-
 ## Function 10
 ######### Added in 3.0
 outersect <- function(x, y, ...) {
@@ -1203,7 +1163,7 @@ preparePhenotypeData <- function(phenofile, nPC, DataDir, ResultDir, finput, hig
             DataDir = DataDir, ResultDir = ResultDir, finput = finput, countPC = nPC, highLD_regions = highLD_regions,
             ld_prunning = ld_prunning, window_size = window_size, step_size = step_size, r2_threshold = r2_threshold, plotPC = FALSE
         )
-        colnames(GP) <- c("FID", "IID", paste0("PC", seq_len(nPC)))
+        colnames(GP$PCs1) <- c("FID", "IID", paste0("PC", seq_len(nPC)))
         return(GP)
     } else {
         rlang::inform(rlang::format_error_bullets(c("i" = "Parameter 'nPC' is either zero or negative. Genetic PC will not be computed.")))
@@ -1253,7 +1213,7 @@ prsFun <- function(pthreshold, ResultDir, DataDir, finput, clumpExtract, clumpSN
         std_out = FALSE,
         std_err = FALSE
     ))
-
+    
     prs <- read.table(normalizePath(file.path(ResultDir, paste0("PRS.", pthreshold, ".profile")), mustWork = FALSE), header = TRUE)
     pheno.prs <- merge(pheno, prs[, c("FID", "IID", "SCORE")], by = c("FID", "IID"))
 
@@ -1280,7 +1240,7 @@ prsFun <- function(pthreshold, ResultDir, DataDir, finput, clumpExtract, clumpSN
 createPRSPlot <- function(prsResult) {
     p1 <- ggplot2::ggplot(data = prsResult, ggplot2::aes(x = factor(prsResult$Threshold), y = prsResult$R2)) +
         ggplot2::geom_text(
-            ggplot2::aes(label = paste(prsResult$WriteP)),
+            ggplot2::aes(label = paste(prsResult$P)),
             vjust = -1.5,
             hjust = 0,
             angle = 45,
@@ -2907,7 +2867,6 @@ XCMAX4_data2 <- function(Snp, DataDir, genosnp, P, covarfile, Samp) {
 ## Function 65
 ## Added in 3.0
 xcmaParaCovar <- function(chunks, chunk, Snp, DataDir, genosnp, P, covarfile, Samp) {
-    # print(chunks)
     if (length(Snp) >= (chunks + chunk)) {
         snp_names <- Snp[chunks:(chunks + chunk)]
     } else {
@@ -3907,20 +3866,30 @@ PlotHeritability <- function(Hdata, miMAF, maMAF, plotjpeg, plotname, ResultDir)
     )
 
     ## Modified in V7.0
-    if (plotjpeg == FALSE) {
-        print(ggpubr::annotate_figure(plot1, top = ggpubr::text_grob(paste0(miMAF, ",", maMAF),
-            color = "red", face = "bold", size = 10
-        )))
-    } else {
-        jpeg(normalizePath(file.path(ResultDir, paste0(plotname, ".jpeg")), mustWork = FALSE), width = 1000, height = 1000, res = 100)
-
-        print(ggpubr::annotate_figure(plot1, top = ggpubr::text_grob(paste0(miMAF, ",", maMAF),
-            color = "red", face = "bold", size = 10
-        )))
-        dev.off()
-
-        rlang::inform(rlang::format_error_bullets(c("v" = paste0("Plots are saved in ", ResultDir, " with name ", plotname, ".jpeg"))))
-    }
+    # Create the annotated figure
+  annotated_plot <- ggpubr::annotate_figure(
+    plot1,
+    top = ggpubr::text_grob(
+        paste0(miMAF, ",", maMAF),
+        color = "red", face = "bold", size = 10
+    )
+  )
+  
+  if (plotjpeg) {
+    # Save to JPEG file
+    jpeg(
+        normalizePath(file.path(ResultDir, paste0(plotname, ".jpeg")), mustWork = FALSE),
+        width = 1000, height = 1000, res = 100
+    )
+    grid::grid.newpage()
+    grid::grid.draw(annotated_plot)
+    dev.off()
+    
+    rlang::inform(rlang::format_error_bullets(c(
+        "v" = paste0("Plots are saved in ", ResultDir, " with name ", plotname, ".jpeg")
+    )))
+  }
+  invisible(annotated_plot)
 }
 
 ## Function 82

@@ -97,7 +97,7 @@ help(MetaGWAS, package = GXwasR)
 
 # Running MetaGWAS
 
-```{r}
+```{r metaGWAS-1}
 data(Summary_Stat_Ex1)
 data(Summary_Stat_Ex2)
 DataDir <- GXwasR:::GXwasR_data()
@@ -166,22 +166,22 @@ knitr::kable(x1[1:10, ], caption = "Top ten problematic SNPs.")
 
 ## Manhattan Plots and QQ plots:
 
-```{r, echo=FALSE, out.width="1500px", out.height="500px"}
+```{r, meta-manhattan_plot, echo=FALSE, out.width="1500px", out.height="500px", fig.caption = "Manhattan Plot"}
 knitr::include_graphics("Meta_Analysis.plot.jpeg")
 ```
 
 ## All Forest plots
 Now, let's see all the Forest plots.
 
-```{r, echo=FALSE, out.width="1000px", out.height="500px"}
+```{r, meta-forest_plot1, echo=FALSE, out.width="1000px", out.height="500px", fig.caption = "Forest Plot 1"}
 knitr::include_graphics("Meta_Analysis.forest.plot.1.jpg")
 ```
 
-```{r, echo=FALSE, out.width="1000px", out.height="500px"}
+```{r, meta-forest_plot2, echo=FALSE, out.width="1000px", out.height="500px", fig.caption = "Forest Plot 2"}
 knitr::include_graphics("Meta_Analysis.forest.plot.2.jpg")
 ```
 
-```{r, echo=FALSE, out.width="1000px", out.height="500px"}
+```{r, meta-forest_plot3, echo=FALSE, out.width="1000px", out.height="500px", fig.caption = "Forest Plot 3"}
 knitr::include_graphics("Meta_Analysis.forest.plot.3.jpg")
 ```
 
