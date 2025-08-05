@@ -1,5 +1,5 @@
 ---
-title: "GXwasR Overview"
+title: "Computing Polygenic Risk Score using GXwasR"
 author: 
   - name: "Banabithi Bose"
     affiliation:
@@ -16,340 +16,483 @@ output:
 date: "4 August 2025"
 package: "GXwasR 0.99.0"
 vignette: >
-  %\VignetteIndexEntry{GXwasR_overview}
+  %\VignetteIndexEntry{GXwasR_PRS}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+  %\VignetteEncoding{UTF-8}  
 ---
 
 
 
 
-# <a id = "GXwasR Description"></a> GXwasR Description: 
 
-This package implements various statistical genetics models for Genome-Wide Association (GWA) and X-Chromosome Wide Association (XWA) analyses in a sex-combined or sex-stratified way considering X-Chromosome Inactivation (XCI) pattern. In addition to association analysis, the package also enables testing for sex differences in genetic effects, including the implementation of specific models and applying best practices for additional quality control (QC) of genetic data required for these tests. The package includes thirty different functions in six different categories (A-F) which enable a comprehensive pipeline for sex-aware genetic association analysis of common variants with unrelated individuals.
 
-# Basics
-
-## Install `GXwasR`
-
-`R` is an open-source statistical environment which can be easily modified to enhance its functionality via packages. *[GXwasR](https://bioconductor.org/packages/3.21/GXwasR)* is a `R` package available via the [Bioconductor](http://bioconductor.org) repository for packages. `R` can be installed on any operating system from [CRAN](https://cran.r-project.org/) after which you can install *[GXwasR](https://bioconductor.org/packages/3.21/GXwasR)* by using the following commands in your `R` session:
+**This document provides a tutorial for computing state-of-the-art polygenic risk score and sex-aware ploygenic risk score utilizing GXwasR R package.**
 
 
 ``` r
-if (!requireNamespace("BiocManager", quietly = TRUE)) {
-    install.packages("BiocManager")
-}
-
-BiocManager::install("GXwasR")
-
-## Check that you have a valid Bioconductor installation
-BiocManager::valid()
-```
-
-# Functions Overview
-
-This document lists all the functions in GXwasR package.It offers thirty-three distinct functions, which are organized into six main categories: A) Pre-imputation QC, B) Post-imputation QC, C) Sex-combined and sex-stratified GWAS with specialized analysis for XWAS, D) Sex-differential test, E) High level analysis and a range of F) Utility Functions. These categories and their respective functions are detailed in the below Table.
-
-## Table of Functions
-| Function        | Description                                                                                                     | Category                             |
-|-----------------|-----------------------------------------------------------------------------------------------------------------|--------------------------------------|
-| QCsnp()         | Performs quality control for SNPs in PLINK binary files.                                                        | Pre-imputation QC, Post-imputation QC |
-| QCsample()      | Identifies outlier individuals based on heterozygosity and missing genotype rates.                              | Pre-imputation QC, Post-imputation QC |
-| AncestryCheck() | Evaluates samples' ancestry and flags outliers using PCA.                                                       | Pre-imputation QC                     |
-| SexCheck()      | Compares sex assignments with predictions from X chromosome inbreeding coefficients.                            | Pre-imputation QC                     |
-| Xhwe()          | Filters X-chromosome variants violating Hardy-Weinberg Equilibrium in females.                                  | Post-imputation QC                    |
-| MAFdiffSexControl() | Tests for significant MAF differences between sexes in control samples.                                     | Post-imputation QC                    |
-| FilterRegion()  | Filters out specific chromosomal regions from input PLINK files.                                                | Post-imputation QC, Utility Functions |
-| GXwas()         | Runs GWAS models in autosomes with XWAS models like "FMcomb01", "FMcomb02", "FMstratified" for binary and quantitative traits, and "GWAScxci" for binary traits. Focuses on additive SNP effects, multi-collinearity issues, and includes multiple covariates and their interactions. | Sex-combined and sex-stratified GWAS with XWAS |
-| PvalComb()      | Combines p-values from separate GWAS using various statistical methods and corrects summary p-values.           | Sex-combined and sex-stratified GWAS with XWAS |
-| SexDiff()       | Evaluates sex differences in genetic effect size for each SNP.                                                  | Sex-differential test                 |
-| SexDiffZscore() | Presumably analyzes sex differences using Z-score methodology, comparing genetic effect sizes between males and females. | Sex-differential test                 |
-| DiffZeroOne()   | Assesses Z-scores for deviation from one and zero for statistics like genetic correlation.                      | Sex-differential test                 |
-| TestXGene()     | Performs gene-based association tests using GWAS/XWAS summary statistics.                                       | High level analysis                   |
-| MetaGXwas()     | Combines summary-level GWAS results using fixed-effect and random-effect models.                                | High level analysis                   |
-| ComputePRS()    | Calculates polygenic risk scores from GWAS summary statistics.                                                  | High level analysis                   |
-| GeneticCorrBT() | Computes genetic correlation between to traits.                      | High level analysis                   |
-| EstimateHerit() | Computes SNP heritability using GREML or LDSC models.                                                          | High level analysis                   |
-| SexRegress()    | Not previously described. Presumably involves regression analyses specific to sex-stratified data.             | High level analysis                   |
-| FilterPlinkSample() | Prepares PLINK binary files with desired samples based on specified criteria.                                 | Utility Functions                     |
-| ComputeGeneticPC() | Computes principal components from a genetic relationship matrix for population stratification correction.    | Utility Functions                     |
-| ClumpLD()       | Performs linkage disequilibrium clumping of SNPs.                                                              | Utility Functions                     |
-| GetMFPlink()    | Prepares separate male and female PLINK binary files from combined files.                                      | Utility Functions                     |
-| plinkVCF()      | Converts VCF files to plink binary formats and vice versa, including creation of dummy FAM files.              | Utility Functions                     |
-| MergeRegion()   | Combines two genotype datasets based on common or all SNPs.                                                    | Utility Functions                     |
-| FilterAllele()  | Filters out multi-allelic variants from the genetic dataset, essential for maintaining dataset integrity and simplifying genetic analyses. | Utility Functions                     |
-| PlinkSummary()  | Provides a summary of genotype datasets in plink format.                                                       | Utility Functions                     |
-| FilterSNP()     | Filters out specific SNPs from the dataset based on user-defined criteria.                                     | Utility Functions                     |
-| DummyCovar()    | Recodes a categorical covariate into binary dummy variables for statistical analysis in GXwasR.                | Utility Functions                     |
-| GXWASmiami()    | Generates Miami plots for GWAS and XWAS.                
-               | Utility Functions                     |
-| Download_reference()    | Download Hapmap phase 3 and 1000 Genome phase 3 Data.                
-               | Utility Functions                     |     
-| SumstatGenCorr()    | Genetic Correlation Calculation from GWAS Summary Statistics.                
-               | High level analysis                     |     
-| LDPrune()    | Performs LD pruning on SNP data.                
-               | Utility Functions                     | 
-| executePlinkMAF()    | Calculate minor allele frequencies.                
-               | Utility Functions                     |    
-| ComputeLD()    | Calculate LD matrix.                
-               | Utility Functions                     | 
-
-``` r
-library(GXwasR)
+## Call some libraries (Users can ignore this.)
 library(printr)
 library(rmarkdown)
 ```
 
-### Function 1
+## Call GXwasR library and load example datasets:
+
 
 ``` r
-help(QCsnp, package = "GXwasR")
-#> ℹ Rendering development documentation for "QCsnp"
+## Call GXwasR library
+library(GXwasR)
 ```
 
-### Function 2
+# Computing standard PRS using ComputePRS():
+
+## About ComputePRS()
+
 
 ``` r
-help(QCsample, package = "GXwasR")
-#> ℹ Rendering development documentation for "QCsample"
-```
-
-### Function 3
-
-``` r
-help(AncestryCheck, package = "GXwasR")
-#> ℹ Rendering development documentation for "AncestryCheck"
-```
-
-### Function 4
-
-``` r
-help(SexCheck, package = "GXwasR")
-#> ℹ Rendering development documentation for "SexCheck"
-```
-
-### Function 5
-
-``` r
-help(Xhwe, package = "GXwasR")
-#> ℹ Rendering development documentation for "Xhwe"
-```
-
-### Function 6
-
-``` r
-help(MAFdiffSexControl, package = "GXwasR")
-#> ℹ Rendering development documentation for "MAFdiffSexControl"
-```
-
-### Function 7
-
-``` r
-help(FilterRegion, package = "GXwasR")
-#> ℹ Rendering development documentation for "FilterRegion"
-```
-
-### Function 8
-
-``` r
-help(GXwas, package = "GXwasR")
-#> ℹ Rendering development documentation for "GXwas"
-```
-
-### Function 9
-
-``` r
-help(PvalComb, package = "GXwasR")
-#> ℹ Rendering development documentation for "PvalComb"
-```
-
-### Function 10
-
-``` r
-help(SexDiff, package = "GXwasR")
-#> ℹ Rendering development documentation for "SexDiff"
-```
-
-### Function 11
-
-``` r
-help(SexDiffZscore, package = "GXwasR")
-#> ℹ Rendering development documentation for "SexDiffZscore"
-```
-
-### Function 12
-
-``` r
-help(DiffZeroOne, package = "GXwasR")
-#> ℹ Rendering development documentation for "DiffZeroOne"
-```
-
-### Function 13
-
-``` r
-help(TestXGene, package = "GXwasR")
-#> ℹ Rendering development documentation for "TestXGene"
-```
-
-### Function 14
-
-``` r
-help(MetaGXwas, package = "GXwasR")
-#> Error in `dev_help()`:
-#> ! Can't find development topic `MetaGXwas`.
-```
-
-### Function 15
-
-``` r
-help(ComputePRS, package = "GXwasR")
+help(ComputePRS, package = GXwasR)
 #> ℹ Rendering development documentation for "ComputePRS"
 ```
 
-### Function 16
+## Running ComputePRS()
+
 
 ``` r
-help(ComputeCorrBT, package = "GXwasR")
-#> Error in `dev_help()`:
-#> ! Can't find development topic `ComputeCorrBT`.
+# Running
+data(Summary_Stat_Ex1)
+data(Example_phenofile)
+data(Example_covarfile)
+data(Example_pthresoldfile)
+data(highLD_hg19)
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+summarystat <- Summary_Stat_Ex1[, c(2, 4, 7, 1, 3, 12)]
+phenofile <- Example_phenofile # Cannot be NULL, the interested phenotype column should be labeled as "Pheno1".
+covarfile <- Example_covarfile
+clump_p1 <- 0.0001
+clump_p2 <- 0.0001
+clump_kb <- 500
+clump_r2 <- 0.5
+byCHR <- TRUE
+pthreshold <- Example_pthresoldfile$Threshold
+ld_prunning <- TRUE
+highLD_regions <- highLD_hg19
+window_size <- 50
+step_size <- 5
+r2_threshold <- 0.02
+nPC <- 6 # We can incorporate PCs into our PRS analysis to account for population stratification.
+pheno_type <- "binary"
+ldclump <- FALSE
+pheno_type <- "binary"
+PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
+#> Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp0uzDD3/temp_libpathfc4116ff9158', reason 'Directory not empty'
+#> An error occurred: attempt to set 'colnames' on an object with less than two dimensions
+#> Error in ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, : object 'pheno.prs' not found
+
+## This table shows 10 samples with phenotype, covariates and a PRS column.
+PRS <- PRSresult$PRS
+#> Error: object 'PRSresult' not found
+PRS[1:10, ]
+#> Error: object 'PRS' not found
+## The best threshold
+BestPvalue <- PRSresult$BestP$Threshold
+#> Error: object 'PRSresult' not found
+BestPvalue
+#> Error: object 'BestPvalue' not found
 ```
 
-### Function 17
+# Computing sex-aware PRS
+
+## Datasets for computing PRS
+
+**Discovery Data** i.e., GWAS summary statistics with mandatory columns such as "SNP"(SNP names), "A1"(effect allele), "BETA"(effect size in beta value) and "P"(p-value).
+
 
 ``` r
-help(EstimateHerit, package = "GXwasR")
-#> ℹ Rendering development documentation for "EstimateHerit"
+# Example discovery data is included in GXwasR
+library(GXwasR)
+data(Summary_Stat_Ex1)
+summarystat <- Summary_Stat_Ex1[, c(2, 4, 7, 1, 3, 12)]
 ```
 
-### Function 18
+**Target Data** i.e., genotype dataset in plink .bed, .bim and .fam format.
+
 
 ``` r
-help(SexRegress, package = "GXwasR")
+# Example target data is included in GXwasR
+DataDir <- GXwasR:::GXwasR_data()
+finput <- "GXwasR_example"
+```
+
+## Quality control of the datasets before computing sex-aware PRS.
+
+Users must ensure that both datasets are having the **same genome built**.
+Here's the quality control procedure:
+
+**(A) Discovery Data: Remove multi-allelic, indels and ambiguous (A/T or C/G) SNPs. Then remove SNPs with minor allele frequency (MAF) < 0.05 and quality info score < 0.1.  For this filtering, R packages like data.table, dplyr, tidyverse can be used.**
+
+**(B) Target Data: Remove multi-allelic, indels and ambiguous (A/T or C/G) SNPs. Then remove SNPs with MAF < 0.05 and Hardy Weinberg Equilibrium (hwe) > e-10. For this filtering steps, users should use `FilterAllele()` and `QCsnp()` functions in R.**
+
+Let's see how to use these functions. For the details of these utility functions, please follow [https://boseb.github.io/GXwasR/articles/GXwasR_overview.html](https://boseb.github.io/GXwasR/articles/GXwasR_overview.html).
+
+We will use `FilterAllele()` on target data to filter out the multi-allelic SNPs. Also, note that GXwasR doesn't work with multi-allelic variants. So this filtering step is important.
+
+
+``` r
+# Target data
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+foutput <- "filtered_multiallelic"
+x <- FilterAllele(DataDir, ResultDir, finput, foutput)
+#> ℹ There is no multi-allelic SNP present in the input dataset.
+```
+
+Now, we will use `QCsnp()` to remove ambiguous (A/T or C/G) SNPs and SNPs with MAF < 0.05 and Hardy Weinberg Equilibrium (hwe) > e-10.
+
+
+``` r
+## Since there was no multiallelic SNPs, we will continue with original input data.
+finput <- "GXwasR_example"
+foutput <- "filtered_step1"
+geno <- NULL
+maf <- 0.05
+casecontrol <- FALSE
+caldiffmiss <- FALSE
+diffmissFilter <- FALSE
+dmissX <- FALSE
+dmissAutoY <- FALSE
+monomorphicSNPs <- TRUE
+ld_prunning <- FALSE
+casecontrol <- FALSE ## Since the filtering doesn't require us to run on cases and controls separately, we will make this parameter FALSE.
+hweCase <- NULL
+hweControl <- NULL
+hwe <- 1e-10
+monomorphicSNPs <- FALSE
+ld_prunning <- FALSE
+
+x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl, hwe = hwe, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, dmissX = dmissX, dmissAutoY = dmissAutoY, diffmissFilter = diffmissFilter)
+#> ℹ 4214 Ambiguous SNPs (A-T/G-C), indels etc. were removed.
+#> ✔ Thresholds for maf, geno and hwe worked.
+#> --hwe: 3 variants removed due to Hardy-Weinberg exact test.
+#> 5467 variants removed due to minor allele threshold(s)
+#> ℹ No filter based on differential missingness will be applied.
+#> ✔ Output plink files prefixed as ,filtered_step1, with passed SNPs are saved in ResultDir.
+#> ℹ Input file has 26527 SNPs.
+#> ℹ Output file has 16843 SNPs after filtering.
+```
+
+**(C) Check whether SNPs present in discovery data are in target data.**
+
+  Let's gather the common SNPs between these.
+
+
+``` r
+SNP1 <- unique(summarystat$SNP)
+targetbim <- read.table(paste0(ResultDir, "/filtered_step1.bim"))
+SNP2 <- unique(targetbim$V2)
+commonSNP <- intersect(SNP1, SNP2) ## 991 SNPs are common between our discovery data and target data
+```
+
+## Filtering discovery data and target data with common SNPs
+
+
+``` r
+commonSNP <- data.table::as.data.table(commonSNP)
+colnames(commonSNP) <- "SNP"
+NewDiscoveryData <- merge(commonSNP, summarystat, by = "SNP")
+## For making target data with common SNPs, we will use FilterSNP().
+SNPvec <- commonSNP
+# Need to copy filtered_step1 file from ResultDir to DataDir
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "filtered_step1")
+invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
+finput <- "filtered_step1"
+foutput <- "NewtargetData"
+FilterSNP(DataDir, ResultDir, finput, foutput, SNPvec, extract = TRUE)
+#> ℹ 991 SNPs are extracted
+#> ✔ Plink files with extracted SNPs are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3 prefixed as NewtargetData
+#> NULL
+```
+
+Now, our discovery data and target data are ready. We will proceed towards computing first sex-combined PRS and then sex-stratified PRS.
+
+# Sex-combined PRS computation
+**(A) Perform LD clumping for discovery data using target data as reference.**
+
+**(B) Compute PRS at a variety of p-value thresholds.**
+
+**(C) Select best threshold based on R-square (for quantitative trait) or MacFadden R-square (for binary trait) using generalized linear model with covariates, such as genetic PCs.**
+
+We will utilize the `ComputePRS()` to perform the steps (A), (B) and (C).
+
+
+``` r
+# Running
+# Filtered target data needs to be copied from ResultDir to DataDir.
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "NewtargetData")
+invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
+finput <- "NewtargetData"
+
+# Filtered discovery data.
+# Need to maintain the first three coulmn of this dataset as SNP ID, Effect Allele and Effect Size
+summarystat <- NewDiscoveryData
+phenofile <- Example_phenofile # Cannot be NULL, the interested phenotype column should be labeled as "Pheno1".
+## Added "AGE" and "testcovar" as covariates.
+covarfile <- Example_covarfile
+clump_p1 <- 0.0001
+clump_p2 <- 0.0001
+clump_kb <- 500
+clump_r2 <- 0.5
+byCHR <- TRUE
+pthreshold <- Example_pthresoldfile$Threshold
+ld_prunning <- TRUE
+highLD_regions <- highLD_hg19
+window_size <- 50
+step_size <- 5
+r2_threshold <- 0.02
+nPC <- 6 # We can incorporate PCs into our PRS analysis to account for population stratification.
+pheno_type <- "binary"
+effectsize <- "BETA"
+ldclump <- FALSE
+PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
+#> Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp0uzDD3/temp_libpathfc4116ff9158', reason 'Directory not empty'
+#> An error occurred: attempt to set 'colnames' on an object with less than two dimensions
+#> Error in ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, : object 'pheno.prs' not found
+
+## This table shows 10 samples with phenotype, covariates and a PRS column.
+PRS <- PRSresult$PRS
+#> Error: object 'PRSresult' not found
+PRS[1:10, ]
+#> Error: object 'PRS' not found
+## The best threshold
+BestPvalue <- PRSresult$BestP$Threshold
+#> Error: object 'PRSresult' not found
+BestPvalue
+#> Error: object 'BestPvalue' not found
+```
+
+**(D) Perform regression to test the association of PRS and sex.**
+
+**(E) Perform the regression using different thresholds of PRS to check for consistent evidence of sex difference.**
+
+In this regression, we could include genetic PCs and other covariates as well.
+
+**PRS ~ Sex + PCs + Other Covariates.**
+
+For this test, we will use `SexRegress()` function.
+
+# About SexRegress()
+
+
+``` r
+help(SexRegress, package = GXwasR)
 #> ℹ Rendering development documentation for "SexRegress"
 ```
 
-### Function 19
+# Running SexRegress()
 
 ``` r
-help(FilterPlinkSample, package = "GXwasR")
-#> ℹ Rendering development documentation for "FilterPlinkSample"
+# Running
+# First, we need to make fdata object.
+library(GXwasR)
+famfile <- read.table(paste0(ResultDir, "/NewtargetData.fam"))[, c(1, 2, 5)]
+colnames(famfile) <- c("FID", "IID", "Sex")
+prefdata <- merge(famfile, PRS, by = c("IID", "FID"))
+#> Error: object 'PRS' not found
+
+fdata <- prefdata[, c(13, 3:12)]
+#> Error: object 'prefdata' not found
+fdata$Sex <- as.factor(as.character(fdata$Sex))
+#> Error: object 'fdata' not found
+response_index <- 1
+regressor_index <- 2
+
+x <- SexRegress(fdata, regressor_index, response_index)
+#> Error: object 'fdata' not found
+x
+#> $MonomorSNPs
+#> NULL
+#> 
+#> $DiffMissSNPs
+#> NULL
 ```
 
-### Function 20
+In this case, the association between PRS and sex seems insignificant. Users can check with different thresholds of PRS as mentioned in step (D).
+
+## Sex-stratified PRS
+
+The steps are:
+
+**(A) Generate separate male and female discovery data by stratified GWAS.**
+
+We will use SumstatMale and SumstatFemale for these.
+
+**(B) Prepare separate male and female target datasets.**
+
+For this, we will utilize `GetMFPlink()`.
+
 
 ``` r
-help(ComputeGeneticPC, package = "GXwasR")
-#> ℹ Rendering development documentation for "ComputeGeneticPC"
+library(GXwasR)
+## We will use NewtargetData as input for this function.
+finput <- "NewtargetData"
+foutput <- "maletarget"
+sex <- "males"
+x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, sex = sex, xplink = FALSE, autoplink = FALSE)
+#> ✔ Output plink files, prefixed as maletarget, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3
+
+foutput <- "femaletarget"
+sex <- "females"
+x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, sex = sex, xplink = FALSE, autoplink = FALSE)
+#> ✔ Output plink files, prefixed as femaletarget, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp0uzDD3
 ```
 
-### Function 21
+**(C) Perform LD clumping separately in both discovery data.**
+
+**(D) Compute PRS at a variety of p-value thresholds, using male-only discovery data to compute scores for female-only target data and vice versa.**
+
+**(E) Select best threshold based on R-square (for quantitative trait) or MacFadden R-square (for binary trait) using generalized linear model with covariates, such as genetic PCs.**
+
+We will utilize the `ComputePRS()` to perform the steps (C), (D) and (E).
+
 
 ``` r
-help(ClumpLD, package = "GXwasR")
-#> ℹ Rendering development documentation for "ClumpLD"
+# Running
+# Male and female target datasets need to be copied from ResultDir to DataDir.
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "target")
+invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
 ```
 
-### Function 22
+# Computing PRS for female-only target data using male-only discovery data
+
 
 ``` r
-help(GetMFPlink, package = "GXwasR")
-#> ℹ Rendering development documentation for "GetMFPlink"
+# DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "femaletarget"
+# Filtered discovery data.
+# Need to maintain the first three coulmn of this dataset as SNP ID, Effect Allele and Effect Size
+summarystat <- Summary_Stat_Ex1[, c(2, 4, 7, 1, 3, 12)]
+## Making phenofile only with females
+famfile <- read.table(paste0(ResultDir, "/femaletarget.fam"))[, c(1, 2, 5)]
+colnames(famfile) <- c("FID", "IID", "Sex")
+famfileF <- famfile[famfile$Sex == 2, ]
+phenofile <- merge(famfileF, Example_phenofile, by = c("FID", "IID")) # Cannot be NULL, the interested phenotype column should be labeled as "Pheno1".
+## Added "AGE" and "testcovar" as covariates.
+## Making cpvarfile with females
+covarfile <- merge(famfileF, Example_covarfile, by = c("FID", "IID"))
+clump_p1 <- 0.0001
+clump_p2 <- 0.0001
+clump_kb <- 500
+clump_r2 <- 0.5
+byCHR <- TRUE
+pthreshold <- Example_pthresoldfile$Threshold
+ld_prunning <- TRUE
+highLD_regions <- highLD_hg19
+window_size <- 50
+step_size <- 5
+r2_threshold <- 0.02
+nPC <- 6 # We can incorporate PCs into our PRS analysis to account for population stratification.
+pheno_type <- "binary"
+ldclump <- FALSE
+effectsize <- "BETA"
+PRSresultFemale <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
+#> Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp0uzDD3/temp_libpathfc4116ff9158', reason 'Directory not empty'
+#> An error occurred: attempt to set 'colnames' on an object with less than two dimensions
+#> Error in ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, : object 'pheno.prs' not found
+
+## This table shows 10 samples with phenotype, covariates and a PRS column.
+PRSfemale <- PRSresultFemale$PRS
+#> Error: object 'PRSresultFemale' not found
+PRSfemale[1:10, ]
+#> Error: object 'PRSfemale' not found
+## The best threshold
+BestPvalue <- PRSresultFemale$BestP$Threshold
+#> Error: object 'PRSresultFemale' not found
+BestPvalue
+#> Error: object 'BestPvalue' not found
 ```
 
-### Function 23
+# Computing PRS for male-only target data using female-only discovery data
 
 ``` r
-help(plinkVCF, package = "GXwasR")
-#> ℹ Rendering development documentation for "plinkVCF"
+library(GXwasR)
+data(Summary_Stat_Ex2)
+# DataDir <- system.file("extdata", package = "GXwasR")
+ResultDir <- tempdir()
+finput <- "maletarget"
+# Filtered discovery data.
+# Need to maintain the first three coulmn of this dataset as SNP ID, Effect Allele and Effect Size
+summarystat <- Summary_Stat_Ex2[, c(2, 4, 7, 1, 3, 12)]
+## Making phenofile only with females
+famfile <- read.table(paste0(ResultDir, "/maletarget.fam"))[, c(1, 2, 5)]
+colnames(famfile) <- c("FID", "IID", "Sex")
+famfileM <- famfile[famfile$Sex == 1, ]
+phenofile <- merge(famfileM, Example_phenofile, by = c("FID", "IID")) # Cannot be NULL, the interested phenotype column should be labeled as "Pheno1".
+## Added "AGE" and "testcovar" as covariates.
+## Making cpvarfile with females
+covarfile <- merge(famfileM, Example_covarfile, by = c("FID", "IID"))
+clump_p1 <- 0.0001
+clump_p2 <- 0.0001
+clump_kb <- 500
+clump_r2 <- 0.5
+byCHR <- TRUE
+pthreshold <- Example_pthresoldfile$Threshold
+ld_prunning <- TRUE
+highLD_regions <- highLD_hg19
+window_size <- 50
+step_size <- 5
+r2_threshold <- 0.02
+nPC <- 6 # We can incorporate PCs into our PRS analysis to account for population stratification.
+pheno_type <- "binary"
+ldclump <- FALSE
+effectsize <- "BETA"
+PRSresultmale <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1 = clump_p1, clump_p2 = clump_p2, clump_r2 = clump_r2, clump_kb = clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
+#> Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp0uzDD3/temp_libpathfc4116ff9158', reason 'Directory not empty'
+#> An error occurred: attempt to set 'colnames' on an object with less than two dimensions
+#> Error in ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, : object 'pheno.prs' not found
+
+## This table shows 10 samples with phenotype, covariates and a PRS column.
+PRSmale <- PRSresultmale$PRS
+#> Error: object 'PRSresultmale' not found
+PRSmale[1:10, ]
+#> Error: object 'PRSmale' not found
+## The best threshold
+BestPvalue <- PRSresultmale$BestP$Threshold
+#> Error: object 'PRSresultmale' not found
+BestPvalue
+#> Error: object 'BestPvalue' not found
 ```
 
-### Function 24
+**(F) Perform regression to test the association of PRS for a trait in one sex and case status in other sex.**
+
+**PRS ~ trait + PCs + other covariates**
+
+Let's check the association between PRS and trait in female.
 
 ``` r
-help(MergeRegion, package = "GXwasR")
-#> ℹ Rendering development documentation for "MergeRegion"
+# Running
+# First, we need to make fdata object.
+famfile <- read.table(paste0(ResultDir, "/femaletarget.fam"))[, c(1, 2, 6)]
+colnames(famfile) <- c("FID", "IID", "Trait")
+prefdata <- merge(famfile, PRS, by = c("IID", "FID"))
+#> Error: object 'PRS' not found
+
+fdata <- prefdata[, c(13, 3:12)]
+#> Error: object 'prefdata' not found
+fdata$Sex <- as.factor(as.character(fdata$Trait))
+#> Error: object 'fdata' not found
+response_index <- 1
+regressor_index <- 2
+
+x <- SexRegress(fdata, regressor_index, response_index)
+#> Error: object 'fdata' not found
+x
+#> NULL
+# In this case, there is a significant association between PRS and trait value.
 ```
 
-### Function 25
-
-``` r
-help(FilterAllele, package = "GXwasR")
-#> ℹ Rendering development documentation for "FilterAllele"
-```
-
-### Function 26
-
-``` r
-help(PlinkSummary, package = "GXwasR")
-#> ℹ Rendering development documentation for "PlinkSummary"
-```
-
-### Function 27
-
-``` r
-help(FilterSNP, package = "GXwasR")
-#> ℹ Rendering development documentation for "FilterSNP"
-```
-
-### Function 28
-
-``` r
-help(DummyCovar, package = "GXwasR")
-#> ℹ Rendering development documentation for "DummyCovar"
-```
-### Function 29
-
-``` r
-help(GXWASmiami, package = "GXwasR")
-#> ℹ Rendering development documentation for "GXWASmiami"
-```
-### Function 30
-
-``` r
-help(Download_reference, package = "GXwasR")
-#> Error in `dev_help()`:
-#> ! Can't find development topic `Download_reference`.
-```
-
-### Function 31
-
-``` r
-help(SumstatGenCorr, package = "GXwasR")
-#> ℹ Rendering development documentation for "SumstatGenCorr"
-```
-
-### Function 32
-
-``` r
-help(LDPrune, package = "GXwasR")
-#> ℹ Rendering development documentation for "LDPrune"
-```
-
-### Function 33
-
-``` r
-help(executePlinkMAF, package = "GXwasR")
-#> ℹ Rendering development documentation for "executePlinkMAF"
-```
-
-### Function 34
-
-``` r
-help(ComputeLD, package = "GXwasR")
-#> ℹ Rendering development documentation for "ComputeLD"
-```
-
-# Tutorials
-
-Please follow these tutorials to know more about the functionality of the package GXwasR.
-
-Tutorial for performing post-imputation QC followed by sex-aware association tests: (vignette:Use of GXwasR)
-
-* Tutorial for performing pre-imputation QC using GXwasR: [https://boseb.github.io/GXwasR/articles/preimputationQC.html](https://boseb.github.io/GXwasR/articles/preimputationQC.html)
-* Tutorial for performing post-imputation QC using GXwasR: [https://boseb.github.io/Processing_1000Genome/tutorial.html](https://boseb.github.io/Processing_1000Genome/tutorial.html)
-* Tutorial for ancestry estimation: [https://boseb.github.io/GXwasR/articles/decoding_ancestry.html](https://boseb.github.io/GXwasR/articles/decoding_ancestry.html)
-
-# Citing `GXwasR`
+## Citing `GXwasR`
 
 We hope that *[GXwasR](https://bioconductor.org/packages/3.21/GXwasR)* will be useful for your research. Please use the following information to cite the package and the overall approach. Thank you!
 
@@ -386,6 +529,8 @@ The *[GXwasR](https://bioconductor.org/packages/3.21/GXwasR)* package (Bose, Blo
 * *[rmarkdown](https://CRAN.R-project.org/package=rmarkdown)* (Allaire, Xie, Dervieux et al., 2024)
 * *[sessioninfo](https://CRAN.R-project.org/package=sessioninfo)* (Wickham, Chang, Flight et al., 2025)
 * *[testthat](https://CRAN.R-project.org/package=testthat)* (Wickham, 2011)
+
+This package was developed using *[biocthis](https://bioconductor.org/packages/3.21/biocthis)*.
 
 `R` session information.
 
@@ -583,7 +728,7 @@ The *[GXwasR](https://bioconductor.org/packages/3.21/GXwasR)* package (Bose, Blo
 #>    XVector                0.48.0     2025-04-15 [2] Bioconduc~
 #>    yaml                   2.3.10     2024-07-26 [2] CRAN (R 4.5.0)
 #> 
-#>  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp0uzDD3/temp_libpathfc41b4144d
+#>  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp0uzDD3/temp_libpathfc4164c8f551
 #>  [2] /Users/mayerdav/Library/R/arm64/4.5/library
 #>  [3] /opt/homebrew/lib/R/4.5/site-library
 #>  [4] /opt/homebrew/Cellar/r/4.5.1/lib/R/library
@@ -593,6 +738,8 @@ The *[GXwasR](https://bioconductor.org/packages/3.21/GXwasR)* package (Bose, Blo
 #> 
 #> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ```
+
+
 
 # Bibliography
 
