@@ -1,0 +1,342 @@
+---
+title: "GXwasR Overview"
+author: 
+  - name: "Banabithi Bose"
+    affiliation:
+    - Northwestern University
+    - University of Colorado Anschutz Medical Campus
+    email: banabithi.bose@gmail.com
+output: 
+  BiocStyle::html_document:
+    self_contained: false
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    code_folding: show
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('GXwasR')`"
+vignette: >
+  %\VignetteIndexEntry{GXwasR_overview}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+    fig.path = "./",
+    fig.width = 8, fig.height = 6,
+    collapse = TRUE,
+    comment = "#>",
+    crop = NULL ## Related to https://stat.ethz.ch/pipermail/bioc-devel/2020-April/016656.html
+)
+```
+
+```{r vignetteSetup, echo=FALSE, message=FALSE, warning = FALSE}
+## Bib setup
+library("RefManageR")
+
+## Write bibliography information
+bib <- c(
+    R = citation(),
+    BiocStyle = citation("BiocStyle")[1],
+    knitr = citation("knitr")[1],
+    RefManageR = citation("RefManageR")[1],
+    rmarkdown = citation("rmarkdown")[1],
+    sessioninfo = citation("sessioninfo")[1],
+    testthat = citation("testthat")[1],
+    GXwasR = citation("GXwasR")[1]
+)
+```
+
+# <a id = "GXwasR Description"></a> GXwasR Description: 
+
+This package implements various statistical genetics models for Genome-Wide Association (GWA) and X-Chromosome Wide Association (XWA) analyses in a sex-combined or sex-stratified way considering X-Chromosome Inactivation (XCI) pattern. In addition to association analysis, the package also enables testing for sex differences in genetic effects, including the implementation of specific models and applying best practices for additional quality control (QC) of genetic data required for these tests. The package includes thirty different functions in six different categories (A-F) which enable a comprehensive pipeline for sex-aware genetic association analysis of common variants with unrelated individuals.
+
+# Basics
+
+## Install `GXwasR`
+
+`R` is an open-source statistical environment which can be easily modified to enhance its functionality via packages. `r BiocStyle::Biocpkg("GXwasR")` is a `R` package available via the [Bioconductor](http://bioconductor.org) repository for packages. `R` can be installed on any operating system from [CRAN](https://cran.r-project.org/) after which you can install `r BiocStyle::Biocpkg("GXwasR")` by using the following commands in your `R` session:
+
+```{r "install", eval = FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+}
+
+BiocManager::install("GXwasR")
+
+## Check that you have a valid Bioconductor installation
+BiocManager::valid()
+```
+
+# Functions Overview
+
+This document lists all the functions in GXwasR package.It offers thirty-three distinct functions, which are organized into six main categories: A) Pre-imputation QC, B) Post-imputation QC, C) Sex-combined and sex-stratified GWAS with specialized analysis for XWAS, D) Sex-differential test, E) High level analysis and a range of F) Utility Functions. These categories and their respective functions are detailed in the below Table.
+
+## Table of Functions
+| Function        | Description                                                                                                     | Category                             |
+|-----------------|-----------------------------------------------------------------------------------------------------------------|--------------------------------------|
+| QCsnp()         | Performs quality control for SNPs in PLINK binary files.                                                        | Pre-imputation QC, Post-imputation QC |
+| QCsample()      | Identifies outlier individuals based on heterozygosity and missing genotype rates.                              | Pre-imputation QC, Post-imputation QC |
+| AncestryCheck() | Evaluates samples' ancestry and flags outliers using PCA.                                                       | Pre-imputation QC                     |
+| SexCheck()      | Compares sex assignments with predictions from X chromosome inbreeding coefficients.                            | Pre-imputation QC                     |
+| Xhwe()          | Filters X-chromosome variants violating Hardy-Weinberg Equilibrium in females.                                  | Post-imputation QC                    |
+| MAFdiffSexControl() | Tests for significant MAF differences between sexes in control samples.                                     | Post-imputation QC                    |
+| FilterRegion()  | Filters out specific chromosomal regions from input PLINK files.                                                | Post-imputation QC, Utility Functions |
+| GXwas()         | Runs GWAS models in autosomes with XWAS models like "FMcomb01", "FMcomb02", "FMstratified" for binary and quantitative traits, and "GWAScxci" for binary traits. Focuses on additive SNP effects, multi-collinearity issues, and includes multiple covariates and their interactions. | Sex-combined and sex-stratified GWAS with XWAS |
+| PvalComb()      | Combines p-values from separate GWAS using various statistical methods and corrects summary p-values.           | Sex-combined and sex-stratified GWAS with XWAS |
+| SexDiff()       | Evaluates sex differences in genetic effect size for each SNP.                                                  | Sex-differential test                 |
+| SexDiffZscore() | Presumably analyzes sex differences using Z-score methodology, comparing genetic effect sizes between males and females. | Sex-differential test                 |
+| DiffZeroOne()   | Assesses Z-scores for deviation from one and zero for statistics like genetic correlation.                      | Sex-differential test                 |
+| TestXGene()     | Performs gene-based association tests using GWAS/XWAS summary statistics.                                       | High level analysis                   |
+| MetaGXwas()     | Combines summary-level GWAS results using fixed-effect and random-effect models.                                | High level analysis                   |
+| ComputePRS()    | Calculates polygenic risk scores from GWAS summary statistics.                                                  | High level analysis                   |
+| GeneticCorrBT() | Computes genetic correlation between to traits.                      | High level analysis                   |
+| EstimateHerit() | Computes SNP heritability using GREML or LDSC models.                                                          | High level analysis                   |
+| SexRegress()    | Not previously described. Presumably involves regression analyses specific to sex-stratified data.             | High level analysis                   |
+| FilterPlinkSample() | Prepares PLINK binary files with desired samples based on specified criteria.                                 | Utility Functions                     |
+| ComputeGeneticPC() | Computes principal components from a genetic relationship matrix for population stratification correction.    | Utility Functions                     |
+| ClumpLD()       | Performs linkage disequilibrium clumping of SNPs.                                                              | Utility Functions                     |
+| GetMFPlink()    | Prepares separate male and female PLINK binary files from combined files.                                      | Utility Functions                     |
+| plinkVCF()      | Converts VCF files to plink binary formats and vice versa, including creation of dummy FAM files.              | Utility Functions                     |
+| MergeRegion()   | Combines two genotype datasets based on common or all SNPs.                                                    | Utility Functions                     |
+| FilterAllele()  | Filters out multi-allelic variants from the genetic dataset, essential for maintaining dataset integrity and simplifying genetic analyses. | Utility Functions                     |
+| PlinkSummary()  | Provides a summary of genotype datasets in plink format.                                                       | Utility Functions                     |
+| FilterSNP()     | Filters out specific SNPs from the dataset based on user-defined criteria.                                     | Utility Functions                     |
+| DummyCovar()    | Recodes a categorical covariate into binary dummy variables for statistical analysis in GXwasR.                | Utility Functions                     |
+| GXWASmiami()    | Generates Miami plots for GWAS and XWAS.                
+               | Utility Functions                     |
+| Download_reference()    | Download Hapmap phase 3 and 1000 Genome phase 3 Data.                
+               | Utility Functions                     |     
+| SumstatGenCorr()    | Genetic Correlation Calculation from GWAS Summary Statistics.                
+               | High level analysis                     |     
+| LDPrune()    | Performs LD pruning on SNP data.                
+               | Utility Functions                     | 
+| executePlinkMAF()    | Calculate minor allele frequencies.                
+               | Utility Functions                     |    
+| ComputeLD()    | Calculate LD matrix.                
+               | Utility Functions                     | 
+```{r}
+library(GXwasR)
+library(printr)
+library(rmarkdown)
+```
+
+### Function 1
+```{r}
+help(QCsnp, package = "GXwasR")
+```
+
+### Function 2
+```{r}
+help(QCsample, package = "GXwasR")
+```
+
+### Function 3
+```{r}
+help(AncestryCheck, package = "GXwasR")
+```
+
+### Function 4
+```{r}
+help(SexCheck, package = "GXwasR")
+```
+
+### Function 5
+```{r}
+help(Xhwe, package = "GXwasR")
+```
+
+### Function 6
+```{r}
+help(MAFdiffSexControl, package = "GXwasR")
+```
+
+### Function 7
+```{r}
+help(FilterRegion, package = "GXwasR")
+```
+
+### Function 8
+```{r}
+help(GXwas, package = "GXwasR")
+```
+
+### Function 9
+```{r}
+help(PvalComb, package = "GXwasR")
+```
+
+### Function 10
+```{r}
+help(SexDiff, package = "GXwasR")
+```
+
+### Function 11
+```{r}
+help(SexDiffZscore, package = "GXwasR")
+```
+
+### Function 12
+```{r}
+help(DiffZeroOne, package = "GXwasR")
+```
+
+### Function 13
+```{r}
+help(TestXGene, package = "GXwasR")
+```
+
+### Function 14
+```{r}
+help(MetaGXwas, package = "GXwasR")
+```
+
+### Function 15
+```{r}
+help(ComputePRS, package = "GXwasR")
+```
+
+### Function 16
+```{r}
+help(ComputeCorrBT, package = "GXwasR")
+```
+
+### Function 17
+```{r}
+help(EstimateHerit, package = "GXwasR")
+```
+
+### Function 18
+```{r}
+help(SexRegress, package = "GXwasR")
+```
+
+### Function 19
+```{r}
+help(FilterPlinkSample, package = "GXwasR")
+```
+
+### Function 20
+```{r}
+help(ComputeGeneticPC, package = "GXwasR")
+```
+
+### Function 21
+```{r}
+help(ClumpLD, package = "GXwasR")
+```
+
+### Function 22
+```{r}
+help(GetMFPlink, package = "GXwasR")
+```
+
+### Function 23
+```{r}
+help(plinkVCF, package = "GXwasR")
+```
+
+### Function 24
+```{r}
+help(MergeRegion, package = "GXwasR")
+```
+
+### Function 25
+```{r}
+help(FilterAllele, package = "GXwasR")
+```
+
+### Function 26
+```{r}
+help(PlinkSummary, package = "GXwasR")
+```
+
+### Function 27
+```{r}
+help(FilterSNP, package = "GXwasR")
+```
+
+### Function 28
+```{r}
+help(DummyCovar, package = "GXwasR")
+```
+### Function 29
+```{r}
+help(GXWASmiami, package = "GXwasR")
+```
+### Function 30
+```{r}
+help(Download_reference, package = "GXwasR")
+```
+
+### Function 31
+```{r}
+help(SumstatGenCorr, package = "GXwasR")
+```
+
+### Function 32
+```{r}
+help(LDPrune, package = "GXwasR")
+```
+
+### Function 33
+```{r}
+help(executePlinkMAF, package = "GXwasR")
+```
+
+### Function 34
+```{r}
+help(ComputeLD, package = "GXwasR")
+```
+
+# Tutorials
+
+Please follow these tutorials to know more about the functionality of the package GXwasR.
+
+Tutorial for performing post-imputation QC followed by sex-aware association tests: (vignette:Use of GXwasR)
+
+* Tutorial for performing pre-imputation QC using GXwasR: [https://boseb.github.io/GXwasR/articles/preimputationQC.html](https://boseb.github.io/GXwasR/articles/preimputationQC.html)
+* Tutorial for performing post-imputation QC using GXwasR: [https://boseb.github.io/Processing_1000Genome/tutorial.html](https://boseb.github.io/Processing_1000Genome/tutorial.html)
+* Tutorial for ancestry estimation: [https://boseb.github.io/GXwasR/articles/decoding_ancestry.html](https://boseb.github.io/GXwasR/articles/decoding_ancestry.html)
+
+# Citing `GXwasR`
+
+We hope that `r BiocStyle::Biocpkg("GXwasR")` will be useful for your research. Please use the following information to cite the package and the overall approach. Thank you!
+
+```{r "citation"}
+## Citation info
+citation("GXwasR")
+```
+
+# Reproducibility
+
+The `r BiocStyle::Biocpkg("GXwasR")` package `r Citep(bib[["GXwasR"]])` was made possible thanks to:
+
+* R `r Citep(bib[["R"]])`
+* `r BiocStyle::Biocpkg("BiocStyle")` `r Citep(bib[["BiocStyle"]])`
+* `r BiocStyle::CRANpkg("knitr")` `r Citep(bib[["knitr"]])`
+* `r BiocStyle::CRANpkg("RefManageR")` `r Citep(bib[["RefManageR"]])`
+* `r BiocStyle::CRANpkg("rmarkdown")` `r Citep(bib[["rmarkdown"]])`
+* `r BiocStyle::CRANpkg("sessioninfo")` `r Citep(bib[["sessioninfo"]])`
+* `r BiocStyle::CRANpkg("testthat")` `r Citep(bib[["testthat"]])`
+
+`R` session information.
+
+```{r reproduce3, echo=FALSE}
+## Session info
+library("sessioninfo")
+options(width = 120)
+session_info()
+```
+
+# Bibliography
+
+This vignette was generated using `r BiocStyle::Biocpkg("BiocStyle")` `r Citep(bib[["BiocStyle"]])`
+with `r BiocStyle::CRANpkg("knitr")` `r Citep(bib[["knitr"]])` and `r BiocStyle::CRANpkg("rmarkdown")` `r Citep(bib[["rmarkdown"]])` running behind the scenes.
+
+Citations made with `r BiocStyle::CRANpkg("RefManageR")` `r Citep(bib[["RefManageR"]])`.
+
+```{r vignetteBiblio, results = "asis", echo = FALSE, warning = FALSE, message = FALSE}
+## Print bibliography
+RefManageR::PrintBibliography(bib, .opts = list(hyperlink = "to.doc", style = "html"))
+```

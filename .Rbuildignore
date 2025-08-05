@@ -20,3 +20,8 @@
 ^Meta$
 ^vignettes/decoding_ancestry\.Rmd\.orig$
 ^vignettes/preimputationQC\.Rmd\.orig$
+^vignettes/gwas_models\.Rmd\.orig$
+^vignettes/GXwasR_PRS\.Rmd\.orig$
+^vignettes/GXwasR_overview\.Rmd\.orig$
+^vignettes/meta_analysis\.Rmd\.orig$
+^vignettes/postimputationQC\.Rmd\.orig$
