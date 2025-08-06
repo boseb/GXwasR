@@ -3,10 +3,11 @@ pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   decoding_ancestry: decoding_ancestry.html
+  genetic_correlation_sumstat: genetic_correlation_sumstat.html
   gwas_models: gwas_models.html
   GXwasR_overview: GXwasR_overview.html
   GXwasR_PRS: GXwasR_PRS.html
   meta_analysis: meta_analysis.html
   postimputationQC: postimputationQC.html
   preimputationQC: preimputationQC.html
-last_built: 2025-08-05T17:48Z
+last_built: 2025-08-06T02:22Z

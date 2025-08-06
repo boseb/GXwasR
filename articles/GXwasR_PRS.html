@@ -45,6 +45,7 @@
     <li><a class="dropdown-item" href="../articles/GXwasR_PRS.html">Computing Polygenic Risk Score using GXwasR</a></li>
     <li><a class="dropdown-item" href="../articles/decoding_ancestry.html">Decoding Ancestry: A Guide to Using GXwasR for Genetic Ancestry Estimation</a></li>
     <li><a class="dropdown-item" href="../articles/meta_analysis.html">GWAS Meta analysis Using GXwasR</a></li>
+    <li><a class="dropdown-item" href="../articles/genetic_correlation_sumstat.html">Genetic Correlation using GWAS Summary Statistics</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -88,13 +89,29 @@ utilizing GXwasR R package.</strong></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Call some libraries (Users can ignore this.)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/printr/" class="external-link">printr</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Registered S3 method overwritten by 'printr':</span></span>
+<span><span class="co">#&gt;   method                from     </span></span>
+<span><span class="co">#&gt;   knit_print.data.frame rmarkdown</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rstudio/rmarkdown" class="external-link">rmarkdown</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="call-gxwasr-library-and-load-example-datasets">Call GXwasR library and load example datasets:<a class="anchor" aria-label="anchor" href="#call-gxwasr-library-and-load-example-datasets"></a>
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Call GXwasR library</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/boseb/GXwasR/" class="external-link">GXwasR</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/boseb/GXwasR/" class="external-link">GXwasR</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; GXwasR: Genome-wide and x-chromosome wide association analyses applying best practices of quality control over genetic data</span></span>
+<span><span class="co">#&gt; Version 0.99.0 () installed</span></span>
+<span><span class="co">#&gt; Author: c(</span></span>
+<span><span class="co">#&gt;     person(given = "Banabithi",</span></span>
+<span><span class="co">#&gt;            family = "Bose",</span></span>
+<span><span class="co">#&gt;            role = c("cre", "aut"),</span></span>
+<span><span class="co">#&gt;            email = "banabithi.bose@gmail.com",</span></span>
+<span><span class="co">#&gt;            comment = c(ORCID = "0000-0003-0842-8768"))</span></span>
+<span><span class="co">#&gt;            )</span></span>
+<span><span class="co">#&gt; Maintainer: Banabithi Bose &lt;banabithi.bose@gmail.com&gt;</span></span>
+<span><span class="co">#&gt; Tutorial: https://github.com</span></span>
+<span><span class="co">#&gt; Use citation("GXwasR") to know how to cite this work.</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="computing-standard-prs-using-computeprs">Computing standard PRS using ComputePRS():<a class="anchor" aria-label="anchor" href="#computing-standard-prs-using-computeprs"></a>
@@ -104,7 +121,217 @@ utilizing GXwasR R package.</strong></p>
 </h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">ComputePRS</span>, package <span class="op">=</span> <span class="va">GXwasR</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "ComputePRS"</span></span></code></pre></div>
+<span><span class="co">#&gt; ComputePRS: Computing polygenic risk score (PRS)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Description:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;      This function calculates the polygenic risk score, which is the</span></span>
+<span><span class="co">#&gt;      total of allele counts (genotypes) weighted by estimated effect</span></span>
+<span><span class="co">#&gt;      sizes from genome-wide association studies. It uses C+T filtering</span></span>
+<span><span class="co">#&gt;      techniques. The users could perform clumping procedure</span></span>
+<span><span class="co">#&gt;      choromosome-wise and genome-wide. Also, the function offers the</span></span>
+<span><span class="co">#&gt;      choice of including several genetic principal components along</span></span>
+<span><span class="co">#&gt;      with other covariates. Using this function, users have the freedom</span></span>
+<span><span class="co">#&gt;      to experiment with various clumping and thresholding arrangements</span></span>
+<span><span class="co">#&gt;      to test a wide range of various parameter values.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Usage:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;      ComputePRS(</span></span>
+<span><span class="co">#&gt;        DataDir,</span></span>
+<span><span class="co">#&gt;        ResultDir = tempdir(),</span></span>
+<span><span class="co">#&gt;        finput,</span></span>
+<span><span class="co">#&gt;        summarystat,</span></span>
+<span><span class="co">#&gt;        phenofile,</span></span>
+<span><span class="co">#&gt;        covarfile = NULL,</span></span>
+<span><span class="co">#&gt;        effectsize = c("BETA", "OR"),</span></span>
+<span><span class="co">#&gt;        ldclump = FALSE,</span></span>
+<span><span class="co">#&gt;        LDreference,</span></span>
+<span><span class="co">#&gt;        clump_p1,</span></span>
+<span><span class="co">#&gt;        clump_p2,</span></span>
+<span><span class="co">#&gt;        clump_r2,</span></span>
+<span><span class="co">#&gt;        clump_kb,</span></span>
+<span><span class="co">#&gt;        byCHR = TRUE,</span></span>
+<span><span class="co">#&gt;        pthreshold = c(0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5),</span></span>
+<span><span class="co">#&gt;        highLD_regions,</span></span>
+<span><span class="co">#&gt;        ld_prunning = FALSE,</span></span>
+<span><span class="co">#&gt;        window_size = 50,</span></span>
+<span><span class="co">#&gt;        step_size = 5,</span></span>
+<span><span class="co">#&gt;        r2_threshold = 0.02,</span></span>
+<span><span class="co">#&gt;        nPC = 6,</span></span>
+<span><span class="co">#&gt;        pheno_type = "binary"</span></span>
+<span><span class="co">#&gt;      )</span></span>
+<span><span class="co">#&gt;      </span></span>
+<span><span class="co">#&gt; Arguments:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  DataDir: A character string for the file path of the all the input</span></span>
+<span><span class="co">#&gt;           files.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ResultDir: A character string for the file path where all output files</span></span>
+<span><span class="co">#&gt;           will be stored. The default is tempdir().</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   finput: Character string, specifying the prefix of the input PLINK</span></span>
+<span><span class="co">#&gt;           binary files for the genotype data i.e., the target data</span></span>
+<span><span class="co">#&gt;           based on which clumping procedure will be performed. This</span></span>
+<span><span class="co">#&gt;           file needs to be in DataDir. If your target data are small</span></span>
+<span><span class="co">#&gt;           (e.g. N &lt; 500) then you can use the 1000 Genomes Project</span></span>
+<span><span class="co">#&gt;           samples. Make sure to use the population that most closely</span></span>
+<span><span class="co">#&gt;           reflects represents the base sample.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; summarystat: A dataframe object with GWAS summary statistics.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;           The mandatory column headers in this dataframe are:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;             • 'CHR'(Chromosome code)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;             • 'BP'(Basepair position)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;             • 'A1' (effect allele)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;             • 'SNP' (i.e., SNP identifier)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;             • 'BETA' or 'OR' (i.e., effect-size or logarithm of odds</span></span>
+<span><span class="co">#&gt;               ratio)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;             • 'P' (i.e., p-values).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;           Special Notes: The first three columns needed to be 'SNP',</span></span>
+<span><span class="co">#&gt;           'A1' and 'BETA' or 'OR'.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; phenofile: A character string, specifying the name of the mandatory</span></span>
+<span><span class="co">#&gt;           phenotype file. This is a plain text file with no header</span></span>
+<span><span class="co">#&gt;           line; columns family ID, individual ID and phenotype columns.</span></span>
+<span><span class="co">#&gt;           For binary trait, the phenotypic value should be coded as 0</span></span>
+<span><span class="co">#&gt;           or 1, then it will be recognized as a case-control study (0</span></span>
+<span><span class="co">#&gt;           for controls and 1 for cases). Missing value should be</span></span>
+<span><span class="co">#&gt;           represented by "-9" or "NA". The interested phenotype column</span></span>
+<span><span class="co">#&gt;           should be labeled as "Pheno1". This file needs to be in</span></span>
+<span><span class="co">#&gt;           'DataDir'.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; covarfile: A character string, specifying the name of the covariate</span></span>
+<span><span class="co">#&gt;           file which is a plain .text file with no header line; columns</span></span>
+<span><span class="co">#&gt;           are family ID, individual ID and the covariates. The default</span></span>
+<span><span class="co">#&gt;           is 'NULL'. This file needs to be in 'DataDir'.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; effectsize: Boolean value, 'BETA' or 'OR', specifying the type of the</span></span>
+<span><span class="co">#&gt;           GWAS effectsize. The default is 'BETA'.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  ldclump: Boolean value, 'TRUE' or 'FALSE', specifying whether to</span></span>
+<span><span class="co">#&gt;           perform clumping or not.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; LDreference: A character string, specifying the prefix of the PLINK</span></span>
+<span><span class="co">#&gt;           files of the population reference panel of the same ancestry,</span></span>
+<span><span class="co">#&gt;           and ideally the one that was used for imputing your target</span></span>
+<span><span class="co">#&gt;           dataset. These files should be in 'DataDir'.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; clump_p1: Numeric value, specifying the significance threshold for</span></span>
+<span><span class="co">#&gt;           index SNPs if 'ldclump' was set to be 'TRUE'. The default is</span></span>
+<span><span class="co">#&gt;           0.0001.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; clump_p2: Numeric value, specifying the secondary significance</span></span>
+<span><span class="co">#&gt;           threshold for clumped SNPs if 'ldclump' was set to be 'TRUE'.</span></span>
+<span><span class="co">#&gt;           The default is 0.01</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; clump_r2: Numeric value, specifying the linkage disequilibrium (LD)</span></span>
+<span><span class="co">#&gt;           threshold for clumping if 'ldclump' was set to be 'TRUE'. The</span></span>
+<span><span class="co">#&gt;           default is 0.50.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; clump_kb: Integer value, specifying the physical distance threshold in</span></span>
+<span><span class="co">#&gt;           base-pair for clumping if 'ldclump' was set to be 'TRUE'. The</span></span>
+<span><span class="co">#&gt;           default is 250.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;    byCHR: Boolean value, 'TRUE' or 'FALSE', specifying chromosome-wise</span></span>
+<span><span class="co">#&gt;           clumping procedure if 'ldclump' was set to be 'TRUE'. The</span></span>
+<span><span class="co">#&gt;           default is 'TRUE'</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; pthreshold: Numeric vector, containing several p value thresholds to</span></span>
+<span><span class="co">#&gt;           maximize predictive ability of the derived polygenic scores.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; highLD_regions: Character string, specifying the .txt file name with</span></span>
+<span><span class="co">#&gt;           known genomic regions with high LD. The default is 'NULL'.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ld_prunning: Boolean value, 'TRUE' or 'FALSE' for LD-based filtering</span></span>
+<span><span class="co">#&gt;           for computing genetic PC as covariates.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; window_size: Integer value, specifying a window size in variant count</span></span>
+<span><span class="co">#&gt;           or kilobase for LD-based filtering in computing genetic PC.</span></span>
+<span><span class="co">#&gt;           The default is 50.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; step_size: Integer value, specifying a variant count to shift the</span></span>
+<span><span class="co">#&gt;           window at the end of each step for LD filtering in computing</span></span>
+<span><span class="co">#&gt;           genetic PCs. The default is 5.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; r2_threshold: Numeric value between 0 to 1 of pairwise r^2 threshold</span></span>
+<span><span class="co">#&gt;           for LD-based filtering in computing genetic PCs. The default</span></span>
+<span><span class="co">#&gt;           is 0.02.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;      nPC: Positive integer value, specifying the number of genetic PCs</span></span>
+<span><span class="co">#&gt;           to be included as predictor in the PRS model fit. The default</span></span>
+<span><span class="co">#&gt;           is 6.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; pheno_type: Boolean value, ‘binary’ or ‘quantitative’, specifying the</span></span>
+<span><span class="co">#&gt;           type of the trait. The default is ‘binary’.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Value:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;      A list object containing a dataframe a numeric value, a GeneticPC</span></span>
+<span><span class="co">#&gt;      plot (if requested), and a PRS plot. The dataframe,PRS, contains</span></span>
+<span><span class="co">#&gt;      four mandatory columns, such as, IID (i.e., Individual ID), FID</span></span>
+<span><span class="co">#&gt;      (i.e., Family ID), Pheno1 (i.e., the trait for PRS) and Score</span></span>
+<span><span class="co">#&gt;      (i.e., the best PRS). Other columns of covariates could be there.</span></span>
+<span><span class="co">#&gt;      The numeric value, BestP contains the threshold of of the best</span></span>
+<span><span class="co">#&gt;      p-value for the best pRS model fit.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;      Also, the function produces several plots such as p-value</span></span>
+<span><span class="co">#&gt;      thresholds vs PRS model fit and PRS distribution among male and</span></span>
+<span><span class="co">#&gt;      females. For case-control data, it shows PRS distribution among</span></span>
+<span><span class="co">#&gt;      cases and controls and ROC curves as well.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Author(s):</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;      Banabithi Bose</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Examples:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;      data("Summary_Stat_Ex1", package = "GXwasR")</span></span>
+<span><span class="co">#&gt;      data("Example_phenofile", package = "GXwasR")</span></span>
+<span><span class="co">#&gt;      data("Example_covarfile", package = "GXwasR")</span></span>
+<span><span class="co">#&gt;      data("Example_pthresoldfile", package = "GXwasR")</span></span>
+<span><span class="co">#&gt;      data("highLD_hg19", package = "GXwasR")</span></span>
+<span><span class="co">#&gt;      DataDir &lt;- GXwasR:::GXwasR_data()</span></span>
+<span><span class="co">#&gt;      ResultDir &lt;- tempdir()</span></span>
+<span><span class="co">#&gt;      finput &lt;- "GXwasR_example"</span></span>
+<span><span class="co">#&gt;      summarystat &lt;- Summary_Stat_Ex1[, c(2, 4, 7, 1, 3, 12)]</span></span>
+<span><span class="co">#&gt;      phenofile &lt;- Example_phenofile # Cannot be NULL</span></span>
+<span><span class="co">#&gt;      # The interested phenotype column should be labeled as "Pheno1".</span></span>
+<span><span class="co">#&gt;      covarfile &lt;- Example_covarfile</span></span>
+<span><span class="co">#&gt;      clump_p1 &lt;- 0.0001</span></span>
+<span><span class="co">#&gt;      clump_p2 &lt;- 0.0001</span></span>
+<span><span class="co">#&gt;      clump_kb &lt;- 500</span></span>
+<span><span class="co">#&gt;      clump_r2 &lt;- 0.5</span></span>
+<span><span class="co">#&gt;      byCHR &lt;- TRUE</span></span>
+<span><span class="co">#&gt;      pthreshold &lt;- Example_pthresoldfile$Threshold</span></span>
+<span><span class="co">#&gt;      ld_prunning &lt;- TRUE</span></span>
+<span><span class="co">#&gt;      highLD_regions &lt;- highLD_hg19</span></span>
+<span><span class="co">#&gt;      window_size &lt;- 50</span></span>
+<span><span class="co">#&gt;      step_size &lt;- 5</span></span>
+<span><span class="co">#&gt;      r2_threshold &lt;- 0.02</span></span>
+<span><span class="co">#&gt;      nPC &lt;- 6 # We can incorporate PCs into our PRS analysis to account for population stratification.</span></span>
+<span><span class="co">#&gt;      pheno_type &lt;- "binary"</span></span>
+<span><span class="co">#&gt;      </span></span>
+<span><span class="co">#&gt;      PRSresult &lt;- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile,</span></span>
+<span><span class="co">#&gt;          effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2,</span></span>
+<span><span class="co">#&gt;          clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions,</span></span>
+<span><span class="co">#&gt;          ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6,</span></span>
+<span><span class="co">#&gt;          pheno_type = "binary"</span></span>
+<span><span class="co">#&gt;      )</span></span>
+<span><span class="co">#&gt;      </span></span>
+<span><span class="co">#&gt;      ## This table shows 10 samples with phenotype, covariates and a PRS column.</span></span>
+<span><span class="co">#&gt;      PRS &lt;- PRSresult$PRS</span></span>
+<span><span class="co">#&gt;      PRS[seq_len(10), ]</span></span>
+<span><span class="co">#&gt;      ## The best threshold</span></span>
+<span><span class="co">#&gt;      BestPvalue &lt;- PRSresult$BestP$Threshold</span></span>
+<span><span class="co">#&gt;      BestPvalue</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="running-computeprs">Running ComputePRS()<a class="anchor" aria-label="anchor" href="#running-computeprs"></a>
@@ -138,7 +365,9 @@ utilizing GXwasR R package.</strong></p>
 <span><span class="va">ldclump</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span><span class="va">pheno_type</span> <span class="op">&lt;-</span> <span class="st">"binary"</span></span>
 <span><span class="va">PRSresult</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputePRS.html">ComputePRS</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span>, <span class="va">summarystat</span>, <span class="va">phenofile</span>, <span class="va">covarfile</span>, effectsize <span class="op">=</span> <span class="st">"BETA"</span>, LDreference <span class="op">=</span> <span class="st">"GXwasR_example"</span>, ldclump <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">clump_p1</span>, <span class="va">clump_p2</span>, <span class="va">clump_r2</span>, <span class="va">clump_kb</span>, byCHR <span class="op">=</span> <span class="cn">TRUE</span>, pthreshold <span class="op">=</span> <span class="va">pthreshold</span>, highLD_regions <span class="op">=</span> <span class="va">highLD_regions</span>, ld_prunning <span class="op">=</span> <span class="cn">TRUE</span>, window_size <span class="op">=</span> <span class="fl">50</span>, step_size <span class="op">=</span> <span class="fl">5</span>, r2_threshold <span class="op">=</span> <span class="fl">0.02</span>, nPC <span class="op">=</span> <span class="fl">6</span>, pheno_type <span class="op">=</span> <span class="st">"binary"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpdyNNez/temp_libpath548126ba7acf', reason 'Directory not empty'</span></span>
+<span><span class="co">#&gt; Using PLINK v1.9.0-b.7.7 64-bit (22 Oct 2024)</span></span>
+<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/temp_libpath102938d3a72d', reason 'Directory not empty'</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ℹ 0.001</span></span>
 <span><span class="co">#&gt; • Computing PRS for threshold 0.001</span></span>
 <span><span class="co">#&gt; ℹ 0.05</span></span>
@@ -153,8 +382,11 @@ utilizing GXwasR R package.</strong></p>
 <span><span class="co">#&gt; • Computing PRS for threshold 0.4</span></span>
 <span><span class="co">#&gt; ℹ 0.5</span></span>
 <span><span class="co">#&gt; • Computing PRS for threshold 0.5</span></span>
-<span><span class="va">PRSresult</span><span class="op">$</span><span class="va">PRS_plot</span></span>
-<span><span class="co">#&gt; Error in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, : Metric information not available for this family/device</span></span></code></pre></div>
+<span><span class="co">#&gt; This message is displayed once every 8 hours.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">PRSresult</span><span class="op">$</span><span class="va">PRS_plot</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="compute_prs-1.png" alt="plot of chunk compute_prs"><div class="figcaption">plot of chunk compute_prs</div>
+</div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## This table shows 10 samples with phenotype, covariates and a PRS column.</span></span>
 <span><span class="va">PRS</span> <span class="op">&lt;-</span> <span class="va">PRSresult</span><span class="op">$</span><span class="va">PRS</span></span>
@@ -444,7 +676,7 @@ target data.</strong></p>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"NewtargetData"</span></span>
 <span><span class="fu"><a href="../reference/FilterSNP.html">FilterSNP</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span>, <span class="va">foutput</span>, <span class="va">SNPvec</span>, extract <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ 991 SNPs are extracted</span></span>
-<span><span class="co">#&gt; ✔ Plink files with extracted SNPs are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez prefixed as NewtargetData</span></span>
+<span><span class="co">#&gt; ✔ Plink files with extracted SNPs are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB prefixed as NewtargetData</span></span>
 <span><span class="co">#&gt; NULL</span></span></code></pre></div>
 <p>Now, our discovery data and target data are ready. We will proceed
 towards computing first sex-combined PRS and then sex-stratified
@@ -492,7 +724,7 @@ model with covariates, such as genetic PCs.</strong></p>
 <span><span class="va">effectsize</span> <span class="op">&lt;-</span> <span class="st">"BETA"</span></span>
 <span><span class="va">ldclump</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span><span class="va">PRSresult</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputePRS.html">ComputePRS</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span>, <span class="va">summarystat</span>, <span class="va">phenofile</span>, <span class="va">covarfile</span>, effectsize <span class="op">=</span> <span class="st">"BETA"</span>, LDreference <span class="op">=</span> <span class="st">"GXwasR_example"</span>, ldclump <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">clump_p1</span>, <span class="va">clump_p2</span>, <span class="va">clump_r2</span>, <span class="va">clump_kb</span>, byCHR <span class="op">=</span> <span class="cn">TRUE</span>, pthreshold <span class="op">=</span> <span class="va">pthreshold</span>, highLD_regions <span class="op">=</span> <span class="va">highLD_regions</span>, ld_prunning <span class="op">=</span> <span class="cn">TRUE</span>, window_size <span class="op">=</span> <span class="fl">50</span>, step_size <span class="op">=</span> <span class="fl">5</span>, r2_threshold <span class="op">=</span> <span class="fl">0.02</span>, nPC <span class="op">=</span> <span class="fl">6</span>, pheno_type <span class="op">=</span> <span class="st">"binary"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpdyNNez/temp_libpath548126ba7acf', reason 'Directory not empty'</span></span>
+<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/temp_libpath102938d3a72d', reason 'Directory not empty'</span></span>
 <span><span class="co">#&gt; ℹ 0.001</span></span>
 <span><span class="co">#&gt; • Computing PRS for threshold 0.001</span></span>
 <span><span class="co">#&gt; ℹ 0.05</span></span>
@@ -507,8 +739,10 @@ model with covariates, such as genetic PCs.</strong></p>
 <span><span class="co">#&gt; • Computing PRS for threshold 0.4</span></span>
 <span><span class="co">#&gt; ℹ 0.5</span></span>
 <span><span class="co">#&gt; • Computing PRS for threshold 0.5</span></span>
-<span><span class="va">PRSresult</span><span class="op">$</span><span class="va">PRS_plot</span></span>
-<span><span class="co">#&gt; Error in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, : Metric information not available for this family/device</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">PRSresult</span><span class="op">$</span><span class="va">PRS_plot</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="compute_prs_2-1.png" alt="plot of chunk compute_prs_2"><div class="figcaption">plot of chunk compute_prs_2</div>
+</div>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## This table shows 10 samples with phenotype, covariates and a PRS column.</span></span>
 <span><span class="va">PRS</span> <span class="op">&lt;-</span> <span class="va">PRSresult</span><span class="op">$</span><span class="va">PRS</span></span>
@@ -704,7 +938,45 @@ as well.</p>
 </h2>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">SexRegress</span>, package <span class="op">=</span> <span class="va">GXwasR</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Rendering development documentation for "SexRegress"</span></span></code></pre></div>
+<span><span class="co">#&gt; SexRegress: Performing linear regression analysis with quantitative</span></span>
+<span><span class="co">#&gt; response variable.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Description:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;      This function could be used to check association of two variables.</span></span>
+<span><span class="co">#&gt;      For instance, PRS with sex.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Usage:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;      SexRegress(fdata, regressor_index, response_index)</span></span>
+<span><span class="co">#&gt;      </span></span>
+<span><span class="co">#&gt; Arguments:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;    fdata: R dataframe object. The column with header 'response' should</span></span>
+<span><span class="co">#&gt;           contain the response variable. All other column are the</span></span>
+<span><span class="co">#&gt;           regressor.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; regressor_index: Integer value, specifying the column number of the</span></span>
+<span><span class="co">#&gt;           main regressor variable.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; response_index: Integer value, specifying the column number of the</span></span>
+<span><span class="co">#&gt;           response variable.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Value:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;      Numeric value containing the regression estimate ("Estimate"),</span></span>
+<span><span class="co">#&gt;      standard error ("Std. Error"), statistics ("t value") and p-value</span></span>
+<span><span class="co">#&gt;      (Pr(&gt;|t|))</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Examples:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;      data("Regression_Ex", package = "GXwasR")</span></span>
+<span><span class="co">#&gt;      fdata &lt;- Regression_Ex</span></span>
+<span><span class="co">#&gt;      fdata$SEX &lt;- as.factor(as.character(fdata$SEX))</span></span>
+<span><span class="co">#&gt;      response_index &lt;- 1</span></span>
+<span><span class="co">#&gt;      regressor_index &lt;- 2</span></span>
+<span><span class="co">#&gt;      </span></span>
+<span><span class="co">#&gt;      x &lt;- SexRegress(fdata, regressor_index, response_index)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="running-sexregress">Running SexRegress()<a class="anchor" aria-label="anchor" href="#running-sexregress"></a>
@@ -746,12 +1018,12 @@ datasets.</strong></p>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"maletarget"</span></span>
 <span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="st">"males"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetMFPlink.html">GetMFPlink</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, sex <span class="op">=</span> <span class="va">sex</span>, xplink <span class="op">=</span> <span class="cn">FALSE</span>, autoplink <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Output plink files, prefixed as maletarget, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez</span></span>
+<span><span class="co">#&gt; ✔ Output plink files, prefixed as maletarget, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB</span></span>
 <span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"femaletarget"</span></span>
 <span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="st">"females"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetMFPlink.html">GetMFPlink</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, sex <span class="op">=</span> <span class="va">sex</span>, xplink <span class="op">=</span> <span class="cn">FALSE</span>, autoplink <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Output plink files, prefixed as femaletarget, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez</span></span></code></pre></div>
+<span><span class="co">#&gt; ✔ Output plink files, prefixed as femaletarget, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB</span></span></code></pre></div>
 <p><strong>(C) Perform LD clumping separately in both discovery
 data.</strong></p>
 <p><strong>(D) Compute PRS at a variety of p-value thresholds, using
@@ -804,7 +1076,7 @@ data<a class="anchor" aria-label="anchor" href="#computing-prs-for-female-only-t
 <span><span class="va">ldclump</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span><span class="va">effectsize</span> <span class="op">&lt;-</span> <span class="st">"BETA"</span></span>
 <span><span class="va">PRSresultFemale</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputePRS.html">ComputePRS</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span>, <span class="va">summarystat</span>, <span class="va">phenofile</span>, <span class="va">covarfile</span>, effectsize <span class="op">=</span> <span class="st">"BETA"</span>, LDreference <span class="op">=</span> <span class="st">"GXwasR_example"</span>, ldclump <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">clump_p1</span>, <span class="va">clump_p2</span>, <span class="va">clump_r2</span>, <span class="va">clump_kb</span>, byCHR <span class="op">=</span> <span class="cn">TRUE</span>, pthreshold <span class="op">=</span> <span class="va">pthreshold</span>, highLD_regions <span class="op">=</span> <span class="va">highLD_regions</span>, ld_prunning <span class="op">=</span> <span class="cn">TRUE</span>, window_size <span class="op">=</span> <span class="fl">50</span>, step_size <span class="op">=</span> <span class="fl">5</span>, r2_threshold <span class="op">=</span> <span class="fl">0.02</span>, nPC <span class="op">=</span> <span class="fl">6</span>, pheno_type <span class="op">=</span> <span class="st">"binary"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpdyNNez/temp_libpath548126ba7acf', reason 'Directory not empty'</span></span>
+<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/temp_libpath102938d3a72d', reason 'Directory not empty'</span></span>
 <span><span class="co">#&gt; ℹ 0.001</span></span>
 <span><span class="co">#&gt; • Computing PRS for threshold 0.001</span></span>
 <span><span class="co">#&gt; ℹ 0.05</span></span>
@@ -819,8 +1091,10 @@ data<a class="anchor" aria-label="anchor" href="#computing-prs-for-female-only-t
 <span><span class="co">#&gt; • Computing PRS for threshold 0.4</span></span>
 <span><span class="co">#&gt; ℹ 0.5</span></span>
 <span><span class="co">#&gt; • Computing PRS for threshold 0.5</span></span>
-<span><span class="va">PRSresultFemale</span><span class="op">$</span><span class="va">PRS_plot</span></span>
-<span><span class="co">#&gt; Error in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, : Metric information not available for this family/device</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">PRSresultFemale</span><span class="op">$</span><span class="va">PRS_plot</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="compute_prs_female-1.png" alt="plot of chunk compute_prs_female"><div class="figcaption">plot of chunk compute_prs_female</div>
+</div>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## This table shows 10 samples with phenotype, covariates and a PRS column.</span></span>
 <span><span class="va">PRSfemale</span> <span class="op">&lt;-</span> <span class="va">PRSresultFemale</span><span class="op">$</span><span class="va">PRS</span></span>
@@ -1052,7 +1326,7 @@ data<a class="anchor" aria-label="anchor" href="#computing-prs-for-male-only-tar
 <span><span class="va">ldclump</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span><span class="va">effectsize</span> <span class="op">&lt;-</span> <span class="st">"BETA"</span></span>
 <span><span class="va">PRSresultmale</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputePRS.html">ComputePRS</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span>, <span class="va">summarystat</span>, <span class="va">phenofile</span>, <span class="va">covarfile</span>, effectsize <span class="op">=</span> <span class="st">"BETA"</span>, LDreference <span class="op">=</span> <span class="st">"GXwasR_example"</span>, ldclump <span class="op">=</span> <span class="cn">FALSE</span>, clump_p1 <span class="op">=</span> <span class="va">clump_p1</span>, clump_p2 <span class="op">=</span> <span class="va">clump_p2</span>, clump_r2 <span class="op">=</span> <span class="va">clump_r2</span>, clump_kb <span class="op">=</span> <span class="va">clump_kb</span>, byCHR <span class="op">=</span> <span class="cn">TRUE</span>, pthreshold <span class="op">=</span> <span class="va">pthreshold</span>, highLD_regions <span class="op">=</span> <span class="va">highLD_regions</span>, ld_prunning <span class="op">=</span> <span class="cn">TRUE</span>, window_size <span class="op">=</span> <span class="fl">50</span>, step_size <span class="op">=</span> <span class="fl">5</span>, r2_threshold <span class="op">=</span> <span class="fl">0.02</span>, nPC <span class="op">=</span> <span class="fl">6</span>, pheno_type <span class="op">=</span> <span class="st">"binary"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpdyNNez/temp_libpath548126ba7acf', reason 'Directory not empty'</span></span>
+<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/temp_libpath102938d3a72d', reason 'Directory not empty'</span></span>
 <span><span class="co">#&gt; ℹ 0.001</span></span>
 <span><span class="co">#&gt; • Computing PRS for threshold 0.001</span></span>
 <span><span class="co">#&gt; ℹ 0.05</span></span>
@@ -1067,8 +1341,10 @@ data<a class="anchor" aria-label="anchor" href="#computing-prs-for-male-only-tar
 <span><span class="co">#&gt; • Computing PRS for threshold 0.4</span></span>
 <span><span class="co">#&gt; ℹ 0.5</span></span>
 <span><span class="co">#&gt; • Computing PRS for threshold 0.5</span></span>
-<span><span class="va">PRSresultmale</span><span class="op">$</span><span class="va">PRS_plot</span></span>
-<span><span class="co">#&gt; Error in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, : Metric information not available for this family/device</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">PRSresultmale</span><span class="op">$</span><span class="va">PRS_plot</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="compute_prs_male-1.png" alt="plot of chunk compute_prs_male"><div class="figcaption">plot of chunk compute_prs_male</div>
+</div>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## This table shows 10 samples with phenotype, covariates and a PRS column.</span></span>
 <span><span class="va">PRSmale</span> <span class="op">&lt;-</span> <span class="va">PRSresultmale</span><span class="op">$</span><span class="va">PRS</span></span>
@@ -1294,9 +1570,7 @@ to cite the package and the overall approach. Thank you!</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"GXwasR"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; To cite package 'GXwasR' in publications use:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   Bose B, Blostein F, Kim J, Winters J, Actkins KV, Mayer D, Congivaram H, Niarchou M, Edwards DV, Davis</span></span>
-<span><span class="co">#&gt;   LK, Stranger BE (2025). "GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic Effects on</span></span>
-<span><span class="co">#&gt;   Complex Traits." _medRxiv 2025.06.10.25329327_. doi:10.1101/2025.06.10.25329327</span></span>
+<span><span class="co">#&gt;   Bose B, Blostein F, Kim J, Winters J, Actkins KV, Mayer D, Congivaram H, Niarchou M, Edwards DV, Davis LK, Stranger BE (2025). "GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic Effects on Complex Traits." _medRxiv 2025.06.10.25329327_. doi:10.1101/2025.06.10.25329327</span></span>
 <span><span class="co">#&gt;   &lt;https://doi.org/10.1101/2025.06.10.25329327&gt;.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; A BibTeX entry for LaTeX users is</span></span>
@@ -1314,7 +1588,8 @@ to cite the package and the overall approach. Thank you!</p>
 <h2 id="reproducibility">Reproducibility<a class="anchor" aria-label="anchor" href="#reproducibility"></a>
 </h2>
 <p>The <em><a href="https://bioconductor.org/packages/3.21/GXwasR" class="external-link">GXwasR</a></em>
-package (Bose, Blostein, Kim et al., 2025) was made possible thanks
+package (Bose, Blostein, Kim, Winters, Actkins, Mayer, Congivaram,
+Niarchou, Edwards, Davis, and Stranger, 2025) was made possible thanks
 to:</p>
 <ul>
 <li>R (R Core Team, 2025)</li>
@@ -1329,10 +1604,11 @@ to:</p>
 (McLean, 2017)</li>
 <li>
 <em><a href="https://CRAN.R-project.org/package=rmarkdown" class="external-link">rmarkdown</a></em>
-(Allaire, Xie, Dervieux et al., 2024)</li>
+(Allaire, Xie, Dervieux, McPherson, Luraschi, Ushey, Atkins, Wickham,
+Cheng, Chang, and Iannone, 2024)</li>
 <li>
 <em><a href="https://CRAN.R-project.org/package=sessioninfo" class="external-link">sessioninfo</a></em>
-(Wickham, Chang, Flight et al., 2025)</li>
+(Wickham, Chang, Flight, Müller, and Hester, 2025)</li>
 <li>
 <em><a href="https://CRAN.R-project.org/package=testthat" class="external-link">testthat</a></em>
 (Wickham, 2011)</li>
@@ -1354,178 +1630,165 @@ to:</p>
 <span><span class="co">#&gt;  quarto   1.7.32 @ /usr/local/bin/quarto</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt;  ! package              * version    date (UTC) lib source</span></span>
-<span><span class="co">#&gt;    abind                  1.4-8      2024-09-12 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    backports              1.5.0      2024-05-23 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    bibtex                 0.5.1      2023-01-26 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    bigassertr             0.1.7      2025-06-27 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    bigparallelr           0.3.2      2021-10-02 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    bigsnpr                1.12.18    2024-11-26 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    bigsparser             0.7.3      2024-09-06 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    bigstatsr              1.6.2      2025-07-29 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    Biobase                2.68.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    BiocGenerics           0.54.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    BiocIO                 1.18.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    BiocManager            1.30.26    2025-06-05 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    BiocParallel           1.42.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    BiocStyle              2.36.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    Biostrings             2.76.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    bit                    4.6.0      2025-03-06 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    bit64                  4.6.0-1    2025-01-16 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    bitops                 1.0-9      2024-10-03 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    brio                   1.1.5      2024-04-24 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    broom                  1.0.9      2025-07-28 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    BSgenome               1.76.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    cachem                 1.1.0      2024-05-16 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    calibrate              1.7.7      2020-06-19 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    callr                  3.7.6      2024-03-25 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    car                    3.1-3      2024-09-27 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    carData                3.0-5      2022-01-06 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    cli                    3.6.5      2025-04-23 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    codetools              0.2-20     2024-03-31 [4] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    commonmark             2.0.0      2025-07-07 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    cowplot                1.2.0      2025-07-07 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    crayon                 1.5.3      2024-06-20 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    curl                   6.4.0      2025-06-22 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    data.table             1.17.8     2025-07-10 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    DelayedArray           0.34.1     2025-04-17 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    desc                   1.4.3      2023-12-10 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    devtools             * 2.4.5      2022-10-11 [3] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    digest                 0.6.37     2024-08-19 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    doParallel             1.0.17     2022-02-07 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    doRNG                  1.8.6.2    2025-04-02 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    dplyr                  1.1.4      2023-11-17 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    ellipsis               0.3.2      2021-04-29 [3] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    evaluate               1.0.4      2025-06-18 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    farver                 2.1.2      2024-05-13 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    fastmap                1.2.0      2024-05-15 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    flock                  0.7        2016-11-12 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    foreach                1.5.2      2022-02-02 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    Formula                1.2-5      2023-02-24 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    fs                     1.6.6      2025-04-12 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    gdsfmt                 1.44.1     2025-07-09 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    generics               0.1.4      2025-05-09 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    GenomeInfoDb           1.44.1     2025-07-23 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    GenomeInfoDbData       1.2.14     2025-04-21 [2] Bioconductor</span></span>
-<span><span class="co">#&gt;    GenomicAlignments      1.44.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    GenomicRanges          1.60.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    ggplot2                3.5.2      2025-04-09 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    ggpubr                 0.6.1      2025-06-27 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    ggrepel                0.9.6      2024-09-07 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    ggsignif               0.6.4      2022-10-13 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    glue                   1.8.0      2024-09-30 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    gridExtra              2.3        2017-09-09 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    gtable                 0.3.6      2024-10-25 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  P GXwasR               * 0.99.0     2025-08-05 [?] Bioconductor</span></span>
-<span><span class="co">#&gt;    hms                    1.1.3      2023-03-21 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    htmltools              0.5.8.1    2024-04-04 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    htmlwidgets            1.6.4      2023-12-06 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    httpuv                 1.6.16     2025-04-16 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    httr                   1.4.7      2023-08-15 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    hunspell               3.0.6      2025-03-22 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    IRanges                2.42.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    iterators              1.0.14     2022-02-05 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    jsonlite               2.0.0      2025-03-27 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    knitr                  1.50       2025-03-16 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    labeling               0.4.3      2023-08-29 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    later                  1.4.2      2025-04-08 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    lattice                0.22-7     2025-04-02 [4] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    lubridate              1.9.4      2024-12-08 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    magrittr               2.0.3      2022-03-30 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    MASS                   7.3-65     2025-02-28 [4] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    mathjaxr               1.8-0      2025-04-30 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    Matrix                 1.7-3      2025-03-11 [4] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    MatrixGenerics         1.20.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    matrixStats            1.5.0      2025-01-07 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    memoise                2.0.1      2021-11-26 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    mime                   0.13       2025-03-17 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    miniUI                 0.1.2      2025-04-17 [3] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    pillar                 1.11.0     2025-07-04 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    pkgbuild               1.4.8      2025-05-26 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    pkgdev                 0.1.0.9060 2025-08-04 [2] Github (dieghernan/pkgdev@e56f2a8)</span></span>
-<span><span class="co">#&gt;    pkgload                1.4.0      2024-06-28 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    plyranges              1.28.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    poolr                  1.2-0      2025-05-07 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    prettyunits            1.2.0      2023-09-24 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    printr               * 0.3        2023-03-08 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    processx               3.8.6      2025-02-21 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    profvis                0.4.0      2024-09-20 [3] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    progress               1.2.3      2023-12-06 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    promises               1.3.3      2025-05-29 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    ps                     1.9.1      2025-04-12 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    purrr                  1.1.0      2025-07-10 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    qqman                  0.1.9      2023-08-23 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    R.methodsS3            1.8.2      2022-06-13 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    R.oo                   1.27.1     2025-05-02 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    R.utils                2.13.0     2025-02-24 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    R6                     2.6.1      2025-02-15 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    ragg                   1.4.0      2025-04-10 [3] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    rbibutils              2.3        2024-10-04 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    rcmdcheck              1.4.0      2021-09-27 [3] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    RColorBrewer           1.1-3      2022-04-03 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    Rcpp                   1.1.0      2025-07-02 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    RCurl                  1.98-1.17  2025-03-22 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    Rdpack                 2.6.4      2025-04-09 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    RefManageR           * 1.4.0      2022-09-30 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    regioneR               1.40.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    remotes                2.5.0      2024-03-17 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    restfulr               0.0.16     2025-06-27 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    rjson                  0.2.23     2024-09-16 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    rlang                  1.1.6      2025-04-11 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    rmarkdown            * 2.29       2024-11-04 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    rmio                   0.4.0      2022-02-17 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    rngtools               1.5.2      2021-09-20 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    roxygen2               7.3.2      2024-06-28 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    rprojroot              2.1.0      2025-07-12 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    Rsamtools              2.24.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    rstatix                0.7.2      2023-02-01 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    rstudioapi             0.17.1     2024-10-22 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    rtracklayer            1.68.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    S4Arrays               1.8.1      2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    S4Vectors              0.46.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    scales                 1.4.0      2025-04-24 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    sessioninfo          * 1.2.3      2025-02-05 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    shiny                  1.11.1     2025-07-03 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    SNPRelate              1.42.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    SparseArray            1.8.1      2025-07-23 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    spelling               2.3.1      2024-10-04 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    stringi                1.8.7      2025-03-27 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    stringr                1.5.1      2023-11-14 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    sumFREGAT              1.2.5      2022-06-07 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    SummarizedExperiment   1.38.1     2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    sys                    3.4.3      2024-10-04 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    systemfonts            1.2.3      2025-04-30 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    testthat             * 3.2.3      2025-01-13 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    textshaping            1.0.1      2025-05-01 [3] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    tibble                 3.3.0      2025-06-08 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    tidyr                  1.3.1      2024-01-24 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    tidyselect             1.2.1      2024-03-11 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    timechange             0.3.0      2024-01-18 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    tzdb                   0.5.0      2025-03-15 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    UCSC.utils             1.4.0      2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    urlchecker             1.0.1      2021-11-30 [3] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    usethis              * 3.1.0      2024-11-26 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    vctrs                  0.6.5      2023-12-01 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    vroom                  1.6.5      2023-12-05 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    withr                  3.0.2      2024-10-28 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    xfun                   0.52       2025-04-02 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    XML                    3.99-0.18  2025-01-01 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    xml2                   1.3.8      2025-03-14 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;    xopen                  1.0.1      2024-04-25 [3] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    xtable                 1.8-4      2019-04-21 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;    XVector                0.48.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;    yaml                   2.3.10     2024-07-26 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  package              * version    date (UTC) lib source</span></span>
+<span><span class="co">#&gt;  abind                  1.4-8      2024-09-12 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  backports              1.5.0      2024-05-23 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  bibtex                 0.5.1      2023-01-26 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  bigassertr             0.1.7      2025-06-27 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  bigparallelr           0.3.2      2021-10-02 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  bigsnpr                1.12.18    2024-11-26 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  bigsparser             0.7.3      2024-09-06 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  bigstatsr              1.6.2      2025-07-29 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  Biobase                2.68.0     2025-04-15 [2] Bioconduc~</span></span>
+<span><span class="co">#&gt;  BiocGenerics           0.54.0     2025-04-15 [2] Bioconduc~</span></span>
+<span><span class="co">#&gt;  BiocIO                 1.18.0     2025-04-15 [2] Bioconduc~</span></span>
+<span><span class="co">#&gt;  BiocManager            1.30.26    2025-06-05 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  BiocParallel           1.42.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  BiocStyle              2.36.0     2025-04-15 [2] Bioconduc~</span></span>
+<span><span class="co">#&gt;  Biostrings             2.76.0     2025-04-15 [2] Bioconduc~</span></span>
+<span><span class="co">#&gt;  bit                    4.6.0      2025-03-06 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  bit64                  4.6.0-1    2025-01-16 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  bitops                 1.0-9      2024-10-03 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  brio                   1.1.5      2024-04-24 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  broom                  1.0.9      2025-07-28 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  BSgenome               1.76.0     2025-04-15 [2] Bioconduc~</span></span>
+<span><span class="co">#&gt;  cachem                 1.1.0      2024-05-16 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  calibrate              1.7.7      2020-06-19 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  callr                  3.7.6      2024-03-25 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  car                    3.1-3      2024-09-27 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  carData                3.0-5      2022-01-06 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  cli                    3.6.5      2025-04-23 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  codetools              0.2-20     2024-03-31 [4] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  cowplot                1.2.0      2025-07-07 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  crayon                 1.5.3      2024-06-20 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  curl                   6.4.0      2025-06-22 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  data.table             1.17.8     2025-07-10 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  DelayedArray           0.34.1     2025-04-17 [2] Bioconduc~</span></span>
+<span><span class="co">#&gt;  devtools             * 2.4.5      2022-10-11 [3] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  digest                 0.6.37     2024-08-19 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  doParallel             1.0.17     2022-02-07 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  doRNG                  1.8.6.2    2025-04-02 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  dplyr                  1.1.4      2023-11-17 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  ellipsis               0.3.2      2021-04-29 [3] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  evaluate               1.0.4      2025-06-18 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  farver                 2.1.2      2024-05-13 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  fastmap                1.2.0      2024-05-15 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  flock                  0.7        2016-11-12 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  foreach                1.5.2      2022-02-02 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  Formula                1.2-5      2023-02-24 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  fs                     1.6.6      2025-04-12 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  gdsfmt                 1.44.1     2025-07-09 [2] Bioconduc~</span></span>
+<span><span class="co">#&gt;  generics               0.1.4      2025-05-09 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  GenomeInfoDb           1.44.1     2025-07-23 [2] Bioconduc~</span></span>
+<span><span class="co">#&gt;  GenomeInfoDbData       1.2.14     2025-04-21 [2] Bioconductor</span></span>
+<span><span class="co">#&gt;  GenomicAlignments      1.44.0     2025-04-15 [2] Bioconduc~</span></span>
+<span><span class="co">#&gt;  GenomicRanges          1.60.0     2025-04-15 [2] Bioconduc~</span></span>
+<span><span class="co">#&gt;  ggplot2                3.5.2      2025-04-09 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  ggpubr                 0.6.1      2025-06-27 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  ggrepel                0.9.6      2024-09-07 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  ggsignif               0.6.4      2022-10-13 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  glue                   1.8.0      2024-09-30 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  gridExtra              2.3        2017-09-09 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  gtable                 0.3.6      2024-10-25 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  GXwasR               * 0.99.0     2025-08-06 [1] Bioconductor</span></span>
+<span><span class="co">#&gt;  hms                    1.1.3      2023-03-21 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  htmltools              0.5.8.1    2024-04-04 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  htmlwidgets            1.6.4      2023-12-06 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  httpuv                 1.6.16     2025-04-16 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  httr                   1.4.7      2023-08-15 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  IRanges                2.42.0     2025-04-15 [2] Bioconduc~</span></span>
+<span><span class="co">#&gt;  iterators              1.0.14     2022-02-05 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  jsonlite               2.0.0      2025-03-27 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  knitr                  1.50       2025-03-16 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  labeling               0.4.3      2023-08-29 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  later                  1.4.2      2025-04-08 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  lattice                0.22-7     2025-04-02 [4] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  lubridate              1.9.4      2024-12-08 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  magrittr               2.0.3      2022-03-30 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  MASS                   7.3-65     2025-02-28 [4] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  mathjaxr               1.8-0      2025-04-30 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  Matrix                 1.7-3      2025-03-11 [4] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  MatrixGenerics         1.20.0     2025-04-15 [2] Bioconduc~</span></span>
+<span><span class="co">#&gt;  matrixStats            1.5.0      2025-01-07 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  memoise                2.0.1      2021-11-26 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  mime                   0.13       2025-03-17 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  miniUI                 0.1.2      2025-04-17 [3] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  pillar                 1.11.0     2025-07-04 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  pkgbuild               1.4.8      2025-05-26 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  pkgdev                 0.1.0.9060 2025-08-04 [2] Github (dieghernan/pkgdev@e56f2a8)</span></span>
+<span><span class="co">#&gt;  pkgload                1.4.0      2024-06-28 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  plyranges              1.28.0     2025-04-15 [2] Bioconduc~</span></span>
+<span><span class="co">#&gt;  poolr                  1.2-0      2025-05-07 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  prettyunits            1.2.0      2023-09-24 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  printr               * 0.3        2023-03-08 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  processx               3.8.6      2025-02-21 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  profvis                0.4.0      2024-09-20 [3] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  progress               1.2.3      2023-12-06 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  promises               1.3.3      2025-05-29 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  ps                     1.9.1      2025-04-12 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  purrr                  1.1.0      2025-07-10 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  qqman                  0.1.9      2023-08-23 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  R.methodsS3            1.8.2      2022-06-13 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  R.oo                   1.27.1     2025-05-02 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  R.utils                2.13.0     2025-02-24 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  R6                     2.6.1      2025-02-15 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  rbibutils              2.3        2024-10-04 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  RColorBrewer           1.1-3      2022-04-03 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  Rcpp                   1.1.0      2025-07-02 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  RCurl                  1.98-1.17  2025-03-22 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  Rdpack                 2.6.4      2025-04-09 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  RefManageR           * 1.4.0      2022-09-30 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  regioneR               1.40.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  remotes                2.5.0      2024-03-17 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  restfulr               0.0.16     2025-06-27 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  rjson                  0.2.23     2024-09-16 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  rlang                  1.1.6      2025-04-11 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  rmarkdown            * 2.29       2024-11-04 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  rmio                   0.4.0      2022-02-17 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  rngtools               1.5.2      2021-09-20 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  rprojroot              2.1.0      2025-07-12 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  Rsamtools              2.24.0     2025-04-15 [2] Bioconduc~</span></span>
+<span><span class="co">#&gt;  rstatix                0.7.2      2023-02-01 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  rtracklayer            1.68.0     2025-04-15 [2] Bioconduc~</span></span>
+<span><span class="co">#&gt;  S4Arrays               1.8.1      2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  S4Vectors              0.46.0     2025-04-15 [2] Bioconduc~</span></span>
+<span><span class="co">#&gt;  scales                 1.4.0      2025-04-24 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  sessioninfo          * 1.2.3      2025-02-05 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  shiny                  1.11.1     2025-07-03 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  SNPRelate              1.42.0     2025-04-15 [2] Bioconduc~</span></span>
+<span><span class="co">#&gt;  SparseArray            1.8.1      2025-07-23 [2] Bioconduc~</span></span>
+<span><span class="co">#&gt;  stringi                1.8.7      2025-03-27 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  stringr                1.5.1      2023-11-14 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  sumFREGAT              1.2.5      2022-06-07 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  SummarizedExperiment   1.38.1     2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  sys                    3.4.3      2024-10-04 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  testthat             * 3.2.3      2025-01-13 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  tibble                 3.3.0      2025-06-08 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  tidyr                  1.3.1      2024-01-24 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  tidyselect             1.2.1      2024-03-11 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  timechange             0.3.0      2024-01-18 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  tzdb                   0.5.0      2025-03-15 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  UCSC.utils             1.4.0      2025-04-15 [2] Bioconduc~</span></span>
+<span><span class="co">#&gt;  urlchecker             1.0.1      2021-11-30 [3] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  usethis              * 3.1.0      2024-11-26 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  vctrs                  0.6.5      2023-12-01 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  vroom                  1.6.5      2023-12-05 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  withr                  3.0.2      2024-10-28 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  xfun                   0.52       2025-04-02 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  XML                    3.99-0.18  2025-01-01 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  xml2                   1.3.8      2025-03-14 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  xtable                 1.8-4      2019-04-21 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  XVector                0.48.0     2025-04-15 [2] Bioconduc~</span></span>
+<span><span class="co">#&gt;  yaml                   2.3.10     2024-07-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpdyNNez/temp_libpath548171db3e3e</span></span>
+<span><span class="co">#&gt;  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/temp_libpath102938d3a72d</span></span>
 <span><span class="co">#&gt;  [2] /Users/mayerdav/Library/R/arm64/4.5/library</span></span>
 <span><span class="co">#&gt;  [3] /opt/homebrew/lib/R/4.5/site-library</span></span>
 <span><span class="co">#&gt;  [4] /opt/homebrew/Cellar/r/4.5.1/lib/R/library</span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  * ── Packages attached to the search path.</span></span>
-<span><span class="co">#&gt;  P ── Loaded and on-disk path mismatch.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span></code></pre>
 </div>
