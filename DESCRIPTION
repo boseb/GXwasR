@@ -70,6 +70,7 @@ Imports:
     sys,
     utils,
     vroom
+SystemRequirements: PLINK, GCTA
 RdMacros: Rdpack
 biocViews: GenomeWideAssociation, LinkageDisequilibrium, VariantDetection, QualityControl, PrincipalComponent
 Language: en-US
