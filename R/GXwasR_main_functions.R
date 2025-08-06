@@ -857,7 +857,7 @@ TestXGene <- function(
 #' data("Mfile", package = "GXwasR")
 #' data("Ffile", package = "GXwasR")
 #' Difftest <- SexDiff(Mfile, Ffile)
-#' significant_snps <- Difftest[Difftest$adjP < 0.05, ] # 9
+#' significant_snps <- Difftest[Difftest$adjP < 0.05, ]
 SexDiff <- function(Mfile, Ffile) {
     # Validate input data
     if (!validateInputDataSexDiff(Mfile, Ffile)) {
@@ -1621,12 +1621,6 @@ ComputeGeneticPC <- function(
                     ggplot2::coord_equal()
 
                 combined_plot <- ggpubr::ggarrange(p1, p2, labels = c("A", "B"), ncol = 2, nrow = 1)
-
-                #   # Render Plot
-                #   if (interactive()) {
-                #     grid::grid.newpage()
-                #     grid::grid.draw(combined_plot)
-                #   }
             }
 
             # Clean up temporary files
@@ -1931,20 +1925,11 @@ ComputePRS <- function(
             # Basic density plot with custom color
             p2 <- createSexDistributionPlot(dat)
 
-            # rlang::inform(rlang::format_error_bullets(c("i" = "Plots are initiated.")))
-
             if (pheno_type == "binary") {
                 plot_out <- createBinaryPhenotypePlots(dat, p1, p2)
             } else {
                 plot_out <- ggpubr::ggarrange(p1, p2)
             }
-
-            # if (interactive()) {
-            #   grid::grid.newpage()
-            #   grid::grid.draw(plot_out)
-            # }
-
-            # rlang::inform(rlang::format_error_bullets(c("v" = "Plots are printed.")))
 
             # Define patterns for files to be removed
             filePatternsToRemove <- c("pruned_", "PRS", "Clump", "pcfile")
@@ -3292,10 +3277,6 @@ QCsample <- function(
                     axis_text_size, axis_title_size, title_size
                 )
 
-                if (interactive()) {
-                    print(het_plot)
-                }
-
                 printSampleFilterResults(imissfail, hetfail, failed_het_imiss)
 
 
@@ -3398,7 +3379,8 @@ QCsample <- function(
                 Failed_IBD = failed_ibd[, seq_len(2)],
                 Missingness_results = fmi,
                 Heterozygosity_results = fhh,
-                IBD_results = ibd
+                IBD_results = ibd, 
+                het_plot = het_plot
             ))
         },
         error = function(e) {

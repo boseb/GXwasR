@@ -160,7 +160,7 @@ Identical data can result in values that don't fit the assumptions or cause over
 The variance estimates (lamh2, lam22.1) are sensitive to the differences in summary statistics.
 Identical data may result in variance estimates being too small or large, leading to numerical instability in the log-likelihood calculations.
 
-# Why panel UKB_imputed_SVD_eigen99_extraction does not converge but UKB_array_SVD_eigen90_extraction converge for the same data1?
+# Why panel UKB_imputed_SVD_eigen99_extraction does not converge but UKB_array_SVD_eigen90_extraction converge for the same data?
 
 **Expected Genetic Correlation:**
 When using identical summary statistics, the genetic correlation is theoretically expected to be very close to 1, as the traits are the same.
