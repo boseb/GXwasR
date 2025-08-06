@@ -29,11 +29,15 @@ The default is 1e-08.}
 \item{Xchr}{Boolean value, \code{TRUE} or \code{FALSE}, specifying whether to generate Miami plot for stratified XWAS or not.
 The default is \code{TRUE}.}
 }
+\value{
+Invisibly returns \code{NULL}. Generates and saves Miami plots as a side effect.
+}
 \description{
 This function generates Miami plots for GWAS and XWAS.
 }
 \examples{
-data("GXwasRData")
+data("Ffile", package = "GXwasR")
+data("Mfile", package = "GXwasR")
 FemaleWAS <- na.omit(Ffile[, c("SNP", "CHR", "BP", "P")])
 colnames(FemaleWAS) <- c("SNP", "CHR", "POS", "pvalue")
 MaleWAS <- na.omit(Mfile[, c("SNP", "CHR", "BP", "P")])

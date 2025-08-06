@@ -21,8 +21,7 @@ p-value (\eqn{Pr(>|t|)})
 This function could be used to check association of two variables. For instance, PRS with sex.
 }
 \examples{
-
-data("GXwasRData")
+data("Regression_Ex", package = "GXwasR")
 fdata <- Regression_Ex
 fdata$SEX <- as.factor(as.character(fdata$SEX))
 response_index <- 1

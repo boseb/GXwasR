@@ -13,11 +13,14 @@ PlinkSummary(DataDir, ResultDir = tempdir(), finput)
 
 \item{finput}{Character string, specifying the prefix of the input PLINK binary files. This file needs to be in DataDir.}
 }
+\value{
+This function is called for its side effect: printing summary statistics to the console. It returns \code{NULL} invisibly.
+}
 \description{
 PlinkSummary: Summary of plink format genotype dataset
 }
 \examples{
-DataDir <- system.file("extdata", package = "GXwasR")
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 

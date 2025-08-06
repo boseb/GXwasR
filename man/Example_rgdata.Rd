@@ -4,6 +4,14 @@
 \name{Example_rgdata}
 \alias{Example_rgdata}
 \title{Example dataset for running DiffZerOne function}
+\format{
+A data frame with 16 rows and 3 variables:
+\describe{
+\item{Trait}{Trait name or abbreviation; character string}
+\item{rg}{Estimated genetic correlation with target trait; numeric}
+\item{se}{Standard error of the genetic correlation estimate; numeric}
+}
+}
 \description{
 Example dataset for running DiffZerOne function
 }

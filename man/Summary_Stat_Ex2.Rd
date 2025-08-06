@@ -4,6 +4,23 @@
 \name{Summary_Stat_Ex2}
 \alias{Summary_Stat_Ex2}
 \title{Example dataset for GWAS summary statistics}
+\format{
+A data frame with 1,500 rows and 12 variables:
+\describe{
+\item{CHR}{Chromosome number; integer}
+\item{SNP}{SNP identifier (rsID); character string}
+\item{BP}{Base-pair position; integer}
+\item{A1}{Effect allele; character string}
+\item{TEST}{Test type (e.g., "ADD" for additive model); character string}
+\item{NMISS}{Number of non-missing samples for the SNP; integer}
+\item{BETA}{Effect size estimate (beta coefficient); numeric}
+\item{SE}{Standard error of the effect size estimate; numeric}
+\item{L95}{Lower bound of the 95\% confidence interval; numeric}
+\item{U95}{Upper bound of the 95\% confidence interval; numeric}
+\item{STAT}{Test statistic (e.g., Wald z-score); numeric}
+\item{P}{P-value for the association; numeric}
+}
+}
 \description{
 Example dataset for GWAS summary statistics
 }

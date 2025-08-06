@@ -6,19 +6,20 @@ output: github_document
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
+    collapse = TRUE,
+    comment = "#>",
+    fig.path = "man/figures/README-",
+    out.width = "100%"
 )
 ```
 
-# GXwasR
+# GXwasR <img src="man/figures/logo.svg" align="right" height="139" alt="" />
 
 A tool for conducting sex-aware quality control, association analysis, and testing various models of sex-dependent genetic effects in complex traits.
 
 <!-- badges: start -->
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![R-CMD-check](https://github.com/boseb/GXwasR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/boseb/GXwasR/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 This package implements various statistical genetics models for Genome-Wide Association (GWA) and X-Chromosome Wide Association (XWA) analyses in a sex-combined or sex-stratified way considering X-Chromosome Inactivation (XCI) pattern. In addition to association analysis, the package also enables testing for sex differences in genetic effects, including the implementation of specific models and applying best practices for additional quality control (QC) of genetic data required for these tests. The package includes twenty-five different functions in six different categories (A-F) which enable a comprehensive pipeline for sex-aware genetic association analysis of common variants with unrelated individuals.
@@ -31,7 +32,7 @@ This package implements various statistical genetics models for Genome-Wide Asso
 
 **(D)Sex-differential test:** `SexDiff()`; `SexDiffZscore()`; `DiffZeroOne()`
 
-**(E)High level analysis:** `TestXGene()`; `MetaGWAS()`; `ComputePRS()`; `ComputeCorrBT()`; `EstimateHerit()`
+**(E)High level analysis:** `TestXGene()`; `MetaGWAS()`; `ComputePRS()`; `GeneticCorrBT()`; `EstimateHerit()`
 
 **(F)Utility Functions:** `FilterPlinkSample()`; `ComputeGeneticPC()`; `ClumpLD()`; `GetMFPlink()`; `plinkVCF()`; `MergeRegion()`; `FilterAllele()`; `PlinkSummary()`
 
@@ -44,16 +45,25 @@ You can install the development version of GXwasR from [GitHub](https://github.c
 pak::pak("boseb/GXwasR")
 ```
 
-## External Dependency: PLINK
+### External Dependencies
+
+This package requires PLINK and GCTA, two widely used command-line tools for genetic data analysis:
+
+ - PLINK: A toolset for genome association and linkage analysis.
+ - GCTA: Genome-wide Complex Trait Analysis, used for estimating genetic relationships and variance components.
+
+Please follow the instructions below to ensure both tools are installed and available to your system before use.
+
+#### PLINK
 
 This package depends on the [PLINK](https://www.cog-genomics.org/plink/) command-line tool (version 1.9). PLINK must be installed separately and made available on your system.
 
 PLINK is not bundled with this package and must either:
 
-- be on your system PATH, or
-- be specified via the PLINK_PATH environment variable.
+- (*preferred*) be specified via the PLINK_PATH environment variable, or
+- be on your system PATH.
 
-### 🔧 PLINK Installation Instructions
+##### 🔧 PLINK Installation Instructions
 
 Binaries for all major platforms can be downloaded from:
 
@@ -61,7 +71,7 @@ Binaries for all major platforms can be downloaded from:
 
 Detailed, platform-specific setup instructions can be found in the INSTALL file included with this package.
 
-### 🧭 Configuring the PLINK Path
+##### 🧭 Configuring the PLINK Path
 
 This package will attempt to locate PLINK using:
 
@@ -91,27 +101,27 @@ if (!file.exists(plink_path) || !nzchar(plink_path)) {
 }
 ```
 
-## External Dependency: GCTA
+#### GCTA
 
 This package also utilizes the [GCTA](https://yanglab.westlake.edu.cn/software/gcta/#Overview) command-line tool (Genome-wide Complex Trait Analysis). GCTA must be installed separately and made available on your system.
 
 GCTA is not bundled with this package and must either:
 
--be on your system PATH, or
-- be specified via the GCTA_PATH environment variable.
+- (*preferred*) be specified via the GCTA_PATH environment variable, or
+- be on your system PATH.
 
-### 🔧 GCTA Installation Instructions
+##### 🔧 GCTA Installation Instructions
 
 Binaries for all major platforms can be downloaded from the [GCTA](https://yanglab.westlake.edu.cn/software/gcta/#Overview) website.
 
 Detailed, platform-specific setup instructions can be found in the INSTALL file included with this package.
 
-### 🧭 Configuring the GCTA Path
+##### 🧭 Configuring the GCTA Path
 
 This package will attempt to locate GCTA using:
 
 - The GCTA_PATH environment variable, if set.
-- The system path, via Sys.which("gcta64").
+- The system path, via `Sys.which("gcta64")`.
 
 If GCTA is not found, an error will be raised with guidance on how to resolve it.
 
@@ -136,6 +146,22 @@ if (!file.exists(gcta_path) || !nzchar(gcta_path)) {
 }
 ```
 
+#### ⚠️ macOS Security Warning
+
+macOS may block these applications from launching because they were downloaded from the internet and aren't explicitly approved by Apple. If you see a warning like:
+
+    "“(PLINK/GCTA)” can’t be opened because Apple cannot check it for malicious software."
+
+You can still run the app by following these steps:
+
+  1. Open System Settings (or System Preferences on older macOS versions).
+  2. Go to Privacy & Security.
+  3. Scroll down to the Security section.
+  4. You should see a message about the blocked app — click “Open Anyway”.
+  5. Confirm when prompted.
+
+For more details, see Apple’s official guide: <https://support.apple.com/en-us/102445>
+
 ## Example Analysis
 
 Run a genome-wide association study (GWAS) and X-chromosome-wide association study (XWAS):
@@ -143,23 +169,23 @@ Run a genome-wide association study (GWAS) and X-chromosome-wide association stu
 ```{r example}
 library(GXwasR)
 ResultGXwas <- GXwas(
-  DataDir = system.file("extdata", package = "GXwasR"),
-  ResultDir = tempdir(), 
-  finput = "GXwasR_example", 
-  trait = "binary", 
-  xmodel = "FMstatrified", 
-  covarfile = NULL, 
-  sex = TRUE, 
-  xsex = FALSE, 
-  combtest = "fisher.method", 
-  MF.p.corr = "none",
-  snp_pval = 1e-08, 
-  plot.jpeg = FALSE, 
-  suggestiveline = 5, 
-  genomewideline = 7.3,
-  MF.mc.cores = 1, 
-  ncores = 0
-  )
+    DataDir = GXwasR:::GXwasR_data(),
+    ResultDir = tempdir(),
+    finput = "GXwasR_example",
+    trait = "binary",
+    xmodel = "FMstratified",
+    covarfile = NULL,
+    sex = TRUE,
+    xsex = FALSE,
+    combtest = "fisher.method",
+    MF.p.corr = "none",
+    snp_pval = 1e-08,
+    plot.jpeg = FALSE,
+    suggestiveline = 5,
+    genomewideline = 7.3,
+    MF.mc.cores = 1,
+    ncores = 0
+)
 ResultGXwas
 ```
 

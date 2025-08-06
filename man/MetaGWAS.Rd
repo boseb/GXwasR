@@ -25,7 +25,7 @@ MetaGWAS(
 \item{DataDir}{A character string for the file path of the input files needed for \code{SummData} and \code{SNPfile} arguments.}
 
 \item{SummData}{Vector value containing the name(s) of the .Rda file(s) with GWAS summary statistics, with ‘SNP’
-(i.e., SNP idenitifier), ‘BETA’ (i.e., effect-size or logarithm of odds ratio), ‘SE’ (i.e., standard error of BETA),
+(i.e., SNP identifier), ‘BETA’ (i.e., effect-size or logarithm of odds ratio), ‘SE’ (i.e., standard error of BETA),
 ‘P’ (i.e., p-values), 'NMISS' (i.e., effective sample size), 'L95' (i.e., lower limit of 95\% confidence interval) and
 'U95' (i.e., upper limit of 95\% confidence interval) are in mandatory column headers. These files needed to be in DataDir.
 If the numbers of cases and controls are unequal, effective sample size should be \eqn{4 / (1/<# of cases> + 1/<# of controls>)}.
@@ -51,7 +51,7 @@ this is \code{FALSE} then there will be no Manhattan and QQ plot will be generat
 structure for all the SNPs. The default is \code{TRUE}. If users would want to apply genomic control separately for directly
 genotyped and imputed SNPs prior using the function, set this parameter as \code{FALSE}.}
 
-\item{plotname}{Character string, spycifying the plot name of the file containg forest plots for the SNPs. The default is
+\item{plotname}{Character string, specifying the plot name of the file containing forest plots for the SNPs. The default is
 “Meta_Analysis.plot”.}
 
 \item{pval_filter}{Character value as "R","F" or "W", specifying whether p-value threshold should be chosen based on “Random”, “Fixed” or
@@ -62,7 +62,7 @@ genotyped and imputed SNPs prior using the function, set this parameter as \code
 \item{max_top_snps}{Integer value, specifying the maximum number of top SNPs (SNPs with the lowest p-values) to be ploted in the forest
 plot file. The default is 6.}
 
-\item{chosen_snps_file}{Character string specifing the name of the plain-text file with a column of SNP names for the forest plots.
+\item{chosen_snps_file}{Character string specifying the name of the plain-text file with a column of SNP names for the forest plots.
 The default is NULL.}
 
 \item{byCHR}{Boolean value, \code{TRUE} or \code{FALSE}, specifying whether the meta analysis will be performed chromosome wise or not.
@@ -120,10 +120,10 @@ i.e., effect size beta. 'This function also calculates weighted Z-score-based p-
 For more information about the algorithms, please see the associated paper.
 }
 \examples{
-\dontrun{
-DataDir <- system.file("extdata", package = "GXwasR")
+data("Summary_Stat_Ex1", package = "GXwasR")
+data("Summary_Stat_Ex2", package = "GXwasR")
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
-data("GXwasRData")
 SummData <- list(Summary_Stat_Ex1, Summary_Stat_Ex2)
 SNPfile <- "UniqueLoci"
 useSNPposition <- FALSE
@@ -134,16 +134,14 @@ pval_filter <- "R"
 top_snp_pval <- 1e-08
 max_top_snps <- 10
 chosen_snps_file <- NULL
-# chosen_snps_file = "MainSNP"
 pval_threshold_manplot <- 1e-05
 plotname <- "Meta_Analysis.plot"
 x <- MetaGWAS(
-  DataDir = DataDir, SummData = SummData, ResultDir = ResultDir,
-  SNPfile = NULL, useSNPposition = TRUE, UseA1 = UseA1, GCse = GCse,
-  plotname = "Meta_Analysis.plot", pval_filter, top_snp_pval, max_top_snps,
-  chosen_snps_file = NULL, byCHR, pval_threshold_manplot
+    DataDir = DataDir, SummData = SummData, ResultDir = ResultDir,
+    SNPfile = NULL, useSNPposition = TRUE, UseA1 = UseA1, GCse = GCse,
+    plotname = "Meta_Analysis.plot", pval_filter, top_snp_pval, max_top_snps,
+    chosen_snps_file = NULL, byCHR, pval_threshold_manplot
 )
-}
 }
 \references{
 \insertAllCited{}

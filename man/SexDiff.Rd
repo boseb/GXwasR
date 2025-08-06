@@ -35,9 +35,10 @@ The input dataframes should only include X-chromosome in order to obtain results
 on X-linked loci.
 }
 \examples{
-data("GXwasRData")
+data("Mfile", package = "GXwasR")
+data("Ffile", package = "GXwasR")
 Difftest <- SexDiff(Mfile, Ffile)
-significant_snps <- Difftest[Difftest$adjP < 0.05, ] # 9
+significant_snps <- Difftest[Difftest$adjP < 0.05, ]
 }
 \author{
 Banabithi Bose

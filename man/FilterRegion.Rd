@@ -71,15 +71,15 @@ user-defined regions from input plink files. Only one type of filtering can be d
 \code{filterXTR} and \code{filterAmpliconic.}
 }
 \examples{
-DataDir <- system.file("extdata", package = "GXwasR")
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 foutput <- "PostimputeEX_QC1"
 x <- FilterRegion(
-  DataDir = DataDir, ResultDir = ResultDir,
-  finput = finput, foutput = foutput, CHRX = TRUE, CHRY = FALSE,
-  filterPAR = TRUE, filterXTR = TRUE, filterAmpliconic = TRUE,
-  regionfile = FALSE, filterCHR = NULL, Hg = "38", exclude = TRUE
+    DataDir = DataDir, ResultDir = ResultDir,
+    finput = finput, foutput = foutput, CHRX = TRUE, CHRY = FALSE,
+    filterPAR = TRUE, filterXTR = TRUE, filterAmpliconic = TRUE,
+    regionfile = FALSE, filterCHR = NULL, Hg = "38", exclude = TRUE
 )
 }
 \author{

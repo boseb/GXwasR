@@ -4,6 +4,14 @@
 \name{Example_pthresoldfile}
 \alias{Example_pthresoldfile}
 \title{Example dataset with p-value threshold}
+\format{
+A data frame with 7 rows and 3 variables:
+\describe{
+\item{Threshold}{Nominal p-value threshold; numeric}
+\item{LowerBound}{Lower bound of the p-value interval; integer}
+\item{UpperBound}{Upper bound of the p-value interval; numeric}
+}
+}
 \description{
 Example dataset with p-value threshold
 }
