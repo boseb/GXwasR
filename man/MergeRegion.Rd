@@ -2,7 +2,7 @@
 % Please edit documentation in R/GXwasR_main_functions.R
 \name{MergeRegion}
 \alias{MergeRegion}
-\title{MergeRegion: Merging two sets of plink binary files.}
+\title{MergeRegion: Merging two sets of PLINK binary files.}
 \usage{
 MergeRegion(
   DataDir,
@@ -14,7 +14,7 @@ MergeRegion(
 )
 }
 \arguments{
-\item{DataDir}{A character string for the file path of the input plink binary files.}
+\item{DataDir}{A character string for the file path of the input PLINK binary files.}
 
 \item{ResultDir}{A character string for the file path where all output files will be stored. The default is tempdir().}
 
@@ -29,7 +29,7 @@ MergeRegion(
 \value{
 NULL
 
-The output plink files will be saved in ResultDir.
+The output PLINK files will be saved in ResultDir.
 }
 \description{
 This function combines the two genotype datasets based on either common SNPs or all the SNPs between them.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/GXwasR_main_functions.R
 \name{plinkVCF}
 \alias{plinkVCF}
-\title{plinkVCF: Converting VCF files to plink binary files and vice-versa.}
+\title{plinkVCF: Converting VCF files to PLINK binary files and vice-versa.}
 \usage{
 plinkVCF(
   DataDir,
@@ -16,23 +16,23 @@ plinkVCF(
 )
 }
 \arguments{
-\item{DataDir}{A character string for the file path of the input plink binary files and all other input files.}
+\item{DataDir}{A character string for the file path of the input PLINK binary files and all other input files.}
 
 \item{ResultDir}{A character string for the file path where all output files will be stored. The default is \code{tempdir()}.}
 
-\item{finput}{Character string, specifying the prefix of the input plink binary files or vcf files. This file needs to be in \code{DataDir}.}
+\item{finput}{Character string, specifying the prefix of the input PLINK binary files or vcf files. This file needs to be in \code{DataDir}.}
 
-\item{foutput}{Character string, specifying the prefix of the output plink binary files if filtering option for the SNPs is chosen.
+\item{foutput}{Character string, specifying the prefix of the output PLINK binary files if filtering option for the SNPs is chosen.
 The default is "FALSE".}
 
-\item{VtoP}{Boolean value, \code{TRUE} or \code{FALSE}, specifying the conversion of VCF files to plink binary files or not. The default is \code{TRUE}.}
+\item{VtoP}{Boolean value, \code{TRUE} or \code{FALSE}, specifying the conversion of VCF files to PLINK binary files or not. The default is \code{TRUE}.}
 
-\item{PtoV}{Boolean value, \code{TRUE} or \code{FALSE}, specifying the conversion of plink binary files to VCF  files or not. The default is \code{TRUE}.}
+\item{PtoV}{Boolean value, \code{TRUE} or \code{FALSE}, specifying the conversion of PLINK binary files to VCF  files or not. The default is \code{TRUE}.}
 
 \item{Famfile}{Character string, specifying the name of the original .fam file if VtoP was set to be \code{TRUE}. This file needs to be in \code{DataDir}.
 The default is \code{NULL}.}
 
-\item{PVbyCHR}{Boolean value, \code{TRUE} or \code{FALSE} specifying to do the plink to vcf conversion chromosome-wise or not. The default is \code{TRUE}.}
+\item{PVbyCHR}{Boolean value, \code{TRUE} or \code{FALSE} specifying to do the PLINK to vcf conversion chromosome-wise or not. The default is \code{TRUE}.}
 }
 \value{
 \code{NULL}
@@ -40,10 +40,10 @@ The default is \code{NULL}.}
 The output files will be saved in \code{ResultDir}.
 }
 \description{
-This function performs the conversion between VCF files to plink binary formats.
+This function performs the conversion between VCF files to PLINK binary formats.
 
-For VCF to plink files conversion, if you do not specify any FAM file when you are converting from VCF to plink
-format, then plink will just create a 'dummy' FAM file with the same name as your dataset with missing phenotypes
+For VCF to PLINK files conversion, if you do not specify any FAM file when you are converting from VCF to PLINK
+format, then PLINK will just create a 'dummy' FAM file with the same name as your dataset with missing phenotypes
 and missing sex.
 }
 \examples{

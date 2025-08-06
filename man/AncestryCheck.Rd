@@ -63,17 +63,19 @@ only when the users are sure that they could join the study and reference sample
 \item{outlierOf}{Chracter string, specifying the reference ancestry name for detecting outlier samples. The default is "outlierOf = "EUR".}
 
 \item{outlier_threshold}{Numeric value, specifying the threshold to be be used to detect outlier samples. This threshold will be multiplied with the
-Eucledean distance from the center of the PC 1 and PC2 to the maximum Euclidean distance of the reference samples. Study samples
+Eucledean distance from the center of the PC1 and PC2 to the maximum Euclidean distance of the reference samples. Study samples
 outside this distance will be considered as outlier. The default is 3.}
 }
 \value{
-A dataframe with the IDs of non-European samples as outliers.
+A list containing two data frames: one with the IDs of outlier samples (Outlier_samples), and another with samples annotated with predicted ancestry (Samples_with_predicted_ancestry).
 }
 \description{
 This function displays the result of the ancestry analysis in a color-coded scatter plot of the first two principal
 components for samples of the reference populations and the study population. Specifically, it compares the study samples'
 ancestry labels to a panel representing a reference population, and it also flags the outlier samples with respect to a
 chosen reference population.
+
+Users are required to provide SNPs ids ar rsids in the input PLINK files.
 
 The function first filters the reference and study data for non-A-T or G-C SNPs. It next conducts
 LD pruning, fixes the chromosome mismatch between the reference and study datasets, checks for allele flips, updates the

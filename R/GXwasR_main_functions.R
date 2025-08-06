@@ -6,8 +6,8 @@
 #' This function displays the result of the ancestry analysis in a color-coded scatter plot of the first two principal
 #' components for samples of the reference populations and the study population. Specifically, it compares the study samples'
 #' ancestry labels to a panel representing a reference population, and it also flags the outlier samples with respect to a
-#' chosen reference population. 
-#' 
+#' chosen reference population.
+#'
 #' Users are required to provide SNPs ids ar rsids in the input PLINK files.
 #'
 #' The function first filters the reference and study data for non-A-T or G-C SNPs. It next conducts
@@ -88,7 +88,7 @@
 #' @importFrom vroom vroom
 #'
 #' @return A list containing two data frames: one with the IDs of outlier samples (Outlier_samples), and another with samples annotated with predicted ancestry (Samples_with_predicted_ancestry).
-#' 
+#'
 #' @references
 #' \insertAllCited{}
 #'
@@ -503,7 +503,7 @@ AncestryCheck <- function(
 #' @param reference_matrix_used
 #' Boolean value, `TRUE` or `FALSE` logical indicating whether the correlation matrices were generated using the reference matrix. The
 #' default is `FALSE`. If  `TRUE`, regularization algorithms will be applied to ensure the invertibility and numerical stability of
-#' the matrices.TESTTESTTEST
+#' the matrices.
 #'
 #' @returns
 #' A data frame with columns:
@@ -909,8 +909,8 @@ SexDiff <- function(Mfile, Ffile) {
 #' @author Banabithi Bose
 #'
 #' @description
-#' This function performs QC of genotype data from PLINK binary files. 
-#' It can filter based on minor allele frequency, Hardy-Weinberg equilibrium, call rate, and 
+#' This function performs QC of genotype data from PLINK binary files.
+#' It can filter based on minor allele frequency, Hardy-Weinberg equilibrium, call rate, and
 #' differential missingness between cases and controls. It can also perform linkage disequilibrium-based filtering.
 #'
 #' @param DataDir
@@ -1018,26 +1018,27 @@ SexDiff <- function(Mfile, Ffile) {
 #'     caldiffmiss = caldiffmiss
 #' )
 QCsnp <-
-    function(DataDir,
-    ResultDir = tempdir(),
-    finput,
-    foutput = "FALSE",
-    casecontrol = TRUE,
-    hweCase = NULL,
-    hweControl = NULL,
-    hwe = NULL,
-    maf = 0.05,
-    geno = 0.1,
-    monomorphicSNPs = FALSE,
-    caldiffmiss = FALSE,
-    diffmissFilter = FALSE,
-    dmissX = FALSE,
-    dmissAutoY = FALSE,
-    highLD_regions = NULL,
-    ld_prunning = FALSE,
-    window_size = 50,
-    step_size = 5,
-    r2_threshold = 0.02) {
+    function(
+        DataDir,
+        ResultDir = tempdir(),
+        finput,
+        foutput = "FALSE",
+        casecontrol = TRUE,
+        hweCase = NULL,
+        hweControl = NULL,
+        hwe = NULL,
+        maf = 0.05,
+        geno = 0.1,
+        monomorphicSNPs = FALSE,
+        caldiffmiss = FALSE,
+        diffmissFilter = FALSE,
+        dmissX = FALSE,
+        dmissAutoY = FALSE,
+        highLD_regions = NULL,
+        ld_prunning = FALSE,
+        window_size = 50,
+        step_size = 5,
+        r2_threshold = 0.02) {
         if (!validateInputForQCsnp(DataDir, ResultDir, finput, foutput, casecontrol, hweCase, hweControl, hwe, maf, geno, monomorphicSNPs, caldiffmiss, diffmissFilter, dmissX, dmissAutoY, highLD_regions, ld_prunning, window_size, step_size, r2_threshold)) {
             return(NULL)
         }
@@ -1125,8 +1126,8 @@ QCsnp <-
                 # Remove NoAmbiguousSNP* files
                 removeTempFiles(ResultDir, "NoAmbiguousSNP")
 
-        # Remove PLINK file
-        removeTempFiles(ResultDir, "PLINK")
+                # Remove PLINK file
+                removeTempFiles(ResultDir, "PLINK")
 
                 # Remove other files
                 removeTempFiles(ResultDir, "study_SNP")
@@ -1365,16 +1366,17 @@ QCsnp <-
 #'     IndepSNP_window_size = 50, IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02,
 #'     highLD_regions = highLD_hg19
 #' )
-EstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL, precomputedLD = NULL,
-    indepSNPs = NULL, summarystat = NULL, ncores = 2, model = c("LDSC", "GREML"),
-    computeGRM = TRUE, grmfile_name = NULL, byCHR = FALSE,
-    r2_LD = 0, LDSC_blocks = 20, intercept = NULL, chi2_thr1 = 30,
-    chi2_thr2 = Inf, REMLalgo = c(0, 1, 2), nitr = 100, cat_covarfile = NULL,
-    quant_covarfile = NULL, prevalence = NULL, partGRM = FALSE, autosome = TRUE,
-    Xsome = TRUE, nGRM = 3, cripticut = 0.025, minMAF = NULL, maxMAF = NULL,
-    hg = c("hg19", "hg38"), PlotIndepSNP = TRUE, IndepSNP_window_size = 50,
-    IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02, highLD_regions = NULL,
-    plotjpeg = TRUE, plotname = "Heritability_Plots") {
+EstimateHerit <- function(
+        DataDir = NULL, ResultDir = tempdir(), finput = NULL, precomputedLD = NULL,
+        indepSNPs = NULL, summarystat = NULL, ncores = 2, model = c("LDSC", "GREML"),
+        computeGRM = TRUE, grmfile_name = NULL, byCHR = FALSE,
+        r2_LD = 0, LDSC_blocks = 20, intercept = NULL, chi2_thr1 = 30,
+        chi2_thr2 = Inf, REMLalgo = c(0, 1, 2), nitr = 100, cat_covarfile = NULL,
+        quant_covarfile = NULL, prevalence = NULL, partGRM = FALSE, autosome = TRUE,
+        Xsome = TRUE, nGRM = 3, cripticut = 0.025, minMAF = NULL, maxMAF = NULL,
+        hg = c("hg19", "hg38"), PlotIndepSNP = TRUE, IndepSNP_window_size = 50,
+        IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02, highLD_regions = NULL,
+        plotjpeg = TRUE, plotname = "Heritability_Plots") {
     # Validate inputs
     if (!validateInputForEstimateHerit(DataDir, ResultDir, finput, summarystat, ncores, model, byCHR, r2_LD, LDSC_blocks, REMLalgo, nitr, cat_covarfile, quant_covarfile, prevalence, partGRM, autosome, Xsome, nGRM, cripticut, minMAF, maxMAF, hg, PlotIndepSNP, IndepSNP_window_size, IndepSNP_step_size, IndepSNP_r2_threshold, highLD_regions)) {
         return(NULL)
@@ -1505,10 +1507,9 @@ EstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL, 
 #'     DataDir = DataDir, ResultDir = ResultDir,
 #'     finput = finput, highLD_regions = highLD_hg19, countPC = 20
 #' )
-ComputeGeneticPC <- function(
-        DataDir, ResultDir = tempdir(), finput, countPC = 10, plotPC = TRUE,
-        highLD_regions = NULL, ld_prunning = TRUE,
-        window_size = 50, step_size = 5, r2_threshold = 0.02) {
+ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 10, plotPC = TRUE,
+    highLD_regions = NULL, ld_prunning = TRUE,
+    window_size = 50, step_size = 5, r2_threshold = 0.02) {
     # Validate inputs
     if (!validateInputForComputeGeneticPC(DataDir, ResultDir, finput, countPC, plotPC, highLD_regions, ld_prunning, window_size, step_size, r2_threshold)) {
         stop("Please verify all inputs.")
@@ -1815,11 +1816,10 @@ ComputeGeneticPC <- function(
 #' ## The best threshold
 #' BestPvalue <- PRSresult$BestP$Threshold
 #' BestPvalue
-ComputePRS <- function(
-        DataDir, ResultDir = tempdir(), finput, summarystat, phenofile, covarfile = NULL,
-        effectsize = c("BETA", "OR"), ldclump = FALSE, LDreference, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE,
-        pthreshold = c(0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5), highLD_regions, ld_prunning = FALSE,
-        window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary") {
+ComputePRS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phenofile, covarfile = NULL,
+    effectsize = c("BETA", "OR"), ldclump = FALSE, LDreference, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE,
+    pthreshold = c(0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5), highLD_regions, ld_prunning = FALSE,
+    window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary") {
     # Validate inputs
     if (!validateInputForComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize, ldclump, LDreference, clump_p1, clump_p2, clump_r2, clump_kb, byCHR, pthreshold, highLD_regions, ld_prunning, window_size, step_size, r2_threshold, nPC, pheno_type)) {
         stop("Please validate all inputs")
@@ -2302,17 +2302,18 @@ plinkVCF <- function(
 #' # Checking if there is any wrong sex assignment
 #' problematic_sex <- x[x$STATUS != "OK", ]
 SexCheck <-
-    function(DataDir,
-    ResultDir = tempdir(),
-    finput,
-    impute_sex = FALSE,
-    compute_freq = FALSE,
-    LD = TRUE,
-    LD_window_size = 50,
-    LD_step_size = 5,
-    LD_r2_threshold = 0.02,
-    fmax_F = 0.2,
-    mmin_F = 0.8) {
+    function(
+        DataDir,
+        ResultDir = tempdir(),
+        finput,
+        impute_sex = FALSE,
+        compute_freq = FALSE,
+        LD = TRUE,
+        LD_window_size = 50,
+        LD_step_size = 5,
+        LD_r2_threshold = 0.02,
+        fmax_F = 0.2,
+        mmin_F = 0.8) {
         # Validate inputs
         if (!validateInputForSexCheck(DataDir, ResultDir, finput, impute_sex, compute_freq, LD, LD_window_size, LD_step_size, LD_r2_threshold, fmax_F, mmin_F)) {
             return(NULL)
@@ -2637,13 +2638,14 @@ FilterPlinkSample <- function(DataDir, ResultDir,
 #'     finput = finput, foutput = foutput, sex = sex,
 #'     xplink = FALSE, autoplink = FALSE
 #' )
-GetMFPlink <- function(DataDir,
-    ResultDir = tempdir(),
-    finput,
-    foutput,
-    sex,
-    xplink = FALSE,
-    autoplink = FALSE) {
+GetMFPlink <- function(
+        DataDir,
+        ResultDir = tempdir(),
+        finput,
+        foutput,
+        sex,
+        xplink = FALSE,
+        autoplink = FALSE) {
     if (!checkFiles(DataDir, finput)) {
         stop("Missing required Plink files in the specified DataDir.")
     }
@@ -2783,11 +2785,11 @@ Xhwe <- function(DataDir, ResultDir = tempdir(), finput, filterSNP = TRUE, foutp
             fam <-
                 as.data.frame(utils::read.table(file = normalizePath(file.path(ResultDir, "female.fam"), mustWork = FALSE)))
 
-      # Check for case control status in input PLINK file
-      fam <- na.omit(fam)
-      fam$V6 <- as.numeric(as.character(fam$V6))
-      fam2 <- fam[fam$V6 != 0, ]
-      fam3 <- fam2[fam2$V6 != -9, ]
+            # Check for case control status in input PLINK file
+            fam <- na.omit(fam)
+            fam$V6 <- as.numeric(as.character(fam$V6))
+            fam2 <- fam[fam$V6 != 0, ]
+            fam3 <- fam2[fam2$V6 != -9, ]
 
             # Updated this warning part
             if (length(unique(fam3$V6)) != 2) {
@@ -2936,12 +2938,11 @@ Xhwe <- function(DataDir, ResultDir = tempdir(), finput, filterSNP = TRUE, foutp
 #' finput <- "GXwasR_example"
 #' foutput <- "Test_output"
 #' x <- MAFdiffSexControl(DataDir, ResultDir, finput, filterSNP = TRUE, foutput = foutput)
-MAFdiffSexControl <- function(
-        DataDir,
-        ResultDir = tempdir(),
-        finput,
-        filterSNP = FALSE,
-        foutput = NULL) {
+MAFdiffSexControl <- function(DataDir,
+    ResultDir = tempdir(),
+    finput,
+    filterSNP = FALSE,
+    foutput = NULL) {
     if (!validateInputForMAFdiffSexControl(DataDir, ResultDir, finput, filterSNP, foutput)) {
         return(NULL)
     }
@@ -3175,23 +3176,22 @@ MAFdiffSexControl <- function(
 #'     foutput = foutput, imiss = imiss, het = het, IBD = IBD,
 #'     ambi_out = ambi_out
 #' )
-QCsample <- function(
-        DataDir,
-        ResultDir,
-        finput,
-        foutput = NULL,
-        imiss,
-        het,
-        small_sample_mod = FALSE,
-        IBD,
-        IBDmatrix = FALSE,
-        ambi_out = TRUE,
-        legend_text_size = 8,
-        legend_title_size = 7,
-        axis_text_size = 5,
-        axis_title_size = 7,
-        title_size = 9,
-        filterSample = TRUE) {
+QCsample <- function(DataDir,
+    ResultDir,
+    finput,
+    foutput = NULL,
+    imiss,
+    het,
+    small_sample_mod = FALSE,
+    IBD,
+    IBDmatrix = FALSE,
+    ambi_out = TRUE,
+    legend_text_size = 8,
+    legend_title_size = 7,
+    axis_text_size = 5,
+    axis_title_size = 7,
+    title_size = 9,
+    filterSample = TRUE) {
     # Validate parameters
     validateInputForQCsample(DataDir, ResultDir, finput, foutput, imiss, het, small_sample_mod, IBD, IBDmatrix, ambi_out, legend_text_size, legend_title_size, axis_text_size, axis_title_size, title_size, filterSample = TRUE)
 
@@ -3381,7 +3381,7 @@ QCsample <- function(
                 Failed_IBD = failed_ibd[, seq_len(2)],
                 Missingness_results = fmi,
                 Heterozygosity_results = fhh,
-                IBD_results = ibd, 
+                IBD_results = ibd,
                 het_plot = het_plot
             ))
         },
@@ -3602,8 +3602,8 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #' functionality is taken from the R package poolr \insertCite{Cinar2022}{GXwasR}.
 #'
 #' Note that only p-values between 0 and 1 are allowed to be passed to these methods.
-#' 
-#' Note: Though this parameter is enabled for both autosome GWAS and XWAS, the combining pvalue after 
+#'
+#' Note: Though this parameter is enabled for both autosome GWAS and XWAS, the combining pvalue after
 #' sex-stratified test is recommended to ChrX only.
 #'
 #' @param MF.zero.sub
@@ -3690,12 +3690,13 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #'     snp_pval = snp_pval, plot.jpeg = TRUE, suggestiveline = 5, genomewideline = 7.3,
 #'     MF.mc.cores = 1, ncores = ncores
 #' )
-GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"), standard_beta = TRUE,
-    xmodel = c("FMcombx01", "FMcombx02", "FMstratified", "GWAScxci"), sex = FALSE, xsex = FALSE,
-    covarfile = NULL, interaction = FALSE, covartest = c("ALL"), Inphenocov = c("ALL"), combtest = c("fisher.method", "fisher.method.perm", "stouffer.method"),
-    MF.zero.sub = 0.00001, B = 10000, MF.mc.cores = 1, MF.na.rm = FALSE,
-    MF.p.corr = "none", plot.jpeg = FALSE, plotname = "GXwas.plot", snp_pval = 1e-08,
-    annotateTopSnp = FALSE, suggestiveline = 5, genomewideline = 7.3, ncores = 0) {
+GXwas <- function(
+        DataDir, ResultDir, finput, trait = c("binary", "quantitative"), standard_beta = TRUE,
+        xmodel = c("FMcombx01", "FMcombx02", "FMstratified", "GWAScxci"), sex = FALSE, xsex = FALSE,
+        covarfile = NULL, interaction = FALSE, covartest = c("ALL"), Inphenocov = c("ALL"), combtest = c("fisher.method", "fisher.method.perm", "stouffer.method"),
+        MF.zero.sub = 0.00001, B = 10000, MF.mc.cores = 1, MF.na.rm = FALSE,
+        MF.p.corr = "none", plot.jpeg = FALSE, plotname = "GXwas.plot", snp_pval = 1e-08,
+        annotateTopSnp = FALSE, suggestiveline = 5, genomewideline = 7.3, ncores = 0) {
     # Initialize progress bar
 
     pb <- progress::progress_bar$new(
@@ -4999,20 +5000,19 @@ SexRegress <- function(fdata, regressor_index, response_index) {
 #'     regionfile = FALSE, filterCHR = NULL, Hg = "38", exclude = TRUE
 #' )
 FilterRegion <-
-    function(
-        DataDir,
-        ResultDir,
-        finput,
-        foutput,
-        CHRX = TRUE,
-        CHRY = FALSE,
-        filterPAR = TRUE,
-        filterXTR = TRUE,
-        filterAmpliconic = TRUE,
-        regionfile = FALSE,
-        filterCHR = NULL,
-        Hg = "19",
-        exclude = TRUE) {
+    function(DataDir,
+    ResultDir,
+    finput,
+    foutput,
+    CHRX = TRUE,
+    CHRY = FALSE,
+    filterPAR = TRUE,
+    filterXTR = TRUE,
+    filterAmpliconic = TRUE,
+    regionfile = FALSE,
+    filterCHR = NULL,
+    Hg = "19",
+    exclude = TRUE) {
         # Validate parameters
         validateFilterRegionParams(DataDir, ResultDir, finput, foutput, CHRX, CHRY, filterPAR, filterXTR, filterAmpliconic, regionfile, filterCHR, Hg, exclude)
 

@@ -56,8 +56,7 @@ X-chromosome inactivation (XCI) pattern as random (XCI-R) in the FM01 model are 
 genotypes that follow the XCI is escaped (XCI-E) in the FM02 model are coded by 0 and 1. To reflect the dose
 compensation connection between the sexes, FM02 treats men as homozygous females.
 
-In the FM01comb and FM01comb methods, associations are tested separately for males and females with the FM01 and FM02
-models, respectively, and then the combined p values are computed the Fisher's method, Fisher's method with permutation,
+In the "FMstatrified" associations are tested separately for males and females, and then the combined p values are computed the Fisher's method, Fisher's method with permutation,
 or Stouffer's method(1,3-7]. An X-chromosome inactivation (XCI) pattern, or coding technique for X-chromosomal genotypes
 between sexes, is not required for the XCGA. By simultaneously accounting for four distinct XCI patterns, namely XCI-R, XCI-E,
 XCI-SN (XCI fully toward normal allele), and XCI-SR (XCI fully toward risk allele), this model may maintain a
@@ -106,7 +105,7 @@ The default is \verb{c(“ALL”)}.
 
 Note: This feature is not valid for the XCGA model for the XWAS part.}
 
-\item{combtest}{Character vector specifying method for combining p-values for stratified GWAS with FM01comb and FM02comb XWAS models.
+\item{combtest}{Character vector specifying method for combining p-values after stratified GWAS/XWAS models.
 Choices are “stouffer.method”, "fisher.method" and "fisher.method.perm". For fisher.method the function for combining
 p-values uses a statistic, \eqn{S = -2 ∑^k /log p}, which follows a \eqn{χ^2} distribution with 2k degrees of freedom \insertCite{Fisher1925}{GXwasR}.
 
@@ -122,7 +121,10 @@ combined, the test statistic is then computed with \eqn{$z = ∑^k_{1}frac{z_{i}
 hypothesis, the test statistic follows a standard normal distribution which is used to compute the combined p-value. This
 functionality is taken from the R package poolr \insertCite{Cinar2022}{GXwasR}.
 
-Note that only p-values between 0 and 1 are allowed to be passed to these methods.}
+Note that only p-values between 0 and 1 are allowed to be passed to these methods.
+
+Note: Though this parameter is enabled for both autosome GWAS and XWAS, the combining pvalue after
+sex-stratified test is recommended to ChrX only.}
 
 \item{MF.zero.sub}{Small numeric value for substituting p-values of 0 in in stratified GWAS with FM01comb and FM02comb XWAS models.
 The default is 0.00001. As log(0) results in Inf this replaces p-values of 0 by default with a small float.}
