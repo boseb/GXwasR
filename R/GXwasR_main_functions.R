@@ -8,7 +8,7 @@
 #' ancestry labels to a panel representing a reference population, and it also flags the outlier samples with respect to a
 #' chosen reference population.
 #'
-#' Users are required to provide SNPs ids ar rsids in the input PLINK files.
+#' Users are required to provide SNPs ids or rsids in the input PLINK files.
 #'
 #' The function first filters the reference and study data for non-A-T or G-C SNPs. It next conducts
 #' LD pruning, fixes the chromosome mismatch between the reference and study datasets, checks for allele flips, updates the
