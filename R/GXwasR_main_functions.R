@@ -2579,7 +2579,7 @@ FilterPlinkSample <- function(DataDir, ResultDir,
                     ))
                 }
             }
-            rlang::inform(rlang::format_error_bullets(c("v" = paste0(foutput, " plink files with desired samples are in ", ResultDir))))
+            rlang::inform(rlang::format_error_bullets(c("v" = paste0(foutput, " PLINK files with desired samples are in ", ResultDir))))
             return()
         },
         error = function(e) {
