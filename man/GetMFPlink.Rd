@@ -23,11 +23,11 @@ GetMFPlink(
 
 \item{foutput}{Character string, specifying the prefix of the output PLINK binary files.}
 
-\item{sex}{Boolean value, 'males' or 'females', specifying output plink binary files with male or female samples.}
+\item{sex}{Boolean value, 'males' or 'females', specifying output PLINK binary files with male or female samples.}
 
-\item{xplink}{Boolean value, \code{TRUE} or \code{FALSE}, specifying output plink binary files with only X chromosome or not. Default is \code{FALSE.}}
+\item{xplink}{Boolean value, \code{TRUE} or \code{FALSE}, specifying output PLINK binary files with only X chromosome or not. Default is \code{FALSE.}}
 
-\item{autoplink}{Boolean value, \code{TRUE} or \code{FALSE}, specifying output plink binary files with only autosome or not. Default is \code{FALSE.}}
+\item{autoplink}{Boolean value, \code{TRUE} or \code{FALSE}, specifying output PLINK binary files with only autosome or not. Default is \code{FALSE.}}
 }
 \value{
 None

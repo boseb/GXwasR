@@ -35,7 +35,7 @@ needs to be in the \code{DataDir}. The default is \code{NULL}.}
 \value{
 \code{NULL}
 
-The output plink files with passed samples will be saved in ResultDir.
+The output PLINK files with passed samples will be saved in ResultDir.
 }
 \description{
 This function prepares PLINK binary files with the desired samples.

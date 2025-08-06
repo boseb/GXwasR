@@ -38,7 +38,7 @@ to be in \code{DataDir}.}
 \item{foutput}{Character string, specifying the prefix of the output PLINK binary files if the filtering option for the SNPs is chosen.
 The default is "FALSE".}
 
-\item{casecontrol}{Boolean value, \code{TRUE} or \code{FALSE} indicating if the input plink files has cases-control status or not.
+\item{casecontrol}{Boolean value, \code{TRUE} or \code{FALSE} indicating if the input PLINK files has cases-control status or not.
 The default is \code{FALSE}.}
 
 \item{hweCase}{Numeric value between 0 to 1 or \code{NULL} for removing SNPs which fail Hardy-Weinberg equilibrium for cases.
@@ -86,12 +86,12 @@ for all these SNPs.}
 }
 \value{
 A list of two objects, namely, \code{MonomorSNPs} and \code{DiffMissSNPs} containing monomorphic SNPs and SNPs with differential missingness
-in cases vs controls, respectively. Output plink binary files in the working directory.
+in cases vs controls, respectively. Output PLINK binary files in the working directory.
 }
 \description{
-This function performs quality control on genetic variant data from PLINK binary files. It filters variants based on parameters
-like minor allele frequency, Hardy-Weinberg equilibrium, call rate, and differential missingness between cases and controls.
-It also handles monomorphic SNPs and applies linkage disequilibrium-based filtering if specified.
+This function performs QC of genotype data from PLINK binary files.
+It can filter based on minor allele frequency, Hardy-Weinberg equilibrium, call rate, and
+differential missingness between cases and controls. It can also perform linkage disequilibrium-based filtering.
 }
 \examples{
 DataDir <- GXwasR:::GXwasR_data()
