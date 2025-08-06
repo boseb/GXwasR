@@ -3,6 +3,7 @@
 components for samples of the reference populations and the study population. Specifically, it compares the study samples'
 ancestry labels to a panel representing a reference population, and it also flags the outlier samples with respect to a
 chosen reference population.
+Users are required to provide SNPs ids or rsids in the input PLINK files.
 The function first filters the reference and study data for non-A-T or G-C SNPs. It next conducts
 LD pruning, fixes the chromosome mismatch between the reference and study datasets, checks for allele flips, updates the
 locations, and flips the alleles. The two datasets are then joined, and the resulting genotype dataset is subjected to Principal
@@ -18,6 +19,7 @@ datasets to the same build."><meta property="og:description" content="This funct
 components for samples of the reference populations and the study population. Specifically, it compares the study samples'
 ancestry labels to a panel representing a reference population, and it also flags the outlier samples with respect to a
 chosen reference population.
+Users are required to provide SNPs ids or rsids in the input PLINK files.
 The function first filters the reference and study data for non-A-T or G-C SNPs. It next conducts
 LD pruning, fixes the chromosome mismatch between the reference and study datasets, checks for allele flips, updates the
 locations, and flips the alleles. The two datasets are then joined, and the resulting genotype dataset is subjected to Principal
@@ -78,6 +80,7 @@ datasets to the same build."><meta property="og:image" content="/logo.svg"></hea
 components for samples of the reference populations and the study population. Specifically, it compares the study samples'
 ancestry labels to a panel representing a reference population, and it also flags the outlier samples with respect to a
 chosen reference population.</p>
+<p>Users are required to provide SNPs ids or rsids in the input PLINK files.</p>
 <p>The function first filters the reference and study data for non-A-T or G-C SNPs. It next conducts
 LD pruning, fixes the chromosome mismatch between the reference and study datasets, checks for allele flips, updates the
 locations, and flips the alleles. The two datasets are then joined, and the resulting genotype dataset is subjected to Principal
@@ -195,13 +198,13 @@ only when the users are sure that they could join the study and reference sample
 
 <dt id="arg-outlier-threshold">outlier_threshold<a class="anchor" aria-label="anchor" href="#arg-outlier-threshold"></a></dt>
 <dd><p>Numeric value, specifying the threshold to be be used to detect outlier samples. This threshold will be multiplied with the
-Eucledean distance from the center of the PC 1 and PC2 to the maximum Euclidean distance of the reference samples. Study samples
+Eucledean distance from the center of the PC1 and PC2 to the maximum Euclidean distance of the reference samples. Study samples
 outside this distance will be considered as outlier. The default is 3.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A dataframe with the IDs of non-European samples as outliers.</p>
+    <p>A list containing two data frames: one with the IDs of outlier samples (Outlier_samples), and another with samples annotated with predicted ancestry (Samples_with_predicted_ancestry).</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
