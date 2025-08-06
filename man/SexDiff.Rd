@@ -38,7 +38,7 @@ on X-linked loci.
 data("Mfile", package = "GXwasR")
 data("Ffile", package = "GXwasR")
 Difftest <- SexDiff(Mfile, Ffile)
-significant_snps <- Difftest[Difftest$adjP < 0.05, ] # 9
+significant_snps <- Difftest[Difftest$adjP < 0.05, ]
 }
 \author{
 Banabithi Bose

@@ -1,0 +1,769 @@
+---
+title: "Genetic Correlation using GWAS Summary Statistics"
+author: 
+  - name: "Banabithi Bose"
+    affiliation:
+    - Northwestern University
+    - University of Colorado Anschutz Medical Campus
+    email: banabithi.bose@gmail.com
+output: 
+  BiocStyle::html_document:
+    self_contained: false
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    code_folding: show
+date: "5 August 2025"
+package: "GXwasR 0.99.0"
+vignette: >
+  %\VignetteIndexEntry{genetic_correlation_sumstat}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}  
+---
+
+
+
+
+
+
+# GXwasR function SumstatGenCorr()
+
+**SumstatGenCorr: Genetic Correlation Calculation from GWAS Summary Statistics**
+
+This function calculates the genetic correlation between two summary statistics
+using a specified reference LD matrix from the UK Biobank or Hapmap2 following Ning Z, Pawitan Y, Shen X (2020). High-definition likelihood inference of genetic correlations 
+across human complex traits, Nature Genetics.
+
+The function utilizes the precomputed eigenvalues and eigenvectors of LD correlation matrices for European ancestry population. 
+
+These are the LD matrices and their eigen-decomposition from three different sets:
+
+**1) UKB_imputed_hapmap2_SVD_eigen99_extraction:** 769,306 QCed UK Biobank imputed HapMap2 SNPs:
+If one of your GWAS includes most of the HapMap 2 SNPs, but many SNPs (more than 1%) in the above HapMap 3 reference panel are absent, then this HapMap2 panel is more proper to be used for computing genetic correlation. The size is about 18 GB after unzipping
+
+**2) UKB_imputed_SVD_eigen99_extraction:** 1,029,876 QCed UK Biobank imputed SNPs. The size is about 31 GB after unzipping. Although it takes more time, using the imputed panel provides more accurate estimates of genetic correlations. The reference panels with imputed SNPs are based on genotypes in UK Biobank, which were imputed to HRC and UK10K + 1000 Genomes.
+Therefore if the GWAS includes most of the HapMap3 SNPs, then it is recommend using the imputed reference panel.
+
+**3) UKB_array_SVD_eigen90_extraction:** 307,519 QCed UK Biobank Axiom Array SNPs. The size is about 7.5 GB after unzipping.
+
+
+``` r
+library(GXwasR)
+help(SumstatGenCorr)
+#> ℹ Rendering development documentation for "SumstatGenCorr"
+```
+
+# Running example with imputed datasets from Neale's lab with UKB_imputed_hapmap2_SVD_eigen99_extraction
+
+Birth weight and type 2 diabetes based on the summary statistics with around 20,000 individuals.
+
+
+``` r
+ResultDir <- tempdir()
+sumstat1 <- readRDS("gwas1.imputed.example.rds")
+sumstat2 <- readRDS("gwas2.imputed.example.rds")
+referenceLD = "UKB_imputed_hapmap2_SVD_eigen99_extraction"
+res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=sumstat1, sumstat2=sumstat2)
+#> Analysis starts on Tue Aug  5 16:38:18 2025
+#> ℹ 0 SNPs were removed in GWAS 1 due to missing N or missing test statistic.
+#> ℹ 0 SNPs were removed in GWAS 2 due to missing N or missing test statistic.
+#> ℹ 769306 out of 769306 (100%) SNPs in reference panel are available in GWAS 1.
+#> ℹ 769306 out of 769306 (100%) SNPs in reference panel are available in GWAS 2.
+#> ■■                                 3% (2/62)
+#> ■■                                 5% (3/62)
+#> ■■■                                6% (4/62)
+#> ■■■                                8% (5/62)
+#> ■■■■                              10% (6/62)
+#> ■■■■                              11% (7/62)
+#> ■■■■■                             13% (8/62)
+#> ■■■■■                             15% (9/62)
+#> ■■■■■■                            16% (10/62)
+#> ■■■■■■                            18% (11/62)
+#> ■■■■■■■                           19% (12/62)
+#> ■■■■■■■                           21% (13/62)
+#> ■■■■■■■■                          23% (14/62)
+#> ■■■■■■■■                          24% (15/62)
+#> ■■■■■■■■■                         26% (16/62)
+#> ■■■■■■■■■                         27% (17/62)
+#> ■■■■■■■■■■                        29% (18/62)
+#> ■■■■■■■■■■                        31% (19/62)
+#> ■■■■■■■■■■■                       32% (20/62)
+#> ■■■■■■■■■■■                       34% (21/62)
+#> ■■■■■■■■■■■■                      35% (22/62)
+#> ■■■■■■■■■■■■                      37% (23/62)
+#> ■■■■■■■■■■■■■                     39% (24/62)
+#> ■■■■■■■■■■■■■                     40% (25/62)
+#> ■■■■■■■■■■■■■■                    42% (26/62)
+#> ■■■■■■■■■■■■■■                    44% (27/62)
+#> ■■■■■■■■■■■■■■■                   45% (28/62)
+#> ■■■■■■■■■■■■■■■                   47% (29/62)
+#> ■■■■■■■■■■■■■■■■                  48% (30/62)
+#> ■■■■■■■■■■■■■■■■                  50% (31/62)
+#> ■■■■■■■■■■■■■■■■                  52% (32/62)
+#> ■■■■■■■■■■■■■■■■■                 53% (33/62)
+#> ■■■■■■■■■■■■■■■■■                 55% (34/62)
+#> ■■■■■■■■■■■■■■■■■■                56% (35/62)
+#> ■■■■■■■■■■■■■■■■■■                58% (36/62)
+#> ■■■■■■■■■■■■■■■■■■■               60% (37/62)
+#> ■■■■■■■■■■■■■■■■■■■               61% (38/62)
+#> ■■■■■■■■■■■■■■■■■■■■              63% (39/62)
+#> ■■■■■■■■■■■■■■■■■■■■              65% (40/62)
+#> ■■■■■■■■■■■■■■■■■■■■■             66% (41/62)
+#> ■■■■■■■■■■■■■■■■■■■■■             68% (42/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■            69% (43/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■            71% (44/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■           73% (45/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■           74% (46/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■          76% (47/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■          77% (48/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■         79% (49/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■         81% (50/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■        82% (51/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■        84% (52/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■       85% (53/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■       87% (54/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      89% (55/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90% (56/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% (57/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94% (58/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    95% (59/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    97% (60/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   98% (61/62)
+#>                                              
+#> 
+#> 
+#> 
+#> Integrating piecewise results
+#> Point estimates:
+#> • Heritability of phenotype 1:  0.1008
+#> • Heritability of phenotype 2:  0.0066
+#> • Genetic Covariance:  -0.006
+#> • Genetic Correlation:  -0.2318
+#> ℹ Continuing computing standard error with jackknife
+#> ■■                                 3% (2/62)
+#> ■■                                 5% (3/62)
+#> ■■■                                6% (4/62)
+#> ■■■                                8% (5/62)
+#> ■■■■                              10% (6/62)
+#> ■■■■                              11% (7/62)
+#> ■■■■■                             13% (8/62)
+#> ■■■■■                             15% (9/62)
+#> ■■■■■■                            16% (10/62)
+#> ■■■■■■                            18% (11/62)
+#> ■■■■■■■                           19% (12/62)
+#> ■■■■■■■                           21% (13/62)
+#> ■■■■■■■■                          23% (14/62)
+#> ■■■■■■■■                          24% (15/62)
+#> ■■■■■■■■■                         26% (16/62)
+#> ■■■■■■■■■                         27% (17/62)
+#> ■■■■■■■■■■                        29% (18/62)
+#> ■■■■■■■■■■                        31% (19/62)
+#> ■■■■■■■■■■■                       32% (20/62)
+#> ■■■■■■■■■■■                       34% (21/62)
+#> ■■■■■■■■■■■■                      35% (22/62)
+#> ■■■■■■■■■■■■                      37% (23/62)
+#> ■■■■■■■■■■■■■                     39% (24/62)
+#> ■■■■■■■■■■■■■                     40% (25/62)
+#> ■■■■■■■■■■■■■■                    42% (26/62)
+#> ■■■■■■■■■■■■■■                    44% (27/62)
+#> ■■■■■■■■■■■■■■■                   45% (28/62)
+#> ■■■■■■■■■■■■■■■                   47% (29/62)
+#> ■■■■■■■■■■■■■■■■                  48% (30/62)
+#> ■■■■■■■■■■■■■■■■                  50% (31/62)
+#> ■■■■■■■■■■■■■■■■                  52% (32/62)
+#> ■■■■■■■■■■■■■■■■■                 53% (33/62)
+#> ■■■■■■■■■■■■■■■■■                 55% (34/62)
+#> ■■■■■■■■■■■■■■■■■■                56% (35/62)
+#> ■■■■■■■■■■■■■■■■■■                58% (36/62)
+#> ■■■■■■■■■■■■■■■■■■■               60% (37/62)
+#> ■■■■■■■■■■■■■■■■■■■               61% (38/62)
+#> ■■■■■■■■■■■■■■■■■■■■              63% (39/62)
+#> ■■■■■■■■■■■■■■■■■■■■              65% (40/62)
+#> ■■■■■■■■■■■■■■■■■■■■■             66% (41/62)
+#> ■■■■■■■■■■■■■■■■■■■■■             68% (42/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■            69% (43/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■            71% (44/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■           73% (45/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■           74% (46/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■          76% (47/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■          77% (48/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■         79% (49/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■         81% (50/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■        82% (51/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■        84% (52/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■       85% (53/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■       87% (54/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      89% (55/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90% (56/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% (57/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94% (58/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    95% (59/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    97% (60/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   98% (61/62)
+#>                                              
+#> 
+#> 
+#> 
+#> • Heritability of phenotype 1: 0.1008 ( 0.0046 )
+#> • Heritability of phenotype 2: 0.0066 ( 8e-04 )
+#> • Genetic Covariance: -0.006 ( 0.0011 )
+#> • Genetic Correlation: -0.2318 ( 0.0428 )
+#> • P: 6.19e-08
+#> 
+#> 
+#> 
+#> Analysis finished at Tue Aug  5 16:40:00 2025
+```
+
+
+# Try HDL provided small example data (20,000 SNPs) with referenceLD UKB_array_SVD_eigen90_extraction
+
+
+``` r
+gwas1.example <- readRDS('gwas1.array.example.rds')
+gwas2.example <- readRDS('gwas2.array.example.rds')
+referenceLD = "UKB_array_SVD_eigen90_extraction"
+res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=gwas1.example, sumstat2=gwas2.example)
+#> Analysis starts on Tue Aug  5 16:40:01 2025
+#> Error in estimating Genetic Correlation: attempt to set an attribute on NULL
+```
+**Small number of SNPs anyways not good.**
+
+**Note:** Singularities or ill-conditioned matrices can occur due to **collinear SNPs**, insufficient variation, or extremely small values, causing numerical instability and non-convergence.
+
+# HDL decoded
+
+Checking the provided likelihood functions (**llfun and llfun.gcov.part.2**), it's possible that very similar summary statistics (e.g., identical Z-scores) for two traits can lead to convergence issues in this algorithm due to several reasons:
+
+**1. Collinearity and Identical Data:**
+
+If the summary statistics are identical between two traits:
+
+**Collinearity:** The covariance matrix may become singular or nearly singular, which can make the optimization unstable.
+
+Example snippet where identical Z-scores may cause collinearity issues
+
+```
+llfun.gcov.part.2 <- function(param, h11, h22, rho12, M, N1, N2, N0, Nref,
+                              lam0, lam1, lam2, bstar1, bstar2, lim = exp(-10)){
+   # Estimating covariance matrices
+   lam11 = h11[1] / M * lam1^2 - h11[1] * lam1 / Nref + h11[2] * lam1 / N1
+   lam22 = h22[1] / M * lam2^2 - h22[1] * lam2 / Nref + h22[2] * lam2 / N2
+   lam12 = if (N0 > 0) h12 / M * lam1 * lam2 + N0 / (N1 * N2) * int * lam1 else h12 / M * lam1 * lam2
+
+   # High collinearity leads to potential singularity
+   if (is.singular(matrix(c(lam11, lam12, lam12, lam22), nrow = 2))) {
+       stop("Singular matrix due to collinearity")
+   }
+}
+```
+
+**Identical Statistics:** The functions rely on variability between the traits, and identical statistics can lead to a flat or undefined likelihood surface, causing numerical instability.
+
+Example where identical summary stats lead to flat likelihood surface
+
+```
+llfun <- function(param, N, M, Nref = 1000, lam, bstar, lim = exp(-10)){
+   h2 = param[1]
+   int = param[2]
+   lamh2 = h2 / M * lam^2 - h2 * lam / Nref + int * lam / N
+
+   if (all(bstar == bstar[1])) {
+       stop("Identical statistics detected, leading to undefined likelihood surface")
+   }
+
+   lamh2 = ifelse(lamh2 < lim, lim, lamh2)
+   ll = sum(log(lamh2)) + sum(bstar^2 / (lamh2))
+   return(ll)
+}
+```
+
+**2. Flat Likelihood Surface:**
+
+If the data is identical, the likelihood surface might be flat, meaning that the algorithm has difficulty finding a unique solution due to lack of gradients.
+In llfun.gcov.part.2, the covariance (h12) may end up zero or undefined if there's no variance in the data.
+
+**3. Optimization Method Sensitivity:**
+
+The numerical optimization ('optim') used for finding the best fit is sensitive to data quality.
+Identical data can result in values that don't fit the assumptions or cause overflows in likelihood calculations. This may results in **Algorithm failed to converge after trying different initial values.** 
+
+**4. Variance Estimates:**
+
+The variance estimates (lamh2, lam22.1) are sensitive to the differences in summary statistics.
+Identical data may result in variance estimates being too small or large, leading to numerical instability in the log-likelihood calculations.
+
+# Why panel UKB_imputed_SVD_eigen99_extraction does not converge but UKB_array_SVD_eigen90_extraction converge for the same data1?
+
+**Expected Genetic Correlation:**
+When using identical summary statistics, the genetic correlation is theoretically expected to be very close to 1, as the traits are the same.
+
+However, this can vary in practice due to the quality of the data and the specific nuances of the LD reference panel.
+
+**Sensitivity to LD Reference Panels:**
+Different LD panels can have distinct effects on the computation, especially in cases of identical summary statistics:
+
+**LD Structure:** Panels with better-defined LD structures (like the Axiom array) may produce more stable covariance matrices, leading to better convergence.
+
+**Imputation Accuracy:** LD panels with more imputed SNPs (like the HRC, 1000 Genomes, HapMap3 panel) may introduce noise, making convergence more challenging.
+
+**Effect of Imputation and Rare Variants:**
+Imputed panels often have a larger number of SNPs, including rare variants, which can introduce noise and increase the complexity of the covariance structure.
+
+The additional noise and potential artifacts from imputation could make it difficult for the algorithm to converge, especially when working with identical summary statistics.
+
+**Impact of Multicollinearity:**
+Identical summary statistics can lead to high multicollinearity, which may be mitigated differently depending on the LD reference panel.
+
+High multicollinearity can destabilize the covariance matrix calculations, resulting in non-convergence for one panel but not the other.
+
+In summary, the differences in convergence for the two LD panels when computing genetic correlation with identical summary statistics highlight the importance of:
+
+- LD structure quality
+- Imputation noise
+- The inherent properties of the SNPs in the panels
+- The Axiom array may offer a cleaner, more stable set of SNPs with well-defined LD, which is critical for achieving convergence in the genetic correlation computation
+
+# I tried GenomicSem package
+
+763976 out of 769306 (99.31%) SNPs in reference panel are available in the GWAS of Data1.txt
+
+Estimation for cell: 1 out of: 3 cells is ongoing ... 100%
+
+Estimation for cell: 2 out of: 3 cells is ongoing ... 100%
+
+301051 out of 769306 (39.13%) SNPs in reference panel are available in the GWAS of Data2.txt
+
+Warning: More than 1% SNPs in reference panel are missed in the GWAS. This may generate bias in estimation.
+
+Please make sure that you are using correct reference panel.
+
+Estimation for cell: 3 out of: 3 cells is ongoing ... 100%Warning message:
+
+In cov2cor(V) : diag(.) had 0 or NA entries; non-finite result is doubtful
+
+**I thought this is happening because DBgap summary statistics is in hg18, whereas ours is in hg19, also hm3 is in hg19.**
+
+In cov2cor(V) : diag(.) had 0 or NA entries; non-finite result is doubtful
+
+Hence, I updated the SNPs using proper bim file but with no use.
+
+**I realized this is happening because DBgap's summary statistics is not imputed.**
+
+**I used .Bed file made from summary statistics** and processed via Crossmap to update the coordinates but got lower overlap between DBgap and reference panel Hapmap3 provided by the GenomicSem.
+
+# Can we use LD pruned SNPs in this computation
+**The answer is NO.**
+
+if we use LD pruned SNPs:
+
+32641 out of 769306 (4.24%) SNPs in reference panel are available in the GWAS of Data1.txt 
+
+Warning: More than 1% SNPs in reference panel are missed in the GWAS. This may generate bias in estimation. Please make sure that you are using correct reference panel. 
+
+# What happened when I tried to correlate the same dataset in GenomicSem
+
+**It did not converge.**
+
+If two summary statistics are exactly the same, the covariance between them will be equal to the variance of either one of the statistics. 
+
+The presence of the same value for variance in both 𝐷1 and 𝐷2 could suggest similar traits or measurements under the same conditions but with different outcomes based on the conditions or methods of measurement leading to a negative covariance.
+
+
+# Conclusion
+
+**The genetic correlation analysis is sensitive to the number of SNPs in the summary statistics and the quality of the LD reference panel.**
+
+In Panscan datasets, the result is:
+
+Heritability of phenotype 1:  0.00e+00 (0.00e+00) 
+
+Heritability of phenotype 2:  0.00e+00 (0.00e+00) 
+
+Genetic Covariance:  -0.1536 (0.1436) 
+
+Genetic Correlation:  -Inf (NA) 
+
+**About Warning: Heritability of one trait was estimated to be 0, which may due to:**
+
+          1) The true heritability is very small;
+          
+          2) The sample size is too small;
+          
+          3) Many SNPs in the chosen reference panel misses in the GWAS.
+          
+          4) There is a severe mismatch between the GWAS population and the population for computing reference panel
+
+**Note:** True heritability in pancreatic cancer is 21%. Summary statistics may not give this estimate.
+
+**Potential Calculation Issues**
+
+  **HDL Package:** 
+   It uses likelihood-based methods which can also run into numerical difficulties with very low or zero heritability data, possibly leading to non-finite results.
+
+**Relevant Sections in the HDL Algorithm**:
+
+ **Heritability Calculation:**
+
+The heritability of each trait is calculated using linear models (lm()) on squared z-scores against LD scores.
+Later, likelihood-based methods (optim()) refine these estimates. **Here, having small number of SNPs with a few significant hits may lead to low to no variation that leads towards zero heritability estimate.**
+
+  **Genetic Covariance:**
+
+Genetic covariance between traits is calculated using a linear model (lm()) on the product of z-scores.
+
+  **Genetic Correlation:**
+
+The genetic correlation (rg) is derived by dividing the genetic covariance by the square root of the product of heritability values: The genetic correlation (\(r_g\)) can be calculated as shown below:
+
+$$
+r_g = \frac{h_{12}}{\sqrt{h_{11} \cdot h_{22}}}
+$$
+
+Where:
+- \(h_{11}\) is the heritability of Trait 1
+- \(h_{22}\) is the heritability of Trait 2
+- \(h_{12}\) is the genetic covariance between the two traits
+
+**Impact of Zero Heritability**
+
+  **Zero Heritability:**
+   
+   If the heritability for one of the traits is zero, it implies that genetic factors don't explain any variance in that trait.
+
+  **Mathematical Impact:**
+   
+   In the calculation for h11 or h22 is zero, the denominator becomes zero.
+This results in division by zero, which in mathematical operations typically yields NaN, Inf, or -Inf.
+
+**Analysis and Impact**
+
+The number of SNPs and their overlap with the reference LD panel and the **quality** of the reference significantly impact genetic correlation computation.
+
+**What is the best LD panel:** Best LD reference panel for Panscan seems to be UKB_array_SVD_eigen90_extraction due to accurate heritability estimate. This UK Biobank Axiom Array has extensive genomic coverage, including common and rare variants than hapmap or 1000 genome. The quality of the SNPs is higher in Axiom array. Also it is meant for only EUR in UKBB.
+
+**Number of SNPs:**
+
+More SNPs in the summary statistics generate more variation, leading to more accurate results.
+LD Reference Panel: The choice of the LD reference panel is crucial for accurate computation, as the algorithm is sensitive to **LD information quality** and **overlap** with the GWAS data.
+
+**Other factors:**
+
+**1. Difficulty in Detecting Genetic Associations**
+
+The combination of a **small sample size** and low heritability makes it challenging to detect genetic associations accurately. Genetic factors may only account for a small portion of the trait's variability, which is further overshadowed by environmental factors or measurement errors. This challenge becomes more pronounced with the reliance on summary statistics.
+
+**2. Larger Sample Sizes and Imputed Summary Statistics are Required**
+
+Increasing the sample size is necessary to enhance statistical power, making it easier to detect even minor genetic influences on pancreatic cancer. However, the limited sample size in the current dataset hinders this approach, making it challenging to achieve sufficient power for reliable results.
+
+**3. Statistical Significance and Noise**
+
+With a limited sample size, the signal-to-noise ratio in the data is diminished. This makes it difficult to distinguish true genetic effects from random fluctuations, leading to a higher likelihood of false positives (type I errors) or missing true effects (type II errors). This instability is further exacerbated by using summary statistics.
+
+**4. Polygenic Traits**
+
+Pancreatic cancer's genetic basis likely involves many genes with small effects, underscoring its polygenic nature. This dilution of effect sizes complicates the identification of significant genetic variants in underpowered datasets.
+
+**5. Impact on Heritability Estimates**
+
+The small sample size and low heritability bias the estimates, and the genetic architecture of pancreatic cancer includes non-additive factors like gene-gene and gene-environment interactions.
+
+**6. Meta-Analyses and Collaborative Efforts**
+
+Given the difficulties with small sample size and low heritability, GWAS on pancreatic cancer often require meta-analyses and collaborations to pool data and resources, boosting statistical power and reliability.
+
+# Summary
+
+In summary, the genetic correlation analysis is highly sensitive to the number of SNPs and the quality of the LD reference panel. More SNPs in the summary statistics provide more variation and yield better results, while good overlap with the reference LD panel enhances the quality of genetic correlation computations. Also, good sample size is required to have power in this estimation.
+
+# Citing `GXwasR`
+
+We hope that *[GXwasR](https://bioconductor.org/packages/3.21/GXwasR)* will be useful for your research. Please use the following information to cite the package and the overall approach. Thank you!
+
+
+``` r
+## Citation info
+citation("GXwasR")
+#> To cite package 'GXwasR' in publications use:
+#> 
+#>   Bose B, Blostein F, Kim J, Winters J, Actkins KV, Mayer D, Congivaram H, Niarchou M, Edwards DV, Davis LK, Stranger BE (2025). "GXwasR: A Toolkit for
+#>   Investigating Sex-Differentiated Genetic Effects on Complex Traits." _medRxiv 2025.06.10.25329327_. doi:10.1101/2025.06.10.25329327
+#>   <https://doi.org/10.1101/2025.06.10.25329327>.
+#> 
+#> A BibTeX entry for LaTeX users is
+#> 
+#>   @Article{,
+#>     title = {GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic Effects on Complex Traits},
+#>     author = {Banabithi Bose and Freida Blostein and Jeewoo Kim and Jessica Winters and Ky’Era V. Actkins and David Mayer and Harrsha Congivaram and Maria Niarchou and Digna Velez Edwards and Lea K. Davis and Barbara E. Stranger},
+#>     journal = {medRxiv 2025.06.10.25329327},
+#>     year = {2025},
+#>     doi = {10.1101/2025.06.10.25329327},
+#>   }
+```
+
+# Reproducibility
+
+The *[GXwasR](https://bioconductor.org/packages/3.21/GXwasR)* package (Bose, Blostein, Kim, Winters, Actkins, Mayer, Congivaram, Niarchou, Edwards, Davis, and Stranger, 2025) was made possible thanks to:
+
+* R (R Core Team, 2025)
+* *[BiocStyle](https://bioconductor.org/packages/3.21/BiocStyle)* (Oleś, 2025)
+* *[knitr](https://CRAN.R-project.org/package=knitr)* (Xie, 2025)
+* *[RefManageR](https://CRAN.R-project.org/package=RefManageR)* (McLean, 2017)
+* *[rmarkdown](https://CRAN.R-project.org/package=rmarkdown)* (Allaire, Xie, Dervieux, McPherson, Luraschi, Ushey, Atkins, Wickham, Cheng, Chang, and Iannone, 2024)
+* *[sessioninfo](https://CRAN.R-project.org/package=sessioninfo)* (Wickham, Chang, Flight, Müller, and Hester, 2025)
+* *[testthat](https://CRAN.R-project.org/package=testthat)* (Wickham, 2011)
+
+This package was developed using *[biocthis](https://bioconductor.org/packages/3.21/biocthis)*.
+
+`R` session information.
+
+
+```
+#> ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+#>  setting  value
+#>  version  R version 4.5.1 (2025-06-13)
+#>  os       macOS Sequoia 15.5
+#>  system   aarch64, darwin24.4.0
+#>  ui       unknown
+#>  language (EN)
+#>  collate  en_US.UTF-8
+#>  ctype    en_US.UTF-8
+#>  tz       America/New_York
+#>  date     2025-08-05
+#>  pandoc   3.6.3 @ /Applications/Positron.app/Contents/Resources/app/quarto/bin/tools/aarch64/ (via rmarkdown)
+#>  quarto   1.7.32 @ /usr/local/bin/quarto
+#> 
+#> ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+#>  ! package              * version    date (UTC) lib source
+#>    abind                  1.4-8      2024-09-12 [2] CRAN (R 4.5.0)
+#>    backports              1.5.0      2024-05-23 [2] CRAN (R 4.5.1)
+#>    bibtex                 0.5.1      2023-01-26 [2] CRAN (R 4.5.0)
+#>    bigassertr             0.1.7      2025-06-27 [2] CRAN (R 4.5.1)
+#>    bigparallelr           0.3.2      2021-10-02 [2] CRAN (R 4.5.0)
+#>    bigsnpr                1.12.18    2024-11-26 [2] CRAN (R 4.5.1)
+#>    bigsparser             0.7.3      2024-09-06 [2] CRAN (R 4.5.1)
+#>    bigstatsr              1.6.2      2025-07-29 [2] CRAN (R 4.5.1)
+#>    Biobase                2.68.0     2025-04-15 [2] Bioconduc~
+#>    BiocGenerics           0.54.0     2025-04-15 [2] Bioconduc~
+#>    BiocIO                 1.18.0     2025-04-15 [2] Bioconduc~
+#>    BiocManager            1.30.26    2025-06-05 [2] CRAN (R 4.5.0)
+#>    BiocParallel           1.42.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
+#>    BiocStyle              2.36.0     2025-04-15 [2] Bioconduc~
+#>    Biostrings             2.76.0     2025-04-15 [2] Bioconduc~
+#>    bit                    4.6.0      2025-03-06 [2] CRAN (R 4.5.1)
+#>    bit64                  4.6.0-1    2025-01-16 [2] CRAN (R 4.5.1)
+#>    bitops                 1.0-9      2024-10-03 [2] CRAN (R 4.5.0)
+#>    brio                   1.1.5      2024-04-24 [2] CRAN (R 4.5.1)
+#>    broom                  1.0.9      2025-07-28 [2] CRAN (R 4.5.1)
+#>    BSgenome               1.76.0     2025-04-15 [2] Bioconduc~
+#>    cachem                 1.1.0      2024-05-16 [2] CRAN (R 4.5.0)
+#>    calibrate              1.7.7      2020-06-19 [2] CRAN (R 4.5.0)
+#>    callr                  3.7.6      2024-03-25 [2] CRAN (R 4.5.0)
+#>    car                    3.1-3      2024-09-27 [2] CRAN (R 4.5.0)
+#>    carData                3.0-5      2022-01-06 [2] CRAN (R 4.5.0)
+#>    cli                    3.6.5      2025-04-23 [2] CRAN (R 4.5.0)
+#>    codetools              0.2-20     2024-03-31 [4] CRAN (R 4.5.1)
+#>    commonmark             2.0.0      2025-07-07 [2] CRAN (R 4.5.1)
+#>    cowplot                1.2.0      2025-07-07 [2] CRAN (R 4.5.1)
+#>    crayon                 1.5.3      2024-06-20 [2] CRAN (R 4.5.0)
+#>    curl                   6.4.0      2025-06-22 [2] CRAN (R 4.5.1)
+#>    data.table             1.17.8     2025-07-10 [2] CRAN (R 4.5.1)
+#>    DelayedArray           0.34.1     2025-04-17 [2] Bioconduc~
+#>    desc                   1.4.3      2023-12-10 [2] CRAN (R 4.5.0)
+#>    devtools             * 2.4.5      2022-10-11 [3] CRAN (R 4.5.0)
+#>    digest                 0.6.37     2024-08-19 [2] CRAN (R 4.5.0)
+#>    doParallel             1.0.17     2022-02-07 [2] CRAN (R 4.5.0)
+#>    doRNG                  1.8.6.2    2025-04-02 [2] CRAN (R 4.5.0)
+#>    dplyr                  1.1.4      2023-11-17 [2] CRAN (R 4.5.0)
+#>    ellipsis               0.3.2      2021-04-29 [3] CRAN (R 4.5.0)
+#>    evaluate               1.0.4      2025-06-18 [2] CRAN (R 4.5.1)
+#>    farver                 2.1.2      2024-05-13 [2] CRAN (R 4.5.0)
+#>    fastmap                1.2.0      2024-05-15 [2] CRAN (R 4.5.0)
+#>    flock                  0.7        2016-11-12 [2] CRAN (R 4.5.1)
+#>    foreach                1.5.2      2022-02-02 [2] CRAN (R 4.5.0)
+#>    Formula                1.2-5      2023-02-24 [2] CRAN (R 4.5.0)
+#>    fs                     1.6.6      2025-04-12 [2] CRAN (R 4.5.0)
+#>    gdsfmt                 1.44.1     2025-07-09 [2] Bioconduc~
+#>    generics               0.1.4      2025-05-09 [2] CRAN (R 4.5.0)
+#>    GenomeInfoDb           1.44.1     2025-07-23 [2] Bioconduc~
+#>    GenomeInfoDbData       1.2.14     2025-04-21 [2] Bioconductor
+#>    GenomicAlignments      1.44.0     2025-04-15 [2] Bioconduc~
+#>    GenomicRanges          1.60.0     2025-04-15 [2] Bioconduc~
+#>    ggplot2                3.5.2      2025-04-09 [2] CRAN (R 4.5.0)
+#>    ggpubr                 0.6.1      2025-06-27 [2] CRAN (R 4.5.1)
+#>    ggrepel                0.9.6      2024-09-07 [2] CRAN (R 4.5.1)
+#>    ggsignif               0.6.4      2022-10-13 [2] CRAN (R 4.5.0)
+#>    glue                   1.8.0      2024-09-30 [2] CRAN (R 4.5.0)
+#>    gridExtra              2.3        2017-09-09 [2] CRAN (R 4.5.0)
+#>    gtable                 0.3.6      2024-10-25 [2] CRAN (R 4.5.0)
+#>  P GXwasR               * 0.99.0     2025-08-05 [?] Bioconductor
+#>    hms                    1.1.3      2023-03-21 [2] CRAN (R 4.5.0)
+#>    htmltools              0.5.8.1    2024-04-04 [2] CRAN (R 4.5.0)
+#>    htmlwidgets            1.6.4      2023-12-06 [2] CRAN (R 4.5.0)
+#>    httpuv                 1.6.16     2025-04-16 [2] CRAN (R 4.5.1)
+#>    httr                   1.4.7      2023-08-15 [2] CRAN (R 4.5.0)
+#>    IRanges                2.42.0     2025-04-15 [2] Bioconduc~
+#>    iterators              1.0.14     2022-02-05 [2] CRAN (R 4.5.0)
+#>    jsonlite               2.0.0      2025-03-27 [2] CRAN (R 4.5.0)
+#>    knitr                  1.50       2025-03-16 [2] CRAN (R 4.5.0)
+#>    later                  1.4.2      2025-04-08 [2] CRAN (R 4.5.1)
+#>    lattice                0.22-7     2025-04-02 [4] CRAN (R 4.5.1)
+#>    lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.5.0)
+#>    lubridate              1.9.4      2024-12-08 [2] CRAN (R 4.5.1)
+#>    magrittr               2.0.3      2022-03-30 [2] CRAN (R 4.5.0)
+#>    MASS                   7.3-65     2025-02-28 [4] CRAN (R 4.5.1)
+#>    mathjaxr               1.8-0      2025-04-30 [2] CRAN (R 4.5.1)
+#>    Matrix                 1.7-3      2025-03-11 [4] CRAN (R 4.5.1)
+#>    MatrixGenerics         1.20.0     2025-04-15 [2] Bioconduc~
+#>    matrixStats            1.5.0      2025-01-07 [2] CRAN (R 4.5.0)
+#>    memoise                2.0.1      2021-11-26 [2] CRAN (R 4.5.0)
+#>    mime                   0.13       2025-03-17 [2] CRAN (R 4.5.0)
+#>    miniUI                 0.1.2      2025-04-17 [3] CRAN (R 4.5.0)
+#>    pillar                 1.11.0     2025-07-04 [2] CRAN (R 4.5.1)
+#>    pkgbuild               1.4.8      2025-05-26 [2] CRAN (R 4.5.0)
+#>    pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.5.0)
+#>    pkgdev                 0.1.0.9060 2025-08-04 [2] Github (dieghernan/pkgdev@e56f2a8)
+#>    pkgload                1.4.0      2024-06-28 [2] CRAN (R 4.5.0)
+#>    plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.5.1)
+#>    plyranges              1.28.0     2025-04-15 [2] Bioconduc~
+#>    poolr                  1.2-0      2025-05-07 [2] CRAN (R 4.5.0)
+#>    prettyunits            1.2.0      2023-09-24 [2] CRAN (R 4.5.0)
+#>    processx               3.8.6      2025-02-21 [2] CRAN (R 4.5.1)
+#>    profvis                0.4.0      2024-09-20 [3] CRAN (R 4.5.0)
+#>    progress               1.2.3      2023-12-06 [2] CRAN (R 4.5.0)
+#>    promises               1.3.3      2025-05-29 [2] CRAN (R 4.5.0)
+#>    ps                     1.9.1      2025-04-12 [2] CRAN (R 4.5.1)
+#>    purrr                  1.1.0      2025-07-10 [2] CRAN (R 4.5.1)
+#>    qqman                  0.1.9      2023-08-23 [2] CRAN (R 4.5.0)
+#>    R.methodsS3            1.8.2      2022-06-13 [2] CRAN (R 4.5.0)
+#>    R.oo                   1.27.1     2025-05-02 [2] CRAN (R 4.5.0)
+#>    R.utils                2.13.0     2025-02-24 [2] CRAN (R 4.5.0)
+#>    R6                     2.6.1      2025-02-15 [2] CRAN (R 4.5.0)
+#>    rbibutils              2.3        2024-10-04 [2] CRAN (R 4.5.1)
+#>    rcmdcheck              1.4.0      2021-09-27 [3] CRAN (R 4.5.0)
+#>    RColorBrewer           1.1-3      2022-04-03 [2] CRAN (R 4.5.0)
+#>    Rcpp                   1.1.0      2025-07-02 [2] CRAN (R 4.5.1)
+#>    RCurl                  1.98-1.17  2025-03-22 [2] CRAN (R 4.5.0)
+#>    Rdpack                 2.6.4      2025-04-09 [2] CRAN (R 4.5.0)
+#>    RefManageR           * 1.4.0      2022-09-30 [2] CRAN (R 4.5.1)
+#>    regioneR               1.40.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
+#>    remotes                2.5.0      2024-03-17 [2] CRAN (R 4.5.0)
+#>    restfulr               0.0.16     2025-06-27 [2] CRAN (R 4.5.1)
+#>    rjson                  0.2.23     2024-09-16 [2] CRAN (R 4.5.0)
+#>    rlang                  1.1.6      2025-04-11 [2] CRAN (R 4.5.0)
+#>    rmarkdown              2.29       2024-11-04 [2] CRAN (R 4.5.0)
+#>    rmio                   0.4.0      2022-02-17 [2] CRAN (R 4.5.0)
+#>    rngtools               1.5.2      2021-09-20 [2] CRAN (R 4.5.0)
+#>    roxygen2               7.3.2      2024-06-28 [2] CRAN (R 4.5.0)
+#>    rprojroot              2.1.0      2025-07-12 [2] CRAN (R 4.5.1)
+#>    Rsamtools              2.24.0     2025-04-15 [2] Bioconduc~
+#>    rstatix                0.7.2      2023-02-01 [2] CRAN (R 4.5.0)
+#>    rstudioapi             0.17.1     2024-10-22 [2] CRAN (R 4.5.0)
+#>    rtracklayer            1.68.0     2025-04-15 [2] Bioconduc~
+#>    S4Arrays               1.8.1      2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
+#>    S4Vectors              0.46.0     2025-04-15 [2] Bioconduc~
+#>    scales                 1.4.0      2025-04-24 [2] CRAN (R 4.5.0)
+#>    sessioninfo          * 1.2.3      2025-02-05 [2] CRAN (R 4.5.1)
+#>    shiny                  1.11.1     2025-07-03 [2] CRAN (R 4.5.1)
+#>    SNPRelate              1.42.0     2025-04-15 [2] Bioconduc~
+#>    SparseArray            1.8.1      2025-07-23 [2] Bioconduc~
+#>    stringi                1.8.7      2025-03-27 [2] CRAN (R 4.5.0)
+#>    stringr                1.5.1      2023-11-14 [2] CRAN (R 4.5.0)
+#>    sumFREGAT              1.2.5      2022-06-07 [2] CRAN (R 4.5.1)
+#>    SummarizedExperiment   1.38.1     2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)
+#>    sys                    3.4.3      2024-10-04 [2] CRAN (R 4.5.0)
+#>    testthat             * 3.2.3      2025-01-13 [2] CRAN (R 4.5.1)
+#>    tibble                 3.3.0      2025-06-08 [2] CRAN (R 4.5.0)
+#>    tidyr                  1.3.1      2024-01-24 [2] CRAN (R 4.5.1)
+#>    tidyselect             1.2.1      2024-03-11 [2] CRAN (R 4.5.0)
+#>    timechange             0.3.0      2024-01-18 [2] CRAN (R 4.5.1)
+#>    tzdb                   0.5.0      2025-03-15 [2] CRAN (R 4.5.1)
+#>    UCSC.utils             1.4.0      2025-04-15 [2] Bioconduc~
+#>    urlchecker             1.0.1      2021-11-30 [3] CRAN (R 4.5.0)
+#>    usethis              * 3.1.0      2024-11-26 [2] CRAN (R 4.5.0)
+#>    vctrs                  0.6.5      2023-12-01 [2] CRAN (R 4.5.0)
+#>    vroom                  1.6.5      2023-12-05 [2] CRAN (R 4.5.1)
+#>    withr                  3.0.2      2024-10-28 [2] CRAN (R 4.5.0)
+#>    xfun                   0.52       2025-04-02 [2] CRAN (R 4.5.0)
+#>    XML                    3.99-0.18  2025-01-01 [2] CRAN (R 4.5.0)
+#>    xml2                   1.3.8      2025-03-14 [2] CRAN (R 4.5.1)
+#>    xopen                  1.0.1      2024-04-25 [3] CRAN (R 4.5.0)
+#>    xtable                 1.8-4      2019-04-21 [2] CRAN (R 4.5.0)
+#>    XVector                0.48.0     2025-04-15 [2] Bioconduc~
+#>    yaml                   2.3.10     2024-07-26 [2] CRAN (R 4.5.0)
+#> 
+#>  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpfrKnQx/temp_libpath14b3710a34e96
+#>  [2] /Users/mayerdav/Library/R/arm64/4.5/library
+#>  [3] /opt/homebrew/lib/R/4.5/site-library
+#>  [4] /opt/homebrew/Cellar/r/4.5.1/lib/R/library
+#> 
+#>  * ── Packages attached to the search path.
+#>  P ── Loaded and on-disk path mismatch.
+#> 
+#> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+```
+
+
+
+# Bibliography
+
+This vignette was generated using *[BiocStyle](https://bioconductor.org/packages/3.21/BiocStyle)* (Oleś, 2025)
+with *[knitr](https://CRAN.R-project.org/package=knitr)* (Xie, 2025) and *[rmarkdown](https://CRAN.R-project.org/package=rmarkdown)* (Allaire, Xie, Dervieux et al., 2024) running behind the scenes.
+
+Citations made with *[RefManageR](https://CRAN.R-project.org/package=RefManageR)* (McLean, 2017).
+
+<p><a id='bib-allaire2024rmarkdown'></a><a href="#cite-allaire2024rmarkdown">[1]</a><cite>
+J. Allaire, Y. Xie, C. Dervieux, et al.
+<em>rmarkdown: Dynamic Documents for R</em>.
+R package version 2.29.
+2024.
+URL: <a href="https://github.com/rstudio/rmarkdown">https://github.com/rstudio/rmarkdown</a>.</cite></p>
+
+<p><a id='bib-bose2025gxwasr'></a><a href="#cite-bose2025gxwasr">[2]</a><cite>
+B. Bose, F. Blostein, J. Kim, et al.
+&ldquo;GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic Effects on Complex Traits&rdquo;.
+In: <em>medRxiv 2025.06.10.25329327</em> (2025).
+DOI: <a href="https://doi.org/10.1101/2025.06.10.25329327">10.1101/2025.06.10.25329327</a>.</cite></p>
+
+<p><a id='bib-mclean2017refmanager'></a><a href="#cite-mclean2017refmanager">[3]</a><cite>
+M. W. McLean.
+&ldquo;RefManageR: Import and Manage BibTeX and BibLaTeX References in R&rdquo;.
+In: <em>The Journal of Open Source Software</em> (2017).
+DOI: <a href="https://doi.org/10.21105/joss.00338">10.21105/joss.00338</a>.</cite></p>
+
+<p><a id='bib-ole2025biocstyle'></a><a href="#cite-ole2025biocstyle">[4]</a><cite>
+A. Oleś.
+<em>BiocStyle: Standard styles for vignettes and other Bioconductor documents</em>.
+R package version 2.36.0.
+2025.
+DOI: <a href="https://doi.org/10.18129/B9.bioc.BiocStyle">10.18129/B9.bioc.BiocStyle</a>.
+URL: <a href="https://bioconductor.org/packages/BiocStyle">https://bioconductor.org/packages/BiocStyle</a>.</cite></p>
+
+<p><a id='bib-2025language'></a><a href="#cite-2025language">[5]</a><cite>
+R Core Team.
+<em>R: A Language and Environment for Statistical Computing</em>.
+R Foundation for Statistical Computing.
+Vienna, Austria, 2025.
+URL: <a href="https://www.R-project.org/">https://www.R-project.org/</a>.</cite></p>
+
+<p><a id='bib-wickham2011testthat'></a><a href="#cite-wickham2011testthat">[6]</a><cite>
+H. Wickham.
+&ldquo;testthat: Get Started with Testing&rdquo;.
+In: <em>The R Journal</em> 3 (2011), pp. 5&ndash;10.
+URL: <a href="https://journal.r-project.org/archive/2011-1/RJournal_2011-1_Wickham.pdf">https://journal.r-project.org/archive/2011-1/RJournal_2011-1_Wickham.pdf</a>.</cite></p>
+
+<p><a id='bib-wickham2025sessioninfo'></a><a href="#cite-wickham2025sessioninfo">[7]</a><cite>
+H. Wickham, W. Chang, R. Flight, et al.
+<em>sessioninfo: R Session Information</em>.
+R package version 1.2.3.
+2025.
+DOI: <a href="https://doi.org/10.32614/CRAN.package.sessioninfo">10.32614/CRAN.package.sessioninfo</a>.
+URL: <a href="https://CRAN.R-project.org/package=sessioninfo">https://CRAN.R-project.org/package=sessioninfo</a>.</cite></p>
+
+<p><a id='bib-xie2025knitr'></a><a href="#cite-xie2025knitr">[8]</a><cite>
+Y. Xie.
+<em>knitr: A General-Purpose Package for Dynamic Report Generation in R</em>.
+R package version 1.50.
+2025.
+URL: <a href="https://yihui.org/knitr/">https://yihui.org/knitr/</a>.</cite></p>
