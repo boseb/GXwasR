@@ -2,14 +2,14 @@
 % Please edit documentation in R/GXwasR_main_functions.R
 \name{PlinkSummary}
 \alias{PlinkSummary}
-\title{PlinkSummary: Summary of plink format genotype dataset}
+\title{PlinkSummary: Summary of PLINK format genotype dataset}
 \usage{
 PlinkSummary(DataDir, ResultDir = tempdir(), finput)
 }
 \arguments{
 \item{DataDir}{A character string for the file path of the input PLINK binary files.}
 
-\item{ResultDir}{A character string for the file path of the plink program to be set up.}
+\item{ResultDir}{A character string for the file path of the PLINK program to be set up.}
 
 \item{finput}{Character string, specifying the prefix of the input PLINK binary files. This file needs to be in DataDir.}
 }
@@ -17,7 +17,7 @@ PlinkSummary(DataDir, ResultDir = tempdir(), finput)
 This function is called for its side effect: printing summary statistics to the console. It returns \code{NULL} invisibly.
 }
 \description{
-PlinkSummary: Summary of plink format genotype dataset
+PlinkSummary: Summary of PLINK format genotype dataset
 }
 \examples{
 DataDir <- GXwasR:::GXwasR_data()

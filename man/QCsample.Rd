@@ -2,7 +2,7 @@
 % Please edit documentation in R/GXwasR_main_functions.R
 \name{QCsample}
 \alias{QCsample}
-\title{QCsample: Quality control for samples in the plink binary files.}
+\title{QCsample: Quality control for samples in the PLINK binary files.}
 \usage{
 QCsample(
   DataDir,
@@ -64,7 +64,7 @@ matrix will be stored.}
 A plot of heterogysity estimate vs missingness across sample and a list containing five R dataframe objects, namely,
 \code{HM} (samples with outlying heterozygosity and/or missing genotype rates), \code{Failed_Missingness} (samples with missing genotype rates),
 \code{Failed_heterozygosity} (samples with outlying heterozygosity), \code{Missingness_results} (missingness results) and \code{Heterozygosity_results}
-(heterozygosity results) with output plink files in ResultDir if filtering out the samples option is chosen.
+(heterozygosity results) with output PLINK files in ResultDir if filtering out the samples option is chosen.
 
 \code{Missingness_results} contains missingness results for each individual, with six columns as \code{FID}, \code{IID}, \code{MISS_PHENO}, \code{N_MISS}, \code{N_GENO} and
 \code{F_MISS} for Family ID, Within-family ID, Phenotype missing? (Y/N), Number of missing genotype call(s), not including obligatory missings

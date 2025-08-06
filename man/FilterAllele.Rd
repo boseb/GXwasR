@@ -17,7 +17,7 @@ FilterAllele(DataDir, ResultDir, finput, foutput)
 this file will be produced after filtering out these variants.}
 }
 \value{
-\code{NULL}. After multi-allelic variant filtering, the filtered plink files with only biallelic SNPs will be saved in \code{ResultDir}.
+\code{NULL}. After multi-allelic variant filtering, the filtered PLINK files with only biallelic SNPs will be saved in \code{ResultDir}.
 }
 \description{
 This function filters out the multi-allelic SNPs from the input dataset.
