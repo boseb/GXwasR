@@ -2,7 +2,7 @@
 % Please edit documentation in R/GXwasR_main_functions.R
 \name{SexCheck}
 \alias{SexCheck}
-\title{SexCheck: Compare sex assignments in the input plink files with those imputed from X chromosome inbreeding coefficients}
+\title{SexCheck: Compare sex assignments in the input PLINK files with those imputed from X chromosome inbreeding coefficients}
 \usage{
 SexCheck(
   DataDir,

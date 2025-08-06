@@ -36,13 +36,13 @@ one of \code{filterPAR}, \code{filterXTR} or \code{filterAmpliconic} filter is i
 \item{CHRY}{Boolean value, \code{TRUE} or \code{FALSE} to filter/flag regions from chromosome X. The default is \code{FALSE}. Note: CHRY only in effect
 if one of \code{filterPAR}, \code{filterXTR} or \code{filterAmpliconic} filter is in effect.}
 
-\item{filterPAR}{Boolean value, \code{TRUE} or \code{FALSE} to filter out PARs from input plink file. The default is \code{TRUE}.}
+\item{filterPAR}{Boolean value, \code{TRUE} or \code{FALSE} to filter out PARs from input PLINK file. The default is \code{TRUE}.}
 
-\item{filterXTR}{Boolean value, \code{TRUE} or \code{FALSE} to filter out XTRs from input plink file. The default is \code{TRUE}.}
+\item{filterXTR}{Boolean value, \code{TRUE} or \code{FALSE} to filter out XTRs from input PLINK file. The default is \code{TRUE}.}
 
-\item{filterAmpliconic}{Boolean value, \code{TRUE} or \code{FALSE} to filter out Ampliconic regions from input plink file. The default is \code{TRUE}.}
+\item{filterAmpliconic}{Boolean value, \code{TRUE} or \code{FALSE} to filter out Ampliconic regions from input PLINK file. The default is \code{TRUE}.}
 
-\item{regionfile}{Character string, specifying the name of the .txt file containing the user-defined regions to be filtered out from input plink
+\item{regionfile}{Character string, specifying the name of the .txt file containing the user-defined regions to be filtered out from input PLINK
 file in bed format. The default is \code{FALSE}. If \code{regionfile} = \code{TRUE}, only this filtering will be in effect. Also, PAR, XTR and
 Ampliconic SNPs from X-chomosome will be flagged and returned.}
 
@@ -61,12 +61,12 @@ SNPs from Ampliconic region.
 
 For non-zero value of \code{filterCHR}, a dataframe containing the excluded/flagged SNPs will be returned.
 
-For \code{exclude} = \code{TRUE}, two sets of plink binary files will be produced in ResultDir. One set will have the remaining SNPs after
+For \code{exclude} = \code{TRUE}, two sets of PLINK binary files will be produced in ResultDir. One set will have the remaining SNPs after
 filtering and other one will have the discarded SNPs.
 }
 \description{
 Filtering Pseudo-Autosomal Region (PAR), X-transposed region (XTR), Ampliconic, filter based on chromosome code or
-user-defined regions from input plink files. Only one type of filtering can be done from three types, either by region
+user-defined regions from input PLINK files. Only one type of filtering can be done from three types, either by region
 (using \code{regionfile} = \code{TRUE}), by chromosome (\code{filterCHR}) or by any combination of these three, \code{filterPAR},
 \code{filterXTR} and \code{filterAmpliconic.}
 }

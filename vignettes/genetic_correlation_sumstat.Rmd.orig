@@ -73,7 +73,7 @@ library(GXwasR)
 help(SumstatGenCorr)
 ```
 
-# Running example with imputed datasets from Neale's lab with UKB_imputed_hapmap2_SVD_eigen99_extraction
+# Example: UKB Imputed HapMap2 Data (Neale Lab)
 
 Birth weight and type 2 diabetes based on the summary statistics with around 20,000 individuals.
 
@@ -86,7 +86,7 @@ res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=su
 ```
 
 
-# Try HDL provided small example data (20,000 SNPs) with referenceLD UKB_array_SVD_eigen90_extraction
+# Example: HDL Sample Data (20K SNPs, UKB Array SVD Eigen90)
 
 ```{r ukb_eigen90_sumstat}
 gwas1.example <- readRDS('gwas1.array.example.rds')
@@ -98,7 +98,7 @@ res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=gw
 
 **Note:** Singularities or ill-conditioned matrices can occur due to **collinear SNPs**, insufficient variation, or extremely small values, causing numerical instability and non-convergence.
 
-# HDL decoded
+## HDL decoded
 
 Checking the provided likelihood functions (**llfun and llfun.gcov.part.2**), it's possible that very similar summary statistics (e.g., identical Z-scores) for two traits can lead to convergence issues in this algorithm due to several reasons:
 
@@ -160,7 +160,7 @@ Identical data can result in values that don't fit the assumptions or cause over
 The variance estimates (lamh2, lam22.1) are sensitive to the differences in summary statistics.
 Identical data may result in variance estimates being too small or large, leading to numerical instability in the log-likelihood calculations.
 
-# Why panel UKB_imputed_SVD_eigen99_extraction does not converge but UKB_array_SVD_eigen90_extraction converge for the same data?
+## Why UKB Imputed (Eigen99) Fails to Converge While UKB Array (Eigen90) Succeeds
 
 **Expected Genetic Correlation:**
 When using identical summary statistics, the genetic correlation is theoretically expected to be very close to 1, as the traits are the same.
@@ -191,7 +191,7 @@ In summary, the differences in convergence for the two LD panels when computing 
 - The inherent properties of the SNPs in the panels
 - The Axiom array may offer a cleaner, more stable set of SNPs with well-defined LD, which is critical for achieving convergence in the genetic correlation computation
 
-# I tried GenomicSem package
+## Trying the GenomicSEM Package
 
 763976 out of 769306 (99.31%) SNPs in reference panel are available in the GWAS of Data1.txt
 
@@ -219,7 +219,8 @@ Hence, I updated the SNPs using proper bim file but with no use.
 
 **I used .Bed file made from summary statistics** and processed via Crossmap to update the coordinates but got lower overlap between DBgap and reference panel Hapmap3 provided by the GenomicSem.
 
-# Can we use LD pruned SNPs in this computation
+## Can LD-Pruned SNPs Be Used in This Computation?
+
 **The answer is NO.**
 
 if we use LD pruned SNPs:
@@ -228,7 +229,7 @@ if we use LD pruned SNPs:
 
 Warning: More than 1% SNPs in reference panel are missed in the GWAS. This may generate bias in estimation. Please make sure that you are using correct reference panel. 
 
-# What happened when I tried to correlate the same dataset in GenomicSem
+## What Happened When Correlating the Same Dataset in GenomicSEM
 
 **It did not converge.**
 
@@ -237,7 +238,7 @@ If two summary statistics are exactly the same, the covariance between them will
 The presence of the same value for variance in both 𝐷1 and 𝐷2 could suggest similar traits or measurements under the same conditions but with different outcomes based on the conditions or methods of measurement leading to a negative covariance.
 
 
-# Conclusion
+## Conclusion
 
 **The genetic correlation analysis is sensitive to the number of SNPs in the summary statistics and the quality of the LD reference panel.**
 
@@ -340,7 +341,7 @@ The small sample size and low heritability bias the estimates, and the genetic a
 
 Given the difficulties with small sample size and low heritability, GWAS on pancreatic cancer often require meta-analyses and collaborations to pool data and resources, boosting statistical power and reliability.
 
-# Summary
+## Summary
 
 In summary, the genetic correlation analysis is highly sensitive to the number of SNPs and the quality of the LD reference panel. More SNPs in the summary statistics provide more variation and yield better results, while good overlap with the reference LD panel enhances the quality of genetic correlation computations. Also, good sample size is required to have power in this estimation.
 
