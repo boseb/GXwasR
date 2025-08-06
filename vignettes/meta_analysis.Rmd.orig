@@ -1,0 +1,221 @@
+---
+title: "GWAS Meta analysis Using GXwasR"
+author: 
+  - name: "Banabithi Bose"
+    affiliation:
+    - Northwestern University
+    - University of Colorado Anschutz Medical Campus
+    email: banabithi.bose@gmail.com
+output: 
+  BiocStyle::html_document:
+    self_contained: false
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    code_folding: show
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('GXwasR')`"
+vignette: >
+  %\VignetteIndexEntry{meta_analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}  
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+    fig.path = "./",
+    collapse = TRUE,
+    comment = "#>",
+    crop = NULL ## Related to https://stat.ethz.ch/pipermail/bioc-devel/2020-April/016656.html
+)
+```
+
+
+```{r vignetteSetup, echo=FALSE, message=FALSE, warning = FALSE}
+## Bib setup
+library("RefManageR")
+
+## Write bibliography information
+bib <- c(
+    R = citation(),
+    BiocStyle = citation("BiocStyle")[1],
+    knitr = citation("knitr")[1],
+    RefManageR = citation("RefManageR")[1],
+    rmarkdown = citation("rmarkdown")[1],
+    sessioninfo = citation("sessioninfo")[1],
+    testthat = citation("testthat")[1],
+    GXwasR = citation("GXwasR")[1]
+)
+```
+
+# Meta analysis using GXwasR
+
+Here we will present a tutorial showing how to perform meta analysis utilizing the R package GXwasR.
+
+The example data sets for performing the tutorial can be accessed from "data" folder of the package.
+
+# Example Datasets
+
+Example datasets are provided with the package and can be accessed by calling the `data()` function.
+
+Load the example datasets to perform this tutorial.
+
+```{r}
+## Load library
+library(GXwasR)
+```
+(1) Two sets of summary GWAS summary statistics in .Rda files will be required to perform this tutorial. 
+
+- **Summary_Stat_Ex1.Rda**
+- **Summary_Stat_Ex2.Rda**
+  
+Check one of the summary statistics data
+
+```{r}
+data(Summary_Stat_Ex1)
+## Visualize three rows and all the columns
+Summary_Stat_Ex1[1:3, ]
+```
+
+Among these 12 columns, some columns are mandatory for this tutorial, such as: ‘SNP’ (i.e., SNP identifier), ‘BETA’ (i.e., effect-size or logarithm of odds ratio), ‘SE’ (i.e., standard error of BETA), ‘P’ (i.e., p-values) and 'NMISS' (i.e., effective sample size). The other columns are, 'CHR' (i.e., chromosome code), 'BP' (i.e., base pair position), A1 (i.e., disease allele), TEST (i.e., association test type), L95 (i.e., lower limit of 95 percentile confidence interval), U95 (i.e., upper limit of 95 percentile confidence interval) and STAT (i.e., test statistic).
+
+(2) **UniqueLoci.Rda:** .Rda file with a single column containing SNP names. These could be LD clumped SNPs or any other list of chosen SNPs for Meta analysis.
+
+(3) **SNPsPlot.Rda:** .Rda file with a single column containing SNP names for the forest plots.
+
+```{r}
+## Call some other libraries for this vignette
+library(printr)
+library(rmarkdown)
+```
+
+# The function for meta analysis:
+**MetaGWAS()**
+```{r}
+help(MetaGWAS, package = GXwasR)
+```
+
+# Running MetaGWAS
+
+```{r metaGWAS-1}
+data(Summary_Stat_Ex1)
+data(Summary_Stat_Ex2)
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+SummData <- list(Summary_Stat_Ex1, Summary_Stat_Ex2)
+SNPfile <- "UniqueLoci"
+useSNPposition <- FALSE
+UseA1 <- TRUE
+GCse <- TRUE
+byCHR <- FALSE
+pval_filter <- "R"
+top_snp_pval <- 1e-08
+max_top_snps <- 10
+chosen_snps_file <- NULL
+pval_threshold_manplot <- 1e-05
+plotname <- "Meta_Analysis.plot"
+
+x <- MetaGWAS(DataDir = DataDir, SummData = SummData, ResultDir = ResultDir, SNPfile = NULL, useSNPposition = TRUE, UseA1 = UseA1, GCse = GCse, plotname = "Meta_Analysis.plot", pval_filter, top_snp_pval, max_top_snps, chosen_snps_file = NULL, byCHR, pval_threshold_manplot)
+```
+
+# Random effect result
+
+```{r}
+# Dataframe with the fixed effect result
+x1 <- x$Resultrandom
+x2 <- x1[order(x1$P), ]
+knitr::kable(x2[1:10, ], caption = "Top ten associations from random effect model.")
+```
+
+# Fixed effect result
+
+```{r}
+# Dataframe with the fixed effect result
+x1 <- x$Resultfixed
+x2 <- x1[order(x1$P), ]
+knitr::kable(x2[1:10, ], caption = "Top ten associations from fixed effect model.")
+```
+
+# Weighted effect result
+
+```{r}
+# Dataframe with the fixed effect result
+x1 <- x$Resultweighted
+x2 <- x1[order(x1$P), ]
+knitr::kable(x2[1:10, ], caption = "Top ten associations from weighted effect model.")
+```
+
+# Metadata of the meta analysis
+
+```{r}
+# Dataframe with the metadata
+x1 <- x$Metadata
+x2 <- x1[order(x1$Q), ]
+knitr::kable(x2[1:10, ], caption = "Metadata of the top ten associations based on Cochrane’s Q statistics.")
+```
+
+# Problematic SNPs
+
+```{r}
+# Dataframe with the problematic SNPs
+x1 <- x$ProblemSNP
+knitr::kable(x1[1:10, ], caption = "Top ten problematic SNPs.")
+```
+
+# Including Plots
+
+## Manhattan Plots and QQ plots:
+
+```{r, meta-manhattan_plot, echo=FALSE, out.width="1500px", out.height="500px", fig.caption = "Manhattan Plot"}
+knitr::include_graphics("Meta_Analysis.plot.jpeg")
+```
+
+## All Forest plots
+Now, let's see all the Forest plots.
+
+```{r, meta-forest_plot1, echo=FALSE, out.width="1000px", out.height="500px", fig.caption = "Forest Plot 1"}
+knitr::include_graphics("Meta_Analysis.forest.plot.1.jpg")
+```
+
+```{r, meta-forest_plot2, echo=FALSE, out.width="1000px", out.height="500px", fig.caption = "Forest Plot 2"}
+knitr::include_graphics("Meta_Analysis.forest.plot.2.jpg")
+```
+
+```{r, meta-forest_plot3, echo=FALSE, out.width="1000px", out.height="500px", fig.caption = "Forest Plot 3"}
+knitr::include_graphics("Meta_Analysis.forest.plot.3.jpg")
+```
+
+# Reproducibility
+
+The `r BiocStyle::Biocpkg("GXwasR")` package `r Citep(bib[["GXwasR"]])` was made possible thanks to:
+
+* R `r Citep(bib[["R"]])`
+* `r BiocStyle::Biocpkg("BiocStyle")` `r Citep(bib[["BiocStyle"]])`
+* `r BiocStyle::CRANpkg("knitr")` `r Citep(bib[["knitr"]])`
+* `r BiocStyle::CRANpkg("RefManageR")` `r Citep(bib[["RefManageR"]])`
+* `r BiocStyle::CRANpkg("rmarkdown")` `r Citep(bib[["rmarkdown"]])`
+* `r BiocStyle::CRANpkg("sessioninfo")` `r Citep(bib[["sessioninfo"]])`
+* `r BiocStyle::CRANpkg("testthat")` `r Citep(bib[["testthat"]])`
+
+This package was developed using `r BiocStyle::Biocpkg("biocthis")`.
+
+`R` session information.
+
+```{r reproduce3, echo=FALSE}
+## Session info
+library("sessioninfo")
+options(width = 120)
+session_info()
+```
+
+# Bibliography
+
+This vignette was generated using `r BiocStyle::Biocpkg("BiocStyle")` `r Citep(bib[["BiocStyle"]])`
+with `r BiocStyle::CRANpkg("knitr")` `r Citep(bib[["knitr"]])` and `r BiocStyle::CRANpkg("rmarkdown")` `r Citep(bib[["rmarkdown"]])` running behind the scenes.
+
+Citations made with `r BiocStyle::CRANpkg("RefManageR")` `r Citep(bib[["RefManageR"]])`.
+
+```{r vignetteBiblio, results = "asis", echo = FALSE, warning = FALSE, message = FALSE}
+## Print bibliography
+PrintBibliography(bib, .opts = list(hyperlink = "to.doc", style = "html"))
+```

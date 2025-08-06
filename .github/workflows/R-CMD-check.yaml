@@ -45,6 +45,22 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
       
+      # Compile these macOS packages from source
+      - name: Reinstall Rsamtools, etc from source (macOS only, via pak)
+        if: runner.os == 'macOS'
+        run: |
+          pak::pak(c(
+            "bioc::Rhtslib?source=true",
+            "bioc::Rsamtools?source=true",
+            "bioc::GenomicRanges?source=true",
+            "bioc::IRanges?source=true",
+            "bioc::S4Vectors?source=true",
+            "bioc::XVector?source=true",
+            "bioc::zlibbioc?source=true",
+            "bioc::BiocGenerics?source=true"
+          ))
+        shell: Rscript {0}
+
       # Install PLINK binary
       - name: Install PLINK
         shell: bash

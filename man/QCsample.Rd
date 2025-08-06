@@ -61,7 +61,7 @@ matrix will be stored.}
 \item{filterSample}{Boolean value, \code{TRUE} or \code{FALSE} for filtering out the samples or not (i.e., only flagged). The default is \code{TRUE}.}
 }
 \value{
-A plot of heterogysity estimate vs missingness accross sample and a list containing five R dataframe objects, namely,
+A plot of heterogysity estimate vs missingness across sample and a list containing five R dataframe objects, namely,
 \code{HM} (samples with outlying heterozygosity and/or missing genotype rates), \code{Failed_Missingness} (samples with missing genotype rates),
 \code{Failed_heterozygosity} (samples with outlying heterozygosity), \code{Missingness_results} (missingness results) and \code{Heterozygosity_results}
 (heterozygosity results) with output plink files in ResultDir if filtering out the samples option is chosen.
@@ -83,7 +83,7 @@ Having the correct designation of sex is important to obtain accurate genotype r
 removing samples, etc. Details can be accessed from the paper.
 }
 \examples{
-DataDir <- system.file("extdata", package = "GXwasR")
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 foutput <- "Test_output"
@@ -95,9 +95,9 @@ IBDmatrix <- FALSE
 ambi_out <- TRUE
 
 x <- QCsample(
-  DataDir = DataDir, ResultDir = ResultDir, finput = finput,
-  foutput = foutput, imiss = imiss, het = het, IBD = IBD,
-  ambi_out = ambi_out
+    DataDir = DataDir, ResultDir = ResultDir, finput = finput,
+    foutput = foutput, imiss = imiss, het = het, IBD = IBD,
+    ambi_out = ambi_out
 )
 }
 \author{

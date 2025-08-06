@@ -33,7 +33,7 @@ PvalComb(
 \item \code{P} (p-value).
 }
 
-Other coulmns may present.}
+Other columns may present.}
 
 \item{SumstatFemale}{R dataframe object of summary statistics of female GWAS with five mandatory columns:
 \itemize{
@@ -44,7 +44,7 @@ Other coulmns may present.}
 \item \code{P}
 }
 
-Other coulmns may present.}
+Other columns may present.}
 
 \item{combtest}{Character vector specifying method for combining p-values for stratified GWAS models. Choices are “stouffer.method”,
 "fisher.method" and "fisher.method.perm". For fisher.method the function for combining p-values uses a statistic,
@@ -93,20 +93,16 @@ merges them, and then applies various statistical methods (like Stouffer's metho
 p-values. It also includes functionality for generating plots like Manhattan plots and Q-Q plots.
 }
 \examples{
-data("GXwasRData")
+data("Mfile", package = "GXwasR")
+data("Ffile", package = "GXwasR")
 SumstatMale <- Mfile
 colnames(SumstatMale)[3] <- "POS"
 SumstatFemale <- Ffile
 colnames(SumstatFemale)[3] <- "POS"
-# Use the below datasets for tutorial document
-# SumstatMale <- Summary_Stat_Ex1
-# colnames(SumstatMale)[3]<- "POS"
-# SumstatFemale <- Summary_Stat_Ex2
-# colnames(SumstatFemale)[3]<- "POS"
 PvalComb_Result <- PvalComb(
-  SumstatMale = SumstatMale, SumstatFemale = SumstatFemale,
-  combtest = "fisher.method", MF.mc.cores = 1, snp_pval = 0.001, plot.jpeg = FALSE,
-  suggestiveline = 3, genomewideline = 5.69897, ncores = 1
+    SumstatMale = SumstatMale, SumstatFemale = SumstatFemale,
+    combtest = "fisher.method", MF.mc.cores = 1, snp_pval = 0.001, plot.jpeg = FALSE,
+    suggestiveline = 3, genomewideline = 5.69897, ncores = 1
 )
 
 }

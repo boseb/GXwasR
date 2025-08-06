@@ -45,7 +45,7 @@ The mandatory column headers in this dataframe are:
 \item \code{CHR}(Chromosome code)
 \item \code{BP}(Basepair position)
 \item \code{A1} (effect allele)
-\item \code{SNP} (i.e., SNP idenitifier)
+\item \code{SNP} (i.e., SNP identifier)
 \item \code{BETA} or \code{OR} (i.e., effect-size or logarithm of odds ratio)
 \item \code{P} (i.e., p-values).
 }
@@ -94,8 +94,8 @@ the one that was used for imputing your target dataset. These files should be in
 \item{pheno_type}{Boolean value, ‘binary’ or ‘quantitative’, specifying the type of the trait. The default is ‘binary’.}
 }
 \value{
-A list object containing a dataframe and a numeric value. The dataframe,PRS, contains four mandatory columns, such as,
-IID (i.e., Individual ID), FID (i.e., Family ID), Pheno1 (i.e., the trait for PRS) and Score (i.e., the best PRS).
+A list object containing a dataframe a numeric value, a GeneticPC plot (if requested), and a PRS plot. The dataframe,PRS, contains four mandatory
+columns, such as, IID (i.e., Individual ID), FID (i.e., Family ID), Pheno1 (i.e., the trait for PRS) and Score (i.e., the best PRS).
 Other columns of covariates could be there. The numeric value, BestP contains the threshold of
 of the best p-value for the best pRS model fit.
 
@@ -110,10 +110,14 @@ other covariates. Using this function, users have the freedom to experiment with
 test a wide range of various parameter values.
 }
 \examples{
-DataDir <- system.file("extdata", package = "GXwasR")
+data("Summary_Stat_Ex1", package = "GXwasR")
+data("Example_phenofile", package = "GXwasR")
+data("Example_covarfile", package = "GXwasR")
+data("Example_pthresoldfile", package = "GXwasR")
+data("highLD_hg19", package = "GXwasR")
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
-data("GXwasRData")
 summarystat <- Summary_Stat_Ex1[, c(2, 4, 7, 1, 3, 12)]
 phenofile <- Example_phenofile # Cannot be NULL
 # The interested phenotype column should be labeled as "Pheno1".
@@ -133,15 +137,15 @@ nPC <- 6 # We can incorporate PCs into our PRS analysis to account for populatio
 pheno_type <- "binary"
 
 PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile,
-  effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2,
-  clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions,
-  ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6,
-  pheno_type = "binary"
+    effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2,
+    clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions,
+    ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6,
+    pheno_type = "binary"
 )
 
 ## This table shows 10 samples with phenotype, covariates and a PRS column.
 PRS <- PRSresult$PRS
-PRS[1:10, ]
+PRS[seq_len(10), ]
 ## The best threshold
 BestPvalue <- PRSresult$BestP$Threshold
 BestPvalue

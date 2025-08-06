@@ -1,0 +1,16 @@
+url: ~
+template:
+  bootstrap: 5
+articles:
+  - title: Articles
+    navbar: ~
+    contents:
+      - GXwasR_overview
+      - preimputationQC
+      - postimputationQC
+      - gwas_models
+      - GXwasR_PRS
+      - decoding_ancestry
+      - meta_analysis
+      - genetic_correlation_sumstat
+      

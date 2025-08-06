@@ -63,7 +63,7 @@ Users can set this as \code{NULL} to not apply this filter.}
 for each SNP (threshold is \eqn{0.05/length(unique(No. of. SNPs in the test))}). The default is \code{TRUE.}}
 
 \item{diffmissFilter}{Boolean value, \code{TRUE} or \code{FALSE}, specifying whether to filter out the SNPs or only flagged them for differential
-missingness in cases vs contols. The deafailt is \code{TRUE}.}
+missingness in cases vs controls. The default is \code{TRUE}.}
 
 \item{dmissX}{Boolean value, \code{TRUE} or \code{FALSE} for computing differential missingness between cases and controls for X chromosome
 SNPs only. The default is \code{FALSE}. The diffmissFilter will work for all these SNPs.}
@@ -94,7 +94,7 @@ like minor allele frequency, Hardy-Weinberg equilibrium, call rate, and differen
 It also handles monomorphic SNPs and applies linkage disequilibrium-based filtering if specified.
 }
 \examples{
-DataDir <- system.file("extdata", package = "GXwasR")
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 foutput <- "Test_output"
@@ -108,10 +108,10 @@ monomorphicSNPs <- FALSE
 caldiffmiss <- FALSE
 ld_prunning <- FALSE
 x <- QCsnp(
-  DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput,
-  geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl,
-  ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs,
-  caldiffmiss = caldiffmiss
+    DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput,
+    geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl,
+    ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs,
+    caldiffmiss = caldiffmiss
 )
 }
 \references{

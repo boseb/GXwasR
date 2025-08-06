@@ -41,7 +41,7 @@ The output plink files with passed samples will be saved in ResultDir.
 This function prepares PLINK binary files with the desired samples.
 }
 \examples{
-DataDir <- system.file("extdata", package = "GXwasR")
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 foutput <- "casesPlink"
@@ -50,9 +50,9 @@ keep_remove_sample_file <- "samples_example"
 keep <- FALSE
 
 FilterPlinkSample(
-  DataDir = DataDir, ResultDir = ResultDir,
-  finput = finput, foutput = foutput, keep_remove_sample_file = keep_remove_sample_file,
-  keep = keep
+    DataDir = DataDir, ResultDir = ResultDir,
+    finput = finput, foutput = foutput, keep_remove_sample_file = keep_remove_sample_file,
+    keep = keep
 )
 }
 \author{

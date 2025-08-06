@@ -69,7 +69,7 @@ then examine the distribution of the F estimates (there should be a clear gap be
 females everywhere else). Then, rerun the function with the parameters that correspond to this gap.
 }
 \examples{
-DataDir <- system.file("extdata", package = "GXwasR")
+DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 LD <- TRUE
@@ -82,9 +82,9 @@ impute_sex <- FALSE
 compute_freq <- FALSE
 
 x <- SexCheck(
-  DataDir = DataDir, ResultDir = ResultDir, finput = finput, impute_sex = impute_sex,
-  compute_freq = compute_freq, LD_window_size = LD_window_size, LD_step_size = LD_step_size,
-  LD_r2_threshold = 0.02, fmax_F = 0.2, mmin_F = 0.8
+    DataDir = DataDir, ResultDir = ResultDir, finput = finput, impute_sex = impute_sex,
+    compute_freq = compute_freq, LD_window_size = LD_window_size, LD_step_size = LD_step_size,
+    LD_r2_threshold = 0.02, fmax_F = 0.2, mmin_F = 0.8
 )
 
 # Checking if there is any wrong sex assignment

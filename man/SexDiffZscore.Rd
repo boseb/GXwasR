@@ -37,7 +37,7 @@ The input dataframes should only include X-chromosome in order to obtain results
 X-linked loci.
 }
 \examples{
-data("GXwasRData")
+data("Example_h2data", package = "GXwasR")
 inputdata <- Example_h2data
 x <- SexDiffZscore(inputdata)
 
