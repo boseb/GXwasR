@@ -11,9 +11,9 @@ output:
     self_contained: false
     toc: true
     toc_float: true
-    toc_depth: 2
+    toc_depth: 3
     code_folding: show
-date: "5 August 2025"
+date: "6 August 2025"
 package: "GXwasR 0.99.0"
 vignette: >
   %\VignetteIndexEntry{GXwasR_overview}
@@ -90,8 +90,29 @@ This document lists all the functions in GXwasR package.It offers thirty-three d
 
 ``` r
 library(GXwasR)
+#> 
+#> GXwasR: Genome-wide and x-chromosome wide association analyses applying best practices of quality control over genetic data
+#> Version 0.99.0 () installed
+#> Author: c(
+#>     person(given = "Banabithi",
+#>            family = "Bose",
+#>            role = c("cre", "aut"),
+#>            email = "banabithi.bose@gmail.com",
+#>            comment = c(ORCID = "0000-0003-0842-8768"))
+#>            )
+#> Maintainer: Banabithi Bose <banabithi.bose@gmail.com>
+#> Tutorial: https://github.com
+#> Use citation("GXwasR") to know how to cite this work.
 library(magrittr)
+#> 
+#> Attaching package: 'magrittr'
+#> The following objects are masked from 'package:testthat':
+#> 
+#>     equals, is_less_than, not
 library(printr)
+#> Registered S3 method overwritten by 'printr':
+#>   method                from     
+#>   knit_print.data.frame rmarkdown
 library(rmarkdown)
 ```
 
@@ -103,12 +124,11 @@ help(QCsnp, package = "GXwasR")
 #> 
 #> Description:
 #> 
-#>      This function performs quality control on genetic variant data
-#>      from PLINK binary files. It filters variants based on parameters
-#>      like minor allele frequency, Hardy-Weinberg equilibrium, call
-#>      rate, and differential missingness between cases and controls. It
-#>      also handles monomorphic SNPs and applies linkage
-#>      disequilibrium-based filtering if specified.
+#>      This function performs QC of genotype data from PLINK binary
+#>      files. It can filter based on minor allele frequency,
+#>      Hardy-Weinberg equilibrium, call rate, and differential
+#>      missingness between cases and controls. It can also perform
+#>      linkage disequilibrium-based filtering.
 #> 
 #> Usage:
 #> 
@@ -152,7 +172,7 @@ help(QCsnp, package = "GXwasR")
 #>           The default is "FALSE".
 #> 
 #> casecontrol: Boolean value, 'TRUE' or 'FALSE' indicating if the input
-#>           plink files has cases-control status or not. The default is
+#>           PLINK files has cases-control status or not. The default is
 #>           'FALSE'.
 #> 
 #>  hweCase: Numeric value between 0 to 1 or 'NULL' for removing SNPs
@@ -221,7 +241,7 @@ help(QCsnp, package = "GXwasR")
 #> 
 #>      A list of two objects, namely, 'MonomorSNPs' and 'DiffMissSNPs'
 #>      containing monomorphic SNPs and SNPs with differential missingness
-#>      in cases vs controls, respectively. Output plink binary files in
+#>      in cases vs controls, respectively. Output PLINK binary files in
 #>      the working directory.
 #> 
 #> Author(s):
@@ -264,7 +284,7 @@ help(QCsnp, package = "GXwasR")
 
 ``` r
 help(QCsample, package = "GXwasR")
-#> QCsample: Quality control for samples in the plink binary files.
+#> QCsample: Quality control for samples in the PLINK binary files.
 #> 
 #> Description:
 #> 
@@ -363,7 +383,7 @@ help(QCsample, package = "GXwasR")
 #>      'Failed_heterozygosity' (samples with outlying heterozygosity),
 #>      'Missingness_results' (missingness results) and
 #>      'Heterozygosity_results' (heterozygosity results) with output
-#>      plink files in ResultDir if filtering out the samples option is
+#>      PLINK files in ResultDir if filtering out the samples option is
 #>      chosen.
 #> 
 #>      'Missingness_results' contains missingness results for each
@@ -418,6 +438,9 @@ help(AncestryCheck, package = "GXwasR")
 #>      Specifically, it compares the study samples' ancestry labels to a
 #>      panel representing a reference population, and it also flags the
 #>      outlier samples with respect to a chosen reference population.
+#> 
+#>      Users are required to provide SNPs ids or rsids in the input PLINK
+#>      files.
 #> 
 #>      The function first filters the reference and study data for
 #>      non-A-T or G-C SNPs. It next conducts LD pruning, fixes the
@@ -532,13 +555,15 @@ help(AncestryCheck, package = "GXwasR")
 #> outlier_threshold: Numeric value, specifying the threshold to be be
 #>           used to detect outlier samples. This threshold will be
 #>           multiplied with the Eucledean distance from the center of the
-#>           PC 1 and PC2 to the maximum Euclidean distance of the
+#>           PC1 and PC2 to the maximum Euclidean distance of the
 #>           reference samples. Study samples outside this distance will
 #>           be considered as outlier. The default is 3.
 #> 
 #> Value:
 #> 
-#>      A dataframe with the IDs of non-European samples as outliers.
+#>      A list containing two data frames: one with the IDs of outlier
+#>      samples (Outlier_samples), and another with samples annotated with
+#>      predicted ancestry (Samples_with_predicted_ancestry).
 #> 
 #> Author(s):
 #> 
@@ -594,7 +619,7 @@ help(AncestryCheck, package = "GXwasR")
 
 ``` r
 help(SexCheck, package = "GXwasR")
-#> SexCheck: Compare sex assignments in the input plink files with those
+#> SexCheck: Compare sex assignments in the input PLINK files with those
 #> imputed from X chromosome inbreeding coefficients
 #> 
 #> Description:
@@ -878,7 +903,7 @@ help(FilterRegion, package = "GXwasR")
 #> 
 #>      Filtering Pseudo-Autosomal Region (PAR), X-transposed region
 #>      (XTR), Ampliconic, filter based on chromosome code or user-defined
-#>      regions from input plink files. Only one type of filtering can be
+#>      regions from input PLINK files. Only one type of filtering can be
 #>      done from three types, either by region (using 'regionfile' =
 #>      'TRUE'), by chromosome ('filterCHR') or by any combination of
 #>      these three, 'filterPAR', 'filterXTR' and 'filterAmpliconic.'
@@ -927,18 +952,18 @@ help(FilterRegion, package = "GXwasR")
 #>           'filterAmpliconic' filter is in effect.
 #> 
 #> filterPAR: Boolean value, 'TRUE' or 'FALSE' to filter out PARs from
-#>           input plink file. The default is 'TRUE'.
+#>           input PLINK file. The default is 'TRUE'.
 #> 
 #> filterXTR: Boolean value, 'TRUE' or 'FALSE' to filter out XTRs from
-#>           input plink file. The default is 'TRUE'.
+#>           input PLINK file. The default is 'TRUE'.
 #> 
 #> filterAmpliconic: Boolean value, 'TRUE' or 'FALSE' to filter out
-#>           Ampliconic regions from input plink file. The default is
+#>           Ampliconic regions from input PLINK file. The default is
 #>           'TRUE'.
 #> 
 #> regionfile: Character string, specifying the name of the .txt file
 #>           containing the user-defined regions to be filtered out from
-#>           input plink file in bed format. The default is 'FALSE'. If
+#>           input PLINK file in bed format. The default is 'FALSE'. If
 #>           'regionfile' = 'TRUE', only this filtering will be in effect.
 #>           Also, PAR, XTR and Ampliconic SNPs from X-chomosome will be
 #>           flagged and returned.
@@ -968,7 +993,7 @@ help(FilterRegion, package = "GXwasR")
 #>      For non-zero value of 'filterCHR', a dataframe containing the
 #>      excluded/flagged SNPs will be returned.
 #> 
-#>      For 'exclude' = 'TRUE', two sets of plink binary files will be
+#>      For 'exclude' = 'TRUE', two sets of PLINK binary files will be
 #>      produced in ResultDir. One set will have the remaining SNPs after
 #>      filtering and other one will have the discarded SNPs.
 #> 
@@ -1088,9 +1113,8 @@ help(GXwas, package = "GXwasR")
 #>           the dose compensation connection between the sexes, FM02
 #>           treats men as homozygous females.
 #> 
-#>           In the FM01comb and FM01comb methods, associations are tested
-#>           separately for males and females with the FM01 and FM02
-#>           models, respectively, and then the combined p values are
+#>           In the "FMstratified" associations are tested separately for
+#>           males and females, and then the combined p values are
 #>           computed the Fisher's method, Fisher's method with
 #>           permutation, or Stouffer's method(1,3-7]. An X-chromosome
 #>           inactivation (XCI) pattern, or coding technique for
@@ -1173,13 +1197,12 @@ help(GXwas, package = "GXwasR")
 #>           Note: This feature is not valid for the XCGA model for the
 #>           XWAS part.
 #> 
-#> combtest: Character vector specifying method for combining p-values for
-#>           stratified GWAS with FM01comb and FM02comb XWAS models.
-#>           Choices are “stouffer.method”, "fisher.method" and
-#>           "fisher.method.perm". For fisher.method the function for
-#>           combining p-values uses a statistic, S = -2 ∑^k /log p, which
-#>           follows a χ^2 distribution with 2k degrees of freedom (Fisher
-#>           1925).
+#> combtest: Character vector specifying method for combining p-values
+#>           after stratified GWAS/XWAS models. Choices are
+#>           “stouffer.method”, "fisher.method" and "fisher.method.perm".
+#>           For fisher.method the function for combining p-values uses a
+#>           statistic, S = -2 ∑^k /log p, which follows a χ^2
+#>           distribution with 2k degrees of freedom (Fisher 1925).
 #> 
 #>           For fisher.method.perm, using p-values from stratified tests,
 #>           the summary statistic for combining p-values is S = -2 ∑ /log
@@ -1205,6 +1228,10 @@ help(GXwas, package = "GXwasR")
 #> 
 #>           Note that only p-values between 0 and 1 are allowed to be
 #>           passed to these methods.
+#> 
+#>           Note: Though this parameter is enabled for both autosome GWAS
+#>           and XWAS, the combining pvalue after sex-stratified test is
+#>           recommended to ChrX only.
 #> 
 #> MF.zero.sub: Small numeric value for substituting p-values of 0 in in
 #>           stratified GWAS with FM01comb and FM02comb XWAS models. The
@@ -1500,8 +1527,8 @@ help(SexDiff, package = "GXwasR")
 #> Description:
 #> 
 #>      This function uses the GWAS summary statistics from sex-stratified
-#>      tests like FM01comb or FM02comb, to evaluate the difference in
-#>      effect size between males and females at each SNP using a t-test.
+#>      tests like "FMstratified", to evaluate the difference in effect
+#>      size between males and females at each SNP using a t-test.
 #> 
 #>      The input dataframes should only include X-chromosome in order to
 #>      obtain results for sex differences based solely on X-linked loci.
@@ -1517,14 +1544,14 @@ help(SexDiff, package = "GXwasR")
 #>           SNP(Variant),CHR(Chromosome number), BP(Base pair
 #>           position),A1(Minor allele),BETA_M(Effect size) and
 #>           SE_M(Standard error). This can be generated by running
-#>           FM01comb or FM02comb model with GXWAS function.
+#>           FM01comb or "FMstratified" model with GXWAS function.
 #> 
 #>    Ffile: R dataframe of summary statistics of GWAS or XWAS of male
 #>           samples with six mandatory columns,
 #>           SNP(Variant),CHR(Chromosome number), BP(Base pair
 #>           position),A1(Minor allele),BETA_F(Effect size) and
 #>           SE_F(Standard error). This can be generated by running
-#>           FM01comb or FM02comb model with GXWAS function.
+#>           FM01comb or "FMstratified" model with GXWAS function.
 #> 
 #> Value:
 #> 
@@ -1553,7 +1580,7 @@ help(SexDiff, package = "GXwasR")
 #>      data("Mfile", package = "GXwasR")
 #>      data("Ffile", package = "GXwasR")
 #>      Difftest <- SexDiff(Mfile, Ffile)
-#>      significant_snps <- Difftest[Difftest$adjP < 0.05, ] # 9
+#>      significant_snps <- Difftest[Difftest$adjP < 0.05, ]
 ```
 
 ### Function 11
@@ -3089,7 +3116,7 @@ help(FilterPlinkSample, package = "GXwasR")
 #> 
 #>      'NULL'
 #> 
-#>      The output plink files with passed samples will be saved in
+#>      The output PLINK files with passed samples will be saved in
 #>      ResultDir.
 #> 
 #> Author(s):
@@ -3406,14 +3433,14 @@ help(GetMFPlink, package = "GXwasR")
 #>  foutput: Character string, specifying the prefix of the output PLINK
 #>           binary files.
 #> 
-#>      sex: Boolean value, 'males' or 'females', specifying output plink
+#>      sex: Boolean value, 'males' or 'females', specifying output PLINK
 #>           binary files with male or female samples.
 #> 
-#>   xplink: Boolean value, 'TRUE' or 'FALSE', specifying output plink
+#>   xplink: Boolean value, 'TRUE' or 'FALSE', specifying output PLINK
 #>           binary files with only X chromosome or not. Default is
 #>           'FALSE.'
 #> 
-#> autoplink: Boolean value, 'TRUE' or 'FALSE', specifying output plink
+#> autoplink: Boolean value, 'TRUE' or 'FALSE', specifying output PLINK
 #>           binary files with only autosome or not. Default is 'FALSE.'
 #> 
 #> Value:
@@ -3442,15 +3469,15 @@ help(GetMFPlink, package = "GXwasR")
 
 ``` r
 help(plinkVCF, package = "GXwasR")
-#> plinkVCF: Converting VCF files to plink binary files and vice-versa.
+#> plinkVCF: Converting VCF files to PLINK binary files and vice-versa.
 #> 
 #> Description:
 #> 
-#>      This function performs the conversion between VCF files to plink
+#>      This function performs the conversion between VCF files to PLINK
 #>      binary formats.
 #> 
-#>      For VCF to plink files conversion, if you do not specify any FAM
-#>      file when you are converting from VCF to plink format, then plink
+#>      For VCF to PLINK files conversion, if you do not specify any FAM
+#>      file when you are converting from VCF to PLINK format, then PLINK
 #>      will just create a 'dummy' FAM file with the same name as your
 #>      dataset with missing phenotypes and missing sex.
 #> 
@@ -3469,33 +3496,33 @@ help(plinkVCF, package = "GXwasR")
 #>      
 #> Arguments:
 #> 
-#>  DataDir: A character string for the file path of the input plink
+#>  DataDir: A character string for the file path of the input PLINK
 #>           binary files and all other input files.
 #> 
 #> ResultDir: A character string for the file path where all output files
 #>           will be stored. The default is 'tempdir()'.
 #> 
-#>   finput: Character string, specifying the prefix of the input plink
+#>   finput: Character string, specifying the prefix of the input PLINK
 #>           binary files or vcf files. This file needs to be in
 #>           'DataDir'.
 #> 
-#>  foutput: Character string, specifying the prefix of the output plink
+#>  foutput: Character string, specifying the prefix of the output PLINK
 #>           binary files if filtering option for the SNPs is chosen. The
 #>           default is "FALSE".
 #> 
 #>     VtoP: Boolean value, 'TRUE' or 'FALSE', specifying the conversion
-#>           of VCF files to plink binary files or not. The default is
+#>           of VCF files to PLINK binary files or not. The default is
 #>           'TRUE'.
 #> 
 #>     PtoV: Boolean value, 'TRUE' or 'FALSE', specifying the conversion
-#>           of plink binary files to VCF files or not. The default is
+#>           of PLINK binary files to VCF files or not. The default is
 #>           'TRUE'.
 #> 
 #>  Famfile: Character string, specifying the name of the original .fam
 #>           file if VtoP was set to be 'TRUE'. This file needs to be in
 #>           'DataDir'. The default is 'NULL'.
 #> 
-#>  PVbyCHR: Boolean value, 'TRUE' or 'FALSE' specifying to do the plink
+#>  PVbyCHR: Boolean value, 'TRUE' or 'FALSE' specifying to do the PLINK
 #>           to vcf conversion chromosome-wise or not. The default is
 #>           'TRUE'.
 #> 
@@ -3526,7 +3553,7 @@ help(plinkVCF, package = "GXwasR")
 
 ``` r
 help(MergeRegion, package = "GXwasR")
-#> MergeRegion: Merging two sets of plink binary files.
+#> MergeRegion: Merging two sets of PLINK binary files.
 #> 
 #> Description:
 #> 
@@ -3546,7 +3573,7 @@ help(MergeRegion, package = "GXwasR")
 #>      
 #> Arguments:
 #> 
-#>  DataDir: A character string for the file path of the input plink
+#>  DataDir: A character string for the file path of the input PLINK
 #>           binary files.
 #> 
 #> ResultDir: A character string for the file path where all output files
@@ -3569,7 +3596,7 @@ help(MergeRegion, package = "GXwasR")
 #> 
 #>      NULL
 #> 
-#>      The output plink files will be saved in ResultDir.
+#>      The output PLINK files will be saved in ResultDir.
 #> 
 #> Author(s):
 #> 
@@ -3617,7 +3644,7 @@ help(FilterAllele, package = "GXwasR")
 #> 
 #> Value:
 #> 
-#>      'NULL'. After multi-allelic variant filtering, the filtered plink
+#>      'NULL'. After multi-allelic variant filtering, the filtered PLINK
 #>      files with only biallelic SNPs will be saved in 'ResultDir'.
 #> 
 #> Author(s):
@@ -3637,11 +3664,11 @@ help(FilterAllele, package = "GXwasR")
 
 ``` r
 help(PlinkSummary, package = "GXwasR")
-#> PlinkSummary: Summary of plink format genotype dataset
+#> PlinkSummary: Summary of PLINK format genotype dataset
 #> 
 #> Description:
 #> 
-#>      PlinkSummary: Summary of plink format genotype dataset
+#>      PlinkSummary: Summary of PLINK format genotype dataset
 #> 
 #> Usage:
 #> 
@@ -3652,7 +3679,7 @@ help(PlinkSummary, package = "GXwasR")
 #>  DataDir: A character string for the file path of the input PLINK
 #>           binary files.
 #> 
-#> ResultDir: A character string for the file path of the plink program to
+#> ResultDir: A character string for the file path of the PLINK program to
 #>           be set up.
 #> 
 #>   finput: Character string, specifying the prefix of the input PLINK
@@ -4138,7 +4165,7 @@ help(ComputeLD, package = "GXwasR")
 
 # Tutorials
 
-Please follow these tutorials to know more about the functionality of the package GXwasR.
+Please follow these tutorials to learn more about the functionality of the package GXwasR.
 
 Tutorial for performing post-imputation QC followed by sex-aware association tests: (vignette:Use of GXwasR)
 
@@ -4148,6 +4175,7 @@ Tutorial for performing post-imputation QC followed by sex-aware association tes
 * Tutorial for computing Polygenic Risk Score using GXwasR: [https://boseb.github.io/GXwasR/articles/GXwasR_PRS.html](https://boseb.github.io/GXwasR/articles/GXwasR_PRS.html)
 * Tutorial for ancestry estimation: [https://boseb.github.io/GXwasR/articles/decoding_ancestry.html](https://boseb.github.io/GXwasR/articles/decoding_ancestry.html)
 * Tutorial for meta analysis using GXwasR: [https://boseb.github.io/GXwasR/articles/meta_analysis.html](https://boseb.github.io/GXwasR/articles/meta_analysis.html)
+* Tutorial for genetic correlation using GWAS Summary Statistics using GXwasR: [https://boseb.github.io/GXwasR/articles/genetic_correlation_sumstat.html](https://boseb.github.io/GXwasR/articles/genetic_correlation_sumstat.html)
 
 ## Running Examples
 
@@ -4174,13 +4202,15 @@ x <- QCsnp(
     ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs,
     caldiffmiss = caldiffmiss
 )
+#> Using PLINK v1.9.0-b.7.7 64-bit (22 Oct 2024)
 #> ℹ 4214 Ambiguous SNPs (A-T/G-C), indels etc. were removed.
 #> ✔ Thresholds for maf, geno and hwe worked.
 #> ℹ 5467 variants removed due to minor allele threshold(s)
 #> ℹ No filter based on differential missingness will be applied.
-#> ✔ Output plink files prefixed as ,Test_output, with passed SNPs are saved in ResultDir.
+#> ✔ Output PLINK files prefixed as ,Test_output, with passed SNPs are saved in ResultDir.
 #> ℹ Input file has 26527 SNPs.
 #> ℹ Output file has 16846 SNPs after filtering.
+#> This message is displayed once every 8 hours.
 x
 #> $MonomorSNPs
 #> NULL
@@ -4210,18 +4240,13 @@ x <- QCsample(
     ambi_out = ambi_out
 )
 #> • Plots are initiated.
-```
-
-![plot of chunk overview-QCsample](./overview-QCsample-1.png)
-
-```
 #> ℹ No. of samples filtered/flagged for missingness: 0
 #> ℹ No. of samples filtered/flagged for heterozygosity threshold: 3
 #> ℹ No. of samples filtered/flagged for missingness and heterozygosity: 3
 #> ℹ No. of samples marked to be filtered out for IDB after missingness and heterozygosity filter: 2
-#> ℹ No. of samples in input plink files: 276
-#> ℹ No. of samples in output plink files: 271
-#> ✔ Output plink files, Test_output with final samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB.
+#> ℹ No. of samples in input PLINK files: 276
+#> ℹ No. of samples in output PLINK files: 271
+#> ✔ Output PLINK files, Test_output with final samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX.
 x$HM
 ```
 
@@ -4309,12 +4334,14 @@ x <- AncestryCheck(
     study_pop = study_pop, studyLD = studyLD, referLD = referLD,
     outlierOf = "EUR", outlier = outlier, outlier_threshold = outlier_threshold
 )
+#> ℹ 'HapMapIII_NCBI36' reference data found at /Users/mayerdav/Downloads/HapMapIII_NCBI36.
 #> 4214 ambiguous SNPs removed from study data.
 #> 111854 ambiguous SNPs removed from reference data.
 #> ! LD pruning is recommended for reference dataset. Set referLD = TRUE.
 #> ! LD pruning is recommended for study dataset. Set studyLD = TRUE.
 #> 
 #> ℹ Number of overlapping SNPs between study and reference data using rsID: 3722
+#> This message is displayed once every 8 hours.
 ```
 
 ![plot of chunk overview-AncestryCheck](./overview-AncestryCheck-1.png)
@@ -4415,10 +4442,9 @@ x <- Xhwe(
     DataDir = DataDir, ResultDir = ResultDir,
     finput = finput, foutput = foutput, filterSNP = TRUE
 )
-#> ✔ Output plink files, prefixed as female, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB
+#> ✔ Output PLINK files, prefixed as female, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX
 #> This test is running on a case-control dataset with female samples.
-#> ℹ Failed SNPs are excluded from the output plink files prefixed as Test_output is in
-#> /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB
+#> ℹ Failed SNPs are excluded from the output PLINK files prefixed as Test_output is in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX
 x
 #> [1] "rs56053951" "rs12353847" "rs5940058"
 ```
@@ -4458,8 +4484,8 @@ x <- FilterRegion(
 #> ℹ Changing filterXTR to FALSE
 #> ℹ Ampliconic SNPs:9
 #> ℹ 9 SNPs are discarded.
-#> ✔ Plink files with passed SNPs are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB prefixed as PostimputeEX_QC1
-#> ✔ Plink files with discarded SNPs are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB prefixed as PostimputeEX_QC1_snps_extracted
+#> ✔ PLINK files with passed SNPs are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX prefixed as PostimputeEX_QC1
+#> ✔ PLINK files with discarded SNPs are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX prefixed as PostimputeEX_QC1_snps_extracted
 x
 #> $PAR
 #> NULL
@@ -4511,6 +4537,7 @@ ResultGXwas <- GXwas(
     MF.mc.cores = 1, ncores = ncores
 )
 #> • Running FMcombx02 model
+#> ℹ If you want parallel computation, please provide non-zero value for argument ncores.
 ResultGXwas %>% head()
 ```
 
@@ -4540,13 +4567,13 @@ PvalComb_Result <- PvalComb(
     combtest = "fisher.method", MF.mc.cores = 1, snp_pval = 0.001, plot.jpeg = FALSE,
     suggestiveline = 3, genomewideline = 5.69897, ncores = 1
 )
-#> ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB/Stratified_GWAS.png
+#> ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX/Stratified_GWAS.png
 ```
 
 ![plot of chunk overview-PvalComb](./overview-PvalComb-1.png)
 
 ```
-#> ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB/Stratified_XWAS.png
+#> ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX/Stratified_XWAS.png
 ```
 
 ![plot of chunk overview-PvalComb](./overview-PvalComb-2.png)![plot of chunk overview-PvalComb](./overview-PvalComb-3.png)![plot of chunk overview-PvalComb](./overview-PvalComb-4.png)![plot of chunk overview-PvalComb](./overview-PvalComb-5.png)![plot of chunk overview-PvalComb](./overview-PvalComb-6.png)
@@ -4691,9 +4718,8 @@ GenetestResult <- TestXGene(DataDir, ResultDir, finput, sumstat, gene_file,
 #> ℹ 80 of 80 variants found in reference
 #> ℹ Effect sizes recoded for 0 variant(s)
 #> ✔ Allele frequencies found and linked
-#> ✔ File /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/gene.test.score.file.vcf.gz has been created and indexed
+#> ✔ File /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp7SvuuX/gene.test.score.file.vcf.gz has been created and indexed
 #> ℹ 157 genes are having 321 SNPs
-#> ! Warning: '/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB/cormatrix' already exists
 #> • SNP-SNP correlation matrices are being created...
 #> ✔ SNP-SNP correlation matrices are done.
 #> ! Warning: No variants to analyze in gene uc004cqy.3, skipped
@@ -4758,9 +4784,9 @@ x <- MetaGWAS(
 
 ```
 #> ✔ Forest plot files for Meta_Analysis.plot SNPs have been created.
-#> ℹ You can find them in the directory: /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB
+#> ℹ You can find them in the directory: /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX
 #> ✔ Forest plot files for Meta_Analysis.plot SNPs have been created.
-#> ℹ You can find them in the directory: /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB
+#> ℹ You can find them in the directory: /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX
 x$Resultfixed %>% head()
 ```
 
@@ -4783,12 +4809,12 @@ x$ProblemSNP %>% head()
 
 |File                                                                          |SNP        |Problem         |
 |:-----------------------------------------------------------------------------|:----------|:---------------|
-|/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/SNPdata_2 |rs2803333  |ALLELE_MISMATCH |
-|/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/SNPdata_2 |rs672606   |ALLELE_MISMATCH |
-|/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/SNPdata_2 |rs7519955  |ALLELE_MISMATCH |
-|/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/SNPdata_2 |rs1538466  |ALLELE_MISMATCH |
-|/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/SNPdata_2 |rs61777960 |ALLELE_MISMATCH |
-|/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/SNPdata_2 |rs2865211  |ALLELE_MISMATCH |
+|/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp7SvuuX/SNPdata_2 |rs2803333  |ALLELE_MISMATCH |
+|/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp7SvuuX/SNPdata_2 |rs672606   |ALLELE_MISMATCH |
+|/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp7SvuuX/SNPdata_2 |rs7519955  |ALLELE_MISMATCH |
+|/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp7SvuuX/SNPdata_2 |rs1538466  |ALLELE_MISMATCH |
+|/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp7SvuuX/SNPdata_2 |rs61777960 |ALLELE_MISMATCH |
+|/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp7SvuuX/SNPdata_2 |rs2865211  |ALLELE_MISMATCH |
 
 ### `ComputePRS()`
 
@@ -4826,7 +4852,7 @@ PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, cova
     ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6,
     pheno_type = "binary"
 )
-#> Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/temp_libpath102934d3db98b', reason 'Directory not empty'
+#> Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp7SvuuX/temp_libpatheab742dff3cd', reason 'Directory not empty'
 #> ℹ 0.001
 #> • Computing PRS for threshold 0.001
 #> ℹ 0.05
@@ -4901,6 +4927,7 @@ genetic_correlation <- GeneticCorrBT(
     cripticut = 0.025, minMAF = NULL, maxMAF = NULL, excludeResidual = TRUE, ncores = ncores
 )
 #> Processing chromosome 1
+#> Using GCTA version v1.94.4 Mac
 #> ✖ Error: Log-likelihood not converged (stop after 10 iteractions). 
 #> ℹ Note: to constrain the correlation being from -1 to 1, a genetic (or residual) variance-covariance matrix is bended to be positive definite. In this case, the SE is unreliable.
 #> ✖ Convergence issue occurred, please:
@@ -5010,8 +5037,8 @@ genetic_correlation <- GeneticCorrBT(
 #> 
 #> 
 #> Processing chromosome 23
-#> ✔ GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB/xGXwasR.grm.bin]
-#> ℹ Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB/xGXwasR.grm.N.bin]
+#> ✔ GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX/xGXwasR.grm.bin]
+#> ℹ Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX/xGXwasR.grm.N.bin]
 #> 
 #> 
 #> 
@@ -5093,14 +5120,14 @@ H2 <- EstimateHerit(
 #> Processing chromosome 9
 #> Processing chromosome 10
 #> Processing chromosome 23
-#> ✔ GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB/xGXwasR.grm.bin]
-#> ℹ Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB/xGXwasR.grm.N.bin]
+#> ✔ GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX/xGXwasR.grm.bin]
+#> ℹ Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX/xGXwasR.grm.N.bin]
 #> 
 #> 
 #> 
 #> Processing chromosome 24
-#> ✔ Plots are saved in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB with name Heritability_Plots.jpeg
-#> ✔ All GRM related files are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB
+#> ✔ Plots are saved in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX with name Heritability_Plots.jpeg
+#> ✔ All GRM related files are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX
 H2 %>% head()
 ```
 
@@ -5147,7 +5174,7 @@ FilterPlinkSample(
     finput = finput, foutput = foutput, keep_remove_sample_file = keep_remove_sample_file,
     keep = keep
 )
-#> ✔ casesPlink plink files with desired samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB
+#> ✔ casesPlink PLINK files with desired samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX
 #> NULL
 ```
 
@@ -5169,7 +5196,7 @@ GP <- ComputeGeneticPC(
     DataDir = DataDir, ResultDir = ResultDir,
     finput = finput, highLD_regions = highLD_hg19, countPC = 20
 )
-#> Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/temp_libpath102934d3db98b', reason 'Directory not empty'
+#> Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp7SvuuX/temp_libpatheab742dff3cd', reason 'Directory not empty'
 GP$PCs1 %>% head()
 ```
 
@@ -5277,7 +5304,7 @@ x <- GetMFPlink(
     finput = finput, foutput = foutput, sex = sex,
     xplink = FALSE, autoplink = FALSE
 )
-#> ✔ Output plink files, prefixed as Test_output, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB
+#> ✔ Output PLINK files, prefixed as Test_output, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX
 x
 #> NULL
 ```
@@ -5295,7 +5322,7 @@ VtoP <- FALSE
 Famfile <- NULL
 PVbyCHR <- FALSE
 plinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)
-#> ✔ Output files created in ResultDir: /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB
+#> ✔ Output files created in ResultDir: /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX
 ```
 
 ### `MergeRegion()`
@@ -5309,7 +5336,7 @@ finput2 <- "GXwasR_example_imputed"
 foutput <- "Test_output"
 y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput, use_common_snps = TRUE)
 #> ✔ Merging is done using the common SNPs between the input genotype files.
-#> ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB prefixed as Test_output
+#> ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX prefixed as Test_output
 y
 #> NULL
 ```
@@ -5377,7 +5404,7 @@ finput <- "GXwasR_example"
 foutput <- "Filter_Test"
 FilterSNP(DataDir, ResultDir, finput, foutput, SNPvec = SNPvec, extract = TRUE)
 #> ℹ 3 SNPs are extracted
-#> ✔ Plink files with extracted SNPs are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB prefixed as Filter_Test
+#> ✔ Plink files with extracted SNPs are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX prefixed as Filter_Test
 #> NULL
 ```
 
@@ -5395,7 +5422,7 @@ dummy_covars <- DummyCovar(
     bfile = bfile, incovar = incovar,
     outcovar = outcovar
 )
-#> ℹ Covariate file: dummycovarfile.cov is in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB
+#> ℹ Covariate file: dummycovarfile.cov is in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX
 dummy_covars %>% head()
 ```
 
@@ -5423,13 +5450,13 @@ colnames(MaleWAS) <- c("SNP", "CHR", "POS", "pvalue")
 
 GXWASmiami(FemaleWAS = FemaleWAS, MaleWAS = MaleWAS, snp_pval = 0.05)
 #> • Generating Miami plots for stratified test.
-#> ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB/Stratified_GWAS.png
+#> ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX/Stratified_GWAS.png
 ```
 
 ![plot of chunk overview-GXWASmiami](./overview-GXWASmiami-1.png)
 
 ```
-#> ✔ Miami plot of stratified GWAS is saved in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB
+#> ✔ Miami plot of stratified GWAS is saved in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX
 ```
 
 ### `SumstatGenCorr()`
@@ -5447,138 +5474,138 @@ if (nzchar(Sys.getenv("UKB_IMPUTED_HAPMAP2_PATH"))) {
     )
     res
 }
-#> Analysis starts on Tue Aug  5 21:32:57 2025
-#> ℹ 9339 out of 769306 (1.21%) SNPs in reference panel are available in GWAS 1.
-#> ℹ 9327 out of 769306 (1.21%) SNPs in reference panel are available in GWAS 2.
+#> Analysis starts on Wed Aug  6 11:42:35 2025
+#> ℹ 9436 out of 769306 (1.23%) SNPs in reference panel are available in GWAS 1.
+#> ℹ 9409 out of 769306 (1.22%) SNPs in reference panel are available in GWAS 2.
 #> ! Warning: More than 1% SNPs in reference panel are missed in GWAS 1. This may generate bias in estimation. Please make sure that you are using the correct reference panel.
 #> ! Warning: More than 1% SNPs in reference panel are missed in GWAS 2. This may generate bias in estimation. Please make sure that you are using the correct reference panel.
 #> 
-  |                                                                                                                    
-  |                                                                                                              |   0%
-  |                                                                                                                    
-  |==                                                                                                            |   2%
-  |                                                                                                                    
-  |====                                                                                                          |   3%
-  |                                                                                                                    
-  |=====                                                                                                         |   5%
-  |                                                                                                                    
-  |=======                                                                                                       |   6%
-  |                                                                                                                    
-  |=========                                                                                                     |   8%
-  |                                                                                                                    
-  |===========                                                                                                   |  10%
-  |                                                                                                                    
-  |============                                                                                                  |  11%
-  |                                                                                                                    
-  |==============                                                                                                |  13%
-  |                                                                                                                    
-  |================                                                                                              |  15%
-  |                                                                                                                    
-  |==================                                                                                            |  16%
-  |                                                                                                                    
-  |====================                                                                                          |  18%
-  |                                                                                                                    
-  |=====================                                                                                         |  19%
-  |                                                                                                                    
-  |=======================                                                                                       |  21%
-  |                                                                                                                    
-  |=========================                                                                                     |  23%
-  |                                                                                                                    
-  |===========================                                                                                   |  24%
-  |                                                                                                                    
-  |============================                                                                                  |  26%
-  |                                                                                                                    
-  |==============================                                                                                |  27%
-  |                                                                                                                    
-  |================================                                                                              |  29%
-  |                                                                                                                    
-  |==================================                                                                            |  31%
-  |                                                                                                                    
-  |===================================                                                                           |  32%
-  |                                                                                                                    
-  |=====================================                                                                         |  34%
-  |                                                                                                                    
-  |=======================================                                                                       |  35%
-  |                                                                                                                    
-  |=========================================                                                                     |  37%
-  |                                                                                                                    
-  |===========================================                                                                   |  39%
-  |                                                                                                                    
-  |============================================                                                                  |  40%
-  |                                                                                                                    
-  |==============================================                                                                |  42%
-  |                                                                                                                    
-  |================================================                                                              |  44%
-  |                                                                                                                    
-  |==================================================                                                            |  45%
-  |                                                                                                                    
-  |===================================================                                                           |  47%
-  |                                                                                                                    
-  |=====================================================                                                         |  48%
-  |                                                                                                                    
-  |=======================================================                                                       |  50%
-  |                                                                                                                    
-  |=========================================================                                                     |  52%
-  |                                                                                                                    
-  |===========================================================                                                   |  53%
-  |                                                                                                                    
-  |============================================================                                                  |  55%
-  |                                                                                                                    
-  |==============================================================                                                |  56%
-  |                                                                                                                    
-  |================================================================                                              |  58%
-  |                                                                                                                    
-  |==================================================================                                            |  60%
-  |                                                                                                                    
-  |===================================================================                                           |  61%
-  |                                                                                                                    
-  |=====================================================================                                         |  63%
-  |                                                                                                                    
-  |=======================================================================                                       |  65%
-  |                                                                                                                    
-  |=========================================================================                                     |  66%
-  |                                                                                                                    
-  |===========================================================================                                   |  68%
-  |                                                                                                                    
-  |============================================================================                                  |  69%
-  |                                                                                                                    
-  |==============================================================================                                |  71%
-  |                                                                                                                    
-  |================================================================================                              |  73%
-  |                                                                                                                    
-  |==================================================================================                            |  74%
-  |                                                                                                                    
-  |===================================================================================                           |  76%
-  |                                                                                                                    
-  |=====================================================================================                         |  77%
-  |                                                                                                                    
-  |=======================================================================================                       |  79%
-  |                                                                                                                    
-  |=========================================================================================                     |  81%
-  |                                                                                                                    
-  |==========================================================================================                    |  82%
-  |                                                                                                                    
-  |============================================================================================                  |  84%
-  |                                                                                                                    
-  |==============================================================================================                |  85%
-  |                                                                                                                    
-  |================================================================================================              |  87%
-  |                                                                                                                    
-  |==================================================================================================            |  89%
-  |                                                                                                                    
-  |===================================================================================================           |  90%
-  |                                                                                                                    
-  |=====================================================================================================         |  92%
-  |                                                                                                                    
-  |=======================================================================================================       |  94%
-  |                                                                                                                    
-  |=========================================================================================================     |  95%
-  |                                                                                                                    
-  |==========================================================================================================    |  97%
-  |                                                                                                                    
-  |============================================================================================================  |  98%
-  |                                                                                                                    
-  |==============================================================================================================| 100%
+  |                                                                                                                                                                                                                                                                                    
+  |                                                                                                                                                                                                                                                                              |   0%
+  |                                                                                                                                                                                                                                                                                    
+  |====                                                                                                                                                                                                                                                                          |   2%
+  |                                                                                                                                                                                                                                                                                    
+  |=========                                                                                                                                                                                                                                                                     |   3%
+  |                                                                                                                                                                                                                                                                                    
+  |=============                                                                                                                                                                                                                                                                 |   5%
+  |                                                                                                                                                                                                                                                                                    
+  |=================                                                                                                                                                                                                                                                             |   6%
+  |                                                                                                                                                                                                                                                                                    
+  |======================                                                                                                                                                                                                                                                        |   8%
+  |                                                                                                                                                                                                                                                                                    
+  |==========================                                                                                                                                                                                                                                                    |  10%
+  |                                                                                                                                                                                                                                                                                    
+  |==============================                                                                                                                                                                                                                                                |  11%
+  |                                                                                                                                                                                                                                                                                    
+  |===================================                                                                                                                                                                                                                                           |  13%
+  |                                                                                                                                                                                                                                                                                    
+  |=======================================                                                                                                                                                                                                                                       |  15%
+  |                                                                                                                                                                                                                                                                                    
+  |============================================                                                                                                                                                                                                                                  |  16%
+  |                                                                                                                                                                                                                                                                                    
+  |================================================                                                                                                                                                                                                                              |  18%
+  |                                                                                                                                                                                                                                                                                    
+  |====================================================                                                                                                                                                                                                                          |  19%
+  |                                                                                                                                                                                                                                                                                    
+  |=========================================================                                                                                                                                                                                                                     |  21%
+  |                                                                                                                                                                                                                                                                                    
+  |=============================================================                                                                                                                                                                                                                 |  23%
+  |                                                                                                                                                                                                                                                                                    
+  |=================================================================                                                                                                                                                                                                             |  24%
+  |                                                                                                                                                                                                                                                                                    
+  |======================================================================                                                                                                                                                                                                        |  26%
+  |                                                                                                                                                                                                                                                                                    
+  |==========================================================================                                                                                                                                                                                                    |  27%
+  |                                                                                                                                                                                                                                                                                    
+  |==============================================================================                                                                                                                                                                                                |  29%
+  |                                                                                                                                                                                                                                                                                    
+  |===================================================================================                                                                                                                                                                                           |  31%
+  |                                                                                                                                                                                                                                                                                    
+  |=======================================================================================                                                                                                                                                                                       |  32%
+  |                                                                                                                                                                                                                                                                                    
+  |===========================================================================================                                                                                                                                                                                   |  34%
+  |                                                                                                                                                                                                                                                                                    
+  |================================================================================================                                                                                                                                                                              |  35%
+  |                                                                                                                                                                                                                                                                                    
+  |====================================================================================================                                                                                                                                                                          |  37%
+  |                                                                                                                                                                                                                                                                                    
+  |=========================================================================================================                                                                                                                                                                     |  39%
+  |                                                                                                                                                                                                                                                                                    
+  |=============================================================================================================                                                                                                                                                                 |  40%
+  |                                                                                                                                                                                                                                                                                    
+  |=================================================================================================================                                                                                                                                                             |  42%
+  |                                                                                                                                                                                                                                                                                    
+  |======================================================================================================================                                                                                                                                                        |  44%
+  |                                                                                                                                                                                                                                                                                    
+  |==========================================================================================================================                                                                                                                                                    |  45%
+  |                                                                                                                                                                                                                                                                                    
+  |==============================================================================================================================                                                                                                                                                |  47%
+  |                                                                                                                                                                                                                                                                                    
+  |===================================================================================================================================                                                                                                                                           |  48%
+  |                                                                                                                                                                                                                                                                                    
+  |=======================================================================================================================================                                                                                                                                       |  50%
+  |                                                                                                                                                                                                                                                                                    
+  |===========================================================================================================================================                                                                                                                                   |  52%
+  |                                                                                                                                                                                                                                                                                    
+  |================================================================================================================================================                                                                                                                              |  53%
+  |                                                                                                                                                                                                                                                                                    
+  |====================================================================================================================================================                                                                                                                          |  55%
+  |                                                                                                                                                                                                                                                                                    
+  |========================================================================================================================================================                                                                                                                      |  56%
+  |                                                                                                                                                                                                                                                                                    
+  |=============================================================================================================================================================                                                                                                                 |  58%
+  |                                                                                                                                                                                                                                                                                    
+  |=================================================================================================================================================================                                                                                                             |  60%
+  |                                                                                                                                                                                                                                                                                    
+  |=====================================================================================================================================================================                                                                                                         |  61%
+  |                                                                                                                                                                                                                                                                                    
+  |==========================================================================================================================================================================                                                                                                    |  63%
+  |                                                                                                                                                                                                                                                                                    
+  |==============================================================================================================================================================================                                                                                                |  65%
+  |                                                                                                                                                                                                                                                                                    
+  |===================================================================================================================================================================================                                                                                           |  66%
+  |                                                                                                                                                                                                                                                                                    
+  |=======================================================================================================================================================================================                                                                                       |  68%
+  |                                                                                                                                                                                                                                                                                    
+  |===========================================================================================================================================================================================                                                                                   |  69%
+  |                                                                                                                                                                                                                                                                                    
+  |================================================================================================================================================================================================                                                                              |  71%
+  |                                                                                                                                                                                                                                                                                    
+  |====================================================================================================================================================================================================                                                                          |  73%
+  |                                                                                                                                                                                                                                                                                    
+  |========================================================================================================================================================================================================                                                                      |  74%
+  |                                                                                                                                                                                                                                                                                    
+  |=============================================================================================================================================================================================================                                                                 |  76%
+  |                                                                                                                                                                                                                                                                                    
+  |=================================================================================================================================================================================================================                                                             |  77%
+  |                                                                                                                                                                                                                                                                                    
+  |=====================================================================================================================================================================================================================                                                         |  79%
+  |                                                                                                                                                                                                                                                                                    
+  |==========================================================================================================================================================================================================================                                                    |  81%
+  |                                                                                                                                                                                                                                                                                    
+  |==============================================================================================================================================================================================================================                                                |  82%
+  |                                                                                                                                                                                                                                                                                    
+  |==================================================================================================================================================================================================================================                                            |  84%
+  |                                                                                                                                                                                                                                                                                    
+  |=======================================================================================================================================================================================================================================                                       |  85%
+  |                                                                                                                                                                                                                                                                                    
+  |===========================================================================================================================================================================================================================================                                   |  87%
+  |                                                                                                                                                                                                                                                                                    
+  |================================================================================================================================================================================================================================================                              |  89%
+  |                                                                                                                                                                                                                                                                                    
+  |====================================================================================================================================================================================================================================================                          |  90%
+  |                                                                                                                                                                                                                                                                                    
+  |========================================================================================================================================================================================================================================================                      |  92%
+  |                                                                                                                                                                                                                                                                                    
+  |=============================================================================================================================================================================================================================================================                 |  94%
+  |                                                                                                                                                                                                                                                                                    
+  |=================================================================================================================================================================================================================================================================             |  95%
+  |                                                                                                                                                                                                                                                                                    
+  |=====================================================================================================================================================================================================================================================================         |  97%
+  |                                                                                                                                                                                                                                                                                    
+  |==========================================================================================================================================================================================================================================================================    |  98%
+  |                                                                                                                                                                                                                                                                                    
+  |==============================================================================================================================================================================================================================================================================| 100%
 #> 
 #> 
 #> 
@@ -5653,10 +5680,8 @@ We hope that *[GXwasR](https://bioconductor.org/packages/3.21/GXwasR)* will be u
 citation("GXwasR")
 #> To cite package 'GXwasR' in publications use:
 #> 
-#>   Bose B, Blostein F, Kim J, Winters J, Actkins KV, Mayer D, Congivaram H, Niarchou M, Edwards DV, Davis
-#>   LK, Stranger BE (2025). "GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic Effects on
-#>   Complex Traits." _medRxiv 2025.06.10.25329327_. doi:10.1101/2025.06.10.25329327
-#>   <https://doi.org/10.1101/2025.06.10.25329327>.
+#>   Bose B, Blostein F, Kim J, Winters J, Actkins KV, Mayer D, Congivaram H, Niarchou M, Edwards DV, Davis LK, Stranger BE (2025). "GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic Effects on Complex Traits." _medRxiv 2025.06.10.25329327_.
+#>   doi:10.1101/2025.06.10.25329327 <https://doi.org/10.1101/2025.06.10.25329327>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
@@ -5671,14 +5696,14 @@ citation("GXwasR")
 
 # Reproducibility
 
-The *[GXwasR](https://bioconductor.org/packages/3.21/GXwasR)* package (Bose, Blostein, Kim et al., 2025) was made possible thanks to:
+The *[GXwasR](https://bioconductor.org/packages/3.21/GXwasR)* package (Bose, Blostein, Kim, Winters, Actkins, Mayer, Congivaram, Niarchou, Edwards, Davis, and Stranger, 2025) was made possible thanks to:
 
 * R (R Core Team, 2025)
 * *[BiocStyle](https://bioconductor.org/packages/3.21/BiocStyle)* (Oleś, 2025)
 * *[knitr](https://CRAN.R-project.org/package=knitr)* (Xie, 2025)
 * *[RefManageR](https://CRAN.R-project.org/package=RefManageR)* (McLean, 2017)
-* *[rmarkdown](https://CRAN.R-project.org/package=rmarkdown)* (Allaire, Xie, Dervieux et al., 2024)
-* *[sessioninfo](https://CRAN.R-project.org/package=sessioninfo)* (Wickham, Chang, Flight et al., 2025)
+* *[rmarkdown](https://CRAN.R-project.org/package=rmarkdown)* (Allaire, Xie, Dervieux, McPherson, Luraschi, Ushey, Atkins, Wickham, Cheng, Chang, and Iannone, 2024)
+* *[sessioninfo](https://CRAN.R-project.org/package=sessioninfo)* (Wickham, Chang, Flight, Müller, and Hester, 2025)
 * *[testthat](https://CRAN.R-project.org/package=testthat)* (Wickham, 2011)
 
 `R` session information.
@@ -5695,182 +5720,179 @@ The *[GXwasR](https://bioconductor.org/packages/3.21/GXwasR)* package (Bose, Blo
 #>  collate  en_US.UTF-8
 #>  ctype    en_US.UTF-8
 #>  tz       America/New_York
-#>  date     2025-08-05
+#>  date     2025-08-06
 #>  pandoc   3.6.3 @ /Applications/Positron.app/Contents/Resources/app/quarto/bin/tools/aarch64/ (via rmarkdown)
 #>  quarto   1.7.32 @ /usr/local/bin/quarto
 #> 
 #> ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
-#>  ! package              * version    date (UTC) lib source
-#>    abind                  1.4-8      2024-09-12 [2] CRAN (R 4.5.0)
-#>    backports              1.5.0      2024-05-23 [2] CRAN (R 4.5.1)
-#>    bibtex                 0.5.1      2023-01-26 [2] CRAN (R 4.5.0)
-#>    bigassertr             0.1.7      2025-06-27 [2] CRAN (R 4.5.1)
-#>    bigparallelr           0.3.2      2021-10-02 [2] CRAN (R 4.5.0)
-#>    bigsnpr                1.12.18    2024-11-26 [2] CRAN (R 4.5.1)
-#>    bigsparser             0.7.3      2024-09-06 [2] CRAN (R 4.5.1)
-#>    bigstatsr              1.6.2      2025-07-29 [2] CRAN (R 4.5.1)
-#>    Biobase                2.68.0     2025-04-15 [2] Bioconduc~
-#>    BiocGenerics           0.54.0     2025-04-15 [2] Bioconduc~
-#>    BiocIO                 1.18.0     2025-04-15 [2] Bioconduc~
-#>    BiocManager            1.30.26    2025-06-05 [2] CRAN (R 4.5.0)
-#>    BiocParallel           1.42.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
-#>    BiocStyle              2.36.0     2025-04-15 [2] Bioconduc~
-#>    Biostrings             2.76.0     2025-04-15 [2] Bioconduc~
-#>    bit                    4.6.0      2025-03-06 [2] CRAN (R 4.5.1)
-#>    bit64                  4.6.0-1    2025-01-16 [2] CRAN (R 4.5.1)
-#>    bitops                 1.0-9      2024-10-03 [2] CRAN (R 4.5.0)
-#>    brio                   1.1.5      2024-04-24 [2] CRAN (R 4.5.1)
-#>    broom                  1.0.9      2025-07-28 [2] CRAN (R 4.5.1)
-#>    BSgenome               1.76.0     2025-04-15 [2] Bioconduc~
-#>    cachem                 1.1.0      2024-05-16 [2] CRAN (R 4.5.0)
-#>    calibrate              1.7.7      2020-06-19 [2] CRAN (R 4.5.0)
-#>    callr                  3.7.6      2024-03-25 [2] CRAN (R 4.5.0)
-#>    car                    3.1-3      2024-09-27 [2] CRAN (R 4.5.0)
-#>    carData                3.0-5      2022-01-06 [2] CRAN (R 4.5.0)
-#>    cli                    3.6.5      2025-04-23 [2] CRAN (R 4.5.0)
-#>    codetools              0.2-20     2024-03-31 [4] CRAN (R 4.5.1)
-#>    cowplot                1.2.0      2025-07-07 [2] CRAN (R 4.5.1)
-#>    crayon                 1.5.3      2024-06-20 [2] CRAN (R 4.5.0)
-#>    curl                   6.4.0      2025-06-22 [2] CRAN (R 4.5.1)
-#>    data.table             1.17.8     2025-07-10 [2] CRAN (R 4.5.1)
-#>    DelayedArray           0.34.1     2025-04-17 [2] Bioconduc~
-#>    desc                   1.4.3      2023-12-10 [2] CRAN (R 4.5.0)
-#>    devtools             * 2.4.5      2022-10-11 [3] CRAN (R 4.5.0)
-#>    digest                 0.6.37     2024-08-19 [2] CRAN (R 4.5.0)
-#>    doParallel             1.0.17     2022-02-07 [2] CRAN (R 4.5.0)
-#>    doRNG                  1.8.6.2    2025-04-02 [2] CRAN (R 4.5.0)
-#>    doSNOW                 1.0.20     2022-02-04 [2] CRAN (R 4.5.0)
-#>    dplyr                  1.1.4      2023-11-17 [2] CRAN (R 4.5.0)
-#>    ellipsis               0.3.2      2021-04-29 [3] CRAN (R 4.5.0)
-#>    evaluate               1.0.4      2025-06-18 [2] CRAN (R 4.5.1)
-#>    farver                 2.1.2      2024-05-13 [2] CRAN (R 4.5.0)
-#>    fastmap                1.2.0      2024-05-15 [2] CRAN (R 4.5.0)
-#>    flock                  0.7        2016-11-12 [2] CRAN (R 4.5.1)
-#>    foreach                1.5.2      2022-02-02 [2] CRAN (R 4.5.0)
-#>    Formula                1.2-5      2023-02-24 [2] CRAN (R 4.5.0)
-#>    fs                     1.6.6      2025-04-12 [2] CRAN (R 4.5.0)
-#>    gdsfmt                 1.44.1     2025-07-09 [2] Bioconduc~
-#>    generics               0.1.4      2025-05-09 [2] CRAN (R 4.5.0)
-#>    GenomeInfoDb           1.44.1     2025-07-23 [2] Bioconduc~
-#>    GenomeInfoDbData       1.2.14     2025-04-21 [2] Bioconductor
-#>    GenomicAlignments      1.44.0     2025-04-15 [2] Bioconduc~
-#>    GenomicRanges          1.60.0     2025-04-15 [2] Bioconduc~
-#>    ggplot2                3.5.2      2025-04-09 [2] CRAN (R 4.5.0)
-#>    ggpubr                 0.6.1      2025-06-27 [2] CRAN (R 4.5.1)
-#>    ggrepel                0.9.6      2024-09-07 [2] CRAN (R 4.5.1)
-#>    ggsignif               0.6.4      2022-10-13 [2] CRAN (R 4.5.0)
-#>    glue                   1.8.0      2024-09-30 [2] CRAN (R 4.5.0)
-#>    gridExtra              2.3        2017-09-09 [2] CRAN (R 4.5.0)
-#>    gtable                 0.3.6      2024-10-25 [2] CRAN (R 4.5.0)
-#>  P GXwasR               * 0.99.0     2025-08-06 [?] Bioconductor
-#>    hms                    1.1.3      2023-03-21 [2] CRAN (R 4.5.0)
-#>    htmltools              0.5.8.1    2024-04-04 [2] CRAN (R 4.5.0)
-#>    htmlwidgets            1.6.4      2023-12-06 [2] CRAN (R 4.5.0)
-#>    httpuv                 1.6.16     2025-04-16 [2] CRAN (R 4.5.1)
-#>    httr                   1.4.7      2023-08-15 [2] CRAN (R 4.5.0)
-#>    IRanges                2.42.0     2025-04-15 [2] Bioconduc~
-#>    iterators              1.0.14     2022-02-05 [2] CRAN (R 4.5.0)
-#>    jsonlite               2.0.0      2025-03-27 [2] CRAN (R 4.5.0)
-#>    knitr                  1.50       2025-03-16 [2] CRAN (R 4.5.0)
-#>    labeling               0.4.3      2023-08-29 [2] CRAN (R 4.5.0)
-#>    later                  1.4.2      2025-04-08 [2] CRAN (R 4.5.1)
-#>    lattice                0.22-7     2025-04-02 [4] CRAN (R 4.5.1)
-#>    lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.5.0)
-#>    lubridate              1.9.4      2024-12-08 [2] CRAN (R 4.5.1)
-#>    magrittr             * 2.0.3      2022-03-30 [2] CRAN (R 4.5.0)
-#>    MASS                   7.3-65     2025-02-28 [4] CRAN (R 4.5.1)
-#>    mathjaxr               1.8-0      2025-04-30 [2] CRAN (R 4.5.1)
-#>    Matrix                 1.7-3      2025-03-11 [4] CRAN (R 4.5.1)
-#>    MatrixGenerics         1.20.0     2025-04-15 [2] Bioconduc~
-#>    matrixStats            1.5.0      2025-01-07 [2] CRAN (R 4.5.0)
-#>    memoise                2.0.1      2021-11-26 [2] CRAN (R 4.5.0)
-#>    mgcv                   1.9-3      2025-04-04 [4] CRAN (R 4.5.1)
-#>    mime                   0.13       2025-03-17 [2] CRAN (R 4.5.0)
-#>    miniUI                 0.1.2      2025-04-17 [3] CRAN (R 4.5.0)
-#>    nlme                   3.1-168    2025-03-31 [4] CRAN (R 4.5.1)
-#>    pillar                 1.11.0     2025-07-04 [2] CRAN (R 4.5.1)
-#>    pkgbuild               1.4.8      2025-05-26 [2] CRAN (R 4.5.0)
-#>    pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.5.0)
-#>    pkgdev                 0.1.0.9060 2025-08-04 [2] Github (dieghernan/pkgdev@e56f2a8)
-#>    pkgload                1.4.0      2024-06-28 [2] CRAN (R 4.5.0)
-#>    plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.5.1)
-#>    plyranges              1.28.0     2025-04-15 [2] Bioconduc~
-#>    polynom                1.4-1      2022-04-11 [2] CRAN (R 4.5.0)
-#>    poolr                  1.2-0      2025-05-07 [2] CRAN (R 4.5.0)
-#>    prettyunits            1.2.0      2023-09-24 [2] CRAN (R 4.5.0)
-#>    printr               * 0.3        2023-03-08 [2] CRAN (R 4.5.0)
-#>    processx               3.8.6      2025-02-21 [2] CRAN (R 4.5.1)
-#>    profvis                0.4.0      2024-09-20 [3] CRAN (R 4.5.0)
-#>    progress               1.2.3      2023-12-06 [2] CRAN (R 4.5.0)
-#>    promises               1.3.3      2025-05-29 [2] CRAN (R 4.5.0)
-#>    ps                     1.9.1      2025-04-12 [2] CRAN (R 4.5.1)
-#>    purrr                  1.1.0      2025-07-10 [2] CRAN (R 4.5.1)
-#>    qqman                  0.1.9      2023-08-23 [2] CRAN (R 4.5.0)
-#>    R.methodsS3            1.8.2      2022-06-13 [2] CRAN (R 4.5.0)
-#>    R.oo                   1.27.1     2025-05-02 [2] CRAN (R 4.5.0)
-#>    R.utils                2.13.0     2025-02-24 [2] CRAN (R 4.5.0)
-#>    R6                     2.6.1      2025-02-15 [2] CRAN (R 4.5.0)
-#>    ragg                   1.4.0      2025-04-10 [3] CRAN (R 4.5.0)
-#>    rbibutils              2.3        2024-10-04 [2] CRAN (R 4.5.1)
-#>    RColorBrewer           1.1-3      2022-04-03 [2] CRAN (R 4.5.0)
-#>    Rcpp                   1.1.0      2025-07-02 [2] CRAN (R 4.5.1)
-#>    RCurl                  1.98-1.17  2025-03-22 [2] CRAN (R 4.5.0)
-#>    Rdpack                 2.6.4      2025-04-09 [2] CRAN (R 4.5.0)
-#>    RefManageR           * 1.4.0      2022-09-30 [2] CRAN (R 4.5.1)
-#>    regioneR               1.40.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
-#>    remotes                2.5.0      2024-03-17 [2] CRAN (R 4.5.0)
-#>    restfulr               0.0.16     2025-06-27 [2] CRAN (R 4.5.1)
-#>    rjson                  0.2.23     2024-09-16 [2] CRAN (R 4.5.0)
-#>    rlang                  1.1.6      2025-04-11 [2] CRAN (R 4.5.0)
-#>    rmarkdown            * 2.29       2024-11-04 [2] CRAN (R 4.5.0)
-#>    rmio                   0.4.0      2022-02-17 [2] CRAN (R 4.5.0)
-#>    rngtools               1.5.2      2021-09-20 [2] CRAN (R 4.5.0)
-#>    rprojroot              2.1.0      2025-07-12 [2] CRAN (R 4.5.1)
-#>    Rsamtools              2.24.0     2025-04-15 [2] Bioconduc~
-#>    rstatix                0.7.2      2023-02-01 [2] CRAN (R 4.5.0)
-#>    rtracklayer            1.68.0     2025-04-15 [2] Bioconduc~
-#>    S4Arrays               1.8.1      2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
-#>    S4Vectors              0.46.0     2025-04-15 [2] Bioconduc~
-#>    scales                 1.4.0      2025-04-24 [2] CRAN (R 4.5.0)
-#>    seqminer               9.7        2024-10-02 [2] CRAN (R 4.5.1)
-#>    sessioninfo          * 1.2.3      2025-02-05 [2] CRAN (R 4.5.1)
-#>    shiny                  1.11.1     2025-07-03 [2] CRAN (R 4.5.1)
-#>    snow                   0.4-4      2021-10-27 [2] CRAN (R 4.5.0)
-#>    SNPRelate              1.42.0     2025-04-15 [2] Bioconduc~
-#>    SparseArray            1.8.1      2025-07-23 [2] Bioconduc~
-#>    stringi                1.8.7      2025-03-27 [2] CRAN (R 4.5.0)
-#>    stringr                1.5.1      2023-11-14 [2] CRAN (R 4.5.0)
-#>    sumFREGAT              1.2.5      2022-06-07 [2] CRAN (R 4.5.1)
-#>    SummarizedExperiment   1.38.1     2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)
-#>    sys                    3.4.3      2024-10-04 [2] CRAN (R 4.5.0)
-#>    systemfonts            1.2.3      2025-04-30 [2] CRAN (R 4.5.0)
-#>    testthat             * 3.2.3      2025-01-13 [2] CRAN (R 4.5.1)
-#>    textshaping            1.0.1      2025-05-01 [3] CRAN (R 4.5.0)
-#>    tibble                 3.3.0      2025-06-08 [2] CRAN (R 4.5.0)
-#>    tidyr                  1.3.1      2024-01-24 [2] CRAN (R 4.5.1)
-#>    tidyselect             1.2.1      2024-03-11 [2] CRAN (R 4.5.0)
-#>    timechange             0.3.0      2024-01-18 [2] CRAN (R 4.5.1)
-#>    tzdb                   0.5.0      2025-03-15 [2] CRAN (R 4.5.1)
-#>    UCSC.utils             1.4.0      2025-04-15 [2] Bioconduc~
-#>    urlchecker             1.0.1      2021-11-30 [3] CRAN (R 4.5.0)
-#>    usethis              * 3.1.0      2024-11-26 [2] CRAN (R 4.5.0)
-#>    vctrs                  0.6.5      2023-12-01 [2] CRAN (R 4.5.0)
-#>    vroom                  1.6.5      2023-12-05 [2] CRAN (R 4.5.1)
-#>    withr                  3.0.2      2024-10-28 [2] CRAN (R 4.5.0)
-#>    xfun                   0.52       2025-04-02 [2] CRAN (R 4.5.0)
-#>    XML                    3.99-0.18  2025-01-01 [2] CRAN (R 4.5.0)
-#>    xml2                   1.3.8      2025-03-14 [2] CRAN (R 4.5.1)
-#>    xtable                 1.8-4      2019-04-21 [2] CRAN (R 4.5.0)
-#>    XVector                0.48.0     2025-04-15 [2] Bioconduc~
-#>    yaml                   2.3.10     2024-07-26 [2] CRAN (R 4.5.0)
+#>  package              * version    date (UTC) lib source
+#>  abind                  1.4-8      2024-09-12 [2] CRAN (R 4.5.0)
+#>  backports              1.5.0      2024-05-23 [2] CRAN (R 4.5.1)
+#>  bibtex                 0.5.1      2023-01-26 [2] CRAN (R 4.5.0)
+#>  bigassertr             0.1.7      2025-06-27 [2] CRAN (R 4.5.1)
+#>  bigparallelr           0.3.2      2021-10-02 [2] CRAN (R 4.5.0)
+#>  bigsnpr                1.12.18    2024-11-26 [2] CRAN (R 4.5.1)
+#>  bigsparser             0.7.3      2024-09-06 [2] CRAN (R 4.5.1)
+#>  bigstatsr              1.6.2      2025-07-29 [2] CRAN (R 4.5.1)
+#>  Biobase                2.68.0     2025-04-15 [2] Bioconduc~
+#>  BiocGenerics           0.54.0     2025-04-15 [2] Bioconduc~
+#>  BiocIO                 1.18.0     2025-04-15 [2] Bioconduc~
+#>  BiocManager            1.30.26    2025-06-05 [2] CRAN (R 4.5.0)
+#>  BiocParallel           1.42.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
+#>  BiocStyle              2.36.0     2025-04-15 [2] Bioconduc~
+#>  Biostrings             2.76.0     2025-04-15 [2] Bioconduc~
+#>  bit                    4.6.0      2025-03-06 [2] CRAN (R 4.5.1)
+#>  bit64                  4.6.0-1    2025-01-16 [2] CRAN (R 4.5.1)
+#>  bitops                 1.0-9      2024-10-03 [2] CRAN (R 4.5.0)
+#>  brio                   1.1.5      2024-04-24 [2] CRAN (R 4.5.1)
+#>  broom                  1.0.9      2025-07-28 [2] CRAN (R 4.5.1)
+#>  BSgenome               1.76.0     2025-04-15 [2] Bioconduc~
+#>  cachem                 1.1.0      2024-05-16 [2] CRAN (R 4.5.0)
+#>  calibrate              1.7.7      2020-06-19 [2] CRAN (R 4.5.0)
+#>  callr                  3.7.6      2024-03-25 [2] CRAN (R 4.5.0)
+#>  car                    3.1-3      2024-09-27 [2] CRAN (R 4.5.0)
+#>  carData                3.0-5      2022-01-06 [2] CRAN (R 4.5.0)
+#>  cli                    3.6.5      2025-04-23 [2] CRAN (R 4.5.0)
+#>  codetools              0.2-20     2024-03-31 [4] CRAN (R 4.5.1)
+#>  cowplot                1.2.0      2025-07-07 [2] CRAN (R 4.5.1)
+#>  crayon                 1.5.3      2024-06-20 [2] CRAN (R 4.5.0)
+#>  curl                   6.4.0      2025-06-22 [2] CRAN (R 4.5.1)
+#>  data.table             1.17.8     2025-07-10 [2] CRAN (R 4.5.1)
+#>  DelayedArray           0.34.1     2025-04-17 [2] Bioconduc~
+#>  devtools             * 2.4.5      2022-10-11 [3] CRAN (R 4.5.0)
+#>  digest                 0.6.37     2024-08-19 [2] CRAN (R 4.5.0)
+#>  doParallel             1.0.17     2022-02-07 [2] CRAN (R 4.5.0)
+#>  doRNG                  1.8.6.2    2025-04-02 [2] CRAN (R 4.5.0)
+#>  doSNOW                 1.0.20     2022-02-04 [2] CRAN (R 4.5.0)
+#>  dplyr                  1.1.4      2023-11-17 [2] CRAN (R 4.5.0)
+#>  ellipsis               0.3.2      2021-04-29 [3] CRAN (R 4.5.0)
+#>  evaluate               1.0.4      2025-06-18 [2] CRAN (R 4.5.1)
+#>  farver                 2.1.2      2024-05-13 [2] CRAN (R 4.5.0)
+#>  fastmap                1.2.0      2024-05-15 [2] CRAN (R 4.5.0)
+#>  flock                  0.7        2016-11-12 [2] CRAN (R 4.5.1)
+#>  foreach                1.5.2      2022-02-02 [2] CRAN (R 4.5.0)
+#>  Formula                1.2-5      2023-02-24 [2] CRAN (R 4.5.0)
+#>  fs                     1.6.6      2025-04-12 [2] CRAN (R 4.5.0)
+#>  gdsfmt                 1.44.1     2025-07-09 [2] Bioconduc~
+#>  generics               0.1.4      2025-05-09 [2] CRAN (R 4.5.0)
+#>  GenomeInfoDb           1.44.1     2025-07-23 [2] Bioconduc~
+#>  GenomeInfoDbData       1.2.14     2025-04-21 [2] Bioconductor
+#>  GenomicAlignments      1.44.0     2025-04-15 [2] Bioconduc~
+#>  GenomicRanges          1.60.0     2025-04-15 [2] Bioconduc~
+#>  ggplot2                3.5.2      2025-04-09 [2] CRAN (R 4.5.0)
+#>  ggpubr                 0.6.1      2025-06-27 [2] CRAN (R 4.5.1)
+#>  ggrepel                0.9.6      2024-09-07 [2] CRAN (R 4.5.1)
+#>  ggsignif               0.6.4      2022-10-13 [2] CRAN (R 4.5.0)
+#>  glue                   1.8.0      2024-09-30 [2] CRAN (R 4.5.0)
+#>  gridExtra              2.3        2017-09-09 [2] CRAN (R 4.5.0)
+#>  gtable                 0.3.6      2024-10-25 [2] CRAN (R 4.5.0)
+#>  GXwasR               * 0.99.0     2025-08-06 [1] Bioconductor
+#>  hms                    1.1.3      2023-03-21 [2] CRAN (R 4.5.0)
+#>  htmltools              0.5.8.1    2024-04-04 [2] CRAN (R 4.5.0)
+#>  htmlwidgets            1.6.4      2023-12-06 [2] CRAN (R 4.5.0)
+#>  httpuv                 1.6.16     2025-04-16 [2] CRAN (R 4.5.1)
+#>  httr                   1.4.7      2023-08-15 [2] CRAN (R 4.5.0)
+#>  IRanges                2.42.0     2025-04-15 [2] Bioconduc~
+#>  iterators              1.0.14     2022-02-05 [2] CRAN (R 4.5.0)
+#>  jsonlite               2.0.0      2025-03-27 [2] CRAN (R 4.5.0)
+#>  knitr                  1.50       2025-03-16 [2] CRAN (R 4.5.0)
+#>  labeling               0.4.3      2023-08-29 [2] CRAN (R 4.5.0)
+#>  later                  1.4.2      2025-04-08 [2] CRAN (R 4.5.1)
+#>  lattice                0.22-7     2025-04-02 [4] CRAN (R 4.5.1)
+#>  lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.5.0)
+#>  lubridate              1.9.4      2024-12-08 [2] CRAN (R 4.5.1)
+#>  magrittr             * 2.0.3      2022-03-30 [2] CRAN (R 4.5.0)
+#>  MASS                   7.3-65     2025-02-28 [4] CRAN (R 4.5.1)
+#>  mathjaxr               1.8-0      2025-04-30 [2] CRAN (R 4.5.1)
+#>  Matrix                 1.7-3      2025-03-11 [4] CRAN (R 4.5.1)
+#>  MatrixGenerics         1.20.0     2025-04-15 [2] Bioconduc~
+#>  matrixStats            1.5.0      2025-01-07 [2] CRAN (R 4.5.0)
+#>  memoise                2.0.1      2021-11-26 [2] CRAN (R 4.5.0)
+#>  mgcv                   1.9-3      2025-04-04 [4] CRAN (R 4.5.1)
+#>  mime                   0.13       2025-03-17 [2] CRAN (R 4.5.0)
+#>  miniUI                 0.1.2      2025-04-17 [3] CRAN (R 4.5.0)
+#>  nlme                   3.1-168    2025-03-31 [4] CRAN (R 4.5.1)
+#>  pillar                 1.11.0     2025-07-04 [2] CRAN (R 4.5.1)
+#>  pkgbuild               1.4.8      2025-05-26 [2] CRAN (R 4.5.0)
+#>  pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.5.0)
+#>  pkgdev                 0.1.0.9060 2025-08-04 [2] Github (dieghernan/pkgdev@e56f2a8)
+#>  pkgload                1.4.0      2024-06-28 [2] CRAN (R 4.5.0)
+#>  plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.5.1)
+#>  plyranges              1.28.0     2025-04-15 [2] Bioconduc~
+#>  polynom                1.4-1      2022-04-11 [2] CRAN (R 4.5.0)
+#>  poolr                  1.2-0      2025-05-07 [2] CRAN (R 4.5.0)
+#>  prettyunits            1.2.0      2023-09-24 [2] CRAN (R 4.5.0)
+#>  printr               * 0.3        2023-03-08 [2] CRAN (R 4.5.0)
+#>  processx               3.8.6      2025-02-21 [2] CRAN (R 4.5.1)
+#>  profvis                0.4.0      2024-09-20 [3] CRAN (R 4.5.0)
+#>  progress               1.2.3      2023-12-06 [2] CRAN (R 4.5.0)
+#>  promises               1.3.3      2025-05-29 [2] CRAN (R 4.5.0)
+#>  ps                     1.9.1      2025-04-12 [2] CRAN (R 4.5.1)
+#>  purrr                  1.1.0      2025-07-10 [2] CRAN (R 4.5.1)
+#>  qqman                  0.1.9      2023-08-23 [2] CRAN (R 4.5.0)
+#>  R.methodsS3            1.8.2      2022-06-13 [2] CRAN (R 4.5.0)
+#>  R.oo                   1.27.1     2025-05-02 [2] CRAN (R 4.5.0)
+#>  R.utils                2.13.0     2025-02-24 [2] CRAN (R 4.5.0)
+#>  R6                     2.6.1      2025-02-15 [2] CRAN (R 4.5.0)
+#>  ragg                   1.4.0      2025-04-10 [3] CRAN (R 4.5.0)
+#>  rbibutils              2.3        2024-10-04 [2] CRAN (R 4.5.1)
+#>  RColorBrewer           1.1-3      2022-04-03 [2] CRAN (R 4.5.0)
+#>  Rcpp                   1.1.0      2025-07-02 [2] CRAN (R 4.5.1)
+#>  RCurl                  1.98-1.17  2025-03-22 [2] CRAN (R 4.5.0)
+#>  Rdpack                 2.6.4      2025-04-09 [2] CRAN (R 4.5.0)
+#>  RefManageR           * 1.4.0      2022-09-30 [2] CRAN (R 4.5.1)
+#>  regioneR               1.40.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
+#>  remotes                2.5.0      2024-03-17 [2] CRAN (R 4.5.0)
+#>  restfulr               0.0.16     2025-06-27 [2] CRAN (R 4.5.1)
+#>  rjson                  0.2.23     2024-09-16 [2] CRAN (R 4.5.0)
+#>  rlang                  1.1.6      2025-04-11 [2] CRAN (R 4.5.0)
+#>  rmarkdown            * 2.29       2024-11-04 [2] CRAN (R 4.5.0)
+#>  rmio                   0.4.0      2022-02-17 [2] CRAN (R 4.5.0)
+#>  rngtools               1.5.2      2021-09-20 [2] CRAN (R 4.5.0)
+#>  rprojroot              2.1.0      2025-07-12 [2] CRAN (R 4.5.1)
+#>  Rsamtools              2.24.0     2025-04-15 [2] Bioconduc~
+#>  rstatix                0.7.2      2023-02-01 [2] CRAN (R 4.5.0)
+#>  rtracklayer            1.68.0     2025-04-15 [2] Bioconduc~
+#>  S4Arrays               1.8.1      2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
+#>  S4Vectors              0.46.0     2025-04-15 [2] Bioconduc~
+#>  scales                 1.4.0      2025-04-24 [2] CRAN (R 4.5.0)
+#>  seqminer               9.7        2024-10-02 [2] CRAN (R 4.5.1)
+#>  sessioninfo          * 1.2.3      2025-02-05 [2] CRAN (R 4.5.1)
+#>  shiny                  1.11.1     2025-07-03 [2] CRAN (R 4.5.1)
+#>  snow                   0.4-4      2021-10-27 [2] CRAN (R 4.5.0)
+#>  SNPRelate              1.42.0     2025-04-15 [2] Bioconduc~
+#>  SparseArray            1.8.1      2025-07-23 [2] Bioconduc~
+#>  stringi                1.8.7      2025-03-27 [2] CRAN (R 4.5.0)
+#>  stringr                1.5.1      2023-11-14 [2] CRAN (R 4.5.0)
+#>  sumFREGAT              1.2.5      2022-06-07 [2] CRAN (R 4.5.1)
+#>  SummarizedExperiment   1.38.1     2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)
+#>  sys                    3.4.3      2024-10-04 [2] CRAN (R 4.5.0)
+#>  systemfonts            1.2.3      2025-04-30 [2] CRAN (R 4.5.0)
+#>  testthat             * 3.2.3      2025-01-13 [2] CRAN (R 4.5.1)
+#>  textshaping            1.0.1      2025-05-01 [3] CRAN (R 4.5.0)
+#>  tibble                 3.3.0      2025-06-08 [2] CRAN (R 4.5.0)
+#>  tidyr                  1.3.1      2024-01-24 [2] CRAN (R 4.5.1)
+#>  tidyselect             1.2.1      2024-03-11 [2] CRAN (R 4.5.0)
+#>  timechange             0.3.0      2024-01-18 [2] CRAN (R 4.5.1)
+#>  tzdb                   0.5.0      2025-03-15 [2] CRAN (R 4.5.1)
+#>  UCSC.utils             1.4.0      2025-04-15 [2] Bioconduc~
+#>  urlchecker             1.0.1      2021-11-30 [3] CRAN (R 4.5.0)
+#>  usethis              * 3.1.0      2024-11-26 [2] CRAN (R 4.5.0)
+#>  vctrs                  0.6.5      2023-12-01 [2] CRAN (R 4.5.0)
+#>  vroom                  1.6.5      2023-12-05 [2] CRAN (R 4.5.1)
+#>  withr                  3.0.2      2024-10-28 [2] CRAN (R 4.5.0)
+#>  xfun                   0.52       2025-04-02 [2] CRAN (R 4.5.0)
+#>  XML                    3.99-0.18  2025-01-01 [2] CRAN (R 4.5.0)
+#>  xml2                   1.3.8      2025-03-14 [2] CRAN (R 4.5.1)
+#>  xtable                 1.8-4      2019-04-21 [2] CRAN (R 4.5.0)
+#>  XVector                0.48.0     2025-04-15 [2] Bioconduc~
+#>  yaml                   2.3.10     2024-07-26 [2] CRAN (R 4.5.0)
 #> 
-#>  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/temp_libpath102935d52cc97
+#>  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp7SvuuX/temp_libpatheab742dff3cd
 #>  [2] /Users/mayerdav/Library/R/arm64/4.5/library
 #>  [3] /opt/homebrew/lib/R/4.5/site-library
 #>  [4] /opt/homebrew/Cellar/r/4.5.1/lib/R/library
-#> 
 #>  * ── Packages attached to the search path.
-#>  P ── Loaded and on-disk path mismatch.
 #> 
 #> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ```

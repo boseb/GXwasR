@@ -13,7 +13,7 @@ output:
     toc_float: true
     toc_depth: 2
     code_folding: show
-date: "5 August 2025"
+date: "6 August 2025"
 package: "GXwasR 0.99.0"
 vignette: >
   %\VignetteIndexEntry{genetic_correlation_sumstat}
@@ -49,11 +49,23 @@ Therefore if the GWAS includes most of the HapMap3 SNPs, then it is recommend us
 
 ``` r
 library(GXwasR)
+#> 
+#> GXwasR: Genome-wide and x-chromosome wide association analyses applying best practices of quality control over genetic data
+#> Version 0.99.0 () installed
+#> Author: c(
+#>     person(given = "Banabithi",
+#>            family = "Bose",
+#>            role = c("cre", "aut"),
+#>            email = "banabithi.bose@gmail.com",
+#>            comment = c(ORCID = "0000-0003-0842-8768"))
+#>            )
+#> Maintainer: Banabithi Bose <banabithi.bose@gmail.com>
+#> Tutorial: https://github.com
+#> Use citation("GXwasR") to know how to cite this work.
 help(SumstatGenCorr)
-#> ℹ Rendering development documentation for "SumstatGenCorr"
 ```
 
-# Running example with imputed datasets from Neale's lab with UKB_imputed_hapmap2_SVD_eigen99_extraction
+# Example: UKB Imputed HapMap2 Data (Neale Lab)
 
 Birth weight and type 2 diabetes based on the summary statistics with around 20,000 individuals.
 
@@ -64,7 +76,7 @@ sumstat1 <- readRDS("gwas1.imputed.example.rds")
 sumstat2 <- readRDS("gwas2.imputed.example.rds")
 referenceLD = "UKB_imputed_hapmap2_SVD_eigen99_extraction"
 res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=sumstat1, sumstat2=sumstat2)
-#> Analysis starts on Tue Aug  5 16:38:18 2025
+#> Analysis starts on Wed Aug  6 11:23:15 2025
 #> ℹ 0 SNPs were removed in GWAS 1 due to missing N or missing test statistic.
 #> ℹ 0 SNPs were removed in GWAS 2 due to missing N or missing test statistic.
 #> ℹ 769306 out of 769306 (100%) SNPs in reference panel are available in GWAS 1.
@@ -124,7 +136,6 @@ res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=su
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■       87% (54/62)
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      89% (55/62)
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90% (56/62)
-#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% (57/62)
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94% (58/62)
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    95% (59/62)
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    97% (60/62)
@@ -212,11 +223,11 @@ res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=su
 #> 
 #> 
 #> 
-#> Analysis finished at Tue Aug  5 16:40:00 2025
+#> Analysis finished at Wed Aug  6 11:24:55 2025
 ```
 
 
-# Try HDL provided small example data (20,000 SNPs) with referenceLD UKB_array_SVD_eigen90_extraction
+# Example: HDL Sample Data (20K SNPs, UKB Array SVD Eigen90)
 
 
 ``` r
@@ -224,14 +235,14 @@ gwas1.example <- readRDS('gwas1.array.example.rds')
 gwas2.example <- readRDS('gwas2.array.example.rds')
 referenceLD = "UKB_array_SVD_eigen90_extraction"
 res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=gwas1.example, sumstat2=gwas2.example)
-#> Analysis starts on Tue Aug  5 16:40:01 2025
+#> Analysis starts on Wed Aug  6 11:24:56 2025
 #> Error in estimating Genetic Correlation: attempt to set an attribute on NULL
 ```
 **Small number of SNPs anyways not good.**
 
 **Note:** Singularities or ill-conditioned matrices can occur due to **collinear SNPs**, insufficient variation, or extremely small values, causing numerical instability and non-convergence.
 
-# HDL decoded
+## HDL decoded
 
 Checking the provided likelihood functions (**llfun and llfun.gcov.part.2**), it's possible that very similar summary statistics (e.g., identical Z-scores) for two traits can lead to convergence issues in this algorithm due to several reasons:
 
@@ -293,7 +304,7 @@ Identical data can result in values that don't fit the assumptions or cause over
 The variance estimates (lamh2, lam22.1) are sensitive to the differences in summary statistics.
 Identical data may result in variance estimates being too small or large, leading to numerical instability in the log-likelihood calculations.
 
-# Why panel UKB_imputed_SVD_eigen99_extraction does not converge but UKB_array_SVD_eigen90_extraction converge for the same data1?
+## Why UKB Imputed (Eigen99) Fails to Converge While UKB Array (Eigen90) Succeeds
 
 **Expected Genetic Correlation:**
 When using identical summary statistics, the genetic correlation is theoretically expected to be very close to 1, as the traits are the same.
@@ -324,7 +335,7 @@ In summary, the differences in convergence for the two LD panels when computing 
 - The inherent properties of the SNPs in the panels
 - The Axiom array may offer a cleaner, more stable set of SNPs with well-defined LD, which is critical for achieving convergence in the genetic correlation computation
 
-# I tried GenomicSem package
+## Trying the GenomicSEM Package
 
 763976 out of 769306 (99.31%) SNPs in reference panel are available in the GWAS of Data1.txt
 
@@ -352,7 +363,8 @@ Hence, I updated the SNPs using proper bim file but with no use.
 
 **I used .Bed file made from summary statistics** and processed via Crossmap to update the coordinates but got lower overlap between DBgap and reference panel Hapmap3 provided by the GenomicSem.
 
-# Can we use LD pruned SNPs in this computation
+## Can LD-Pruned SNPs Be Used in This Computation?
+
 **The answer is NO.**
 
 if we use LD pruned SNPs:
@@ -361,7 +373,7 @@ if we use LD pruned SNPs:
 
 Warning: More than 1% SNPs in reference panel are missed in the GWAS. This may generate bias in estimation. Please make sure that you are using correct reference panel. 
 
-# What happened when I tried to correlate the same dataset in GenomicSem
+## What Happened When Correlating the Same Dataset in GenomicSEM
 
 **It did not converge.**
 
@@ -370,7 +382,7 @@ If two summary statistics are exactly the same, the covariance between them will
 The presence of the same value for variance in both 𝐷1 and 𝐷2 could suggest similar traits or measurements under the same conditions but with different outcomes based on the conditions or methods of measurement leading to a negative covariance.
 
 
-# Conclusion
+## Conclusion
 
 **The genetic correlation analysis is sensitive to the number of SNPs in the summary statistics and the quality of the LD reference panel.**
 
@@ -440,7 +452,7 @@ This results in division by zero, which in mathematical operations typically yie
 
 The number of SNPs and their overlap with the reference LD panel and the **quality** of the reference significantly impact genetic correlation computation.
 
-**What is the best LD panel:** Best LD reference panel for Panscan seems to be UKB_array_SVD_eigen90_extraction due to accurate heritability estimate. This UK Biobank Axiom Array has extensive genomic coverage, including common and rare variants than hapmap or 1000 genome. The quality of the SNPs is higher in Axiom array. Also it is meant for only EUR in UKBB.
+**What is the best LD panel:** Best LD reference panel for Panscan seems to be UKB_array_SVD_eigen90_extraction due to accurate heritability estimate. This UK Biobank Axiom Array has extensive genomic coverage, including common and rare variants than hapmap or 1000 genome. The quality of the SNPs is higher in Axiom array. Also it is meant for only EUR in UKB.
 
 **Number of SNPs:**
 
@@ -473,7 +485,7 @@ The small sample size and low heritability bias the estimates, and the genetic a
 
 Given the difficulties with small sample size and low heritability, GWAS on pancreatic cancer often require meta-analyses and collaborations to pool data and resources, boosting statistical power and reliability.
 
-# Summary
+## Summary
 
 In summary, the genetic correlation analysis is highly sensitive to the number of SNPs and the quality of the LD reference panel. More SNPs in the summary statistics provide more variation and yield better results, while good overlap with the reference LD panel enhances the quality of genetic correlation computations. Also, good sample size is required to have power in this estimation.
 
@@ -487,9 +499,8 @@ We hope that *[GXwasR](https://bioconductor.org/packages/3.21/GXwasR)* will be u
 citation("GXwasR")
 #> To cite package 'GXwasR' in publications use:
 #> 
-#>   Bose B, Blostein F, Kim J, Winters J, Actkins KV, Mayer D, Congivaram H, Niarchou M, Edwards DV, Davis LK, Stranger BE (2025). "GXwasR: A Toolkit for
-#>   Investigating Sex-Differentiated Genetic Effects on Complex Traits." _medRxiv 2025.06.10.25329327_. doi:10.1101/2025.06.10.25329327
-#>   <https://doi.org/10.1101/2025.06.10.25329327>.
+#>   Bose B, Blostein F, Kim J, Winters J, Actkins KV, Mayer D, Congivaram H, Niarchou M, Edwards DV, Davis LK, Stranger BE (2025). "GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic Effects on Complex Traits." _medRxiv 2025.06.10.25329327_.
+#>   doi:10.1101/2025.06.10.25329327 <https://doi.org/10.1101/2025.06.10.25329327>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
@@ -530,176 +541,168 @@ This package was developed using *[biocthis](https://bioconductor.org/packages/3
 #>  collate  en_US.UTF-8
 #>  ctype    en_US.UTF-8
 #>  tz       America/New_York
-#>  date     2025-08-05
+#>  date     2025-08-06
 #>  pandoc   3.6.3 @ /Applications/Positron.app/Contents/Resources/app/quarto/bin/tools/aarch64/ (via rmarkdown)
 #>  quarto   1.7.32 @ /usr/local/bin/quarto
 #> 
 #> ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
-#>  ! package              * version    date (UTC) lib source
-#>    abind                  1.4-8      2024-09-12 [2] CRAN (R 4.5.0)
-#>    backports              1.5.0      2024-05-23 [2] CRAN (R 4.5.1)
-#>    bibtex                 0.5.1      2023-01-26 [2] CRAN (R 4.5.0)
-#>    bigassertr             0.1.7      2025-06-27 [2] CRAN (R 4.5.1)
-#>    bigparallelr           0.3.2      2021-10-02 [2] CRAN (R 4.5.0)
-#>    bigsnpr                1.12.18    2024-11-26 [2] CRAN (R 4.5.1)
-#>    bigsparser             0.7.3      2024-09-06 [2] CRAN (R 4.5.1)
-#>    bigstatsr              1.6.2      2025-07-29 [2] CRAN (R 4.5.1)
-#>    Biobase                2.68.0     2025-04-15 [2] Bioconduc~
-#>    BiocGenerics           0.54.0     2025-04-15 [2] Bioconduc~
-#>    BiocIO                 1.18.0     2025-04-15 [2] Bioconduc~
-#>    BiocManager            1.30.26    2025-06-05 [2] CRAN (R 4.5.0)
-#>    BiocParallel           1.42.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
-#>    BiocStyle              2.36.0     2025-04-15 [2] Bioconduc~
-#>    Biostrings             2.76.0     2025-04-15 [2] Bioconduc~
-#>    bit                    4.6.0      2025-03-06 [2] CRAN (R 4.5.1)
-#>    bit64                  4.6.0-1    2025-01-16 [2] CRAN (R 4.5.1)
-#>    bitops                 1.0-9      2024-10-03 [2] CRAN (R 4.5.0)
-#>    brio                   1.1.5      2024-04-24 [2] CRAN (R 4.5.1)
-#>    broom                  1.0.9      2025-07-28 [2] CRAN (R 4.5.1)
-#>    BSgenome               1.76.0     2025-04-15 [2] Bioconduc~
-#>    cachem                 1.1.0      2024-05-16 [2] CRAN (R 4.5.0)
-#>    calibrate              1.7.7      2020-06-19 [2] CRAN (R 4.5.0)
-#>    callr                  3.7.6      2024-03-25 [2] CRAN (R 4.5.0)
-#>    car                    3.1-3      2024-09-27 [2] CRAN (R 4.5.0)
-#>    carData                3.0-5      2022-01-06 [2] CRAN (R 4.5.0)
-#>    cli                    3.6.5      2025-04-23 [2] CRAN (R 4.5.0)
-#>    codetools              0.2-20     2024-03-31 [4] CRAN (R 4.5.1)
-#>    commonmark             2.0.0      2025-07-07 [2] CRAN (R 4.5.1)
-#>    cowplot                1.2.0      2025-07-07 [2] CRAN (R 4.5.1)
-#>    crayon                 1.5.3      2024-06-20 [2] CRAN (R 4.5.0)
-#>    curl                   6.4.0      2025-06-22 [2] CRAN (R 4.5.1)
-#>    data.table             1.17.8     2025-07-10 [2] CRAN (R 4.5.1)
-#>    DelayedArray           0.34.1     2025-04-17 [2] Bioconduc~
-#>    desc                   1.4.3      2023-12-10 [2] CRAN (R 4.5.0)
-#>    devtools             * 2.4.5      2022-10-11 [3] CRAN (R 4.5.0)
-#>    digest                 0.6.37     2024-08-19 [2] CRAN (R 4.5.0)
-#>    doParallel             1.0.17     2022-02-07 [2] CRAN (R 4.5.0)
-#>    doRNG                  1.8.6.2    2025-04-02 [2] CRAN (R 4.5.0)
-#>    dplyr                  1.1.4      2023-11-17 [2] CRAN (R 4.5.0)
-#>    ellipsis               0.3.2      2021-04-29 [3] CRAN (R 4.5.0)
-#>    evaluate               1.0.4      2025-06-18 [2] CRAN (R 4.5.1)
-#>    farver                 2.1.2      2024-05-13 [2] CRAN (R 4.5.0)
-#>    fastmap                1.2.0      2024-05-15 [2] CRAN (R 4.5.0)
-#>    flock                  0.7        2016-11-12 [2] CRAN (R 4.5.1)
-#>    foreach                1.5.2      2022-02-02 [2] CRAN (R 4.5.0)
-#>    Formula                1.2-5      2023-02-24 [2] CRAN (R 4.5.0)
-#>    fs                     1.6.6      2025-04-12 [2] CRAN (R 4.5.0)
-#>    gdsfmt                 1.44.1     2025-07-09 [2] Bioconduc~
-#>    generics               0.1.4      2025-05-09 [2] CRAN (R 4.5.0)
-#>    GenomeInfoDb           1.44.1     2025-07-23 [2] Bioconduc~
-#>    GenomeInfoDbData       1.2.14     2025-04-21 [2] Bioconductor
-#>    GenomicAlignments      1.44.0     2025-04-15 [2] Bioconduc~
-#>    GenomicRanges          1.60.0     2025-04-15 [2] Bioconduc~
-#>    ggplot2                3.5.2      2025-04-09 [2] CRAN (R 4.5.0)
-#>    ggpubr                 0.6.1      2025-06-27 [2] CRAN (R 4.5.1)
-#>    ggrepel                0.9.6      2024-09-07 [2] CRAN (R 4.5.1)
-#>    ggsignif               0.6.4      2022-10-13 [2] CRAN (R 4.5.0)
-#>    glue                   1.8.0      2024-09-30 [2] CRAN (R 4.5.0)
-#>    gridExtra              2.3        2017-09-09 [2] CRAN (R 4.5.0)
-#>    gtable                 0.3.6      2024-10-25 [2] CRAN (R 4.5.0)
-#>  P GXwasR               * 0.99.0     2025-08-05 [?] Bioconductor
-#>    hms                    1.1.3      2023-03-21 [2] CRAN (R 4.5.0)
-#>    htmltools              0.5.8.1    2024-04-04 [2] CRAN (R 4.5.0)
-#>    htmlwidgets            1.6.4      2023-12-06 [2] CRAN (R 4.5.0)
-#>    httpuv                 1.6.16     2025-04-16 [2] CRAN (R 4.5.1)
-#>    httr                   1.4.7      2023-08-15 [2] CRAN (R 4.5.0)
-#>    IRanges                2.42.0     2025-04-15 [2] Bioconduc~
-#>    iterators              1.0.14     2022-02-05 [2] CRAN (R 4.5.0)
-#>    jsonlite               2.0.0      2025-03-27 [2] CRAN (R 4.5.0)
-#>    knitr                  1.50       2025-03-16 [2] CRAN (R 4.5.0)
-#>    later                  1.4.2      2025-04-08 [2] CRAN (R 4.5.1)
-#>    lattice                0.22-7     2025-04-02 [4] CRAN (R 4.5.1)
-#>    lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.5.0)
-#>    lubridate              1.9.4      2024-12-08 [2] CRAN (R 4.5.1)
-#>    magrittr               2.0.3      2022-03-30 [2] CRAN (R 4.5.0)
-#>    MASS                   7.3-65     2025-02-28 [4] CRAN (R 4.5.1)
-#>    mathjaxr               1.8-0      2025-04-30 [2] CRAN (R 4.5.1)
-#>    Matrix                 1.7-3      2025-03-11 [4] CRAN (R 4.5.1)
-#>    MatrixGenerics         1.20.0     2025-04-15 [2] Bioconduc~
-#>    matrixStats            1.5.0      2025-01-07 [2] CRAN (R 4.5.0)
-#>    memoise                2.0.1      2021-11-26 [2] CRAN (R 4.5.0)
-#>    mime                   0.13       2025-03-17 [2] CRAN (R 4.5.0)
-#>    miniUI                 0.1.2      2025-04-17 [3] CRAN (R 4.5.0)
-#>    pillar                 1.11.0     2025-07-04 [2] CRAN (R 4.5.1)
-#>    pkgbuild               1.4.8      2025-05-26 [2] CRAN (R 4.5.0)
-#>    pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.5.0)
-#>    pkgdev                 0.1.0.9060 2025-08-04 [2] Github (dieghernan/pkgdev@e56f2a8)
-#>    pkgload                1.4.0      2024-06-28 [2] CRAN (R 4.5.0)
-#>    plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.5.1)
-#>    plyranges              1.28.0     2025-04-15 [2] Bioconduc~
-#>    poolr                  1.2-0      2025-05-07 [2] CRAN (R 4.5.0)
-#>    prettyunits            1.2.0      2023-09-24 [2] CRAN (R 4.5.0)
-#>    processx               3.8.6      2025-02-21 [2] CRAN (R 4.5.1)
-#>    profvis                0.4.0      2024-09-20 [3] CRAN (R 4.5.0)
-#>    progress               1.2.3      2023-12-06 [2] CRAN (R 4.5.0)
-#>    promises               1.3.3      2025-05-29 [2] CRAN (R 4.5.0)
-#>    ps                     1.9.1      2025-04-12 [2] CRAN (R 4.5.1)
-#>    purrr                  1.1.0      2025-07-10 [2] CRAN (R 4.5.1)
-#>    qqman                  0.1.9      2023-08-23 [2] CRAN (R 4.5.0)
-#>    R.methodsS3            1.8.2      2022-06-13 [2] CRAN (R 4.5.0)
-#>    R.oo                   1.27.1     2025-05-02 [2] CRAN (R 4.5.0)
-#>    R.utils                2.13.0     2025-02-24 [2] CRAN (R 4.5.0)
-#>    R6                     2.6.1      2025-02-15 [2] CRAN (R 4.5.0)
-#>    rbibutils              2.3        2024-10-04 [2] CRAN (R 4.5.1)
-#>    rcmdcheck              1.4.0      2021-09-27 [3] CRAN (R 4.5.0)
-#>    RColorBrewer           1.1-3      2022-04-03 [2] CRAN (R 4.5.0)
-#>    Rcpp                   1.1.0      2025-07-02 [2] CRAN (R 4.5.1)
-#>    RCurl                  1.98-1.17  2025-03-22 [2] CRAN (R 4.5.0)
-#>    Rdpack                 2.6.4      2025-04-09 [2] CRAN (R 4.5.0)
-#>    RefManageR           * 1.4.0      2022-09-30 [2] CRAN (R 4.5.1)
-#>    regioneR               1.40.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
-#>    remotes                2.5.0      2024-03-17 [2] CRAN (R 4.5.0)
-#>    restfulr               0.0.16     2025-06-27 [2] CRAN (R 4.5.1)
-#>    rjson                  0.2.23     2024-09-16 [2] CRAN (R 4.5.0)
-#>    rlang                  1.1.6      2025-04-11 [2] CRAN (R 4.5.0)
-#>    rmarkdown              2.29       2024-11-04 [2] CRAN (R 4.5.0)
-#>    rmio                   0.4.0      2022-02-17 [2] CRAN (R 4.5.0)
-#>    rngtools               1.5.2      2021-09-20 [2] CRAN (R 4.5.0)
-#>    roxygen2               7.3.2      2024-06-28 [2] CRAN (R 4.5.0)
-#>    rprojroot              2.1.0      2025-07-12 [2] CRAN (R 4.5.1)
-#>    Rsamtools              2.24.0     2025-04-15 [2] Bioconduc~
-#>    rstatix                0.7.2      2023-02-01 [2] CRAN (R 4.5.0)
-#>    rstudioapi             0.17.1     2024-10-22 [2] CRAN (R 4.5.0)
-#>    rtracklayer            1.68.0     2025-04-15 [2] Bioconduc~
-#>    S4Arrays               1.8.1      2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
-#>    S4Vectors              0.46.0     2025-04-15 [2] Bioconduc~
-#>    scales                 1.4.0      2025-04-24 [2] CRAN (R 4.5.0)
-#>    sessioninfo          * 1.2.3      2025-02-05 [2] CRAN (R 4.5.1)
-#>    shiny                  1.11.1     2025-07-03 [2] CRAN (R 4.5.1)
-#>    SNPRelate              1.42.0     2025-04-15 [2] Bioconduc~
-#>    SparseArray            1.8.1      2025-07-23 [2] Bioconduc~
-#>    stringi                1.8.7      2025-03-27 [2] CRAN (R 4.5.0)
-#>    stringr                1.5.1      2023-11-14 [2] CRAN (R 4.5.0)
-#>    sumFREGAT              1.2.5      2022-06-07 [2] CRAN (R 4.5.1)
-#>    SummarizedExperiment   1.38.1     2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)
-#>    sys                    3.4.3      2024-10-04 [2] CRAN (R 4.5.0)
-#>    testthat             * 3.2.3      2025-01-13 [2] CRAN (R 4.5.1)
-#>    tibble                 3.3.0      2025-06-08 [2] CRAN (R 4.5.0)
-#>    tidyr                  1.3.1      2024-01-24 [2] CRAN (R 4.5.1)
-#>    tidyselect             1.2.1      2024-03-11 [2] CRAN (R 4.5.0)
-#>    timechange             0.3.0      2024-01-18 [2] CRAN (R 4.5.1)
-#>    tzdb                   0.5.0      2025-03-15 [2] CRAN (R 4.5.1)
-#>    UCSC.utils             1.4.0      2025-04-15 [2] Bioconduc~
-#>    urlchecker             1.0.1      2021-11-30 [3] CRAN (R 4.5.0)
-#>    usethis              * 3.1.0      2024-11-26 [2] CRAN (R 4.5.0)
-#>    vctrs                  0.6.5      2023-12-01 [2] CRAN (R 4.5.0)
-#>    vroom                  1.6.5      2023-12-05 [2] CRAN (R 4.5.1)
-#>    withr                  3.0.2      2024-10-28 [2] CRAN (R 4.5.0)
-#>    xfun                   0.52       2025-04-02 [2] CRAN (R 4.5.0)
-#>    XML                    3.99-0.18  2025-01-01 [2] CRAN (R 4.5.0)
-#>    xml2                   1.3.8      2025-03-14 [2] CRAN (R 4.5.1)
-#>    xopen                  1.0.1      2024-04-25 [3] CRAN (R 4.5.0)
-#>    xtable                 1.8-4      2019-04-21 [2] CRAN (R 4.5.0)
-#>    XVector                0.48.0     2025-04-15 [2] Bioconduc~
-#>    yaml                   2.3.10     2024-07-26 [2] CRAN (R 4.5.0)
+#>  package              * version    date (UTC) lib source
+#>  abind                  1.4-8      2024-09-12 [2] CRAN (R 4.5.0)
+#>  backports              1.5.0      2024-05-23 [2] CRAN (R 4.5.1)
+#>  bibtex                 0.5.1      2023-01-26 [2] CRAN (R 4.5.0)
+#>  bigassertr             0.1.7      2025-06-27 [2] CRAN (R 4.5.1)
+#>  bigparallelr           0.3.2      2021-10-02 [2] CRAN (R 4.5.0)
+#>  bigsnpr                1.12.18    2024-11-26 [2] CRAN (R 4.5.1)
+#>  bigsparser             0.7.3      2024-09-06 [2] CRAN (R 4.5.1)
+#>  bigstatsr              1.6.2      2025-07-29 [2] CRAN (R 4.5.1)
+#>  Biobase                2.68.0     2025-04-15 [2] Bioconduc~
+#>  BiocGenerics           0.54.0     2025-04-15 [2] Bioconduc~
+#>  BiocIO                 1.18.0     2025-04-15 [2] Bioconduc~
+#>  BiocManager            1.30.26    2025-06-05 [2] CRAN (R 4.5.0)
+#>  BiocParallel           1.42.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
+#>  BiocStyle              2.36.0     2025-04-15 [2] Bioconduc~
+#>  Biostrings             2.76.0     2025-04-15 [2] Bioconduc~
+#>  bit                    4.6.0      2025-03-06 [2] CRAN (R 4.5.1)
+#>  bit64                  4.6.0-1    2025-01-16 [2] CRAN (R 4.5.1)
+#>  bitops                 1.0-9      2024-10-03 [2] CRAN (R 4.5.0)
+#>  brio                   1.1.5      2024-04-24 [2] CRAN (R 4.5.1)
+#>  broom                  1.0.9      2025-07-28 [2] CRAN (R 4.5.1)
+#>  BSgenome               1.76.0     2025-04-15 [2] Bioconduc~
+#>  cachem                 1.1.0      2024-05-16 [2] CRAN (R 4.5.0)
+#>  calibrate              1.7.7      2020-06-19 [2] CRAN (R 4.5.0)
+#>  callr                  3.7.6      2024-03-25 [2] CRAN (R 4.5.0)
+#>  car                    3.1-3      2024-09-27 [2] CRAN (R 4.5.0)
+#>  carData                3.0-5      2022-01-06 [2] CRAN (R 4.5.0)
+#>  cli                    3.6.5      2025-04-23 [2] CRAN (R 4.5.0)
+#>  codetools              0.2-20     2024-03-31 [4] CRAN (R 4.5.1)
+#>  cowplot                1.2.0      2025-07-07 [2] CRAN (R 4.5.1)
+#>  crayon                 1.5.3      2024-06-20 [2] CRAN (R 4.5.0)
+#>  curl                   6.4.0      2025-06-22 [2] CRAN (R 4.5.1)
+#>  data.table             1.17.8     2025-07-10 [2] CRAN (R 4.5.1)
+#>  DelayedArray           0.34.1     2025-04-17 [2] Bioconduc~
+#>  devtools             * 2.4.5      2022-10-11 [3] CRAN (R 4.5.0)
+#>  digest                 0.6.37     2024-08-19 [2] CRAN (R 4.5.0)
+#>  doParallel             1.0.17     2022-02-07 [2] CRAN (R 4.5.0)
+#>  doRNG                  1.8.6.2    2025-04-02 [2] CRAN (R 4.5.0)
+#>  dplyr                  1.1.4      2023-11-17 [2] CRAN (R 4.5.0)
+#>  ellipsis               0.3.2      2021-04-29 [3] CRAN (R 4.5.0)
+#>  evaluate               1.0.4      2025-06-18 [2] CRAN (R 4.5.1)
+#>  farver                 2.1.2      2024-05-13 [2] CRAN (R 4.5.0)
+#>  fastmap                1.2.0      2024-05-15 [2] CRAN (R 4.5.0)
+#>  flock                  0.7        2016-11-12 [2] CRAN (R 4.5.1)
+#>  foreach                1.5.2      2022-02-02 [2] CRAN (R 4.5.0)
+#>  Formula                1.2-5      2023-02-24 [2] CRAN (R 4.5.0)
+#>  fs                     1.6.6      2025-04-12 [2] CRAN (R 4.5.0)
+#>  gdsfmt                 1.44.1     2025-07-09 [2] Bioconduc~
+#>  generics               0.1.4      2025-05-09 [2] CRAN (R 4.5.0)
+#>  GenomeInfoDb           1.44.1     2025-07-23 [2] Bioconduc~
+#>  GenomeInfoDbData       1.2.14     2025-04-21 [2] Bioconductor
+#>  GenomicAlignments      1.44.0     2025-04-15 [2] Bioconduc~
+#>  GenomicRanges          1.60.0     2025-04-15 [2] Bioconduc~
+#>  ggplot2                3.5.2      2025-04-09 [2] CRAN (R 4.5.0)
+#>  ggpubr                 0.6.1      2025-06-27 [2] CRAN (R 4.5.1)
+#>  ggrepel                0.9.6      2024-09-07 [2] CRAN (R 4.5.1)
+#>  ggsignif               0.6.4      2022-10-13 [2] CRAN (R 4.5.0)
+#>  glue                   1.8.0      2024-09-30 [2] CRAN (R 4.5.0)
+#>  gridExtra              2.3        2017-09-09 [2] CRAN (R 4.5.0)
+#>  gtable                 0.3.6      2024-10-25 [2] CRAN (R 4.5.0)
+#>  GXwasR               * 0.99.0     2025-08-06 [1] Bioconductor
+#>  hms                    1.1.3      2023-03-21 [2] CRAN (R 4.5.0)
+#>  htmltools              0.5.8.1    2024-04-04 [2] CRAN (R 4.5.0)
+#>  htmlwidgets            1.6.4      2023-12-06 [2] CRAN (R 4.5.0)
+#>  httpuv                 1.6.16     2025-04-16 [2] CRAN (R 4.5.1)
+#>  httr                   1.4.7      2023-08-15 [2] CRAN (R 4.5.0)
+#>  IRanges                2.42.0     2025-04-15 [2] Bioconduc~
+#>  iterators              1.0.14     2022-02-05 [2] CRAN (R 4.5.0)
+#>  jsonlite               2.0.0      2025-03-27 [2] CRAN (R 4.5.0)
+#>  knitr                  1.50       2025-03-16 [2] CRAN (R 4.5.0)
+#>  later                  1.4.2      2025-04-08 [2] CRAN (R 4.5.1)
+#>  lattice                0.22-7     2025-04-02 [4] CRAN (R 4.5.1)
+#>  lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.5.0)
+#>  lubridate              1.9.4      2024-12-08 [2] CRAN (R 4.5.1)
+#>  magrittr               2.0.3      2022-03-30 [2] CRAN (R 4.5.0)
+#>  MASS                   7.3-65     2025-02-28 [4] CRAN (R 4.5.1)
+#>  mathjaxr               1.8-0      2025-04-30 [2] CRAN (R 4.5.1)
+#>  Matrix                 1.7-3      2025-03-11 [4] CRAN (R 4.5.1)
+#>  MatrixGenerics         1.20.0     2025-04-15 [2] Bioconduc~
+#>  matrixStats            1.5.0      2025-01-07 [2] CRAN (R 4.5.0)
+#>  memoise                2.0.1      2021-11-26 [2] CRAN (R 4.5.0)
+#>  mime                   0.13       2025-03-17 [2] CRAN (R 4.5.0)
+#>  miniUI                 0.1.2      2025-04-17 [3] CRAN (R 4.5.0)
+#>  pillar                 1.11.0     2025-07-04 [2] CRAN (R 4.5.1)
+#>  pkgbuild               1.4.8      2025-05-26 [2] CRAN (R 4.5.0)
+#>  pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.5.0)
+#>  pkgdev                 0.1.0.9060 2025-08-04 [2] Github (dieghernan/pkgdev@e56f2a8)
+#>  pkgload                1.4.0      2024-06-28 [2] CRAN (R 4.5.0)
+#>  plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.5.1)
+#>  plyranges              1.28.0     2025-04-15 [2] Bioconduc~
+#>  poolr                  1.2-0      2025-05-07 [2] CRAN (R 4.5.0)
+#>  prettyunits            1.2.0      2023-09-24 [2] CRAN (R 4.5.0)
+#>  processx               3.8.6      2025-02-21 [2] CRAN (R 4.5.1)
+#>  profvis                0.4.0      2024-09-20 [3] CRAN (R 4.5.0)
+#>  progress               1.2.3      2023-12-06 [2] CRAN (R 4.5.0)
+#>  promises               1.3.3      2025-05-29 [2] CRAN (R 4.5.0)
+#>  ps                     1.9.1      2025-04-12 [2] CRAN (R 4.5.1)
+#>  purrr                  1.1.0      2025-07-10 [2] CRAN (R 4.5.1)
+#>  qqman                  0.1.9      2023-08-23 [2] CRAN (R 4.5.0)
+#>  R.methodsS3            1.8.2      2022-06-13 [2] CRAN (R 4.5.0)
+#>  R.oo                   1.27.1     2025-05-02 [2] CRAN (R 4.5.0)
+#>  R.utils                2.13.0     2025-02-24 [2] CRAN (R 4.5.0)
+#>  R6                     2.6.1      2025-02-15 [2] CRAN (R 4.5.0)
+#>  rbibutils              2.3        2024-10-04 [2] CRAN (R 4.5.1)
+#>  RColorBrewer           1.1-3      2022-04-03 [2] CRAN (R 4.5.0)
+#>  Rcpp                   1.1.0      2025-07-02 [2] CRAN (R 4.5.1)
+#>  RCurl                  1.98-1.17  2025-03-22 [2] CRAN (R 4.5.0)
+#>  Rdpack                 2.6.4      2025-04-09 [2] CRAN (R 4.5.0)
+#>  RefManageR           * 1.4.0      2022-09-30 [2] CRAN (R 4.5.1)
+#>  regioneR               1.40.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
+#>  remotes                2.5.0      2024-03-17 [2] CRAN (R 4.5.0)
+#>  restfulr               0.0.16     2025-06-27 [2] CRAN (R 4.5.1)
+#>  rjson                  0.2.23     2024-09-16 [2] CRAN (R 4.5.0)
+#>  rlang                  1.1.6      2025-04-11 [2] CRAN (R 4.5.0)
+#>  rmarkdown              2.29       2024-11-04 [2] CRAN (R 4.5.0)
+#>  rmio                   0.4.0      2022-02-17 [2] CRAN (R 4.5.0)
+#>  rngtools               1.5.2      2021-09-20 [2] CRAN (R 4.5.0)
+#>  rprojroot              2.1.0      2025-07-12 [2] CRAN (R 4.5.1)
+#>  Rsamtools              2.24.0     2025-04-15 [2] Bioconduc~
+#>  rstatix                0.7.2      2023-02-01 [2] CRAN (R 4.5.0)
+#>  rtracklayer            1.68.0     2025-04-15 [2] Bioconduc~
+#>  S4Arrays               1.8.1      2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
+#>  S4Vectors              0.46.0     2025-04-15 [2] Bioconduc~
+#>  scales                 1.4.0      2025-04-24 [2] CRAN (R 4.5.0)
+#>  sessioninfo          * 1.2.3      2025-02-05 [2] CRAN (R 4.5.1)
+#>  shiny                  1.11.1     2025-07-03 [2] CRAN (R 4.5.1)
+#>  SNPRelate              1.42.0     2025-04-15 [2] Bioconduc~
+#>  SparseArray            1.8.1      2025-07-23 [2] Bioconduc~
+#>  stringi                1.8.7      2025-03-27 [2] CRAN (R 4.5.0)
+#>  stringr                1.5.1      2023-11-14 [2] CRAN (R 4.5.0)
+#>  sumFREGAT              1.2.5      2022-06-07 [2] CRAN (R 4.5.1)
+#>  SummarizedExperiment   1.38.1     2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)
+#>  sys                    3.4.3      2024-10-04 [2] CRAN (R 4.5.0)
+#>  testthat             * 3.2.3      2025-01-13 [2] CRAN (R 4.5.1)
+#>  tibble                 3.3.0      2025-06-08 [2] CRAN (R 4.5.0)
+#>  tidyr                  1.3.1      2024-01-24 [2] CRAN (R 4.5.1)
+#>  tidyselect             1.2.1      2024-03-11 [2] CRAN (R 4.5.0)
+#>  timechange             0.3.0      2024-01-18 [2] CRAN (R 4.5.1)
+#>  tzdb                   0.5.0      2025-03-15 [2] CRAN (R 4.5.1)
+#>  UCSC.utils             1.4.0      2025-04-15 [2] Bioconduc~
+#>  urlchecker             1.0.1      2021-11-30 [3] CRAN (R 4.5.0)
+#>  usethis              * 3.1.0      2024-11-26 [2] CRAN (R 4.5.0)
+#>  vctrs                  0.6.5      2023-12-01 [2] CRAN (R 4.5.0)
+#>  vroom                  1.6.5      2023-12-05 [2] CRAN (R 4.5.1)
+#>  withr                  3.0.2      2024-10-28 [2] CRAN (R 4.5.0)
+#>  xfun                   0.52       2025-04-02 [2] CRAN (R 4.5.0)
+#>  XML                    3.99-0.18  2025-01-01 [2] CRAN (R 4.5.0)
+#>  xml2                   1.3.8      2025-03-14 [2] CRAN (R 4.5.1)
+#>  xtable                 1.8-4      2019-04-21 [2] CRAN (R 4.5.0)
+#>  XVector                0.48.0     2025-04-15 [2] Bioconduc~
+#>  yaml                   2.3.10     2024-07-26 [2] CRAN (R 4.5.0)
 #> 
-#>  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpfrKnQx/temp_libpath14b3710a34e96
+#>  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpJ93upV/temp_libpathcfe02f0c39d5
 #>  [2] /Users/mayerdav/Library/R/arm64/4.5/library
 #>  [3] /opt/homebrew/lib/R/4.5/site-library
 #>  [4] /opt/homebrew/Cellar/r/4.5.1/lib/R/library
-#> 
 #>  * ── Packages attached to the search path.
-#>  P ── Loaded and on-disk path mismatch.
 #> 
 #> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ```
