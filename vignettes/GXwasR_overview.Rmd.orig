@@ -108,8 +108,10 @@ This document lists all the functions in GXwasR package.It offers thirty-three d
 | LDPrune()           | Performs LD pruning on SNP data.                                                                                                           | Utility Functions                              | 
 | executePlinkMAF()   | Calculate minor allele frequencies.                                                                                                        | Utility Functions                              |    
 | ComputeLD()         | Calculate LD matrix.                                                                                                                       | Utility Functions                              | 
+
 ```{r}
 library(GXwasR)
+library(magrittr)
 library(printr)
 library(rmarkdown)
 ```
@@ -181,7 +183,7 @@ help(TestXGene, package = "GXwasR")
 
 ### Function 14
 ```{r}
-help(MetaGXwas, package = "GXwasR")
+help(MetaGWAS, package = "GXwasR")
 ```
 
 ### Function 15
@@ -291,6 +293,648 @@ Tutorial for performing post-imputation QC followed by sex-aware association tes
 * Tutorial for computing Polygenic Risk Score using GXwasR: [https://boseb.github.io/GXwasR/articles/GXwasR_PRS.html](https://boseb.github.io/GXwasR/articles/GXwasR_PRS.html)
 * Tutorial for ancestry estimation: [https://boseb.github.io/GXwasR/articles/decoding_ancestry.html](https://boseb.github.io/GXwasR/articles/decoding_ancestry.html)
 * Tutorial for meta analysis using GXwasR: [https://boseb.github.io/GXwasR/articles/meta_analysis.html](https://boseb.github.io/GXwasR/articles/meta_analysis.html)
+
+## Running Examples
+
+### `QCsnp()`
+
+```{r overview-QCsnp}
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+foutput <- "Test_output"
+geno <- NULL
+maf <- 0.05
+casecontrol <- FALSE
+hweCase <- NULL
+hweControl <- NULL
+hweCase <- NULL
+monomorphicSNPs <- FALSE
+caldiffmiss <- FALSE
+ld_prunning <- FALSE
+x <- QCsnp(
+    DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput,
+    geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl,
+    ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs,
+    caldiffmiss = caldiffmiss
+)
+x
+```
+
+### `QCsample()`
+
+```{r overview-QCsample}
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+foutput <- "Test_output"
+imiss <- 0.01
+het <- 2
+small_sample_mod <- FALSE
+IBD <- 0.2
+IBDmatrix <- FALSE
+ambi_out <- TRUE
+#'
+x <- QCsample(
+    DataDir = DataDir, ResultDir = ResultDir, finput = finput,
+    foutput = foutput, imiss = imiss, het = het, IBD = IBD,
+    ambi_out = ambi_out
+)
+x$HM
+x$Failed_Missingness
+x$Failed_heterozygosity
+x$Failed_IBD
+x$Missingness_results %>% head()
+```
+
+### `AncestryCheck()`
+
+```{r overview-AncestryCheck}
+data("highLD_hg19", package = "GXwasR")
+data("example_data_study_sample_ancestry", package = "GXwasR")
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+reference <- "HapMapIII_NCBI36"
+highLD_regions <- highLD_hg19
+study_pop <- example_data_study_sample_ancestry # PreimputeEX
+studyLD_window_size <- 50
+studyLD_step_size <- 5
+studyLD_r2_threshold <- 0.02
+filterSNP <- TRUE
+studyLD <- FALSE
+referLD <- FALSE
+referLD_window_size <- 50
+referLD_step_size <- 5
+referLD_r2_threshold <- 0.02
+outlier <- TRUE
+outlier_threshold <- 3
+x <- AncestryCheck(
+    DataDir = DataDir, ResultDir = ResultDir, finput = finput,
+    reference = reference, highLD_regions = highLD_regions,
+    study_pop = study_pop, studyLD = studyLD, referLD = referLD,
+    outlierOf = "EUR", outlier = outlier, outlier_threshold = outlier_threshold
+)
+x$Outlier_samples %>% head()
+x$Samples_with_predicted_ancestry %>% head()
+x$NonOutlier_samples %>% head()
+```
+
+### `SexCheck()`
+
+```{r overview-SexCheck}
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+LD <- TRUE
+LD_window_size <- 50
+LD_step_size <- 5
+LD_r2_threshold <- 0.02
+fmax_F <- 0.2
+mmin_F <- 0.8
+impute_sex <- FALSE
+compute_freq <- FALSE
+
+x <- SexCheck(
+    DataDir = DataDir, ResultDir = ResultDir, finput = finput, impute_sex = impute_sex,
+    compute_freq = compute_freq, LD_window_size = LD_window_size, LD_step_size = LD_step_size,
+    LD_r2_threshold = 0.02, fmax_F = 0.2, mmin_F = 0.8
+)
+
+# Checking if there is any wrong sex assignment
+problematic_sex <- x[x$STATUS != "OK", ]
+problematic_sex
+```
+
+### `Xhwe()`
+
+```{r overview-Xhwe}
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+foutput <- "Test_output"
+x <- Xhwe(
+    DataDir = DataDir, ResultDir = ResultDir,
+    finput = finput, foutput = foutput, filterSNP = TRUE
+)
+x
+```
+
+### `MAFdiffSexControl()`
+
+```{r overview-MAFdiffSexControl}
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+foutput <- "Test_output"
+x <- MAFdiffSexControl(DataDir, ResultDir, finput, filterSNP = TRUE, foutput = foutput)
+x
+```
+
+### `FilterRegion()`
+
+```{r overview-FilterRegion}
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+foutput <- "PostimputeEX_QC1"
+x <- FilterRegion(
+    DataDir = DataDir, ResultDir = ResultDir,
+    finput = finput, foutput = foutput, CHRX = TRUE, CHRY = FALSE,
+    filterPAR = TRUE, filterXTR = TRUE, filterAmpliconic = TRUE,
+    regionfile = FALSE, filterCHR = NULL, Hg = "38", exclude = TRUE
+)
+x
+```
+
+### `GXwas()`
+
+```{r overview-GXwas}
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+standard_beta <- TRUE
+xsex <- FALSE
+sex <- TRUE
+Inphenocov <- NULL
+covartest <- NULL
+interaction <- FALSE
+MF.na.rm <- FALSE
+B <- 10000
+MF.zero.sub <- 0.00001
+trait <- "binary"
+xmodel <- "FMcombx02"
+combtest <- "fisher.method"
+snp_pval <- 1e-08
+covarfile <- NULL
+ncores <- 0
+MF.mc.cores <- 1
+ResultGXwas <- GXwas(
+    DataDir = DataDir, ResultDir = ResultDir,
+    finput = finput, xmodel = xmodel, trait = trait, covarfile = covarfile,
+    sex = sex, xsex = xsex, combtest = combtest, MF.p.corr = "none",
+    snp_pval = snp_pval, plot.jpeg = TRUE, suggestiveline = 5, genomewideline = 7.3,
+    MF.mc.cores = 1, ncores = ncores
+)
+ResultGXwas %>% head()
+```
+
+### `PvalComb()`
+
+```{r overview-PvalComb}
+data("Mfile", package = "GXwasR")
+data("Ffile", package = "GXwasR")
+SumstatMale <- Mfile
+colnames(SumstatMale)[3] <- "POS"
+SumstatFemale <- Ffile
+colnames(SumstatFemale)[3] <- "POS"
+PvalComb_Result <- PvalComb(
+    SumstatMale = SumstatMale, SumstatFemale = SumstatFemale,
+    combtest = "fisher.method", MF.mc.cores = 1, snp_pval = 0.001, plot.jpeg = FALSE,
+    suggestiveline = 3, genomewideline = 5.69897, ncores = 1
+)
+PvalComb_Result %>% head()
+```
+
+### `SexDiff()`
+
+```{r overview-SexDiff}
+data("Mfile", package = "GXwasR")
+data("Ffile", package = "GXwasR")
+Difftest <- SexDiff(Mfile, Ffile)
+significant_snps <- Difftest[Difftest$adjP < 0.05, ]
+significant_snps
+```
+
+### `SexDiffZscore()`
+
+```{r overview-SexDiffZscore}
+data("Example_h2data", package = "GXwasR")
+inputdata <- Example_h2data
+x <- SexDiffZscore(inputdata)
+x
+```
+
+### `DiffZeroOne()`
+
+```{r overview-DiffZeroOne}
+data("Example_rgdata", package = "GXwasR")
+inputdata <- Example_rgdata
+colnames(inputdata) <- c("Trait", "Stat", "SE")
+x <- DiffZeroOne(inputdata, FALSE, TRUE)
+x
+```
+### `TestXGene()`
+
+```{r overview-TestXGene}
+data("XWAS_Summary_Example", package = "GXwasR")
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+sumstat <- XWAS_Summary_Example
+ref_data <- NULL
+gene_file <- "Xlinkedgenes_hg19.txt"
+gene_range <- 500000
+max_gene <- 10
+gene_approximation <- TRUE
+beta_par <- c(1, 25)
+weights_function <- NULL
+geno_variance_weights <- "se.beta"
+method <- "kuonen"
+acc_devies <- 1e-8
+lim_devies <- 1e+6
+rho <- TRUE
+skato_p_threshold <- 0.8
+mac_threshold <- 3
+sample_size <- 4000
+reference_matrix_used <- FALSE
+regularize_fun <- "LH"
+pca_var_fraction <- 0.85
+flm_basis_function <- "fourier"
+flm_num_basis <- 25
+flm_poly_order <- 4
+flip_genotypes <- FALSE
+omit_linear_variant <- FALSE
+kernel_p_method <- "kuonen"
+anno_type <- ""
+GenetestResult <- TestXGene(DataDir, ResultDir, finput, sumstat, gene_file,
+    gene_range, score_file, ref_data, max_gene, sample_size,
+    genebasedTest = "SKAT",
+    gene_approximation, beta_par, weights_function, geno_variance_weights,
+    kernel_p_method, acc_devies, lim_devies, rho, skato_p_threshold, anno_type,
+    mac_threshold, reference_matrix_used, regularize_fun, pca_var_fraction,
+    flm_basis_function, flm_num_basis, flm_poly_order, flip_genotypes,
+    omit_linear_variant
+)
+GenetestResult
+```
+
+### `MetaGWAS()`
+
+```{r overview-MetaGWAS}
+data("Summary_Stat_Ex1", package = "GXwasR")
+data("Summary_Stat_Ex2", package = "GXwasR")
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+SummData <- list(Summary_Stat_Ex1, Summary_Stat_Ex2)
+SNPfile <- "UniqueLoci"
+useSNPposition <- FALSE
+UseA1 <- TRUE
+GCse <- TRUE
+byCHR <- FALSE
+pval_filter <- "R"
+top_snp_pval <- 1e-08
+max_top_snps <- 10
+chosen_snps_file <- NULL
+pval_threshold_manplot <- 1e-05
+plotname <- "Meta_Analysis.plot"
+x <- MetaGWAS(
+    DataDir = DataDir, SummData = SummData, ResultDir = ResultDir,
+    SNPfile = NULL, useSNPposition = TRUE, UseA1 = UseA1, GCse = GCse,
+    plotname = "Meta_Analysis.plot", pval_filter, top_snp_pval, max_top_snps,
+    chosen_snps_file = NULL, byCHR, pval_threshold_manplot
+)
+x$Resultfixed %>% head()
+x$ProblemSNP %>% head()
+
+```
+
+### `ComputePRS()`
+
+```{r overview-ComputePRS}
+data("Summary_Stat_Ex1", package = "GXwasR")
+data("Example_phenofile", package = "GXwasR")
+data("Example_covarfile", package = "GXwasR")
+data("Example_pthresoldfile", package = "GXwasR")
+data("highLD_hg19", package = "GXwasR")
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+summarystat <- Summary_Stat_Ex1[, c(2, 4, 7, 1, 3, 12)]
+phenofile <- Example_phenofile # Cannot be NULL
+# The interested phenotype column should be labeled as "Pheno1".
+covarfile <- Example_covarfile
+clump_p1 <- 0.0001
+clump_p2 <- 0.0001
+clump_kb <- 500
+clump_r2 <- 0.5
+byCHR <- TRUE
+pthreshold <- Example_pthresoldfile$Threshold
+ld_prunning <- TRUE
+highLD_regions <- highLD_hg19
+window_size <- 50
+step_size <- 5
+r2_threshold <- 0.02
+nPC <- 6 # We can incorporate PCs into our PRS analysis to account for population stratification.
+pheno_type <- "binary"
+
+PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile,
+    effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2,
+    clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions,
+    ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6,
+    pheno_type = "binary"
+)
+PRSresult$PRS %>% head()
+PRSresult$BestP
+print(PRSresult$PRS_plot)
+```
+
+### `GeneticCorrBT()`
+
+```{r overview-GeneticCorrBT}
+data("Example_phenofile", package = "GXwasR")
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+byCHR <- TRUE
+REMLalgo <- 0
+nitr <- 3
+ncores <- 3
+phenofile <- Example_phenofile # Cannot be NULL
+cat_covarfile <- NULL
+quant_covarfile <- NULL
+partGRM <- FALSE # Partition the GRM into m parts (by row),
+autosome <- TRUE
+Xsome <- TRUE
+cripticut <- 0.025
+minMAF <- 0.01 # if MAF filter apply
+maxMAF <- 0.04
+excludeResidual <- TRUE
+
+genetic_correlation <- GeneticCorrBT(
+    DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = byCHR,
+    REMLalgo = 0, nitr = 10, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL,
+    partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
+    cripticut = 0.025, minMAF = NULL, maxMAF = NULL, excludeResidual = TRUE, ncores = ncores
+)
+genetic_correlation %>% head()
+```
+
+### `EstimateHerit()`
+
+```{r}
+data("Summary_Stat_Ex1", package = "GXwasR")
+data("highLD_hg19", package = "GXwasR")
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+precomputedLD <- NULL
+finput <- "GXwasR_example"
+test.sumstats <- na.omit(Summary_Stat_Ex1[Summary_Stat_Ex1$TEST == "ADD", c(seq_len(4), 6:8)])
+colnames(test.sumstats) <- c("chr", "rsid", "pos", "a1", "n_eff", "beta", "beta_se")
+summarystat <- test.sumstats
+ncores <- 3
+model <- "GREML"
+byCHR <- FALSE
+r2_LD <- 0
+LDSC_blocks <- 20
+REMLalgo <- 0
+nitr <- 3
+cat_covarfile <- NULL
+quant_covarfile <- NULL
+prevalence <- 0.01
+partGRM <- FALSE
+autosome <- TRUE
+Xsome <- TRUE
+nGRM <- 3
+cripticut <- 0.025
+minMAF <- NULL
+maxMAF <- NULL
+hg <- "hg19"
+PlotIndepSNP <- TRUE
+IndepSNP_window_size <- 50
+IndepSNP_step_size <- 5
+IndepSNP_r2_threshold <- 0.02
+highLD_regions <- highLD_hg19
+H2 <- EstimateHerit(
+    DataDir = DataDir, ResultDir = ResultDir, finput = finput,
+    summarystat = NULL, ncores, model = "GREML", byCHR = TRUE, r2_LD = 0,
+    LDSC_blocks = 20, REMLalgo = 0, nitr = 100, cat_covarfile = NULL, quant_covarfile = NULL,
+    prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
+    cripticut = 0.025, minMAF = NULL, maxMAF = NULL, hg = "hg19", PlotIndepSNP = TRUE,
+    IndepSNP_window_size = 50, IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02,
+    highLD_regions = highLD_hg19
+)
+H2 %>% head()
+```
+
+### `SexRegress()`
+```{r overview-SexRegress}
+data("Regression_Ex", package = "GXwasR")
+fdata <- Regression_Ex
+fdata$SEX <- as.factor(as.character(fdata$SEX))
+response_index <- 1
+regressor_index <- 2
+
+x <- SexRegress(fdata, regressor_index, response_index)
+x
+```
+
+### `FilterPlinkSample()`
+
+```{r overview-FilterPlinkSample}
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+foutput <- "casesPlink"
+filter_sample <- "cases"
+keep_remove_sample_file <- "samples_example"
+keep <- FALSE
+
+FilterPlinkSample(
+    DataDir = DataDir, ResultDir = ResultDir,
+    finput = finput, foutput = foutput, keep_remove_sample_file = keep_remove_sample_file,
+    keep = keep
+)
+```
+
+### `ComputeGeneticPC()`
+```{r overview-ComputeGeneticPC}
+data("highLD_hg19", package = "GXwasR")
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+highLD_regions <- highLD_hg19
+ld_prunning <- "TRUE"
+window_size <- 50
+step_size <- 5
+r2_threshold <- 0.02
+countPC <- 20
+## Genetic PC
+GP <- ComputeGeneticPC(
+    DataDir = DataDir, ResultDir = ResultDir,
+    finput = finput, highLD_regions = highLD_hg19, countPC = 20
+)
+GP$PCs1 %>% head()
+GP$plot
+```
+
+### `ClumpLD()`
+```{r overview-ClumpLD}
+data("Summary_Stat_Ex1", package = "GXwasR")
+data("Summary_Stat_Ex2", package = "GXwasR")
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+SNPdata <- list(Summary_Stat_Ex1, Summary_Stat_Ex2)
+clump_p1 <- 0.0001
+clump_p2 <- 0.001
+clump_r2 <- 0.5
+clump_kb <- 250
+byCHR <- TRUE
+clumpedResult <- ClumpLD(
+    DataDir, finput, SNPdata, ResultDir, clump_p1,
+    clump_p2, clump_r2, clump_kb, byCHR
+)
+clumpedResult
+```
+
+### `GetMFPlink()`
+```{r overview-GetMFPlink}
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+foutput <- "Test_output"
+sex <- "females"
+x <- GetMFPlink(
+    DataDir = DataDir, ResultDir = ResultDir,
+    finput = finput, foutput = foutput, sex = sex,
+    xplink = FALSE, autoplink = FALSE
+)
+x
+```
+
+### `plinkVCF()`
+
+```{r overview-plinkVCF}
+finput <- "GXwasR_example" # Plink file
+foutput <- "GXwasR_example1"
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+PtoV <- TRUE
+VtoP <- FALSE
+Famfile <- NULL
+PVbyCHR <- FALSE
+plinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)
+```
+
+### `MergeRegion()`
+
+```{r overview-MergeRegion}
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput1 <- "GXwasR_example"
+finput2 <- "GXwasR_example_imputed"
+foutput <- "Test_output"
+y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput, use_common_snps = TRUE)
+y
+```
+
+### `FilterAllele()`
+
+```{r overview-FilterAllele}
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+foutput <- "Filter_Test"
+x <- FilterAllele(DataDir, ResultDir, finput, foutput)
+x
+```
+
+### `PlinkSummary()`
+
+```{r overview-PlinkSummary}
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+x <- PlinkSummary(DataDir, ResultDir, finput)
+x
+```
+
+### FilterSNP
+
+```{r overview-FilterSNP}
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+SNPvec <- c("rs6529954", "rs12858640", "rs5962098")
+finput <- "GXwasR_example"
+foutput <- "Filter_Test"
+FilterSNP(DataDir, ResultDir, finput, foutput, SNPvec = SNPvec, extract = TRUE)
+```
+
+### `DummyCovar()`
+
+```{r overview-DummyCovar}
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+bfile <- "GXwasR_example"
+incovar <- "covarfile_w_pc_age.txt"
+outcovar <- "dummycovarfile"
+dummy_covars <- DummyCovar(
+    DataDir = DataDir, ResultDir = ResultDir,
+    bfile = bfile, incovar = incovar,
+    outcovar = outcovar
+)
+dummy_covars %>% head()
+```
+
+### `GXWASmiami()`
+
+```{r overview-GXWASmiami}
+data("Ffile", package = "GXwasR")
+data("Mfile", package = "GXwasR")
+FemaleWAS <- na.omit(Ffile[, c("SNP", "CHR", "BP", "P")])
+colnames(FemaleWAS) <- c("SNP", "CHR", "POS", "pvalue")
+MaleWAS <- na.omit(Mfile[, c("SNP", "CHR", "BP", "P")])
+colnames(MaleWAS) <- c("SNP", "CHR", "POS", "pvalue")
+
+GXWASmiami(FemaleWAS = FemaleWAS, MaleWAS = MaleWAS, snp_pval = 0.05)
+```
+
+### `SumstatGenCorr()`
+```{r overview-SumstatGenCorr}
+sumstat1 <- GXwasR:::simulateSumstats()
+sumstat2 <- GXwasR:::simulateSumstats()
+if (nzchar(Sys.getenv("UKB_IMPUTED_HAPMAP2_PATH"))) {
+    res <- SumstatGenCorr(
+        ResultDir = tempdir(),
+        referenceLD = "UKB_imputed_hapmap2_SVD_eigen99_extraction",
+        sumstat1 = sumstat1,
+        sumstat2 = sumstat2,
+        parallel = TRUE
+    )
+    res
+}
+```
+
+### `LDPrune()`
+
+```{r overview-LDPrune}
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+prunedSNPs <- LDPrune(DataDir, finput, ResultDir, 50, 5, 0.2)
+prunedSNPs %>% head()
+```
+
+### `executePlinkMAF()`
+
+```{r overview-executePlinkMAF}
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+maf_data <- executePlinkMAF(DataDir, ResultDir, finput)
+maf_data %>% head()
+```
+
+### `ComputeLD()`
+
+```{r overview-ComputeLD}
+snpld <- ComputeLD(
+    DataDir = GXwasR:::GXwasR_data(), ResultDir = tempdir(),
+    finput = "GXwasR_example", ByCHR = TRUE, CHRnum = 1, r2_LD = 0.2
+)
+snpld %>% head()
+```
 
 # Citing `GXwasR`
 

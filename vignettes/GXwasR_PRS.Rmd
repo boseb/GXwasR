@@ -32,6 +32,9 @@ vignette: >
 ``` r
 ## Call some libraries (Users can ignore this.)
 library(printr)
+#> Registered S3 method overwritten by 'printr':
+#>   method                from     
+#>   knit_print.data.frame rmarkdown
 library(rmarkdown)
 ```
 
@@ -41,6 +44,19 @@ library(rmarkdown)
 ``` r
 ## Call GXwasR library
 library(GXwasR)
+#> 
+#> GXwasR: Genome-wide and x-chromosome wide association analyses applying best practices of quality control over genetic data
+#> Version 0.99.0 () installed
+#> Author: c(
+#>     person(given = "Banabithi",
+#>            family = "Bose",
+#>            role = c("cre", "aut"),
+#>            email = "banabithi.bose@gmail.com",
+#>            comment = c(ORCID = "0000-0003-0842-8768"))
+#>            )
+#> Maintainer: Banabithi Bose <banabithi.bose@gmail.com>
+#> Tutorial: https://github.com
+#> Use citation("GXwasR") to know how to cite this work.
 ```
 
 # Computing standard PRS using ComputePRS():
@@ -50,7 +66,217 @@ library(GXwasR)
 
 ``` r
 help(ComputePRS, package = GXwasR)
-#> ℹ Rendering development documentation for "ComputePRS"
+#> ComputePRS: Computing polygenic risk score (PRS)
+#> 
+#> Description:
+#> 
+#>      This function calculates the polygenic risk score, which is the
+#>      total of allele counts (genotypes) weighted by estimated effect
+#>      sizes from genome-wide association studies. It uses C+T filtering
+#>      techniques. The users could perform clumping procedure
+#>      choromosome-wise and genome-wide. Also, the function offers the
+#>      choice of including several genetic principal components along
+#>      with other covariates. Using this function, users have the freedom
+#>      to experiment with various clumping and thresholding arrangements
+#>      to test a wide range of various parameter values.
+#> 
+#> Usage:
+#> 
+#>      ComputePRS(
+#>        DataDir,
+#>        ResultDir = tempdir(),
+#>        finput,
+#>        summarystat,
+#>        phenofile,
+#>        covarfile = NULL,
+#>        effectsize = c("BETA", "OR"),
+#>        ldclump = FALSE,
+#>        LDreference,
+#>        clump_p1,
+#>        clump_p2,
+#>        clump_r2,
+#>        clump_kb,
+#>        byCHR = TRUE,
+#>        pthreshold = c(0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5),
+#>        highLD_regions,
+#>        ld_prunning = FALSE,
+#>        window_size = 50,
+#>        step_size = 5,
+#>        r2_threshold = 0.02,
+#>        nPC = 6,
+#>        pheno_type = "binary"
+#>      )
+#>      
+#> Arguments:
+#> 
+#>  DataDir: A character string for the file path of the all the input
+#>           files.
+#> 
+#> ResultDir: A character string for the file path where all output files
+#>           will be stored. The default is tempdir().
+#> 
+#>   finput: Character string, specifying the prefix of the input PLINK
+#>           binary files for the genotype data i.e., the target data
+#>           based on which clumping procedure will be performed. This
+#>           file needs to be in DataDir. If your target data are small
+#>           (e.g. N < 500) then you can use the 1000 Genomes Project
+#>           samples. Make sure to use the population that most closely
+#>           reflects represents the base sample.
+#> 
+#> summarystat: A dataframe object with GWAS summary statistics.
+#> 
+#>           The mandatory column headers in this dataframe are:
+#> 
+#>             • 'CHR'(Chromosome code)
+#> 
+#>             • 'BP'(Basepair position)
+#> 
+#>             • 'A1' (effect allele)
+#> 
+#>             • 'SNP' (i.e., SNP identifier)
+#> 
+#>             • 'BETA' or 'OR' (i.e., effect-size or logarithm of odds
+#>               ratio)
+#> 
+#>             • 'P' (i.e., p-values).
+#> 
+#>           Special Notes: The first three columns needed to be 'SNP',
+#>           'A1' and 'BETA' or 'OR'.
+#> 
+#> phenofile: A character string, specifying the name of the mandatory
+#>           phenotype file. This is a plain text file with no header
+#>           line; columns family ID, individual ID and phenotype columns.
+#>           For binary trait, the phenotypic value should be coded as 0
+#>           or 1, then it will be recognized as a case-control study (0
+#>           for controls and 1 for cases). Missing value should be
+#>           represented by "-9" or "NA". The interested phenotype column
+#>           should be labeled as "Pheno1". This file needs to be in
+#>           'DataDir'.
+#> 
+#> covarfile: A character string, specifying the name of the covariate
+#>           file which is a plain .text file with no header line; columns
+#>           are family ID, individual ID and the covariates. The default
+#>           is 'NULL'. This file needs to be in 'DataDir'.
+#> 
+#> effectsize: Boolean value, 'BETA' or 'OR', specifying the type of the
+#>           GWAS effectsize. The default is 'BETA'.
+#> 
+#>  ldclump: Boolean value, 'TRUE' or 'FALSE', specifying whether to
+#>           perform clumping or not.
+#> 
+#> LDreference: A character string, specifying the prefix of the PLINK
+#>           files of the population reference panel of the same ancestry,
+#>           and ideally the one that was used for imputing your target
+#>           dataset. These files should be in 'DataDir'.
+#> 
+#> clump_p1: Numeric value, specifying the significance threshold for
+#>           index SNPs if 'ldclump' was set to be 'TRUE'. The default is
+#>           0.0001.
+#> 
+#> clump_p2: Numeric value, specifying the secondary significance
+#>           threshold for clumped SNPs if 'ldclump' was set to be 'TRUE'.
+#>           The default is 0.01
+#> 
+#> clump_r2: Numeric value, specifying the linkage disequilibrium (LD)
+#>           threshold for clumping if 'ldclump' was set to be 'TRUE'. The
+#>           default is 0.50.
+#> 
+#> clump_kb: Integer value, specifying the physical distance threshold in
+#>           base-pair for clumping if 'ldclump' was set to be 'TRUE'. The
+#>           default is 250.
+#> 
+#>    byCHR: Boolean value, 'TRUE' or 'FALSE', specifying chromosome-wise
+#>           clumping procedure if 'ldclump' was set to be 'TRUE'. The
+#>           default is 'TRUE'
+#> 
+#> pthreshold: Numeric vector, containing several p value thresholds to
+#>           maximize predictive ability of the derived polygenic scores.
+#> 
+#> highLD_regions: Character string, specifying the .txt file name with
+#>           known genomic regions with high LD. The default is 'NULL'.
+#> 
+#> ld_prunning: Boolean value, 'TRUE' or 'FALSE' for LD-based filtering
+#>           for computing genetic PC as covariates.
+#> 
+#> window_size: Integer value, specifying a window size in variant count
+#>           or kilobase for LD-based filtering in computing genetic PC.
+#>           The default is 50.
+#> 
+#> step_size: Integer value, specifying a variant count to shift the
+#>           window at the end of each step for LD filtering in computing
+#>           genetic PCs. The default is 5.
+#> 
+#> r2_threshold: Numeric value between 0 to 1 of pairwise r^2 threshold
+#>           for LD-based filtering in computing genetic PCs. The default
+#>           is 0.02.
+#> 
+#>      nPC: Positive integer value, specifying the number of genetic PCs
+#>           to be included as predictor in the PRS model fit. The default
+#>           is 6.
+#> 
+#> pheno_type: Boolean value, ‘binary’ or ‘quantitative’, specifying the
+#>           type of the trait. The default is ‘binary’.
+#> 
+#> Value:
+#> 
+#>      A list object containing a dataframe a numeric value, a GeneticPC
+#>      plot (if requested), and a PRS plot. The dataframe,PRS, contains
+#>      four mandatory columns, such as, IID (i.e., Individual ID), FID
+#>      (i.e., Family ID), Pheno1 (i.e., the trait for PRS) and Score
+#>      (i.e., the best PRS). Other columns of covariates could be there.
+#>      The numeric value, BestP contains the threshold of of the best
+#>      p-value for the best pRS model fit.
+#> 
+#>      Also, the function produces several plots such as p-value
+#>      thresholds vs PRS model fit and PRS distribution among male and
+#>      females. For case-control data, it shows PRS distribution among
+#>      cases and controls and ROC curves as well.
+#> 
+#> Author(s):
+#> 
+#>      Banabithi Bose
+#> 
+#> Examples:
+#> 
+#>      data("Summary_Stat_Ex1", package = "GXwasR")
+#>      data("Example_phenofile", package = "GXwasR")
+#>      data("Example_covarfile", package = "GXwasR")
+#>      data("Example_pthresoldfile", package = "GXwasR")
+#>      data("highLD_hg19", package = "GXwasR")
+#>      DataDir <- GXwasR:::GXwasR_data()
+#>      ResultDir <- tempdir()
+#>      finput <- "GXwasR_example"
+#>      summarystat <- Summary_Stat_Ex1[, c(2, 4, 7, 1, 3, 12)]
+#>      phenofile <- Example_phenofile # Cannot be NULL
+#>      # The interested phenotype column should be labeled as "Pheno1".
+#>      covarfile <- Example_covarfile
+#>      clump_p1 <- 0.0001
+#>      clump_p2 <- 0.0001
+#>      clump_kb <- 500
+#>      clump_r2 <- 0.5
+#>      byCHR <- TRUE
+#>      pthreshold <- Example_pthresoldfile$Threshold
+#>      ld_prunning <- TRUE
+#>      highLD_regions <- highLD_hg19
+#>      window_size <- 50
+#>      step_size <- 5
+#>      r2_threshold <- 0.02
+#>      nPC <- 6 # We can incorporate PCs into our PRS analysis to account for population stratification.
+#>      pheno_type <- "binary"
+#>      
+#>      PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile,
+#>          effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2,
+#>          clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions,
+#>          ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6,
+#>          pheno_type = "binary"
+#>      )
+#>      
+#>      ## This table shows 10 samples with phenotype, covariates and a PRS column.
+#>      PRS <- PRSresult$PRS
+#>      PRS[seq_len(10), ]
+#>      ## The best threshold
+#>      BestPvalue <- PRSresult$BestP$Threshold
+#>      BestPvalue
 ```
 
 ## Running ComputePRS()
@@ -85,7 +311,9 @@ pheno_type <- "binary"
 ldclump <- FALSE
 pheno_type <- "binary"
 PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
-#> Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpdyNNez/temp_libpath548126ba7acf', reason 'Directory not empty'
+#> Using PLINK v1.9.0-b.7.7 64-bit (22 Oct 2024)
+#> Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/temp_libpath102938d3a72d', reason 'Directory not empty'
+#> 
 #> ℹ 0.001
 #> • Computing PRS for threshold 0.001
 #> ℹ 0.05
@@ -100,9 +328,11 @@ PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, cova
 #> • Computing PRS for threshold 0.4
 #> ℹ 0.5
 #> • Computing PRS for threshold 0.5
-PRSresult$PRS_plot
-#> Error in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, : Metric information not available for this family/device
+#> This message is displayed once every 8 hours.
+print(PRSresult$PRS_plot)
 ```
+
+![plot of chunk compute_prs](./compute_prs-1.png)
 
 
 ``` r
@@ -242,7 +472,7 @@ finput <- "filtered_step1"
 foutput <- "NewtargetData"
 FilterSNP(DataDir, ResultDir, finput, foutput, SNPvec, extract = TRUE)
 #> ℹ 991 SNPs are extracted
-#> ✔ Plink files with extracted SNPs are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez prefixed as NewtargetData
+#> ✔ Plink files with extracted SNPs are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB prefixed as NewtargetData
 #> NULL
 ```
 
@@ -287,7 +517,7 @@ pheno_type <- "binary"
 effectsize <- "BETA"
 ldclump <- FALSE
 PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
-#> Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpdyNNez/temp_libpath548126ba7acf', reason 'Directory not empty'
+#> Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/temp_libpath102938d3a72d', reason 'Directory not empty'
 #> ℹ 0.001
 #> • Computing PRS for threshold 0.001
 #> ℹ 0.05
@@ -302,9 +532,10 @@ PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, cova
 #> • Computing PRS for threshold 0.4
 #> ℹ 0.5
 #> • Computing PRS for threshold 0.5
-PRSresult$PRS_plot
-#> Error in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, : Metric information not available for this family/device
+print(PRSresult$PRS_plot)
 ```
+
+![plot of chunk compute_prs_2](./compute_prs_2-1.png)
 
 
 ``` r
@@ -350,7 +581,45 @@ For this test, we will use `SexRegress()` function.
 
 ``` r
 help(SexRegress, package = GXwasR)
-#> ℹ Rendering development documentation for "SexRegress"
+#> SexRegress: Performing linear regression analysis with quantitative
+#> response variable.
+#> 
+#> Description:
+#> 
+#>      This function could be used to check association of two variables.
+#>      For instance, PRS with sex.
+#> 
+#> Usage:
+#> 
+#>      SexRegress(fdata, regressor_index, response_index)
+#>      
+#> Arguments:
+#> 
+#>    fdata: R dataframe object. The column with header 'response' should
+#>           contain the response variable. All other column are the
+#>           regressor.
+#> 
+#> regressor_index: Integer value, specifying the column number of the
+#>           main regressor variable.
+#> 
+#> response_index: Integer value, specifying the column number of the
+#>           response variable.
+#> 
+#> Value:
+#> 
+#>      Numeric value containing the regression estimate ("Estimate"),
+#>      standard error ("Std. Error"), statistics ("t value") and p-value
+#>      (Pr(>|t|))
+#> 
+#> Examples:
+#> 
+#>      data("Regression_Ex", package = "GXwasR")
+#>      fdata <- Regression_Ex
+#>      fdata$SEX <- as.factor(as.character(fdata$SEX))
+#>      response_index <- 1
+#>      regressor_index <- 2
+#>      
+#>      x <- SexRegress(fdata, regressor_index, response_index)
 ```
 
 # Running SexRegress()
@@ -396,12 +665,12 @@ finput <- "NewtargetData"
 foutput <- "maletarget"
 sex <- "males"
 x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, sex = sex, xplink = FALSE, autoplink = FALSE)
-#> ✔ Output plink files, prefixed as maletarget, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez
+#> ✔ Output plink files, prefixed as maletarget, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB
 
 foutput <- "femaletarget"
 sex <- "females"
 x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, sex = sex, xplink = FALSE, autoplink = FALSE)
-#> ✔ Output plink files, prefixed as femaletarget, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpdyNNez
+#> ✔ Output plink files, prefixed as femaletarget, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB
 ```
 
 **(C) Perform LD clumping separately in both discovery data.**
@@ -454,7 +723,7 @@ pheno_type <- "binary"
 ldclump <- FALSE
 effectsize <- "BETA"
 PRSresultFemale <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
-#> Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpdyNNez/temp_libpath548126ba7acf', reason 'Directory not empty'
+#> Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/temp_libpath102938d3a72d', reason 'Directory not empty'
 #> ℹ 0.001
 #> • Computing PRS for threshold 0.001
 #> ℹ 0.05
@@ -469,9 +738,10 @@ PRSresultFemale <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile
 #> • Computing PRS for threshold 0.4
 #> ℹ 0.5
 #> • Computing PRS for threshold 0.5
-PRSresultFemale$PRS_plot
-#> Error in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, : Metric information not available for this family/device
+print(PRSresultFemale$PRS_plot)
 ```
+
+![plot of chunk compute_prs_female](./compute_prs_female-1.png)
 
 
 ``` r
@@ -537,7 +807,7 @@ pheno_type <- "binary"
 ldclump <- FALSE
 effectsize <- "BETA"
 PRSresultmale <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1 = clump_p1, clump_p2 = clump_p2, clump_r2 = clump_r2, clump_kb = clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
-#> Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpdyNNez/temp_libpath548126ba7acf', reason 'Directory not empty'
+#> Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/temp_libpath102938d3a72d', reason 'Directory not empty'
 #> ℹ 0.001
 #> • Computing PRS for threshold 0.001
 #> ℹ 0.05
@@ -552,9 +822,10 @@ PRSresultmale <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, 
 #> • Computing PRS for threshold 0.4
 #> ℹ 0.5
 #> • Computing PRS for threshold 0.5
-PRSresultmale$PRS_plot
-#> Error in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, : Metric information not available for this family/device
+print(PRSresultmale$PRS_plot)
 ```
+
+![plot of chunk compute_prs_male](./compute_prs_male-1.png)
 
 
 ``` r
@@ -620,9 +891,7 @@ We hope that *[GXwasR](https://bioconductor.org/packages/3.21/GXwasR)* will be u
 citation("GXwasR")
 #> To cite package 'GXwasR' in publications use:
 #> 
-#>   Bose B, Blostein F, Kim J, Winters J, Actkins KV, Mayer D, Congivaram H, Niarchou M, Edwards DV, Davis
-#>   LK, Stranger BE (2025). "GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic Effects on
-#>   Complex Traits." _medRxiv 2025.06.10.25329327_. doi:10.1101/2025.06.10.25329327
+#>   Bose B, Blostein F, Kim J, Winters J, Actkins KV, Mayer D, Congivaram H, Niarchou M, Edwards DV, Davis LK, Stranger BE (2025). "GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic Effects on Complex Traits." _medRxiv 2025.06.10.25329327_. doi:10.1101/2025.06.10.25329327
 #>   <https://doi.org/10.1101/2025.06.10.25329327>.
 #> 
 #> A BibTeX entry for LaTeX users is
@@ -638,14 +907,14 @@ citation("GXwasR")
 
 # Reproducibility
 
-The *[GXwasR](https://bioconductor.org/packages/3.21/GXwasR)* package (Bose, Blostein, Kim et al., 2025) was made possible thanks to:
+The *[GXwasR](https://bioconductor.org/packages/3.21/GXwasR)* package (Bose, Blostein, Kim, Winters, Actkins, Mayer, Congivaram, Niarchou, Edwards, Davis, and Stranger, 2025) was made possible thanks to:
 
 * R (R Core Team, 2025)
 * *[BiocStyle](https://bioconductor.org/packages/3.21/BiocStyle)* (Oleś, 2025)
 * *[knitr](https://CRAN.R-project.org/package=knitr)* (Xie, 2025)
 * *[RefManageR](https://CRAN.R-project.org/package=RefManageR)* (McLean, 2017)
-* *[rmarkdown](https://CRAN.R-project.org/package=rmarkdown)* (Allaire, Xie, Dervieux et al., 2024)
-* *[sessioninfo](https://CRAN.R-project.org/package=sessioninfo)* (Wickham, Chang, Flight et al., 2025)
+* *[rmarkdown](https://CRAN.R-project.org/package=rmarkdown)* (Allaire, Xie, Dervieux, McPherson, Luraschi, Ushey, Atkins, Wickham, Cheng, Chang, and Iannone, 2024)
+* *[sessioninfo](https://CRAN.R-project.org/package=sessioninfo)* (Wickham, Chang, Flight, Müller, and Hester, 2025)
 * *[testthat](https://CRAN.R-project.org/package=testthat)* (Wickham, 2011)
 
 This package was developed using *[biocthis](https://bioconductor.org/packages/3.21/biocthis)*.
@@ -669,178 +938,165 @@ This package was developed using *[biocthis](https://bioconductor.org/packages/3
 #>  quarto   1.7.32 @ /usr/local/bin/quarto
 #> 
 #> ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
-#>  ! package              * version    date (UTC) lib source
-#>    abind                  1.4-8      2024-09-12 [2] CRAN (R 4.5.0)
-#>    backports              1.5.0      2024-05-23 [2] CRAN (R 4.5.1)
-#>    bibtex                 0.5.1      2023-01-26 [2] CRAN (R 4.5.0)
-#>    bigassertr             0.1.7      2025-06-27 [2] CRAN (R 4.5.1)
-#>    bigparallelr           0.3.2      2021-10-02 [2] CRAN (R 4.5.0)
-#>    bigsnpr                1.12.18    2024-11-26 [2] CRAN (R 4.5.1)
-#>    bigsparser             0.7.3      2024-09-06 [2] CRAN (R 4.5.1)
-#>    bigstatsr              1.6.2      2025-07-29 [2] CRAN (R 4.5.1)
-#>    Biobase                2.68.0     2025-04-15 [2] Bioconduc~
-#>    BiocGenerics           0.54.0     2025-04-15 [2] Bioconduc~
-#>    BiocIO                 1.18.0     2025-04-15 [2] Bioconduc~
-#>    BiocManager            1.30.26    2025-06-05 [2] CRAN (R 4.5.0)
-#>    BiocParallel           1.42.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
-#>    BiocStyle              2.36.0     2025-04-15 [2] Bioconduc~
-#>    Biostrings             2.76.0     2025-04-15 [2] Bioconduc~
-#>    bit                    4.6.0      2025-03-06 [2] CRAN (R 4.5.1)
-#>    bit64                  4.6.0-1    2025-01-16 [2] CRAN (R 4.5.1)
-#>    bitops                 1.0-9      2024-10-03 [2] CRAN (R 4.5.0)
-#>    brio                   1.1.5      2024-04-24 [2] CRAN (R 4.5.1)
-#>    broom                  1.0.9      2025-07-28 [2] CRAN (R 4.5.1)
-#>    BSgenome               1.76.0     2025-04-15 [2] Bioconduc~
-#>    cachem                 1.1.0      2024-05-16 [2] CRAN (R 4.5.0)
-#>    calibrate              1.7.7      2020-06-19 [2] CRAN (R 4.5.0)
-#>    callr                  3.7.6      2024-03-25 [2] CRAN (R 4.5.0)
-#>    car                    3.1-3      2024-09-27 [2] CRAN (R 4.5.0)
-#>    carData                3.0-5      2022-01-06 [2] CRAN (R 4.5.0)
-#>    cli                    3.6.5      2025-04-23 [2] CRAN (R 4.5.0)
-#>    codetools              0.2-20     2024-03-31 [4] CRAN (R 4.5.1)
-#>    commonmark             2.0.0      2025-07-07 [2] CRAN (R 4.5.1)
-#>    cowplot                1.2.0      2025-07-07 [2] CRAN (R 4.5.1)
-#>    crayon                 1.5.3      2024-06-20 [2] CRAN (R 4.5.0)
-#>    curl                   6.4.0      2025-06-22 [2] CRAN (R 4.5.1)
-#>    data.table             1.17.8     2025-07-10 [2] CRAN (R 4.5.1)
-#>    DelayedArray           0.34.1     2025-04-17 [2] Bioconduc~
-#>    desc                   1.4.3      2023-12-10 [2] CRAN (R 4.5.0)
-#>    devtools             * 2.4.5      2022-10-11 [3] CRAN (R 4.5.0)
-#>    digest                 0.6.37     2024-08-19 [2] CRAN (R 4.5.0)
-#>    doParallel             1.0.17     2022-02-07 [2] CRAN (R 4.5.0)
-#>    doRNG                  1.8.6.2    2025-04-02 [2] CRAN (R 4.5.0)
-#>    dplyr                  1.1.4      2023-11-17 [2] CRAN (R 4.5.0)
-#>    ellipsis               0.3.2      2021-04-29 [3] CRAN (R 4.5.0)
-#>    evaluate               1.0.4      2025-06-18 [2] CRAN (R 4.5.1)
-#>    farver                 2.1.2      2024-05-13 [2] CRAN (R 4.5.0)
-#>    fastmap                1.2.0      2024-05-15 [2] CRAN (R 4.5.0)
-#>    flock                  0.7        2016-11-12 [2] CRAN (R 4.5.1)
-#>    foreach                1.5.2      2022-02-02 [2] CRAN (R 4.5.0)
-#>    Formula                1.2-5      2023-02-24 [2] CRAN (R 4.5.0)
-#>    fs                     1.6.6      2025-04-12 [2] CRAN (R 4.5.0)
-#>    gdsfmt                 1.44.1     2025-07-09 [2] Bioconduc~
-#>    generics               0.1.4      2025-05-09 [2] CRAN (R 4.5.0)
-#>    GenomeInfoDb           1.44.1     2025-07-23 [2] Bioconduc~
-#>    GenomeInfoDbData       1.2.14     2025-04-21 [2] Bioconductor
-#>    GenomicAlignments      1.44.0     2025-04-15 [2] Bioconduc~
-#>    GenomicRanges          1.60.0     2025-04-15 [2] Bioconduc~
-#>    ggplot2                3.5.2      2025-04-09 [2] CRAN (R 4.5.0)
-#>    ggpubr                 0.6.1      2025-06-27 [2] CRAN (R 4.5.1)
-#>    ggrepel                0.9.6      2024-09-07 [2] CRAN (R 4.5.1)
-#>    ggsignif               0.6.4      2022-10-13 [2] CRAN (R 4.5.0)
-#>    glue                   1.8.0      2024-09-30 [2] CRAN (R 4.5.0)
-#>    gridExtra              2.3        2017-09-09 [2] CRAN (R 4.5.0)
-#>    gtable                 0.3.6      2024-10-25 [2] CRAN (R 4.5.0)
-#>  P GXwasR               * 0.99.0     2025-08-05 [?] Bioconductor
-#>    hms                    1.1.3      2023-03-21 [2] CRAN (R 4.5.0)
-#>    htmltools              0.5.8.1    2024-04-04 [2] CRAN (R 4.5.0)
-#>    htmlwidgets            1.6.4      2023-12-06 [2] CRAN (R 4.5.0)
-#>    httpuv                 1.6.16     2025-04-16 [2] CRAN (R 4.5.1)
-#>    httr                   1.4.7      2023-08-15 [2] CRAN (R 4.5.0)
-#>    hunspell               3.0.6      2025-03-22 [2] CRAN (R 4.5.1)
-#>    IRanges                2.42.0     2025-04-15 [2] Bioconduc~
-#>    iterators              1.0.14     2022-02-05 [2] CRAN (R 4.5.0)
-#>    jsonlite               2.0.0      2025-03-27 [2] CRAN (R 4.5.0)
-#>    knitr                  1.50       2025-03-16 [2] CRAN (R 4.5.0)
-#>    labeling               0.4.3      2023-08-29 [2] CRAN (R 4.5.0)
-#>    later                  1.4.2      2025-04-08 [2] CRAN (R 4.5.1)
-#>    lattice                0.22-7     2025-04-02 [4] CRAN (R 4.5.1)
-#>    lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.5.0)
-#>    lubridate              1.9.4      2024-12-08 [2] CRAN (R 4.5.1)
-#>    magrittr               2.0.3      2022-03-30 [2] CRAN (R 4.5.0)
-#>    MASS                   7.3-65     2025-02-28 [4] CRAN (R 4.5.1)
-#>    mathjaxr               1.8-0      2025-04-30 [2] CRAN (R 4.5.1)
-#>    Matrix                 1.7-3      2025-03-11 [4] CRAN (R 4.5.1)
-#>    MatrixGenerics         1.20.0     2025-04-15 [2] Bioconduc~
-#>    matrixStats            1.5.0      2025-01-07 [2] CRAN (R 4.5.0)
-#>    memoise                2.0.1      2021-11-26 [2] CRAN (R 4.5.0)
-#>    mime                   0.13       2025-03-17 [2] CRAN (R 4.5.0)
-#>    miniUI                 0.1.2      2025-04-17 [3] CRAN (R 4.5.0)
-#>    pillar                 1.11.0     2025-07-04 [2] CRAN (R 4.5.1)
-#>    pkgbuild               1.4.8      2025-05-26 [2] CRAN (R 4.5.0)
-#>    pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.5.0)
-#>    pkgdev                 0.1.0.9060 2025-08-04 [2] Github (dieghernan/pkgdev@e56f2a8)
-#>    pkgload                1.4.0      2024-06-28 [2] CRAN (R 4.5.0)
-#>    plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.5.1)
-#>    plyranges              1.28.0     2025-04-15 [2] Bioconduc~
-#>    poolr                  1.2-0      2025-05-07 [2] CRAN (R 4.5.0)
-#>    prettyunits            1.2.0      2023-09-24 [2] CRAN (R 4.5.0)
-#>    printr               * 0.3        2023-03-08 [2] CRAN (R 4.5.0)
-#>    processx               3.8.6      2025-02-21 [2] CRAN (R 4.5.1)
-#>    profvis                0.4.0      2024-09-20 [3] CRAN (R 4.5.0)
-#>    progress               1.2.3      2023-12-06 [2] CRAN (R 4.5.0)
-#>    promises               1.3.3      2025-05-29 [2] CRAN (R 4.5.0)
-#>    ps                     1.9.1      2025-04-12 [2] CRAN (R 4.5.1)
-#>    purrr                  1.1.0      2025-07-10 [2] CRAN (R 4.5.1)
-#>    qqman                  0.1.9      2023-08-23 [2] CRAN (R 4.5.0)
-#>    R.methodsS3            1.8.2      2022-06-13 [2] CRAN (R 4.5.0)
-#>    R.oo                   1.27.1     2025-05-02 [2] CRAN (R 4.5.0)
-#>    R.utils                2.13.0     2025-02-24 [2] CRAN (R 4.5.0)
-#>    R6                     2.6.1      2025-02-15 [2] CRAN (R 4.5.0)
-#>    ragg                   1.4.0      2025-04-10 [3] CRAN (R 4.5.0)
-#>    rbibutils              2.3        2024-10-04 [2] CRAN (R 4.5.1)
-#>    rcmdcheck              1.4.0      2021-09-27 [3] CRAN (R 4.5.0)
-#>    RColorBrewer           1.1-3      2022-04-03 [2] CRAN (R 4.5.0)
-#>    Rcpp                   1.1.0      2025-07-02 [2] CRAN (R 4.5.1)
-#>    RCurl                  1.98-1.17  2025-03-22 [2] CRAN (R 4.5.0)
-#>    Rdpack                 2.6.4      2025-04-09 [2] CRAN (R 4.5.0)
-#>    RefManageR           * 1.4.0      2022-09-30 [2] CRAN (R 4.5.1)
-#>    regioneR               1.40.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
-#>    remotes                2.5.0      2024-03-17 [2] CRAN (R 4.5.0)
-#>    restfulr               0.0.16     2025-06-27 [2] CRAN (R 4.5.1)
-#>    rjson                  0.2.23     2024-09-16 [2] CRAN (R 4.5.0)
-#>    rlang                  1.1.6      2025-04-11 [2] CRAN (R 4.5.0)
-#>    rmarkdown            * 2.29       2024-11-04 [2] CRAN (R 4.5.0)
-#>    rmio                   0.4.0      2022-02-17 [2] CRAN (R 4.5.0)
-#>    rngtools               1.5.2      2021-09-20 [2] CRAN (R 4.5.0)
-#>    roxygen2               7.3.2      2024-06-28 [2] CRAN (R 4.5.0)
-#>    rprojroot              2.1.0      2025-07-12 [2] CRAN (R 4.5.1)
-#>    Rsamtools              2.24.0     2025-04-15 [2] Bioconduc~
-#>    rstatix                0.7.2      2023-02-01 [2] CRAN (R 4.5.0)
-#>    rstudioapi             0.17.1     2024-10-22 [2] CRAN (R 4.5.0)
-#>    rtracklayer            1.68.0     2025-04-15 [2] Bioconduc~
-#>    S4Arrays               1.8.1      2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
-#>    S4Vectors              0.46.0     2025-04-15 [2] Bioconduc~
-#>    scales                 1.4.0      2025-04-24 [2] CRAN (R 4.5.0)
-#>    sessioninfo          * 1.2.3      2025-02-05 [2] CRAN (R 4.5.1)
-#>    shiny                  1.11.1     2025-07-03 [2] CRAN (R 4.5.1)
-#>    SNPRelate              1.42.0     2025-04-15 [2] Bioconduc~
-#>    SparseArray            1.8.1      2025-07-23 [2] Bioconduc~
-#>    spelling               2.3.1      2024-10-04 [2] CRAN (R 4.5.0)
-#>    stringi                1.8.7      2025-03-27 [2] CRAN (R 4.5.0)
-#>    stringr                1.5.1      2023-11-14 [2] CRAN (R 4.5.0)
-#>    sumFREGAT              1.2.5      2022-06-07 [2] CRAN (R 4.5.1)
-#>    SummarizedExperiment   1.38.1     2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)
-#>    sys                    3.4.3      2024-10-04 [2] CRAN (R 4.5.0)
-#>    systemfonts            1.2.3      2025-04-30 [2] CRAN (R 4.5.0)
-#>    testthat             * 3.2.3      2025-01-13 [2] CRAN (R 4.5.1)
-#>    textshaping            1.0.1      2025-05-01 [3] CRAN (R 4.5.0)
-#>    tibble                 3.3.0      2025-06-08 [2] CRAN (R 4.5.0)
-#>    tidyr                  1.3.1      2024-01-24 [2] CRAN (R 4.5.1)
-#>    tidyselect             1.2.1      2024-03-11 [2] CRAN (R 4.5.0)
-#>    timechange             0.3.0      2024-01-18 [2] CRAN (R 4.5.1)
-#>    tzdb                   0.5.0      2025-03-15 [2] CRAN (R 4.5.1)
-#>    UCSC.utils             1.4.0      2025-04-15 [2] Bioconduc~
-#>    urlchecker             1.0.1      2021-11-30 [3] CRAN (R 4.5.0)
-#>    usethis              * 3.1.0      2024-11-26 [2] CRAN (R 4.5.0)
-#>    vctrs                  0.6.5      2023-12-01 [2] CRAN (R 4.5.0)
-#>    vroom                  1.6.5      2023-12-05 [2] CRAN (R 4.5.1)
-#>    withr                  3.0.2      2024-10-28 [2] CRAN (R 4.5.0)
-#>    xfun                   0.52       2025-04-02 [2] CRAN (R 4.5.0)
-#>    XML                    3.99-0.18  2025-01-01 [2] CRAN (R 4.5.0)
-#>    xml2                   1.3.8      2025-03-14 [2] CRAN (R 4.5.1)
-#>    xopen                  1.0.1      2024-04-25 [3] CRAN (R 4.5.0)
-#>    xtable                 1.8-4      2019-04-21 [2] CRAN (R 4.5.0)
-#>    XVector                0.48.0     2025-04-15 [2] Bioconduc~
-#>    yaml                   2.3.10     2024-07-26 [2] CRAN (R 4.5.0)
+#>  package              * version    date (UTC) lib source
+#>  abind                  1.4-8      2024-09-12 [2] CRAN (R 4.5.0)
+#>  backports              1.5.0      2024-05-23 [2] CRAN (R 4.5.1)
+#>  bibtex                 0.5.1      2023-01-26 [2] CRAN (R 4.5.0)
+#>  bigassertr             0.1.7      2025-06-27 [2] CRAN (R 4.5.1)
+#>  bigparallelr           0.3.2      2021-10-02 [2] CRAN (R 4.5.0)
+#>  bigsnpr                1.12.18    2024-11-26 [2] CRAN (R 4.5.1)
+#>  bigsparser             0.7.3      2024-09-06 [2] CRAN (R 4.5.1)
+#>  bigstatsr              1.6.2      2025-07-29 [2] CRAN (R 4.5.1)
+#>  Biobase                2.68.0     2025-04-15 [2] Bioconduc~
+#>  BiocGenerics           0.54.0     2025-04-15 [2] Bioconduc~
+#>  BiocIO                 1.18.0     2025-04-15 [2] Bioconduc~
+#>  BiocManager            1.30.26    2025-06-05 [2] CRAN (R 4.5.0)
+#>  BiocParallel           1.42.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
+#>  BiocStyle              2.36.0     2025-04-15 [2] Bioconduc~
+#>  Biostrings             2.76.0     2025-04-15 [2] Bioconduc~
+#>  bit                    4.6.0      2025-03-06 [2] CRAN (R 4.5.1)
+#>  bit64                  4.6.0-1    2025-01-16 [2] CRAN (R 4.5.1)
+#>  bitops                 1.0-9      2024-10-03 [2] CRAN (R 4.5.0)
+#>  brio                   1.1.5      2024-04-24 [2] CRAN (R 4.5.1)
+#>  broom                  1.0.9      2025-07-28 [2] CRAN (R 4.5.1)
+#>  BSgenome               1.76.0     2025-04-15 [2] Bioconduc~
+#>  cachem                 1.1.0      2024-05-16 [2] CRAN (R 4.5.0)
+#>  calibrate              1.7.7      2020-06-19 [2] CRAN (R 4.5.0)
+#>  callr                  3.7.6      2024-03-25 [2] CRAN (R 4.5.0)
+#>  car                    3.1-3      2024-09-27 [2] CRAN (R 4.5.0)
+#>  carData                3.0-5      2022-01-06 [2] CRAN (R 4.5.0)
+#>  cli                    3.6.5      2025-04-23 [2] CRAN (R 4.5.0)
+#>  codetools              0.2-20     2024-03-31 [4] CRAN (R 4.5.1)
+#>  cowplot                1.2.0      2025-07-07 [2] CRAN (R 4.5.1)
+#>  crayon                 1.5.3      2024-06-20 [2] CRAN (R 4.5.0)
+#>  curl                   6.4.0      2025-06-22 [2] CRAN (R 4.5.1)
+#>  data.table             1.17.8     2025-07-10 [2] CRAN (R 4.5.1)
+#>  DelayedArray           0.34.1     2025-04-17 [2] Bioconduc~
+#>  devtools             * 2.4.5      2022-10-11 [3] CRAN (R 4.5.0)
+#>  digest                 0.6.37     2024-08-19 [2] CRAN (R 4.5.0)
+#>  doParallel             1.0.17     2022-02-07 [2] CRAN (R 4.5.0)
+#>  doRNG                  1.8.6.2    2025-04-02 [2] CRAN (R 4.5.0)
+#>  dplyr                  1.1.4      2023-11-17 [2] CRAN (R 4.5.0)
+#>  ellipsis               0.3.2      2021-04-29 [3] CRAN (R 4.5.0)
+#>  evaluate               1.0.4      2025-06-18 [2] CRAN (R 4.5.1)
+#>  farver                 2.1.2      2024-05-13 [2] CRAN (R 4.5.0)
+#>  fastmap                1.2.0      2024-05-15 [2] CRAN (R 4.5.0)
+#>  flock                  0.7        2016-11-12 [2] CRAN (R 4.5.1)
+#>  foreach                1.5.2      2022-02-02 [2] CRAN (R 4.5.0)
+#>  Formula                1.2-5      2023-02-24 [2] CRAN (R 4.5.0)
+#>  fs                     1.6.6      2025-04-12 [2] CRAN (R 4.5.0)
+#>  gdsfmt                 1.44.1     2025-07-09 [2] Bioconduc~
+#>  generics               0.1.4      2025-05-09 [2] CRAN (R 4.5.0)
+#>  GenomeInfoDb           1.44.1     2025-07-23 [2] Bioconduc~
+#>  GenomeInfoDbData       1.2.14     2025-04-21 [2] Bioconductor
+#>  GenomicAlignments      1.44.0     2025-04-15 [2] Bioconduc~
+#>  GenomicRanges          1.60.0     2025-04-15 [2] Bioconduc~
+#>  ggplot2                3.5.2      2025-04-09 [2] CRAN (R 4.5.0)
+#>  ggpubr                 0.6.1      2025-06-27 [2] CRAN (R 4.5.1)
+#>  ggrepel                0.9.6      2024-09-07 [2] CRAN (R 4.5.1)
+#>  ggsignif               0.6.4      2022-10-13 [2] CRAN (R 4.5.0)
+#>  glue                   1.8.0      2024-09-30 [2] CRAN (R 4.5.0)
+#>  gridExtra              2.3        2017-09-09 [2] CRAN (R 4.5.0)
+#>  gtable                 0.3.6      2024-10-25 [2] CRAN (R 4.5.0)
+#>  GXwasR               * 0.99.0     2025-08-06 [1] Bioconductor
+#>  hms                    1.1.3      2023-03-21 [2] CRAN (R 4.5.0)
+#>  htmltools              0.5.8.1    2024-04-04 [2] CRAN (R 4.5.0)
+#>  htmlwidgets            1.6.4      2023-12-06 [2] CRAN (R 4.5.0)
+#>  httpuv                 1.6.16     2025-04-16 [2] CRAN (R 4.5.1)
+#>  httr                   1.4.7      2023-08-15 [2] CRAN (R 4.5.0)
+#>  IRanges                2.42.0     2025-04-15 [2] Bioconduc~
+#>  iterators              1.0.14     2022-02-05 [2] CRAN (R 4.5.0)
+#>  jsonlite               2.0.0      2025-03-27 [2] CRAN (R 4.5.0)
+#>  knitr                  1.50       2025-03-16 [2] CRAN (R 4.5.0)
+#>  labeling               0.4.3      2023-08-29 [2] CRAN (R 4.5.0)
+#>  later                  1.4.2      2025-04-08 [2] CRAN (R 4.5.1)
+#>  lattice                0.22-7     2025-04-02 [4] CRAN (R 4.5.1)
+#>  lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.5.0)
+#>  lubridate              1.9.4      2024-12-08 [2] CRAN (R 4.5.1)
+#>  magrittr               2.0.3      2022-03-30 [2] CRAN (R 4.5.0)
+#>  MASS                   7.3-65     2025-02-28 [4] CRAN (R 4.5.1)
+#>  mathjaxr               1.8-0      2025-04-30 [2] CRAN (R 4.5.1)
+#>  Matrix                 1.7-3      2025-03-11 [4] CRAN (R 4.5.1)
+#>  MatrixGenerics         1.20.0     2025-04-15 [2] Bioconduc~
+#>  matrixStats            1.5.0      2025-01-07 [2] CRAN (R 4.5.0)
+#>  memoise                2.0.1      2021-11-26 [2] CRAN (R 4.5.0)
+#>  mime                   0.13       2025-03-17 [2] CRAN (R 4.5.0)
+#>  miniUI                 0.1.2      2025-04-17 [3] CRAN (R 4.5.0)
+#>  pillar                 1.11.0     2025-07-04 [2] CRAN (R 4.5.1)
+#>  pkgbuild               1.4.8      2025-05-26 [2] CRAN (R 4.5.0)
+#>  pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.5.0)
+#>  pkgdev                 0.1.0.9060 2025-08-04 [2] Github (dieghernan/pkgdev@e56f2a8)
+#>  pkgload                1.4.0      2024-06-28 [2] CRAN (R 4.5.0)
+#>  plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.5.1)
+#>  plyranges              1.28.0     2025-04-15 [2] Bioconduc~
+#>  poolr                  1.2-0      2025-05-07 [2] CRAN (R 4.5.0)
+#>  prettyunits            1.2.0      2023-09-24 [2] CRAN (R 4.5.0)
+#>  printr               * 0.3        2023-03-08 [2] CRAN (R 4.5.0)
+#>  processx               3.8.6      2025-02-21 [2] CRAN (R 4.5.1)
+#>  profvis                0.4.0      2024-09-20 [3] CRAN (R 4.5.0)
+#>  progress               1.2.3      2023-12-06 [2] CRAN (R 4.5.0)
+#>  promises               1.3.3      2025-05-29 [2] CRAN (R 4.5.0)
+#>  ps                     1.9.1      2025-04-12 [2] CRAN (R 4.5.1)
+#>  purrr                  1.1.0      2025-07-10 [2] CRAN (R 4.5.1)
+#>  qqman                  0.1.9      2023-08-23 [2] CRAN (R 4.5.0)
+#>  R.methodsS3            1.8.2      2022-06-13 [2] CRAN (R 4.5.0)
+#>  R.oo                   1.27.1     2025-05-02 [2] CRAN (R 4.5.0)
+#>  R.utils                2.13.0     2025-02-24 [2] CRAN (R 4.5.0)
+#>  R6                     2.6.1      2025-02-15 [2] CRAN (R 4.5.0)
+#>  rbibutils              2.3        2024-10-04 [2] CRAN (R 4.5.1)
+#>  RColorBrewer           1.1-3      2022-04-03 [2] CRAN (R 4.5.0)
+#>  Rcpp                   1.1.0      2025-07-02 [2] CRAN (R 4.5.1)
+#>  RCurl                  1.98-1.17  2025-03-22 [2] CRAN (R 4.5.0)
+#>  Rdpack                 2.6.4      2025-04-09 [2] CRAN (R 4.5.0)
+#>  RefManageR           * 1.4.0      2022-09-30 [2] CRAN (R 4.5.1)
+#>  regioneR               1.40.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
+#>  remotes                2.5.0      2024-03-17 [2] CRAN (R 4.5.0)
+#>  restfulr               0.0.16     2025-06-27 [2] CRAN (R 4.5.1)
+#>  rjson                  0.2.23     2024-09-16 [2] CRAN (R 4.5.0)
+#>  rlang                  1.1.6      2025-04-11 [2] CRAN (R 4.5.0)
+#>  rmarkdown            * 2.29       2024-11-04 [2] CRAN (R 4.5.0)
+#>  rmio                   0.4.0      2022-02-17 [2] CRAN (R 4.5.0)
+#>  rngtools               1.5.2      2021-09-20 [2] CRAN (R 4.5.0)
+#>  rprojroot              2.1.0      2025-07-12 [2] CRAN (R 4.5.1)
+#>  Rsamtools              2.24.0     2025-04-15 [2] Bioconduc~
+#>  rstatix                0.7.2      2023-02-01 [2] CRAN (R 4.5.0)
+#>  rtracklayer            1.68.0     2025-04-15 [2] Bioconduc~
+#>  S4Arrays               1.8.1      2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
+#>  S4Vectors              0.46.0     2025-04-15 [2] Bioconduc~
+#>  scales                 1.4.0      2025-04-24 [2] CRAN (R 4.5.0)
+#>  sessioninfo          * 1.2.3      2025-02-05 [2] CRAN (R 4.5.1)
+#>  shiny                  1.11.1     2025-07-03 [2] CRAN (R 4.5.1)
+#>  SNPRelate              1.42.0     2025-04-15 [2] Bioconduc~
+#>  SparseArray            1.8.1      2025-07-23 [2] Bioconduc~
+#>  stringi                1.8.7      2025-03-27 [2] CRAN (R 4.5.0)
+#>  stringr                1.5.1      2023-11-14 [2] CRAN (R 4.5.0)
+#>  sumFREGAT              1.2.5      2022-06-07 [2] CRAN (R 4.5.1)
+#>  SummarizedExperiment   1.38.1     2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)
+#>  sys                    3.4.3      2024-10-04 [2] CRAN (R 4.5.0)
+#>  testthat             * 3.2.3      2025-01-13 [2] CRAN (R 4.5.1)
+#>  tibble                 3.3.0      2025-06-08 [2] CRAN (R 4.5.0)
+#>  tidyr                  1.3.1      2024-01-24 [2] CRAN (R 4.5.1)
+#>  tidyselect             1.2.1      2024-03-11 [2] CRAN (R 4.5.0)
+#>  timechange             0.3.0      2024-01-18 [2] CRAN (R 4.5.1)
+#>  tzdb                   0.5.0      2025-03-15 [2] CRAN (R 4.5.1)
+#>  UCSC.utils             1.4.0      2025-04-15 [2] Bioconduc~
+#>  urlchecker             1.0.1      2021-11-30 [3] CRAN (R 4.5.0)
+#>  usethis              * 3.1.0      2024-11-26 [2] CRAN (R 4.5.0)
+#>  vctrs                  0.6.5      2023-12-01 [2] CRAN (R 4.5.0)
+#>  vroom                  1.6.5      2023-12-05 [2] CRAN (R 4.5.1)
+#>  withr                  3.0.2      2024-10-28 [2] CRAN (R 4.5.0)
+#>  xfun                   0.52       2025-04-02 [2] CRAN (R 4.5.0)
+#>  XML                    3.99-0.18  2025-01-01 [2] CRAN (R 4.5.0)
+#>  xml2                   1.3.8      2025-03-14 [2] CRAN (R 4.5.1)
+#>  xtable                 1.8-4      2019-04-21 [2] CRAN (R 4.5.0)
+#>  XVector                0.48.0     2025-04-15 [2] Bioconduc~
+#>  yaml                   2.3.10     2024-07-26 [2] CRAN (R 4.5.0)
 #> 
-#>  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpdyNNez/temp_libpath548171db3e3e
+#>  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/temp_libpath102938d3a72d
 #>  [2] /Users/mayerdav/Library/R/arm64/4.5/library
 #>  [3] /opt/homebrew/lib/R/4.5/site-library
 #>  [4] /opt/homebrew/Cellar/r/4.5.1/lib/R/library
-#> 
 #>  * ── Packages attached to the search path.
-#>  P ── Loaded and on-disk path mismatch.
 #> 
 #> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ```
