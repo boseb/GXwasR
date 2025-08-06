@@ -11,7 +11,7 @@ output:
     self_contained: false
     toc: true
     toc_float: true
-    toc_depth: 2
+    toc_depth: 3
     code_folding: show
 date: "`r BiocStyle::doc_date()`"
 package: "`r BiocStyle::pkg_ver('GXwasR')`"
@@ -283,7 +283,7 @@ help(ComputeLD, package = "GXwasR")
 
 # Tutorials
 
-Please follow these tutorials to know more about the functionality of the package GXwasR.
+Please follow these tutorials to learn more about the functionality of the package GXwasR.
 
 Tutorial for performing post-imputation QC followed by sex-aware association tests: (vignette:Use of GXwasR)
 
@@ -293,6 +293,7 @@ Tutorial for performing post-imputation QC followed by sex-aware association tes
 * Tutorial for computing Polygenic Risk Score using GXwasR: [https://boseb.github.io/GXwasR/articles/GXwasR_PRS.html](https://boseb.github.io/GXwasR/articles/GXwasR_PRS.html)
 * Tutorial for ancestry estimation: [https://boseb.github.io/GXwasR/articles/decoding_ancestry.html](https://boseb.github.io/GXwasR/articles/decoding_ancestry.html)
 * Tutorial for meta analysis using GXwasR: [https://boseb.github.io/GXwasR/articles/meta_analysis.html](https://boseb.github.io/GXwasR/articles/meta_analysis.html)
+* Tutorial for genetic correlation using GWAS Summary Statistics using GXwasR: [https://boseb.github.io/GXwasR/articles/genetic_correlation_sumstat.html](https://boseb.github.io/GXwasR/articles/genetic_correlation_sumstat.html)
 
 ## Running Examples
 
