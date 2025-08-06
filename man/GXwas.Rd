@@ -56,7 +56,7 @@ X-chromosome inactivation (XCI) pattern as random (XCI-R) in the FM01 model are 
 genotypes that follow the XCI is escaped (XCI-E) in the FM02 model are coded by 0 and 1. To reflect the dose
 compensation connection between the sexes, FM02 treats men as homozygous females.
 
-In the "FMstatrified" associations are tested separately for males and females, and then the combined p values are computed the Fisher's method, Fisher's method with permutation,
+In the "FMstratified" associations are tested separately for males and females, and then the combined p values are computed the Fisher's method, Fisher's method with permutation,
 or Stouffer's method(1,3-7]. An X-chromosome inactivation (XCI) pattern, or coding technique for X-chromosomal genotypes
 between sexes, is not required for the XCGA. By simultaneously accounting for four distinct XCI patterns, namely XCI-R, XCI-E,
 XCI-SN (XCI fully toward normal allele), and XCI-SR (XCI fully toward risk allele), this model may maintain a
