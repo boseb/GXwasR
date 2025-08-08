@@ -8,3 +8,7 @@ vignettes/*.html
 /doc/
 /Meta/
 vignettes/*.R
+^vignettes/gwas1\.imputed.example\.rds$
+^vignettes/gwas2\.imputed.example\.rds$
+^vignettes/gwas1\.array.example\.rds$
+^vignettes/gwas2\.array.example\.rds$
