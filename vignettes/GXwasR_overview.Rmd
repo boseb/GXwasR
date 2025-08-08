@@ -4892,7 +4892,7 @@ PRSresult$BestP
 |      0.05|
 
 ``` r
-print(PRSresult$PRS_plot)
+PRSresult$PRS_plot
 ```
 
 ![plot of chunk compute_prs](./overview-ComputePRS-1.png)

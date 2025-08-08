@@ -329,7 +329,7 @@ PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, cova
 #> ℹ 0.5
 #> • Computing PRS for threshold 0.5
 #> This message is displayed once every 8 hours.
-print(PRSresult$PRS_plot)
+PRSresult$PRS_plot
 ```
 
 ![plot of chunk compute_prs](./compute_prs-1.png)
@@ -532,7 +532,7 @@ PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, cova
 #> • Computing PRS for threshold 0.4
 #> ℹ 0.5
 #> • Computing PRS for threshold 0.5
-print(PRSresult$PRS_plot)
+PRSresult$PRS_plot
 ```
 
 ![plot of chunk compute_prs_2](./compute_prs_2-1.png)
@@ -738,7 +738,7 @@ PRSresultFemale <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile
 #> • Computing PRS for threshold 0.4
 #> ℹ 0.5
 #> • Computing PRS for threshold 0.5
-print(PRSresultFemale$PRS_plot)
+PRSresultFemale$PRS_plot
 ```
 
 ![plot of chunk compute_prs_female](./compute_prs_female-1.png)
@@ -822,7 +822,7 @@ PRSresultmale <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, 
 #> • Computing PRS for threshold 0.4
 #> ℹ 0.5
 #> • Computing PRS for threshold 0.5
-print(PRSresultmale$PRS_plot)
+PRSresultmale$PRS_plot
 ```
 
 ![plot of chunk compute_prs_male](./compute_prs_male-1.png)
