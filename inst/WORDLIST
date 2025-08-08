@@ -203,7 +203,6 @@ Protoc
 PvalComb
 Pvalue
 P’
-QCSample
 QCed
 QCsample
 QCsnp
@@ -216,8 +215,7 @@ Rda
 RefManageR
 Renviron
 ResultDir
-Rtmp
-RtmpdyNNez
+RtmpcRh
 SCZ
 SDEs
 SE’
@@ -240,7 +238,6 @@ Stouffer’s
 SumstatFemale
 SumstatGenCorr
 SumstatMale
-SvuuX
 THOUSANDGENOME
 TSI
 TestXGene
@@ -267,6 +264,7 @@ Xishuangbanna
 Xlinkedgenes
 YRI
 ZScore
+ZZ
 Zondervan
 Zscore
 adjP
@@ -386,8 +384,6 @@ ploygenic
 polygenic
 poolr
 pre
-preimpute
-prs
 pval
 pvalue
 quantitative’
