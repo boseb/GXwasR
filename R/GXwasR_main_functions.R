@@ -87,7 +87,7 @@
 #' @importFrom ggplot2 ggplot aes geom_hline geom_vline guides geom_point guide_legend scale_shape_manual
 #' @importFrom vroom vroom
 #'
-#' @return A list containing three data frames: one with the IDs of outlier samples (Outlier_samples), another with samples 
+#' @return A list containing three data frames: one with the IDs of outlier samples (Outlier_samples), another with samples
 #' annotated with predicted ancestry (Samples_with_predicted_ancestry), and one with the IDs of non-outlier samples (Non_outlier_samples).
 #' A PCA plot is also returned.
 #'
@@ -122,25 +122,24 @@
 #'     study_pop = study_pop, studyLD = studyLD, referLD = referLD,
 #'     outlierOf = "EUR", outlier = outlier, outlier_threshold = outlier_threshold
 #' )
-AncestryCheck <- function(
-        DataDir,
-        ResultDir = tempdir(),
-        finput,
-        reference = c("HapMapIII_NCBI36", "ThousandGenome"),
-        filterSNP = TRUE,
-        studyLD = TRUE,
-        studyLD_window_size = 50,
-        studyLD_step_size = 5,
-        studyLD_r2_threshold = 0.02,
-        referLD = FALSE,
-        referLD_window_size = 50,
-        referLD_step_size = 5,
-        referLD_r2_threshold = 0.02,
-        highLD_regions,
-        study_pop,
-        outlier = FALSE,
-        outlierOf = "EUR",
-        outlier_threshold = 3) {
+AncestryCheck <- function(DataDir,
+    ResultDir = tempdir(),
+    finput,
+    reference = c("HapMapIII_NCBI36", "ThousandGenome"),
+    filterSNP = TRUE,
+    studyLD = TRUE,
+    studyLD_window_size = 50,
+    studyLD_step_size = 5,
+    studyLD_r2_threshold = 0.02,
+    referLD = FALSE,
+    referLD_window_size = 50,
+    referLD_step_size = 5,
+    referLD_r2_threshold = 0.02,
+    highLD_regions,
+    study_pop,
+    outlier = FALSE,
+    outlierOf = "EUR",
+    outlier_threshold = 3) {
     tryCatch(
         {
             # Validate inputs
@@ -333,10 +332,10 @@ AncestryCheck <- function(
             for (pattern in patterns_to_remove) {
                 removeTempFiles(ResultDir, pattern)
             }
-            
+
             len <- length(Outlier_samples1)
-            Outlier_samples1[[len+1]] <- pca_plot
-            
+            Outlier_samples1[["pca_plot"]] <- pca_plot
+
             return(Outlier_samples1)
         },
         error = function(e) {
@@ -577,47 +576,46 @@ AncestryCheck <- function(
 #'         omit_linear_variant
 #'     )
 #' }
-TestXGene <- function(
-        DataDir,
-        ResultDir = tempdir(),
-        finput,
-        sumstat,
-        gene_file,
-        gene_range = 500000,
-        score_file,
-        ref_data = NULL,
-        max_gene = NULL,
-        sample_size = NULL,
-        genebasedTest = c(
-            "SKAT",
-            "SKATO",
-            "sumchi",
-            "ACAT",
-            "BT",
-            "PCA",
-            "FLM",
-            "simpleM",
-            "minp"
-        ),
-        gene_approximation = TRUE,
-        beta_par,
-        weights_function,
-        geno_variance_weights,
-        kernel_p_method = "kuonen",
-        acc_devies = 1e-8,
-        lim_devies = 1e+6,
-        rho = TRUE,
-        skato_p_threshold = 0.8,
-        anno_type = "",
-        mac_threshold,
-        reference_matrix_used,
-        regularize_fun,
-        pca_var_fraction = 0.85,
-        flm_basis_function = "fourier",
-        flm_num_basis = 25,
-        flm_poly_order = 4,
-        flip_genotypes = FALSE,
-        omit_linear_variant = FALSE) {
+TestXGene <- function(DataDir,
+    ResultDir = tempdir(),
+    finput,
+    sumstat,
+    gene_file,
+    gene_range = 500000,
+    score_file,
+    ref_data = NULL,
+    max_gene = NULL,
+    sample_size = NULL,
+    genebasedTest = c(
+        "SKAT",
+        "SKATO",
+        "sumchi",
+        "ACAT",
+        "BT",
+        "PCA",
+        "FLM",
+        "simpleM",
+        "minp"
+    ),
+    gene_approximation = TRUE,
+    beta_par,
+    weights_function,
+    geno_variance_weights,
+    kernel_p_method = "kuonen",
+    acc_devies = 1e-8,
+    lim_devies = 1e+6,
+    rho = TRUE,
+    skato_p_threshold = 0.8,
+    anno_type = "",
+    mac_threshold,
+    reference_matrix_used,
+    regularize_fun,
+    pca_var_fraction = 0.85,
+    flm_basis_function = "fourier",
+    flm_num_basis = 25,
+    flm_poly_order = 4,
+    flip_genotypes = FALSE,
+    omit_linear_variant = FALSE) {
     tryCatch(
         withCallingHandlers(
             {
@@ -2512,12 +2510,13 @@ SexCheck <-
 #'     finput = finput, foutput = foutput, keep_remove_sample_file = keep_remove_sample_file,
 #'     keep = keep
 #' )
-FilterPlinkSample <- function(DataDir, ResultDir,
-    finput,
-    foutput = NULL,
-    filter_sample = "cases",
-    keep_remove_sample_file = NULL,
-    keep = TRUE) {
+FilterPlinkSample <- function(
+        DataDir, ResultDir,
+        finput,
+        foutput = NULL,
+        filter_sample = "cases",
+        keep_remove_sample_file = NULL,
+        keep = TRUE) {
     # Validate inputs
     if (!validateInputForFilterPlinkSample(DataDir, ResultDir, finput, foutput, filter_sample, keep_remove_sample_file, keep)) {
         return(NULL)
@@ -4640,7 +4639,7 @@ SexDiffZscore <- function(inputdata) {
 #'
 #' @param ncores
 #' Integer value, specifying the number of cores to be used.
-#' 
+#'
 #' @importFrom dplyr everything
 #' @importFrom stringr str_remove
 #' @importFrom tidyr pivot_longer

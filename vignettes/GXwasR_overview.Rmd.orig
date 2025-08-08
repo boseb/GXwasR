@@ -379,6 +379,7 @@ x <- AncestryCheck(
 x$Outlier_samples %>% head()
 x$Samples_with_predicted_ancestry %>% head()
 x$NonOutlier_samples %>% head()
+x$pca_plot
 ```
 
 ### `SexCheck()`

@@ -213,7 +213,10 @@ hapmap_results <- AncestryCheck(
     outlierOf = "EUR",
     outlier_threshold = 3
 )
+hapmap_results$pca_plot
+```
 
+```{r hapmap_ex_data}
 Samples_with_predicted_ancestry <- hapmap_results[["Samples_with_predicted_ancestry"]]
 
 outlier <- hapmap_results[["Outlier_samples"]]
@@ -250,7 +253,10 @@ thousandgenome_results <- AncestryCheck(
   outlier = TRUE, 
   outlier_threshold = 5
   )
+  thousandgenome_results$pca_plot
+```
 
+```{r thousandgenome_ex_data}
 Samples_with_predicted_ancestry <- thousandgenome_results[["Samples_with_predicted_ancestry"]]
 
 outlier <- thousandgenome_results[["Outlier_samples"]]
