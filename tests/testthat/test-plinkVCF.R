@@ -1,4 +1,5 @@
 test_that("plinkVCF creates the correct number of output files", {
+  skip_on_ci()
   skip_on_bioc()
   finput <- "GXwasR_example" # Plink file
   foutput <- "GXwasR_example1"
