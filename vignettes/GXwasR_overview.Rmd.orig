@@ -637,7 +637,7 @@ PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, cova
 )
 PRSresult$PRS %>% head()
 PRSresult$BestP
-print(PRSresult$PRS_plot)
+PRSresult$PRS_plot
 ```
 
 ### `GeneticCorrBT()`
