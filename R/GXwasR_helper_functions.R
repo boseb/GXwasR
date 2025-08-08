@@ -4507,9 +4507,8 @@ generatePlots <- function(MRfiltered, Sbeta, ResultDir, plotname, useSNPposition
 }
 
 ## Function 95
-ComputeBivarREMLone <- function(
-        DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile, cat_covarfile = NULL,
-        quant_covarfile = NULL, grmfile = "GXwasR", excludeResidual = c("FALSE", "TRUE"), chr, ncores = 2) {
+ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile, cat_covarfile = NULL,
+    quant_covarfile = NULL, grmfile = "GXwasR", excludeResidual = c("FALSE", "TRUE"), chr, ncores = 2) {
     if (excludeResidual == "FALSE") {
         ExResi <- NULL
     } else {
@@ -4563,7 +4562,7 @@ ComputeBivarREMLone <- function(
         # Extract header and iteration lines
         iteration_lines <- grep("^\\d+\\t", lines, value = TRUE)
         header_line <- grep("^Iter\\.", lines, value = TRUE)
-      
+
         # Clean iteration lines
         cleaned_lines <- stringr::str_replace(iteration_lines, "\\s*\\(.*\\)$", "")
 

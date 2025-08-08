@@ -13,7 +13,7 @@ output:
     toc_float: true
     toc_depth: 2
     code_folding: show
-date: "6 August 2025"
+date: "8 August 2025"
 package: "GXwasR 0.99.0"
 vignette: >
   %\VignetteIndexEntry{genetic_correlation_sumstat}
@@ -49,19 +49,6 @@ Therefore if the GWAS includes most of the HapMap3 SNPs, then it is recommend us
 
 ``` r
 library(GXwasR)
-#> 
-#> GXwasR: Genome-wide and x-chromosome wide association analyses applying best practices of quality control over genetic data
-#> Version 0.99.0 () installed
-#> Author: c(
-#>     person(given = "Banabithi",
-#>            family = "Bose",
-#>            role = c("cre", "aut"),
-#>            email = "banabithi.bose@gmail.com",
-#>            comment = c(ORCID = "0000-0003-0842-8768"))
-#>            )
-#> Maintainer: Banabithi Bose <banabithi.bose@gmail.com>
-#> Tutorial: https://github.com
-#> Use citation("GXwasR") to know how to cite this work.
 help(SumstatGenCorr)
 ```
 
@@ -76,11 +63,12 @@ sumstat1 <- readRDS("gwas1.imputed.example.rds")
 sumstat2 <- readRDS("gwas2.imputed.example.rds")
 referenceLD = "UKB_imputed_hapmap2_SVD_eigen99_extraction"
 res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=sumstat1, sumstat2=sumstat2)
-#> Analysis starts on Wed Aug  6 11:23:15 2025
+#> Analysis starts on Fri Aug  8 09:29:59 2025
 #> ℹ 0 SNPs were removed in GWAS 1 due to missing N or missing test statistic.
 #> ℹ 0 SNPs were removed in GWAS 2 due to missing N or missing test statistic.
 #> ℹ 769306 out of 769306 (100%) SNPs in reference panel are available in GWAS 1.
 #> ℹ 769306 out of 769306 (100%) SNPs in reference panel are available in GWAS 2.
+#> ■                                  2% (1/62)
 #> ■■                                 3% (2/62)
 #> ■■                                 5% (3/62)
 #> ■■■                                6% (4/62)
@@ -136,6 +124,7 @@ res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=su
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■       87% (54/62)
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      89% (55/62)
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90% (56/62)
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% (57/62)
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94% (58/62)
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    95% (59/62)
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    97% (60/62)
@@ -151,6 +140,7 @@ res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=su
 #> • Genetic Covariance:  -0.006
 #> • Genetic Correlation:  -0.2318
 #> ℹ Continuing computing standard error with jackknife
+#> ■                                  2% (1/62)
 #> ■■                                 3% (2/62)
 #> ■■                                 5% (3/62)
 #> ■■■                                6% (4/62)
@@ -223,7 +213,7 @@ res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=su
 #> 
 #> 
 #> 
-#> Analysis finished at Wed Aug  6 11:24:55 2025
+#> Analysis finished at Fri Aug  8 09:32:03 2025
 ```
 
 
@@ -235,7 +225,7 @@ gwas1.example <- readRDS('gwas1.array.example.rds')
 gwas2.example <- readRDS('gwas2.array.example.rds')
 referenceLD = "UKB_array_SVD_eigen90_extraction"
 res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=gwas1.example, sumstat2=gwas2.example)
-#> Analysis starts on Wed Aug  6 11:24:56 2025
+#> Analysis starts on Fri Aug  8 09:32:03 2025
 #> Error in estimating Genetic Correlation: attempt to set an attribute on NULL
 ```
 **Small number of SNPs anyways not good.**
@@ -499,8 +489,10 @@ We hope that *[GXwasR](https://bioconductor.org/packages/3.21/GXwasR)* will be u
 citation("GXwasR")
 #> To cite package 'GXwasR' in publications use:
 #> 
-#>   Bose B, Blostein F, Kim J, Winters J, Actkins KV, Mayer D, Congivaram H, Niarchou M, Edwards DV, Davis LK, Stranger BE (2025). "GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic Effects on Complex Traits." _medRxiv 2025.06.10.25329327_.
-#>   doi:10.1101/2025.06.10.25329327 <https://doi.org/10.1101/2025.06.10.25329327>.
+#>   Bose B, Blostein F, Kim J, Winters J, Actkins KV, Mayer D, Congivaram H, Niarchou M, Edwards DV, Davis
+#>   LK, Stranger BE (2025). "GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic Effects on
+#>   Complex Traits." _medRxiv 2025.06.10.25329327_. doi:10.1101/2025.06.10.25329327
+#>   <https://doi.org/10.1101/2025.06.10.25329327>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
@@ -515,14 +507,14 @@ citation("GXwasR")
 
 # Reproducibility
 
-The *[GXwasR](https://bioconductor.org/packages/3.21/GXwasR)* package (Bose, Blostein, Kim, Winters, Actkins, Mayer, Congivaram, Niarchou, Edwards, Davis, and Stranger, 2025) was made possible thanks to:
+The *[GXwasR](https://bioconductor.org/packages/3.21/GXwasR)* package (Bose, Blostein, Kim et al., 2025) was made possible thanks to:
 
 * R (R Core Team, 2025)
 * *[BiocStyle](https://bioconductor.org/packages/3.21/BiocStyle)* (Oleś, 2025)
 * *[knitr](https://CRAN.R-project.org/package=knitr)* (Xie, 2025)
 * *[RefManageR](https://CRAN.R-project.org/package=RefManageR)* (McLean, 2017)
-* *[rmarkdown](https://CRAN.R-project.org/package=rmarkdown)* (Allaire, Xie, Dervieux, McPherson, Luraschi, Ushey, Atkins, Wickham, Cheng, Chang, and Iannone, 2024)
-* *[sessioninfo](https://CRAN.R-project.org/package=sessioninfo)* (Wickham, Chang, Flight, Müller, and Hester, 2025)
+* *[rmarkdown](https://CRAN.R-project.org/package=rmarkdown)* (Allaire, Xie, Dervieux et al., 2024)
+* *[sessioninfo](https://CRAN.R-project.org/package=sessioninfo)* (Wickham, Chang, Flight et al., 2025)
 * *[testthat](https://CRAN.R-project.org/package=testthat)* (Wickham, 2011)
 
 This package was developed using *[biocthis](https://bioconductor.org/packages/3.21/biocthis)*.
@@ -534,16 +526,16 @@ This package was developed using *[biocthis](https://bioconductor.org/packages/3
 #> ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
 #>  setting  value
 #>  version  R version 4.5.1 (2025-06-13)
-#>  os       macOS Sequoia 15.5
+#>  os       macOS Sequoia 15.6
 #>  system   aarch64, darwin24.4.0
 #>  ui       unknown
 #>  language (EN)
 #>  collate  en_US.UTF-8
 #>  ctype    en_US.UTF-8
 #>  tz       America/New_York
-#>  date     2025-08-06
+#>  date     2025-08-08
 #>  pandoc   3.6.3 @ /Applications/Positron.app/Contents/Resources/app/quarto/bin/tools/aarch64/ (via rmarkdown)
-#>  quarto   1.7.32 @ /usr/local/bin/quarto
+#>  quarto   1.7.33 @ /usr/local/bin/quarto
 #> 
 #> ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
 #>  package              * version    date (UTC) lib source
@@ -606,7 +598,7 @@ This package was developed using *[biocthis](https://bioconductor.org/packages/3
 #>  glue                   1.8.0      2024-09-30 [2] CRAN (R 4.5.0)
 #>  gridExtra              2.3        2017-09-09 [2] CRAN (R 4.5.0)
 #>  gtable                 0.3.6      2024-10-25 [2] CRAN (R 4.5.0)
-#>  GXwasR               * 0.99.0     2025-08-06 [1] Bioconductor
+#>  GXwasR               * 0.99.0     2025-08-08 [1] Bioconductor
 #>  hms                    1.1.3      2023-03-21 [2] CRAN (R 4.5.0)
 #>  htmltools              0.5.8.1    2024-04-04 [2] CRAN (R 4.5.0)
 #>  htmlwidgets            1.6.4      2023-12-06 [2] CRAN (R 4.5.0)
@@ -616,6 +608,7 @@ This package was developed using *[biocthis](https://bioconductor.org/packages/3
 #>  iterators              1.0.14     2022-02-05 [2] CRAN (R 4.5.0)
 #>  jsonlite               2.0.0      2025-03-27 [2] CRAN (R 4.5.0)
 #>  knitr                  1.50       2025-03-16 [2] CRAN (R 4.5.0)
+#>  labeling               0.4.3      2023-08-29 [2] CRAN (R 4.5.0)
 #>  later                  1.4.2      2025-04-08 [2] CRAN (R 4.5.1)
 #>  lattice                0.22-7     2025-04-02 [4] CRAN (R 4.5.1)
 #>  lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.5.0)
@@ -698,7 +691,7 @@ This package was developed using *[biocthis](https://bioconductor.org/packages/3
 #>  XVector                0.48.0     2025-04-15 [2] Bioconduc~
 #>  yaml                   2.3.10     2024-07-26 [2] CRAN (R 4.5.0)
 #> 
-#>  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpJ93upV/temp_libpathcfe02f0c39d5
+#>  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpcRh9ZZ/temp_libpath4e4d53c96c8f
 #>  [2] /Users/mayerdav/Library/R/arm64/4.5/library
 #>  [3] /opt/homebrew/lib/R/4.5/site-library
 #>  [4] /opt/homebrew/Cellar/r/4.5.1/lib/R/library
