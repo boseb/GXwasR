@@ -34,7 +34,7 @@ Suggests:
     rmarkdown,
     sessioninfo,
     stats,
-    testthat,
+    testthat (>= 3.0.0),
     tools,
     spelling
 Imports:
@@ -69,8 +69,10 @@ Imports:
     sumFREGAT,
     sys,
     utils,
-    vroom
+    vroom,
+    tidyr
 SystemRequirements: PLINK, GCTA
 RdMacros: Rdpack
 biocViews: GenomeWideAssociation, LinkageDisequilibrium, VariantDetection, QualityControl, PrincipalComponent
 Language: en-US
+Config/testthat/edition: 3
