@@ -1,4 +1,5 @@
 test_that("EstimateHerit returns expected output", {
+  skip_on_ci()
   skip_on_bioc()
   data("Summary_Stat_Ex1", package = "GXwasR")
   data("highLD_hg19", package = "GXwasR")

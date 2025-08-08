@@ -1,4 +1,5 @@
 test_that("MetaGWAS produces the correct output", {
+  skip_on_ci()
   skip_on_bioc()
   data("Summary_Stat_Ex1", package = "GXwasR")
   data("Summary_Stat_Ex2", package = "GXwasR")

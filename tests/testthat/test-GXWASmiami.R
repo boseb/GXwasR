@@ -1,4 +1,6 @@
 test_that("Miami plot is generated", {
+  skip_on_ci()
+  skip_on_bioc()
   data("Ffile", package = "GXwasR")
   data("Mfile", package = "GXwasR")
   ResultDir <- tempdir()

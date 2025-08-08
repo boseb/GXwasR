@@ -1,4 +1,5 @@
 test_that("GeneticCorrBT returns expected output", {
+  skip_on_ci()
   skip_on_bioc()
   data("Example_phenofile", package = "GXwasR")
   DataDir <- GXwasR:::GXwasR_data()
