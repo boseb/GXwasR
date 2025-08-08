@@ -87,7 +87,9 @@
 #' @importFrom ggplot2 ggplot aes geom_hline geom_vline guides geom_point guide_legend scale_shape_manual
 #' @importFrom vroom vroom
 #'
-#' @return A list containing two data frames: one with the IDs of outlier samples (Outlier_samples), and another with samples annotated with predicted ancestry (Samples_with_predicted_ancestry).
+#' @return A list containing three data frames: one with the IDs of outlier samples (Outlier_samples), another with samples 
+#' annotated with predicted ancestry (Samples_with_predicted_ancestry), and one with the IDs of non-outlier samples (Non_outlier_samples).
+#' A PCA plot is also returned.
 #'
 #' @references
 #' \insertAllCited{}
@@ -259,8 +261,6 @@ AncestryCheck <- function(
             S1 <- data.table::as.data.table(S1)
             S3 <- data.table::as.data.table(S3)
             # Using SNP name and chr no. for merging, not using base-pair position
-            # S4 <- merge(S1, S3, by = c("V1", "V2"))
-            # Updating it in final
             S4 <- merge(S1, S3, by = c("V1", "V4")) # using chr and position
             snps_flips <- S4[which(S4[, 5] != S4[, 9] & S4[, 6] != S4[, 10]), ]
             snp_allele_flips <- unique(snps_flips$V2)
@@ -280,8 +280,6 @@ AncestryCheck <- function(
             S5 <- flipped_ref[match(common_snps, flipped_ref$V2), , drop = FALSE]
             colnames(S5) <- c("V1", "V2", "V3", "V4", "Ra", "Rb")
             S5 <- data.table::as.data.table(S5)
-            # S6 <- merge(S1, S5, by = c("V1", "V2"))
-            # Updating it in final
             S6 <- merge(S1, S5, by = c("V1", "V4"))
             snps_flips_wrong <- S6[which(S6[, 5] != S6[, 9] &
                 S6[, 6] != S6[, 10]), ]
@@ -313,7 +311,7 @@ AncestryCheck <- function(
             tab <- loadPCAData(ResultDir, combined_pop)
             pop_type <- createPopulationTypeData(tab)
 
-            plotPCA(tab, pop_type)
+            pca_plot <- plotPCA(tab, pop_type)
 
             reportAlleleFlips(snp_allele_flips, ResultDir)
 
@@ -335,7 +333,10 @@ AncestryCheck <- function(
             for (pattern in patterns_to_remove) {
                 removeTempFiles(ResultDir, pattern)
             }
-
+            
+            len <- length(Outlier_samples1)
+            Outlier_samples1[[len+1]] <- pca_plot
+            
             return(Outlier_samples1)
         },
         error = function(e) {
@@ -659,7 +660,7 @@ TestXGene <- function(
                 SNPfile$start <- SNPfile$V4
                 SNPfile$end <- SNPfile$V4
                 SNPfile$SNP <- SNPfile$V2
-                snp_data <- SNPfile %>% select(.data$chr, .data$start, .data$end, .data$SNP)
+                snp_data <- SNPfile %>% select("chr", "start", "end", "SNP")
                 snp.gr <- regioneR::toGRanges(snp_data)
                 gene_snp_intersect <-
                     as.data.frame(plyranges::join_overlap_intersect(genes.gr, snp.gr))
@@ -4639,6 +4640,10 @@ SexDiffZscore <- function(inputdata) {
 #'
 #' @param ncores
 #' Integer value, specifying the number of cores to be used.
+#' 
+#' @importFrom dplyr everything
+#' @importFrom stringr str_remove
+#' @importFrom tidyr pivot_longer
 #'
 #' @return
 #' A dataframe with minimum three columns:
@@ -5800,7 +5805,6 @@ DummyCovar <- function(DataDir, ResultDir = DataDir, bfile, incovar, outcovar) {
 }
 
 
-## New function in V7
 #' executePlinkMAF: Execute PLINK to Calculate Minor Allele Frequencies (MAF)
 #'
 #' @description
@@ -5875,7 +5879,6 @@ executePlinkMAF <- function(DataDir, ResultDir, finput) {
 }
 
 
-## Added in V7
 #' LDPrune: Performs LD pruning on SNP data using PLINK
 #' @description
 #' This function utilizes PLINK to perform LD pruning on genetic data. It identifies and removes SNPs that are in high
@@ -5951,8 +5954,6 @@ LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, st
     )
 }
 
-
-## New function in 7.0
 
 #' SumstatGenCorr: Genetic Correlation Calculation from GWAS Summary Statistics
 #'
@@ -6104,7 +6105,6 @@ SumstatGenCorr <- function(ResultDir = tempdir(),
     return(res.HDL)
 }
 
-# New Function Addedin 10.0
 #' ComputeLD: Compute Linkage Disequilibrium (LD) for SNP Data
 #'
 #' @description

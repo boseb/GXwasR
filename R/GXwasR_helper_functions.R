@@ -4557,18 +4557,33 @@ ComputeBivarREMLone <- function(
         return(resultREML)
     } else {
         log_file <- normalizePath(file.path(ResultDir, paste0(chr, "test_bireml.log")), mustWork = FALSE)
+        # Read in full log
         lines <- readLines(log_file)
-        pattern <- paste0(nitr - 1, "\t")
-        matched_lines <- grep(pattern, lines, value = TRUE)
 
-        if (length(matched_lines) > 0) {
-            cleaned_lines <- sub("\\s*\\(.*\\)$", "", matched_lines)
-            x1 <- read.table(text = cleaned_lines)
-            colnames(x1) <- NULL
-            rownames(x1) <- NULL
-            x <- as.data.frame(t(x1))
-            x <- x[-1, ]
-            colnames(x) <- c("Source", "Variance")
+        # Extract header and iteration lines
+        iteration_lines <- grep("^\\d+\\t", lines, value = TRUE)
+        header_line <- grep("^Iter\\.", lines, value = TRUE)
+      
+        # Clean iteration lines
+        cleaned_lines <- stringr::str_replace(iteration_lines, "\\s*\\(.*\\)$", "")
+
+
+        # Parse the table if both header and iterations exist
+        if (length(header_line) > 0 && length(cleaned_lines) > 0) {
+            table_text <- c(header_line, cleaned_lines)
+            iteration_df <- read.table(text = table_text, header = TRUE, sep = "\t", fill = TRUE)
+
+            # Extract the last iteration as a 1-row data.frame
+            last_iter <- iteration_df[nrow(iteration_df), ]
+
+            # Reshape into long format
+            x <- last_iter %>%
+                select(-"Iter.", -"logL") %>%
+                tidyr::pivot_longer(
+                    everything(),
+                    names_to = "Source",
+                    values_to = "Variance"
+                )
         } else {
             x <- data.frame(Source = NA, Variance = NA)
         }
@@ -5740,8 +5755,8 @@ plotPCA <- function(tab, pop_type) {
     # Sorting based on whether 'pop' starts with "Study_" or "Ref_"
     tab1 <- tab %>%
         dplyr::mutate(Sort_Order = ifelse(grepl("^Ref_", .data$pop), 0, 1)) %>%
-        dplyr::arrange(.data$Sort_Order) %>%
-        dplyr::select(-.data$Sort_Order) # Removing the temporary Sort_Order column
+        dplyr::arrange("Sort_Order") %>%
+        dplyr::select(-"Sort_Order") # Removing the temporary Sort_Order column
 
     p <- ggplot2::ggplot(data = tab1, ggplot2::aes(
         x = tab1$PC1, y = tab1$PC2, color = tab1$pop, shape = tab1$pop
@@ -5754,7 +5769,7 @@ plotPCA <- function(tab, pop_type) {
         ggplot2::xlab("PC 1") + # Set x-axis label
         ggplot2::ylab("PC 2") # Set y-axis label
 
-    print(p)
+    p
 }
 
 ## Function 116
