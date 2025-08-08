@@ -311,8 +311,9 @@ PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, cova
 #> ℹ 0.5
 #> • Computing PRS for threshold 0.5
 PRSresult$PRS_plot
-#> Error in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, : Metric information not available for this family/device
 ```
+
+![plot of chunk compute_prs](./compute_prs-1.png)
 
 
 ``` r
@@ -513,8 +514,9 @@ PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, cova
 #> ℹ 0.5
 #> • Computing PRS for threshold 0.5
 PRSresult$PRS_plot
-#> Error in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, : Metric information not available for this family/device
 ```
+
+![plot of chunk compute_prs_2](./compute_prs_2-1.png)
 
 
 ``` r
@@ -718,8 +720,9 @@ PRSresultFemale <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile
 #> ℹ 0.5
 #> • Computing PRS for threshold 0.5
 PRSresultFemale$PRS_plot
-#> Error in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, : Metric information not available for this family/device
 ```
+
+![plot of chunk compute_prs_female](./compute_prs_female-1.png)
 
 
 ``` r
@@ -801,8 +804,9 @@ PRSresultmale <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, 
 #> ℹ 0.5
 #> • Computing PRS for threshold 0.5
 PRSresultmale$PRS_plot
-#> Error in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, : Metric information not available for this family/device
 ```
+
+![plot of chunk compute_prs_male](./compute_prs_male-1.png)
 
 
 ``` r
