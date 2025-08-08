@@ -102,7 +102,7 @@ pheno_type <- "binary"
 ldclump <- FALSE
 pheno_type <- "binary"
 PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
-print(PRSresult$PRS_plot)
+PRSresult$PRS_plot
 ```
 
 ```{r}
@@ -249,7 +249,7 @@ pheno_type <- "binary"
 effectsize <- "BETA"
 ldclump <- FALSE
 PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
-print(PRSresult$PRS_plot)
+PRSresult$PRS_plot
 ```
 
 ```{r}
@@ -370,7 +370,7 @@ pheno_type <- "binary"
 ldclump <- FALSE
 effectsize <- "BETA"
 PRSresultFemale <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
-print(PRSresultFemale$PRS_plot)
+PRSresultFemale$PRS_plot
 ```
 
 ```{r}
@@ -416,7 +416,7 @@ pheno_type <- "binary"
 ldclump <- FALSE
 effectsize <- "BETA"
 PRSresultmale <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1 = clump_p1, clump_p2 = clump_p2, clump_r2 = clump_r2, clump_kb = clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
-print(PRSresultmale$PRS_plot)
+PRSresultmale$PRS_plot
 ```
 
 ```{r}
