@@ -47,7 +47,7 @@ test a wide range of various parameter values."><meta property="og:image" conten
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>ComputePRS: Computing polygenic risk score (PRS)</h1>
-      <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/main/R/GXwasR_main_functions.R" class="external-link"><code>R/GXwasR_main_functions.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/HEAD/R/GXwasR_main_functions.R" class="external-link"><code>R/GXwasR_main_functions.R</code></a></small>
       <div class="d-none name"><code>ComputePRS.Rd</code></div>
     </div>
 
@@ -241,24 +241,50 @@ For case-control data, it shows PRS distribution among cases and controls and RO
 <span class="r-in"><span>    ld_prunning <span class="op">=</span> <span class="cn">TRUE</span>, window_size <span class="op">=</span> <span class="fl">50</span>, step_size <span class="op">=</span> <span class="fl">5</span>, r2_threshold <span class="op">=</span> <span class="fl">0.02</span>, nPC <span class="op">=</span> <span class="fl">6</span>,</span></span>
 <span class="r-in"><span>    pheno_type <span class="op">=</span> <span class="st">"binary"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> An error occurred: PLINK binary not found.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> Attempted to locate the 'PLINK_PATH' environment variable and 'plink' in system PATH.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Ensure PLINK is available and executable (bioinformatics version).</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> You can permanently set the path to 'plink' by running:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   usethis::edit_r_environ()  # then add a line like: PLINK_PATH=/full/path/to/plink</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> An error occurred: attempt to set 'colnames' on an object with less than two dimensions</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile,     covarfile, effectsize = "BETA", LDreference = "GXwasR_example",     ldclump = FALSE, clump_p1, clump_p2, clump_r2, clump_kb,     byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions,     ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02,     nPC = 6, pheno_type = "binary"):</span> object 'pheno.prs' not found</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> 0.001</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Computing PRS for threshold 0.001</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> 0.05</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Computing PRS for threshold 0.05</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> 0.1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Computing PRS for threshold 0.1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> 0.2</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Computing PRS for threshold 0.2</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> 0.3</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Computing PRS for threshold 0.3</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> 0.4</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Computing PRS for threshold 0.4</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> 0.5</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Computing PRS for threshold 0.5</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## This table shows 10 samples with phenotype, covariates and a PRS column.</span></span></span>
 <span class="r-in"><span><span class="va">PRS</span> <span class="op">&lt;-</span> <span class="va">PRSresult</span><span class="op">$</span><span class="va">PRS</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'PRSresult' not found</span>
 <span class="r-in"><span><span class="va">PRS</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>, <span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'PRS' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        FID     IID Pheno1 AGE testcovar       PC1         PC2         PC3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  EUR_FIN HG00171      1  36         1 0.0964618 -0.03825140  0.00903796</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  EUR_FIN HG00173      1  81         1 0.0743932 -0.05672710  0.03969940</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  EUR_FIN HG00174      1  83         1 0.0645349 -0.05610350 -0.01457860</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  EUR_FIN HG00176      2  75         0 0.0832472 -0.05602080  0.03026540</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  EUR_FIN HG00177      1  88         1 0.0775687 -0.00946444  0.04517850</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  EUR_FIN HG00178      1  24         1 0.0661714 -0.05049060  0.02485390</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  EUR_FIN HG00179      2  78         1 0.0806110 -0.01154090 -0.00750723</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  EUR_FIN HG00180      1  39         1 0.0840638  0.00117830  0.01286460</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  EUR_FIN HG00182      1  50         1 0.1029760 -0.04300460  0.01999710</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 EUR_FIN HG00183      1  58         0 0.0827103 -0.03865300  0.05093660</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            PC4         PC5         PC6      SCORE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  -0.08952930 -0.02522910  0.01465430 0.04842120</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   0.02053430  0.02304100 -0.03603800 0.02937420</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  -0.02643430 -0.00180949  0.01445210 0.00996742</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  -0.00110770 -0.05303710 -0.03358030 0.10420600</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  -0.03732150 -0.06174310 -0.07199510 0.03143030</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  -0.08280660  0.04094180  0.00559525 0.07226890</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  -0.03288230  0.03559730  0.04245120 0.11652400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8   0.05915400  0.05476670 -0.01015950 0.06171590</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  -0.03023650 -0.09019110 -0.03785150 0.02837030</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 -0.00153775 -0.10456100  0.06236340 0.03862970</span>
 <span class="r-in"><span><span class="co">## The best threshold</span></span></span>
 <span class="r-in"><span><span class="va">BestPvalue</span> <span class="op">&lt;-</span> <span class="va">PRSresult</span><span class="op">$</span><span class="va">BestP</span><span class="op">$</span><span class="va">Threshold</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'PRSresult' not found</span>
 <span class="r-in"><span><span class="va">BestPvalue</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'BestPvalue' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.05</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

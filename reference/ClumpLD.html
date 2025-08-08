@@ -63,7 +63,7 @@ Based on the genotype data, the SNP with the highest LD will be the same for all
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>ClumpLD: Clumping SNPs using linkage disequilibrium between SNPs</h1>
-      <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/main/R/GXwasR_main_functions.R" class="external-link"><code>R/GXwasR_main_functions.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/HEAD/R/GXwasR_main_functions.R" class="external-link"><code>R/GXwasR_main_functions.R</code></a></small>
       <div class="d-none name"><code>ClumpLD.Rd</code></div>
     </div>
 
@@ -200,12 +200,28 @@ association test of the SNP), and "CHR" (the chromosome on which the SNP is loca
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Processing summary statistics 1</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Processing summary statistics 2</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Running LD clumping for chromosome 1</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> An error occurred: PLINK binary not found.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> Attempted to locate the 'PLINK_PATH' environment variable and 'plink' in system PATH.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Ensure PLINK is available and executable (bioinformatics version).</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> You can permanently set the path to 'plink' by running:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   usethis::edit_r_environ()  # then add a line like: PLINK_PATH=/full/path/to/plink</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in ClumpLD(DataDir, finput, SNPdata, ResultDir, clump_p1, clump_p2,     clump_r2, clump_kb, byCHR):</span> object 'LDC' not found</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> No significant clump results for chromosome 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Running LD clumping for chromosome 2</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> No significant clump results for chromosome 2</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Running LD clumping for chromosome 3</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> No significant clump results for chromosome 3</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Running LD clumping for chromosome 4</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> No significant clump results for chromosome 4</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Running LD clumping for chromosome 5</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> No significant clump results for chromosome 5</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Running LD clumping for chromosome 6</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> No significant clump results for chromosome 6</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Running LD clumping for chromosome 7</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> No significant clump results for chromosome 7</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Running LD clumping for chromosome 8</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> No significant clump results for chromosome 8</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Running LD clumping for chromosome 9</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> No significant clump results for chromosome 9</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Running LD clumping for chromosome 10</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> No significant clump results for chromosome 10</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Running LD clumping for chromosome 23</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Running LD clumping for chromosome 24</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> No significant clump results for chromosome 24</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

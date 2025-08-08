@@ -49,7 +49,7 @@ X-chromosome variants."><meta property="og:image" content="/logo.svg"></head><bo
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Xhwe: Filter X-chromosome variants for HWE in females.</h1>
-      <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/main/R/GXwasR_main_functions.R" class="external-link"><code>R/GXwasR_main_functions.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/HEAD/R/GXwasR_main_functions.R" class="external-link"><code>R/GXwasR_main_functions.R</code></a></small>
       <div class="d-none name"><code>Xhwe.Rd</code></div>
     </div>
 
@@ -113,14 +113,11 @@ produced inside <code>DataDir</code>.</p>
 <span class="r-in"><span>    DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>,</span></span>
 <span class="r-in"><span>    finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, filterSNP <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> An error occurred: PLINK binary not found.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> Attempted to locate the 'PLINK_PATH' environment variable and 'plink' in system PATH.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Ensure PLINK is available and executable (bioinformatics version).</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> You can permanently set the path to 'plink' by running:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   usethis::edit_r_environ()  # then add a line like: PLINK_PATH=/full/path/to/plink</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Warning: cannot open file '/tmp/RtmpteYOxY/female.fam': No such file or directory</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Output PLINK files, prefixed as female, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpPuiyDq</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> This test is running on a case-control dataset with female samples.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Failed SNPs are excluded from the output PLINK files prefixed as Test_output is in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpPuiyDq</span>
 <span class="r-in"><span><span class="va">x</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "rs56053951" "rs12353847" "rs5940058" </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

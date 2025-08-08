@@ -47,7 +47,7 @@ removing samples, etc. Details can be accessed from the paper."><meta property="
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>QCsample: Quality control for samples in the PLINK binary files.</h1>
-      <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/main/R/GXwasR_main_functions.R" class="external-link"><code>R/GXwasR_main_functions.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/HEAD/R/GXwasR_main_functions.R" class="external-link"><code>R/GXwasR_main_functions.R</code></a></small>
       <div class="d-none name"><code>QCsample.Rd</code></div>
     </div>
 
@@ -189,11 +189,14 @@ autosomal genotype observations and, Method-of-moments F coefficient estimate, r
 <span class="r-in"><span>    foutput <span class="op">=</span> <span class="va">foutput</span>, imiss <span class="op">=</span> <span class="va">imiss</span>, het <span class="op">=</span> <span class="va">het</span>, IBD <span class="op">=</span> <span class="va">IBD</span>,</span></span>
 <span class="r-in"><span>    ambi_out <span class="op">=</span> <span class="va">ambi_out</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> An error occurred: An error occurred while executing Plink: PLINK binary not found.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> Attempted to locate the 'PLINK_PATH' environment variable and 'plink' in system PATH.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Ensure PLINK is available and executable (bioinformatics version).</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> You can permanently set the path to 'plink' by running:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   usethis::edit_r_environ()  # then add a line like: PLINK_PATH=/full/path/to/plink</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Plots are initiated.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> No. of samples filtered/flagged for missingness: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> No. of samples filtered/flagged for heterozygosity threshold: 3</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> No. of samples filtered/flagged for missingness and heterozygosity: 3</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> No. of samples marked to be filtered out for IDB after missingness and heterozygosity filter: 2</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> No. of samples in input PLINK files: 276</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> No. of samples in output PLINK files: 271</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Output PLINK files, Test_output with final samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpPuiyDq.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -71,7 +71,7 @@ datasets to the same build."><meta property="og:image" content="/logo.svg"></hea
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>AncestryCheck: Evaluation of the samples' ancestry label.</h1>
-      <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/main/R/GXwasR_main_functions.R" class="external-link"><code>R/GXwasR_main_functions.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/HEAD/R/GXwasR_main_functions.R" class="external-link"><code>R/GXwasR_main_functions.R</code></a></small>
       <div class="d-none name"><code>AncestryCheck.Rd</code></div>
     </div>
 
@@ -256,8 +256,19 @@ A PCA plot is also returned.</p>
 <span class="r-in"><span>    study_pop <span class="op">=</span> <span class="va">study_pop</span>, studyLD <span class="op">=</span> <span class="va">studyLD</span>, referLD <span class="op">=</span> <span class="va">referLD</span>,</span></span>
 <span class="r-in"><span>    outlierOf <span class="op">=</span> <span class="st">"EUR"</span>, outlier <span class="op">=</span> <span class="va">outlier</span>, outlier_threshold <span class="op">=</span> <span class="va">outlier_threshold</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> An error occurred: Environment variable 'HAPMAPIII_NCBI36_DIR' is not set or points to an invalid directory.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Set it using Sys.setenv(HAPMAPIII_NCBI36_DIR = '/path/to/your/data')</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> 'HapMapIII_NCBI36' reference data found at /Users/mayerdav/Downloads/HapMapIII_NCBI36.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">This message is displayed once every 8 hours.</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Using PLINK v1.9.0-b.7.7 64-bit (22 Oct 2024)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">This message is displayed once every 8 hours.</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 4214 ambiguous SNPs removed from study data.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 111854 ambiguous SNPs removed from reference data.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> LD pruning is recommended for reference dataset. Set referLD = TRUE.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> LD pruning is recommended for study dataset. Set studyLD = TRUE.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Number of overlapping SNPs between study and reference data using rsID: 3722</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> No allele flips between study and reference data.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> 20 samples are outliers of selected reference population.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> 168 samples are NOT outliers of selected reference population.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

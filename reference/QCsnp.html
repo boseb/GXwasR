@@ -43,7 +43,7 @@ differential missingness between cases and controls. It can also perform linkage
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>QCsnp: Quality control (QC) for SNPs.</h1>
-      <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/main/R/GXwasR_main_functions.R" class="external-link"><code>R/GXwasR_main_functions.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/HEAD/R/GXwasR_main_functions.R" class="external-link"><code>R/GXwasR_main_functions.R</code></a></small>
       <div class="d-none name"><code>QCsnp.Rd</code></div>
     </div>
 
@@ -217,11 +217,13 @@ in cases vs controls, respectively. Output PLINK binary files in the working dir
 <span class="r-in"><span>    ld_prunning <span class="op">=</span> <span class="va">ld_prunning</span>, casecontrol <span class="op">=</span> <span class="va">casecontrol</span>, monomorphicSNPs <span class="op">=</span> <span class="va">monomorphicSNPs</span>,</span></span>
 <span class="r-in"><span>    caldiffmiss <span class="op">=</span> <span class="va">caldiffmiss</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> An error occurred: An error occurred while executing Plink: PLINK binary not found.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> Attempted to locate the 'PLINK_PATH' environment variable and 'plink' in system PATH.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Ensure PLINK is available and executable (bioinformatics version).</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> You can permanently set the path to 'plink' by running:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   usethis::edit_r_environ()  # then add a line like: PLINK_PATH=/full/path/to/plink</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> 4214 Ambiguous SNPs (A-T/G-C), indels etc. were removed.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Thresholds for maf, geno and hwe worked.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> 5467 variants removed due to minor allele threshold(s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> No filter based on differential missingness will be applied.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Output PLINK files prefixed as ,Test_output, with passed SNPs are saved in ResultDir.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Input file has 26527 SNPs.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Output file has 16846 SNPs after filtering.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

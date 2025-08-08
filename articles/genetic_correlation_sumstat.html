@@ -35,7 +35,7 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="active nav-item dropdown">
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/GXwasR_overview.html">GXwasR Overview</a></li>
@@ -75,9 +75,9 @@ Bose</h4>
 Campus<br><a class="author_email" href="mailto:#"></a><a href="mailto:banabithi.bose@gmail.com" class="email">banabithi.bose@gmail.com</a>
       </address>
                   
-            <h4 data-toc-skip class="date">6 August 2025</h4>
+            <h4 data-toc-skip class="date">8 August 2025</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/main/vignettes/genetic_correlation_sumstat.Rmd" class="external-link"><code>vignettes/genetic_correlation_sumstat.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/HEAD/vignettes/genetic_correlation_sumstat.Rmd" class="external-link"><code>vignettes/genetic_correlation_sumstat.Rmd</code></a></small>
       <div class="d-none name"><code>genetic_correlation_sumstat.Rmd</code></div>
     </div>
 
@@ -115,19 +115,6 @@ panel.</p>
 Biobank Axiom Array SNPs. The size is about 7.5 GB after unzipping.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/boseb/GXwasR/" class="external-link">GXwasR</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; GXwasR: Genome-wide and x-chromosome wide association analyses applying best practices of quality control over genetic data</span></span>
-<span><span class="co">#&gt; Version 0.99.0 () installed</span></span>
-<span><span class="co">#&gt; Author: c(</span></span>
-<span><span class="co">#&gt;     person(given = "Banabithi",</span></span>
-<span><span class="co">#&gt;            family = "Bose",</span></span>
-<span><span class="co">#&gt;            role = c("cre", "aut"),</span></span>
-<span><span class="co">#&gt;            email = "banabithi.bose@gmail.com",</span></span>
-<span><span class="co">#&gt;            comment = c(ORCID = "0000-0003-0842-8768"))</span></span>
-<span><span class="co">#&gt;            )</span></span>
-<span><span class="co">#&gt; Maintainer: Banabithi Bose &lt;banabithi.bose@gmail.com&gt;</span></span>
-<span><span class="co">#&gt; Tutorial: https://github.com</span></span>
-<span><span class="co">#&gt; Use citation("GXwasR") to know how to cite this work.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span><span class="va">SumstatGenCorr</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -140,275 +127,281 @@ around 20,000 individuals.</p>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>sumstat2 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"gwas2.imputed.example.rds"</span>)</span>
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>referenceLD <span class="ot">=</span> <span class="st">"UKB_imputed_hapmap2_SVD_eigen99_extraction"</span></span>
 <span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">SumstatGenCorr</span>(<span class="at">ResultDir=</span>ResultDir, <span class="at">referenceLD =</span>referenceLD, <span class="at">sumstat1=</span>sumstat1, <span class="at">sumstat2=</span>sumstat2)</span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt; Analysis starts on Wed Aug  6 11:23:15 2025</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt; Analysis starts on Fri Aug  8 09:29:59 2025</span></span>
 <span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt; ℹ 0 SNPs were removed in GWAS 1 due to missing N or missing test statistic.</span></span>
 <span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt; ℹ 0 SNPs were removed in GWAS 2 due to missing N or missing test statistic.</span></span>
 <span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt; ℹ 769306 out of 769306 (100%) SNPs in reference panel are available in GWAS 1.</span></span>
 <span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt; ℹ 769306 out of 769306 (100%) SNPs in reference panel are available in GWAS 2.</span></span>
 <span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>■■                                 <span class="dv">3</span>% (<span class="dv">2</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>■                                  <span class="dv">2</span>% (<span class="dv">1</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>■■                                 <span class="dv">5</span>% (<span class="dv">3</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>■■                                 <span class="dv">3</span>% (<span class="dv">2</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>■■■                                <span class="dv">6</span>% (<span class="dv">4</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>■■                                 <span class="dv">5</span>% (<span class="dv">3</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>■■■                                <span class="dv">8</span>% (<span class="dv">5</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>■■■                                <span class="dv">6</span>% (<span class="dv">4</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>■■■■                              <span class="dv">10</span>% (<span class="dv">6</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>■■■                                <span class="dv">8</span>% (<span class="dv">5</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a>■■■■                              <span class="dv">11</span>% (<span class="dv">7</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a>■■■■                              <span class="dv">10</span>% (<span class="dv">6</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a>■■■■■                             <span class="dv">13</span>% (<span class="dv">8</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a>■■■■                              <span class="dv">11</span>% (<span class="dv">7</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a>■■■■■                             <span class="dv">15</span>% (<span class="dv">9</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a>■■■■■                             <span class="dv">13</span>% (<span class="dv">8</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a>■■■■■■                            <span class="dv">16</span>% (<span class="dv">10</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a>■■■■■                             <span class="dv">15</span>% (<span class="dv">9</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a>■■■■■■                            <span class="dv">18</span>% (<span class="dv">11</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a>■■■■■■                            <span class="dv">16</span>% (<span class="dv">10</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a>■■■■■■■                           <span class="dv">19</span>% (<span class="dv">12</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a>■■■■■■                            <span class="dv">18</span>% (<span class="dv">11</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-34"><a href="#cb2-34" tabindex="-1"></a>■■■■■■■                           <span class="dv">21</span>% (<span class="dv">13</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-34"><a href="#cb2-34" tabindex="-1"></a>■■■■■■■                           <span class="dv">19</span>% (<span class="dv">12</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-35"><a href="#cb2-35" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-36"><a href="#cb2-36" tabindex="-1"></a>■■■■■■■■                          <span class="dv">23</span>% (<span class="dv">14</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-36"><a href="#cb2-36" tabindex="-1"></a>■■■■■■■                           <span class="dv">21</span>% (<span class="dv">13</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-37"><a href="#cb2-37" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-38"><a href="#cb2-38" tabindex="-1"></a>■■■■■■■■                          <span class="dv">24</span>% (<span class="dv">15</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-38"><a href="#cb2-38" tabindex="-1"></a>■■■■■■■■                          <span class="dv">23</span>% (<span class="dv">14</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-39"><a href="#cb2-39" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-40"><a href="#cb2-40" tabindex="-1"></a>■■■■■■■■■                         <span class="dv">26</span>% (<span class="dv">16</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-40"><a href="#cb2-40" tabindex="-1"></a>■■■■■■■■                          <span class="dv">24</span>% (<span class="dv">15</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-41"><a href="#cb2-41" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-42"><a href="#cb2-42" tabindex="-1"></a>■■■■■■■■■                         <span class="dv">27</span>% (<span class="dv">17</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-42"><a href="#cb2-42" tabindex="-1"></a>■■■■■■■■■                         <span class="dv">26</span>% (<span class="dv">16</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-43"><a href="#cb2-43" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-44"><a href="#cb2-44" tabindex="-1"></a>■■■■■■■■■■                        <span class="dv">29</span>% (<span class="dv">18</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-44"><a href="#cb2-44" tabindex="-1"></a>■■■■■■■■■                         <span class="dv">27</span>% (<span class="dv">17</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-45"><a href="#cb2-45" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-46"><a href="#cb2-46" tabindex="-1"></a>■■■■■■■■■■                        <span class="dv">31</span>% (<span class="dv">19</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-46"><a href="#cb2-46" tabindex="-1"></a>■■■■■■■■■■                        <span class="dv">29</span>% (<span class="dv">18</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-47"><a href="#cb2-47" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-48"><a href="#cb2-48" tabindex="-1"></a>■■■■■■■■■■■                       <span class="dv">32</span>% (<span class="dv">20</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-48"><a href="#cb2-48" tabindex="-1"></a>■■■■■■■■■■                        <span class="dv">31</span>% (<span class="dv">19</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-49"><a href="#cb2-49" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-50"><a href="#cb2-50" tabindex="-1"></a>■■■■■■■■■■■                       <span class="dv">34</span>% (<span class="dv">21</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-50"><a href="#cb2-50" tabindex="-1"></a>■■■■■■■■■■■                       <span class="dv">32</span>% (<span class="dv">20</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-51"><a href="#cb2-51" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-52"><a href="#cb2-52" tabindex="-1"></a>■■■■■■■■■■■■                      <span class="dv">35</span>% (<span class="dv">22</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-52"><a href="#cb2-52" tabindex="-1"></a>■■■■■■■■■■■                       <span class="dv">34</span>% (<span class="dv">21</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-53"><a href="#cb2-53" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-54"><a href="#cb2-54" tabindex="-1"></a>■■■■■■■■■■■■                      <span class="dv">37</span>% (<span class="dv">23</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-54"><a href="#cb2-54" tabindex="-1"></a>■■■■■■■■■■■■                      <span class="dv">35</span>% (<span class="dv">22</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-55"><a href="#cb2-55" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-56"><a href="#cb2-56" tabindex="-1"></a>■■■■■■■■■■■■■                     <span class="dv">39</span>% (<span class="dv">24</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-56"><a href="#cb2-56" tabindex="-1"></a>■■■■■■■■■■■■                      <span class="dv">37</span>% (<span class="dv">23</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-57"><a href="#cb2-57" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-58"><a href="#cb2-58" tabindex="-1"></a>■■■■■■■■■■■■■                     <span class="dv">40</span>% (<span class="dv">25</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-58"><a href="#cb2-58" tabindex="-1"></a>■■■■■■■■■■■■■                     <span class="dv">39</span>% (<span class="dv">24</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-59"><a href="#cb2-59" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-60"><a href="#cb2-60" tabindex="-1"></a>■■■■■■■■■■■■■■                    <span class="dv">42</span>% (<span class="dv">26</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-60"><a href="#cb2-60" tabindex="-1"></a>■■■■■■■■■■■■■                     <span class="dv">40</span>% (<span class="dv">25</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-61"><a href="#cb2-61" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-62"><a href="#cb2-62" tabindex="-1"></a>■■■■■■■■■■■■■■                    <span class="dv">44</span>% (<span class="dv">27</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-62"><a href="#cb2-62" tabindex="-1"></a>■■■■■■■■■■■■■■                    <span class="dv">42</span>% (<span class="dv">26</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-63"><a href="#cb2-63" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-64"><a href="#cb2-64" tabindex="-1"></a>■■■■■■■■■■■■■■■                   <span class="dv">45</span>% (<span class="dv">28</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-64"><a href="#cb2-64" tabindex="-1"></a>■■■■■■■■■■■■■■                    <span class="dv">44</span>% (<span class="dv">27</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-65"><a href="#cb2-65" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-66"><a href="#cb2-66" tabindex="-1"></a>■■■■■■■■■■■■■■■                   <span class="dv">47</span>% (<span class="dv">29</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-66"><a href="#cb2-66" tabindex="-1"></a>■■■■■■■■■■■■■■■                   <span class="dv">45</span>% (<span class="dv">28</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-67"><a href="#cb2-67" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-68"><a href="#cb2-68" tabindex="-1"></a>■■■■■■■■■■■■■■■■                  <span class="dv">48</span>% (<span class="dv">30</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-68"><a href="#cb2-68" tabindex="-1"></a>■■■■■■■■■■■■■■■                   <span class="dv">47</span>% (<span class="dv">29</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-69"><a href="#cb2-69" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-70"><a href="#cb2-70" tabindex="-1"></a>■■■■■■■■■■■■■■■■                  <span class="dv">50</span>% (<span class="dv">31</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-70"><a href="#cb2-70" tabindex="-1"></a>■■■■■■■■■■■■■■■■                  <span class="dv">48</span>% (<span class="dv">30</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-71"><a href="#cb2-71" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-72"><a href="#cb2-72" tabindex="-1"></a>■■■■■■■■■■■■■■■■                  <span class="dv">52</span>% (<span class="dv">32</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-72"><a href="#cb2-72" tabindex="-1"></a>■■■■■■■■■■■■■■■■                  <span class="dv">50</span>% (<span class="dv">31</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-73"><a href="#cb2-73" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-74"><a href="#cb2-74" tabindex="-1"></a>■■■■■■■■■■■■■■■■■                 <span class="dv">53</span>% (<span class="dv">33</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-74"><a href="#cb2-74" tabindex="-1"></a>■■■■■■■■■■■■■■■■                  <span class="dv">52</span>% (<span class="dv">32</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-75"><a href="#cb2-75" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-76"><a href="#cb2-76" tabindex="-1"></a>■■■■■■■■■■■■■■■■■                 <span class="dv">55</span>% (<span class="dv">34</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-76"><a href="#cb2-76" tabindex="-1"></a>■■■■■■■■■■■■■■■■■                 <span class="dv">53</span>% (<span class="dv">33</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-77"><a href="#cb2-77" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-78"><a href="#cb2-78" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■                <span class="dv">56</span>% (<span class="dv">35</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-78"><a href="#cb2-78" tabindex="-1"></a>■■■■■■■■■■■■■■■■■                 <span class="dv">55</span>% (<span class="dv">34</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-79"><a href="#cb2-79" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-80"><a href="#cb2-80" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■                <span class="dv">58</span>% (<span class="dv">36</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-80"><a href="#cb2-80" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■                <span class="dv">56</span>% (<span class="dv">35</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-81"><a href="#cb2-81" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-82"><a href="#cb2-82" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■               <span class="dv">60</span>% (<span class="dv">37</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-82"><a href="#cb2-82" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■                <span class="dv">58</span>% (<span class="dv">36</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-83"><a href="#cb2-83" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-84"><a href="#cb2-84" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■               <span class="dv">61</span>% (<span class="dv">38</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-84"><a href="#cb2-84" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■               <span class="dv">60</span>% (<span class="dv">37</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-85"><a href="#cb2-85" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-86"><a href="#cb2-86" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■              <span class="dv">63</span>% (<span class="dv">39</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-86"><a href="#cb2-86" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■               <span class="dv">61</span>% (<span class="dv">38</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-87"><a href="#cb2-87" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-88"><a href="#cb2-88" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■              <span class="dv">65</span>% (<span class="dv">40</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-88"><a href="#cb2-88" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■              <span class="dv">63</span>% (<span class="dv">39</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-89"><a href="#cb2-89" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-90"><a href="#cb2-90" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■             <span class="dv">66</span>% (<span class="dv">41</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-90"><a href="#cb2-90" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■              <span class="dv">65</span>% (<span class="dv">40</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-91"><a href="#cb2-91" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-92"><a href="#cb2-92" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■             <span class="dv">68</span>% (<span class="dv">42</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-92"><a href="#cb2-92" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■             <span class="dv">66</span>% (<span class="dv">41</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-93"><a href="#cb2-93" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-94"><a href="#cb2-94" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■            <span class="dv">69</span>% (<span class="dv">43</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-94"><a href="#cb2-94" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■             <span class="dv">68</span>% (<span class="dv">42</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-95"><a href="#cb2-95" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-96"><a href="#cb2-96" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■            <span class="dv">71</span>% (<span class="dv">44</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-96"><a href="#cb2-96" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■            <span class="dv">69</span>% (<span class="dv">43</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-97"><a href="#cb2-97" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-98"><a href="#cb2-98" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■           <span class="dv">73</span>% (<span class="dv">45</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-98"><a href="#cb2-98" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■            <span class="dv">71</span>% (<span class="dv">44</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-99"><a href="#cb2-99" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-100"><a href="#cb2-100" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■           <span class="dv">74</span>% (<span class="dv">46</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-100"><a href="#cb2-100" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■           <span class="dv">73</span>% (<span class="dv">45</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-101"><a href="#cb2-101" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-102"><a href="#cb2-102" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■          <span class="dv">76</span>% (<span class="dv">47</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-102"><a href="#cb2-102" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■           <span class="dv">74</span>% (<span class="dv">46</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-103"><a href="#cb2-103" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-104"><a href="#cb2-104" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■          <span class="dv">77</span>% (<span class="dv">48</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-104"><a href="#cb2-104" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■          <span class="dv">76</span>% (<span class="dv">47</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-105"><a href="#cb2-105" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-106"><a href="#cb2-106" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■         <span class="dv">79</span>% (<span class="dv">49</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-106"><a href="#cb2-106" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■          <span class="dv">77</span>% (<span class="dv">48</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-107"><a href="#cb2-107" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-108"><a href="#cb2-108" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■         <span class="dv">81</span>% (<span class="dv">50</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-108"><a href="#cb2-108" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■         <span class="dv">79</span>% (<span class="dv">49</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-109"><a href="#cb2-109" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-110"><a href="#cb2-110" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■        <span class="dv">82</span>% (<span class="dv">51</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-110"><a href="#cb2-110" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■         <span class="dv">81</span>% (<span class="dv">50</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-111"><a href="#cb2-111" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-112"><a href="#cb2-112" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■        <span class="dv">84</span>% (<span class="dv">52</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-112"><a href="#cb2-112" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■        <span class="dv">82</span>% (<span class="dv">51</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-113"><a href="#cb2-113" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-114"><a href="#cb2-114" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■       <span class="dv">85</span>% (<span class="dv">53</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-114"><a href="#cb2-114" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■        <span class="dv">84</span>% (<span class="dv">52</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-115"><a href="#cb2-115" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-116"><a href="#cb2-116" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■       <span class="dv">87</span>% (<span class="dv">54</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-116"><a href="#cb2-116" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■       <span class="dv">85</span>% (<span class="dv">53</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-117"><a href="#cb2-117" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-118"><a href="#cb2-118" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■      <span class="dv">89</span>% (<span class="dv">55</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-118"><a href="#cb2-118" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■       <span class="dv">87</span>% (<span class="dv">54</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-119"><a href="#cb2-119" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-120"><a href="#cb2-120" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■      <span class="dv">90</span>% (<span class="dv">56</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-120"><a href="#cb2-120" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■      <span class="dv">89</span>% (<span class="dv">55</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-121"><a href="#cb2-121" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-122"><a href="#cb2-122" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     <span class="dv">94</span>% (<span class="dv">58</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-122"><a href="#cb2-122" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■      <span class="dv">90</span>% (<span class="dv">56</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-123"><a href="#cb2-123" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-124"><a href="#cb2-124" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    <span class="dv">95</span>% (<span class="dv">59</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-124"><a href="#cb2-124" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     <span class="dv">92</span>% (<span class="dv">57</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-125"><a href="#cb2-125" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-126"><a href="#cb2-126" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    <span class="dv">97</span>% (<span class="dv">60</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-126"><a href="#cb2-126" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     <span class="dv">94</span>% (<span class="dv">58</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-127"><a href="#cb2-127" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-128"><a href="#cb2-128" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   <span class="dv">98</span>% (<span class="dv">61</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-128"><a href="#cb2-128" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    <span class="dv">95</span>% (<span class="dv">59</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-129"><a href="#cb2-129" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-130"><a href="#cb2-130" tabindex="-1"></a>                                             </span>
+<span id="cb2-130"><a href="#cb2-130" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    <span class="dv">97</span>% (<span class="dv">60</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-131"><a href="#cb2-131" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-132"><a href="#cb2-132" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-132"><a href="#cb2-132" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   <span class="dv">98</span>% (<span class="dv">61</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-133"><a href="#cb2-133" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-134"><a href="#cb2-134" tabindex="-1"></a><span class="co">#&gt; Integrating piecewise results</span></span>
-<span id="cb2-135"><a href="#cb2-135" tabindex="-1"></a><span class="co">#&gt; Point estimates:</span></span>
-<span id="cb2-136"><a href="#cb2-136" tabindex="-1"></a><span class="co">#&gt; • Heritability of phenotype 1:  0.1008</span></span>
-<span id="cb2-137"><a href="#cb2-137" tabindex="-1"></a><span class="co">#&gt; • Heritability of phenotype 2:  0.0066</span></span>
-<span id="cb2-138"><a href="#cb2-138" tabindex="-1"></a><span class="co">#&gt; • Genetic Covariance:  -0.006</span></span>
-<span id="cb2-139"><a href="#cb2-139" tabindex="-1"></a><span class="co">#&gt; • Genetic Correlation:  -0.2318</span></span>
-<span id="cb2-140"><a href="#cb2-140" tabindex="-1"></a><span class="co">#&gt; ℹ Continuing computing standard error with jackknife</span></span>
-<span id="cb2-141"><a href="#cb2-141" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-142"><a href="#cb2-142" tabindex="-1"></a>■■                                 <span class="dv">3</span>% (<span class="dv">2</span><span class="sc">/</span><span class="dv">62</span>)</span>
-<span id="cb2-143"><a href="#cb2-143" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-144"><a href="#cb2-144" tabindex="-1"></a>■■                                 <span class="dv">5</span>% (<span class="dv">3</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-134"><a href="#cb2-134" tabindex="-1"></a>                                             </span>
+<span id="cb2-135"><a href="#cb2-135" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-136"><a href="#cb2-136" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-137"><a href="#cb2-137" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-138"><a href="#cb2-138" tabindex="-1"></a><span class="co">#&gt; Integrating piecewise results</span></span>
+<span id="cb2-139"><a href="#cb2-139" tabindex="-1"></a><span class="co">#&gt; Point estimates:</span></span>
+<span id="cb2-140"><a href="#cb2-140" tabindex="-1"></a><span class="co">#&gt; • Heritability of phenotype 1:  0.1008</span></span>
+<span id="cb2-141"><a href="#cb2-141" tabindex="-1"></a><span class="co">#&gt; • Heritability of phenotype 2:  0.0066</span></span>
+<span id="cb2-142"><a href="#cb2-142" tabindex="-1"></a><span class="co">#&gt; • Genetic Covariance:  -0.006</span></span>
+<span id="cb2-143"><a href="#cb2-143" tabindex="-1"></a><span class="co">#&gt; • Genetic Correlation:  -0.2318</span></span>
+<span id="cb2-144"><a href="#cb2-144" tabindex="-1"></a><span class="co">#&gt; ℹ Continuing computing standard error with jackknife</span></span>
 <span id="cb2-145"><a href="#cb2-145" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-146"><a href="#cb2-146" tabindex="-1"></a>■■■                                <span class="dv">6</span>% (<span class="dv">4</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-146"><a href="#cb2-146" tabindex="-1"></a>■                                  <span class="dv">2</span>% (<span class="dv">1</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-147"><a href="#cb2-147" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-148"><a href="#cb2-148" tabindex="-1"></a>■■■                                <span class="dv">8</span>% (<span class="dv">5</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-148"><a href="#cb2-148" tabindex="-1"></a>■■                                 <span class="dv">3</span>% (<span class="dv">2</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-149"><a href="#cb2-149" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-150"><a href="#cb2-150" tabindex="-1"></a>■■■■                              <span class="dv">10</span>% (<span class="dv">6</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-150"><a href="#cb2-150" tabindex="-1"></a>■■                                 <span class="dv">5</span>% (<span class="dv">3</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-151"><a href="#cb2-151" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-152"><a href="#cb2-152" tabindex="-1"></a>■■■■                              <span class="dv">11</span>% (<span class="dv">7</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-152"><a href="#cb2-152" tabindex="-1"></a>■■■                                <span class="dv">6</span>% (<span class="dv">4</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-153"><a href="#cb2-153" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-154"><a href="#cb2-154" tabindex="-1"></a>■■■■■                             <span class="dv">13</span>% (<span class="dv">8</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-154"><a href="#cb2-154" tabindex="-1"></a>■■■                                <span class="dv">8</span>% (<span class="dv">5</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-155"><a href="#cb2-155" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-156"><a href="#cb2-156" tabindex="-1"></a>■■■■■                             <span class="dv">15</span>% (<span class="dv">9</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-156"><a href="#cb2-156" tabindex="-1"></a>■■■■                              <span class="dv">10</span>% (<span class="dv">6</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-157"><a href="#cb2-157" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-158"><a href="#cb2-158" tabindex="-1"></a>■■■■■■                            <span class="dv">16</span>% (<span class="dv">10</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-158"><a href="#cb2-158" tabindex="-1"></a>■■■■                              <span class="dv">11</span>% (<span class="dv">7</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-159"><a href="#cb2-159" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-160"><a href="#cb2-160" tabindex="-1"></a>■■■■■■                            <span class="dv">18</span>% (<span class="dv">11</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-160"><a href="#cb2-160" tabindex="-1"></a>■■■■■                             <span class="dv">13</span>% (<span class="dv">8</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-161"><a href="#cb2-161" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-162"><a href="#cb2-162" tabindex="-1"></a>■■■■■■■                           <span class="dv">19</span>% (<span class="dv">12</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-162"><a href="#cb2-162" tabindex="-1"></a>■■■■■                             <span class="dv">15</span>% (<span class="dv">9</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-163"><a href="#cb2-163" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-164"><a href="#cb2-164" tabindex="-1"></a>■■■■■■■                           <span class="dv">21</span>% (<span class="dv">13</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-164"><a href="#cb2-164" tabindex="-1"></a>■■■■■■                            <span class="dv">16</span>% (<span class="dv">10</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-165"><a href="#cb2-165" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-166"><a href="#cb2-166" tabindex="-1"></a>■■■■■■■■                          <span class="dv">23</span>% (<span class="dv">14</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-166"><a href="#cb2-166" tabindex="-1"></a>■■■■■■                            <span class="dv">18</span>% (<span class="dv">11</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-167"><a href="#cb2-167" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-168"><a href="#cb2-168" tabindex="-1"></a>■■■■■■■■                          <span class="dv">24</span>% (<span class="dv">15</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-168"><a href="#cb2-168" tabindex="-1"></a>■■■■■■■                           <span class="dv">19</span>% (<span class="dv">12</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-169"><a href="#cb2-169" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-170"><a href="#cb2-170" tabindex="-1"></a>■■■■■■■■■                         <span class="dv">26</span>% (<span class="dv">16</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-170"><a href="#cb2-170" tabindex="-1"></a>■■■■■■■                           <span class="dv">21</span>% (<span class="dv">13</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-171"><a href="#cb2-171" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-172"><a href="#cb2-172" tabindex="-1"></a>■■■■■■■■■                         <span class="dv">27</span>% (<span class="dv">17</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-172"><a href="#cb2-172" tabindex="-1"></a>■■■■■■■■                          <span class="dv">23</span>% (<span class="dv">14</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-173"><a href="#cb2-173" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-174"><a href="#cb2-174" tabindex="-1"></a>■■■■■■■■■■                        <span class="dv">29</span>% (<span class="dv">18</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-174"><a href="#cb2-174" tabindex="-1"></a>■■■■■■■■                          <span class="dv">24</span>% (<span class="dv">15</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-175"><a href="#cb2-175" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-176"><a href="#cb2-176" tabindex="-1"></a>■■■■■■■■■■                        <span class="dv">31</span>% (<span class="dv">19</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-176"><a href="#cb2-176" tabindex="-1"></a>■■■■■■■■■                         <span class="dv">26</span>% (<span class="dv">16</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-177"><a href="#cb2-177" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-178"><a href="#cb2-178" tabindex="-1"></a>■■■■■■■■■■■                       <span class="dv">32</span>% (<span class="dv">20</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-178"><a href="#cb2-178" tabindex="-1"></a>■■■■■■■■■                         <span class="dv">27</span>% (<span class="dv">17</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-179"><a href="#cb2-179" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-180"><a href="#cb2-180" tabindex="-1"></a>■■■■■■■■■■■                       <span class="dv">34</span>% (<span class="dv">21</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-180"><a href="#cb2-180" tabindex="-1"></a>■■■■■■■■■■                        <span class="dv">29</span>% (<span class="dv">18</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-181"><a href="#cb2-181" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-182"><a href="#cb2-182" tabindex="-1"></a>■■■■■■■■■■■■                      <span class="dv">35</span>% (<span class="dv">22</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-182"><a href="#cb2-182" tabindex="-1"></a>■■■■■■■■■■                        <span class="dv">31</span>% (<span class="dv">19</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-183"><a href="#cb2-183" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-184"><a href="#cb2-184" tabindex="-1"></a>■■■■■■■■■■■■                      <span class="dv">37</span>% (<span class="dv">23</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-184"><a href="#cb2-184" tabindex="-1"></a>■■■■■■■■■■■                       <span class="dv">32</span>% (<span class="dv">20</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-185"><a href="#cb2-185" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-186"><a href="#cb2-186" tabindex="-1"></a>■■■■■■■■■■■■■                     <span class="dv">39</span>% (<span class="dv">24</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-186"><a href="#cb2-186" tabindex="-1"></a>■■■■■■■■■■■                       <span class="dv">34</span>% (<span class="dv">21</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-187"><a href="#cb2-187" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-188"><a href="#cb2-188" tabindex="-1"></a>■■■■■■■■■■■■■                     <span class="dv">40</span>% (<span class="dv">25</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-188"><a href="#cb2-188" tabindex="-1"></a>■■■■■■■■■■■■                      <span class="dv">35</span>% (<span class="dv">22</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-189"><a href="#cb2-189" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-190"><a href="#cb2-190" tabindex="-1"></a>■■■■■■■■■■■■■■                    <span class="dv">42</span>% (<span class="dv">26</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-190"><a href="#cb2-190" tabindex="-1"></a>■■■■■■■■■■■■                      <span class="dv">37</span>% (<span class="dv">23</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-191"><a href="#cb2-191" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-192"><a href="#cb2-192" tabindex="-1"></a>■■■■■■■■■■■■■■                    <span class="dv">44</span>% (<span class="dv">27</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-192"><a href="#cb2-192" tabindex="-1"></a>■■■■■■■■■■■■■                     <span class="dv">39</span>% (<span class="dv">24</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-193"><a href="#cb2-193" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-194"><a href="#cb2-194" tabindex="-1"></a>■■■■■■■■■■■■■■■                   <span class="dv">45</span>% (<span class="dv">28</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-194"><a href="#cb2-194" tabindex="-1"></a>■■■■■■■■■■■■■                     <span class="dv">40</span>% (<span class="dv">25</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-195"><a href="#cb2-195" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-196"><a href="#cb2-196" tabindex="-1"></a>■■■■■■■■■■■■■■■                   <span class="dv">47</span>% (<span class="dv">29</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-196"><a href="#cb2-196" tabindex="-1"></a>■■■■■■■■■■■■■■                    <span class="dv">42</span>% (<span class="dv">26</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-197"><a href="#cb2-197" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-198"><a href="#cb2-198" tabindex="-1"></a>■■■■■■■■■■■■■■■■                  <span class="dv">48</span>% (<span class="dv">30</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-198"><a href="#cb2-198" tabindex="-1"></a>■■■■■■■■■■■■■■                    <span class="dv">44</span>% (<span class="dv">27</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-199"><a href="#cb2-199" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-200"><a href="#cb2-200" tabindex="-1"></a>■■■■■■■■■■■■■■■■                  <span class="dv">50</span>% (<span class="dv">31</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-200"><a href="#cb2-200" tabindex="-1"></a>■■■■■■■■■■■■■■■                   <span class="dv">45</span>% (<span class="dv">28</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-201"><a href="#cb2-201" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-202"><a href="#cb2-202" tabindex="-1"></a>■■■■■■■■■■■■■■■■                  <span class="dv">52</span>% (<span class="dv">32</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-202"><a href="#cb2-202" tabindex="-1"></a>■■■■■■■■■■■■■■■                   <span class="dv">47</span>% (<span class="dv">29</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-203"><a href="#cb2-203" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-204"><a href="#cb2-204" tabindex="-1"></a>■■■■■■■■■■■■■■■■■                 <span class="dv">53</span>% (<span class="dv">33</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-204"><a href="#cb2-204" tabindex="-1"></a>■■■■■■■■■■■■■■■■                  <span class="dv">48</span>% (<span class="dv">30</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-205"><a href="#cb2-205" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-206"><a href="#cb2-206" tabindex="-1"></a>■■■■■■■■■■■■■■■■■                 <span class="dv">55</span>% (<span class="dv">34</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-206"><a href="#cb2-206" tabindex="-1"></a>■■■■■■■■■■■■■■■■                  <span class="dv">50</span>% (<span class="dv">31</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-207"><a href="#cb2-207" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-208"><a href="#cb2-208" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■                <span class="dv">56</span>% (<span class="dv">35</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-208"><a href="#cb2-208" tabindex="-1"></a>■■■■■■■■■■■■■■■■                  <span class="dv">52</span>% (<span class="dv">32</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-209"><a href="#cb2-209" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-210"><a href="#cb2-210" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■                <span class="dv">58</span>% (<span class="dv">36</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-210"><a href="#cb2-210" tabindex="-1"></a>■■■■■■■■■■■■■■■■■                 <span class="dv">53</span>% (<span class="dv">33</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-211"><a href="#cb2-211" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-212"><a href="#cb2-212" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■               <span class="dv">60</span>% (<span class="dv">37</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-212"><a href="#cb2-212" tabindex="-1"></a>■■■■■■■■■■■■■■■■■                 <span class="dv">55</span>% (<span class="dv">34</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-213"><a href="#cb2-213" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-214"><a href="#cb2-214" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■               <span class="dv">61</span>% (<span class="dv">38</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-214"><a href="#cb2-214" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■                <span class="dv">56</span>% (<span class="dv">35</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-215"><a href="#cb2-215" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-216"><a href="#cb2-216" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■              <span class="dv">63</span>% (<span class="dv">39</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-216"><a href="#cb2-216" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■                <span class="dv">58</span>% (<span class="dv">36</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-217"><a href="#cb2-217" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-218"><a href="#cb2-218" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■              <span class="dv">65</span>% (<span class="dv">40</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-218"><a href="#cb2-218" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■               <span class="dv">60</span>% (<span class="dv">37</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-219"><a href="#cb2-219" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-220"><a href="#cb2-220" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■             <span class="dv">66</span>% (<span class="dv">41</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-220"><a href="#cb2-220" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■               <span class="dv">61</span>% (<span class="dv">38</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-221"><a href="#cb2-221" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-222"><a href="#cb2-222" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■             <span class="dv">68</span>% (<span class="dv">42</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-222"><a href="#cb2-222" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■              <span class="dv">63</span>% (<span class="dv">39</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-223"><a href="#cb2-223" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-224"><a href="#cb2-224" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■            <span class="dv">69</span>% (<span class="dv">43</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-224"><a href="#cb2-224" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■              <span class="dv">65</span>% (<span class="dv">40</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-225"><a href="#cb2-225" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-226"><a href="#cb2-226" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■            <span class="dv">71</span>% (<span class="dv">44</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-226"><a href="#cb2-226" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■             <span class="dv">66</span>% (<span class="dv">41</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-227"><a href="#cb2-227" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-228"><a href="#cb2-228" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■           <span class="dv">73</span>% (<span class="dv">45</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-228"><a href="#cb2-228" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■             <span class="dv">68</span>% (<span class="dv">42</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-229"><a href="#cb2-229" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-230"><a href="#cb2-230" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■           <span class="dv">74</span>% (<span class="dv">46</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-230"><a href="#cb2-230" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■            <span class="dv">69</span>% (<span class="dv">43</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-231"><a href="#cb2-231" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-232"><a href="#cb2-232" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■          <span class="dv">76</span>% (<span class="dv">47</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-232"><a href="#cb2-232" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■            <span class="dv">71</span>% (<span class="dv">44</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-233"><a href="#cb2-233" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-234"><a href="#cb2-234" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■          <span class="dv">77</span>% (<span class="dv">48</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-234"><a href="#cb2-234" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■           <span class="dv">73</span>% (<span class="dv">45</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-235"><a href="#cb2-235" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-236"><a href="#cb2-236" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■         <span class="dv">79</span>% (<span class="dv">49</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-236"><a href="#cb2-236" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■           <span class="dv">74</span>% (<span class="dv">46</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-237"><a href="#cb2-237" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-238"><a href="#cb2-238" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■         <span class="dv">81</span>% (<span class="dv">50</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-238"><a href="#cb2-238" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■          <span class="dv">76</span>% (<span class="dv">47</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-239"><a href="#cb2-239" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-240"><a href="#cb2-240" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■        <span class="dv">82</span>% (<span class="dv">51</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-240"><a href="#cb2-240" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■          <span class="dv">77</span>% (<span class="dv">48</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-241"><a href="#cb2-241" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-242"><a href="#cb2-242" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■        <span class="dv">84</span>% (<span class="dv">52</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-242"><a href="#cb2-242" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■         <span class="dv">79</span>% (<span class="dv">49</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-243"><a href="#cb2-243" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-244"><a href="#cb2-244" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■       <span class="dv">85</span>% (<span class="dv">53</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-244"><a href="#cb2-244" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■         <span class="dv">81</span>% (<span class="dv">50</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-245"><a href="#cb2-245" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-246"><a href="#cb2-246" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■       <span class="dv">87</span>% (<span class="dv">54</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-246"><a href="#cb2-246" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■        <span class="dv">82</span>% (<span class="dv">51</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-247"><a href="#cb2-247" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-248"><a href="#cb2-248" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■      <span class="dv">89</span>% (<span class="dv">55</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-248"><a href="#cb2-248" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■        <span class="dv">84</span>% (<span class="dv">52</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-249"><a href="#cb2-249" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-250"><a href="#cb2-250" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■      <span class="dv">90</span>% (<span class="dv">56</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-250"><a href="#cb2-250" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■       <span class="dv">85</span>% (<span class="dv">53</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-251"><a href="#cb2-251" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-252"><a href="#cb2-252" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     <span class="dv">92</span>% (<span class="dv">57</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-252"><a href="#cb2-252" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■       <span class="dv">87</span>% (<span class="dv">54</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-253"><a href="#cb2-253" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-254"><a href="#cb2-254" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     <span class="dv">94</span>% (<span class="dv">58</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-254"><a href="#cb2-254" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■      <span class="dv">89</span>% (<span class="dv">55</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-255"><a href="#cb2-255" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-256"><a href="#cb2-256" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    <span class="dv">95</span>% (<span class="dv">59</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-256"><a href="#cb2-256" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■      <span class="dv">90</span>% (<span class="dv">56</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-257"><a href="#cb2-257" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-258"><a href="#cb2-258" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    <span class="dv">97</span>% (<span class="dv">60</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-258"><a href="#cb2-258" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     <span class="dv">92</span>% (<span class="dv">57</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-259"><a href="#cb2-259" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-260"><a href="#cb2-260" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   <span class="dv">98</span>% (<span class="dv">61</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-260"><a href="#cb2-260" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     <span class="dv">94</span>% (<span class="dv">58</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-261"><a href="#cb2-261" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-262"><a href="#cb2-262" tabindex="-1"></a>                                             </span>
+<span id="cb2-262"><a href="#cb2-262" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    <span class="dv">95</span>% (<span class="dv">59</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-263"><a href="#cb2-263" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-264"><a href="#cb2-264" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-264"><a href="#cb2-264" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    <span class="dv">97</span>% (<span class="dv">60</span><span class="sc">/</span><span class="dv">62</span>)</span>
 <span id="cb2-265"><a href="#cb2-265" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-266"><a href="#cb2-266" tabindex="-1"></a><span class="co">#&gt; • Heritability of phenotype 1: 0.1008 ( 0.0046 )</span></span>
-<span id="cb2-267"><a href="#cb2-267" tabindex="-1"></a><span class="co">#&gt; • Heritability of phenotype 2: 0.0066 ( 8e-04 )</span></span>
-<span id="cb2-268"><a href="#cb2-268" tabindex="-1"></a><span class="co">#&gt; • Genetic Covariance: -0.006 ( 0.0011 )</span></span>
-<span id="cb2-269"><a href="#cb2-269" tabindex="-1"></a><span class="co">#&gt; • Genetic Correlation: -0.2318 ( 0.0428 )</span></span>
-<span id="cb2-270"><a href="#cb2-270" tabindex="-1"></a><span class="co">#&gt; • P: 6.19e-08</span></span>
+<span id="cb2-266"><a href="#cb2-266" tabindex="-1"></a>■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   <span class="dv">98</span>% (<span class="dv">61</span><span class="sc">/</span><span class="dv">62</span>)</span>
+<span id="cb2-267"><a href="#cb2-267" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-268"><a href="#cb2-268" tabindex="-1"></a>                                             </span>
+<span id="cb2-269"><a href="#cb2-269" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-270"><a href="#cb2-270" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb2-271"><a href="#cb2-271" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-272"><a href="#cb2-272" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-273"><a href="#cb2-273" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-274"><a href="#cb2-274" tabindex="-1"></a><span class="co">#&gt; Analysis finished at Wed Aug  6 11:24:55 2025</span></span></code></pre></div>
+<span id="cb2-272"><a href="#cb2-272" tabindex="-1"></a><span class="co">#&gt; • Heritability of phenotype 1: 0.1008 ( 0.0046 )</span></span>
+<span id="cb2-273"><a href="#cb2-273" tabindex="-1"></a><span class="co">#&gt; • Heritability of phenotype 2: 0.0066 ( 8e-04 )</span></span>
+<span id="cb2-274"><a href="#cb2-274" tabindex="-1"></a><span class="co">#&gt; • Genetic Covariance: -0.006 ( 0.0011 )</span></span>
+<span id="cb2-275"><a href="#cb2-275" tabindex="-1"></a><span class="co">#&gt; • Genetic Correlation: -0.2318 ( 0.0428 )</span></span>
+<span id="cb2-276"><a href="#cb2-276" tabindex="-1"></a><span class="co">#&gt; • P: 6.19e-08</span></span>
+<span id="cb2-277"><a href="#cb2-277" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-278"><a href="#cb2-278" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-279"><a href="#cb2-279" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-280"><a href="#cb2-280" tabindex="-1"></a><span class="co">#&gt; Analysis finished at Fri Aug  8 09:32:03 2025</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example-hdl-sample-data-20k-snps-ukb-array-svd-eigen90">Example: HDL Sample Data (20K SNPs, UKB Array SVD Eigen90)<a class="anchor" aria-label="anchor" href="#example-hdl-sample-data-20k-snps-ukb-array-svd-eigen90"></a>
@@ -418,7 +411,7 @@ around 20,000 individuals.</p>
 <span><span class="va">gwas2.example</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">'gwas2.array.example.rds'</span><span class="op">)</span></span>
 <span><span class="va">referenceLD</span> <span class="op">=</span> <span class="st">"UKB_array_SVD_eigen90_extraction"</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SumstatGenCorr.html">SumstatGenCorr</a></span><span class="op">(</span>ResultDir<span class="op">=</span><span class="va">ResultDir</span>, referenceLD <span class="op">=</span><span class="va">referenceLD</span>, sumstat1<span class="op">=</span><span class="va">gwas1.example</span>, sumstat2<span class="op">=</span><span class="va">gwas2.example</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Analysis starts on Wed Aug  6 11:24:56 2025</span></span>
+<span><span class="co">#&gt; Analysis starts on Fri Aug  8 09:32:03 2025</span></span>
 <span><span class="co">#&gt; Error in estimating Genetic Correlation: attempt to set an attribute on NULL</span></span></code></pre></div>
 <p><strong>Small number of SNPs anyways not good.</strong></p>
 <p><strong>Note:</strong> Singularities or ill-conditioned matrices can
@@ -714,8 +707,10 @@ to cite the package and the overall approach. Thank you!</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"GXwasR"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; To cite package 'GXwasR' in publications use:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   Bose B, Blostein F, Kim J, Winters J, Actkins KV, Mayer D, Congivaram H, Niarchou M, Edwards DV, Davis LK, Stranger BE (2025). "GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic Effects on Complex Traits." _medRxiv 2025.06.10.25329327_.</span></span>
-<span><span class="co">#&gt;   doi:10.1101/2025.06.10.25329327 &lt;https://doi.org/10.1101/2025.06.10.25329327&gt;.</span></span>
+<span><span class="co">#&gt;   Bose B, Blostein F, Kim J, Winters J, Actkins KV, Mayer D, Congivaram H, Niarchou M, Edwards DV, Davis</span></span>
+<span><span class="co">#&gt;   LK, Stranger BE (2025). "GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic Effects on</span></span>
+<span><span class="co">#&gt;   Complex Traits." _medRxiv 2025.06.10.25329327_. doi:10.1101/2025.06.10.25329327</span></span>
+<span><span class="co">#&gt;   &lt;https://doi.org/10.1101/2025.06.10.25329327&gt;.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; A BibTeX entry for LaTeX users is</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -731,8 +726,7 @@ to cite the package and the overall approach. Thank you!</p>
 <h2 id="reproducibility">Reproducibility<a class="anchor" aria-label="anchor" href="#reproducibility"></a>
 </h2>
 <p>The <em><a href="https://bioconductor.org/packages/3.21/GXwasR" class="external-link">GXwasR</a></em>
-package (Bose, Blostein, Kim, Winters, Actkins, Mayer, Congivaram,
-Niarchou, Edwards, Davis, and Stranger, 2025) was made possible thanks
+package (Bose, Blostein, Kim et al., 2025) was made possible thanks
 to:</p>
 <ul>
 <li>R (R Core Team, 2025)</li>
@@ -747,11 +741,10 @@ to:</p>
 (McLean, 2017)</li>
 <li>
 <em><a href="https://CRAN.R-project.org/package=rmarkdown" class="external-link">rmarkdown</a></em>
-(Allaire, Xie, Dervieux, McPherson, Luraschi, Ushey, Atkins, Wickham,
-Cheng, Chang, and Iannone, 2024)</li>
+(Allaire, Xie, Dervieux et al., 2024)</li>
 <li>
 <em><a href="https://CRAN.R-project.org/package=sessioninfo" class="external-link">sessioninfo</a></em>
-(Wickham, Chang, Flight, Müller, and Hester, 2025)</li>
+(Wickham, Chang, Flight et al., 2025)</li>
 <li>
 <em><a href="https://CRAN.R-project.org/package=testthat" class="external-link">testthat</a></em>
 (Wickham, 2011)</li>
@@ -761,16 +754,16 @@ Cheng, Chang, and Iannone, 2024)</li>
 <pre><code><span><span class="co">#&gt; ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt;  setting  value</span></span>
 <span><span class="co">#&gt;  version  R version 4.5.1 (2025-06-13)</span></span>
-<span><span class="co">#&gt;  os       macOS Sequoia 15.5</span></span>
+<span><span class="co">#&gt;  os       macOS Sequoia 15.6</span></span>
 <span><span class="co">#&gt;  system   aarch64, darwin24.4.0</span></span>
 <span><span class="co">#&gt;  ui       unknown</span></span>
 <span><span class="co">#&gt;  language (EN)</span></span>
 <span><span class="co">#&gt;  collate  en_US.UTF-8</span></span>
 <span><span class="co">#&gt;  ctype    en_US.UTF-8</span></span>
 <span><span class="co">#&gt;  tz       America/New_York</span></span>
-<span><span class="co">#&gt;  date     2025-08-06</span></span>
+<span><span class="co">#&gt;  date     2025-08-08</span></span>
 <span><span class="co">#&gt;  pandoc   3.6.3 @ /Applications/Positron.app/Contents/Resources/app/quarto/bin/tools/aarch64/ (via rmarkdown)</span></span>
-<span><span class="co">#&gt;  quarto   1.7.32 @ /usr/local/bin/quarto</span></span>
+<span><span class="co">#&gt;  quarto   1.7.33 @ /usr/local/bin/quarto</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt;  package              * version    date (UTC) lib source</span></span>
@@ -833,7 +826,7 @@ Cheng, Chang, and Iannone, 2024)</li>
 <span><span class="co">#&gt;  glue                   1.8.0      2024-09-30 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  gridExtra              2.3        2017-09-09 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  gtable                 0.3.6      2024-10-25 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  GXwasR               * 0.99.0     2025-08-06 [1] Bioconductor</span></span>
+<span><span class="co">#&gt;  GXwasR               * 0.99.0     2025-08-08 [1] Bioconductor</span></span>
 <span><span class="co">#&gt;  hms                    1.1.3      2023-03-21 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  htmltools              0.5.8.1    2024-04-04 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  htmlwidgets            1.6.4      2023-12-06 [2] CRAN (R 4.5.0)</span></span>
@@ -843,6 +836,7 @@ Cheng, Chang, and Iannone, 2024)</li>
 <span><span class="co">#&gt;  iterators              1.0.14     2022-02-05 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  jsonlite               2.0.0      2025-03-27 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  knitr                  1.50       2025-03-16 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  labeling               0.4.3      2023-08-29 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  later                  1.4.2      2025-04-08 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;  lattice                0.22-7     2025-04-02 [4] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;  lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.5.0)</span></span>
@@ -925,7 +919,7 @@ Cheng, Chang, and Iannone, 2024)</li>
 <span><span class="co">#&gt;  XVector                0.48.0     2025-04-15 [2] Bioconduc~</span></span>
 <span><span class="co">#&gt;  yaml                   2.3.10     2024-07-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpJ93upV/temp_libpathcfe02f0c39d5</span></span>
+<span><span class="co">#&gt;  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpcRh9ZZ/temp_libpath4e4d53c96c8f</span></span>
 <span><span class="co">#&gt;  [2] /Users/mayerdav/Library/R/arm64/4.5/library</span></span>
 <span><span class="co">#&gt;  [3] /opt/homebrew/lib/R/4.5/site-library</span></span>
 <span><span class="co">#&gt;  [4] /opt/homebrew/Cellar/r/4.5.1/lib/R/library</span></span>

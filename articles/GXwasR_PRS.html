@@ -35,7 +35,7 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="active nav-item dropdown">
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/GXwasR_overview.html">GXwasR Overview</a></li>
@@ -75,9 +75,9 @@ Bose</h4>
 Campus<br><a class="author_email" href="mailto:#"></a><a href="mailto:banabithi.bose@gmail.com" class="email">banabithi.bose@gmail.com</a>
       </address>
                   
-            <h4 data-toc-skip class="date">5 August 2025</h4>
+            <h4 data-toc-skip class="date">8 August 2025</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/main/vignettes/GXwasR_PRS.Rmd" class="external-link"><code>vignettes/GXwasR_PRS.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/HEAD/vignettes/GXwasR_PRS.Rmd" class="external-link"><code>vignettes/GXwasR_PRS.Rmd</code></a></small>
       <div class="d-none name"><code>GXwasR_PRS.Rmd</code></div>
     </div>
 
@@ -89,29 +89,13 @@ utilizing GXwasR R package.</strong></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Call some libraries (Users can ignore this.)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/printr/" class="external-link">printr</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Registered S3 method overwritten by 'printr':</span></span>
-<span><span class="co">#&gt;   method                from     </span></span>
-<span><span class="co">#&gt;   knit_print.data.frame rmarkdown</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rstudio/rmarkdown" class="external-link">rmarkdown</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="call-gxwasr-library-and-load-example-datasets">Call GXwasR library and load example datasets:<a class="anchor" aria-label="anchor" href="#call-gxwasr-library-and-load-example-datasets"></a>
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Call GXwasR library</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/boseb/GXwasR/" class="external-link">GXwasR</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; GXwasR: Genome-wide and x-chromosome wide association analyses applying best practices of quality control over genetic data</span></span>
-<span><span class="co">#&gt; Version 0.99.0 () installed</span></span>
-<span><span class="co">#&gt; Author: c(</span></span>
-<span><span class="co">#&gt;     person(given = "Banabithi",</span></span>
-<span><span class="co">#&gt;            family = "Bose",</span></span>
-<span><span class="co">#&gt;            role = c("cre", "aut"),</span></span>
-<span><span class="co">#&gt;            email = "banabithi.bose@gmail.com",</span></span>
-<span><span class="co">#&gt;            comment = c(ORCID = "0000-0003-0842-8768"))</span></span>
-<span><span class="co">#&gt;            )</span></span>
-<span><span class="co">#&gt; Maintainer: Banabithi Bose &lt;banabithi.bose@gmail.com&gt;</span></span>
-<span><span class="co">#&gt; Tutorial: https://github.com</span></span>
-<span><span class="co">#&gt; Use citation("GXwasR") to know how to cite this work.</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/boseb/GXwasR/" class="external-link">GXwasR</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="computing-standard-prs-using-computeprs">Computing standard PRS using ComputePRS():<a class="anchor" aria-label="anchor" href="#computing-standard-prs-using-computeprs"></a>
@@ -365,9 +349,7 @@ utilizing GXwasR R package.</strong></p>
 <span><span class="va">ldclump</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span><span class="va">pheno_type</span> <span class="op">&lt;-</span> <span class="st">"binary"</span></span>
 <span><span class="va">PRSresult</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputePRS.html">ComputePRS</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span>, <span class="va">summarystat</span>, <span class="va">phenofile</span>, <span class="va">covarfile</span>, effectsize <span class="op">=</span> <span class="st">"BETA"</span>, LDreference <span class="op">=</span> <span class="st">"GXwasR_example"</span>, ldclump <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">clump_p1</span>, <span class="va">clump_p2</span>, <span class="va">clump_r2</span>, <span class="va">clump_kb</span>, byCHR <span class="op">=</span> <span class="cn">TRUE</span>, pthreshold <span class="op">=</span> <span class="va">pthreshold</span>, highLD_regions <span class="op">=</span> <span class="va">highLD_regions</span>, ld_prunning <span class="op">=</span> <span class="cn">TRUE</span>, window_size <span class="op">=</span> <span class="fl">50</span>, step_size <span class="op">=</span> <span class="fl">5</span>, r2_threshold <span class="op">=</span> <span class="fl">0.02</span>, nPC <span class="op">=</span> <span class="fl">6</span>, pheno_type <span class="op">=</span> <span class="st">"binary"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Using PLINK v1.9.0-b.7.7 64-bit (22 Oct 2024)</span></span>
-<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/temp_libpath102938d3a72d', reason 'Directory not empty'</span></span>
-<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpcRh9ZZ/temp_libpath4e4d53c96c8f', reason 'Directory not empty'</span></span>
 <span><span class="co">#&gt; ℹ 0.001</span></span>
 <span><span class="co">#&gt; • Computing PRS for threshold 0.001</span></span>
 <span><span class="co">#&gt; ℹ 0.05</span></span>
@@ -382,11 +364,8 @@ utilizing GXwasR R package.</strong></p>
 <span><span class="co">#&gt; • Computing PRS for threshold 0.4</span></span>
 <span><span class="co">#&gt; ℹ 0.5</span></span>
 <span><span class="co">#&gt; • Computing PRS for threshold 0.5</span></span>
-<span><span class="co">#&gt; This message is displayed once every 8 hours.</span></span>
-<span><span class="va">PRSresult</span><span class="op">$</span><span class="va">PRS_plot</span></span></code></pre></div>
-<div class="float">
-<img src="compute_prs-1.png" alt="plot of chunk compute_prs"><div class="figcaption">plot of chunk compute_prs</div>
-</div>
+<span><span class="va">PRSresult</span><span class="op">$</span><span class="va">PRS_plot</span></span>
+<span><span class="co">#&gt; Error in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, : Metric information not available for this family/device</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## This table shows 10 samples with phenotype, covariates and a PRS column.</span></span>
 <span><span class="va">PRS</span> <span class="op">&lt;-</span> <span class="va">PRSresult</span><span class="op">$</span><span class="va">PRS</span></span>
@@ -648,7 +627,7 @@ C/G) SNPs and SNPs with MAF &lt; 0.05 and Hardy Weinberg Equilibrium
 <span><span class="co">#&gt; --hwe: 3 variants removed due to Hardy-Weinberg exact test.</span></span>
 <span><span class="co">#&gt; 5467 variants removed due to minor allele threshold(s)</span></span>
 <span><span class="co">#&gt; ℹ No filter based on differential missingness will be applied.</span></span>
-<span><span class="co">#&gt; ✔ Output plink files prefixed as ,filtered_step1, with passed SNPs are saved in ResultDir.</span></span>
+<span><span class="co">#&gt; ✔ Output PLINK files prefixed as ,filtered_step1, with passed SNPs are saved in ResultDir.</span></span>
 <span><span class="co">#&gt; ℹ Input file has 26527 SNPs.</span></span>
 <span><span class="co">#&gt; ℹ Output file has 16843 SNPs after filtering.</span></span></code></pre></div>
 <p><strong>(C) Check whether SNPs present in discovery data are in
@@ -676,7 +655,7 @@ target data.</strong></p>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"NewtargetData"</span></span>
 <span><span class="fu"><a href="../reference/FilterSNP.html">FilterSNP</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span>, <span class="va">foutput</span>, <span class="va">SNPvec</span>, extract <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ 991 SNPs are extracted</span></span>
-<span><span class="co">#&gt; ✔ Plink files with extracted SNPs are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB prefixed as NewtargetData</span></span>
+<span><span class="co">#&gt; ✔ Plink files with extracted SNPs are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ prefixed as NewtargetData</span></span>
 <span><span class="co">#&gt; NULL</span></span></code></pre></div>
 <p>Now, our discovery data and target data are ready. We will proceed
 towards computing first sex-combined PRS and then sex-stratified
@@ -724,7 +703,7 @@ model with covariates, such as genetic PCs.</strong></p>
 <span><span class="va">effectsize</span> <span class="op">&lt;-</span> <span class="st">"BETA"</span></span>
 <span><span class="va">ldclump</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span><span class="va">PRSresult</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputePRS.html">ComputePRS</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span>, <span class="va">summarystat</span>, <span class="va">phenofile</span>, <span class="va">covarfile</span>, effectsize <span class="op">=</span> <span class="st">"BETA"</span>, LDreference <span class="op">=</span> <span class="st">"GXwasR_example"</span>, ldclump <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">clump_p1</span>, <span class="va">clump_p2</span>, <span class="va">clump_r2</span>, <span class="va">clump_kb</span>, byCHR <span class="op">=</span> <span class="cn">TRUE</span>, pthreshold <span class="op">=</span> <span class="va">pthreshold</span>, highLD_regions <span class="op">=</span> <span class="va">highLD_regions</span>, ld_prunning <span class="op">=</span> <span class="cn">TRUE</span>, window_size <span class="op">=</span> <span class="fl">50</span>, step_size <span class="op">=</span> <span class="fl">5</span>, r2_threshold <span class="op">=</span> <span class="fl">0.02</span>, nPC <span class="op">=</span> <span class="fl">6</span>, pheno_type <span class="op">=</span> <span class="st">"binary"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/temp_libpath102938d3a72d', reason 'Directory not empty'</span></span>
+<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpcRh9ZZ/temp_libpath4e4d53c96c8f', reason 'Directory not empty'</span></span>
 <span><span class="co">#&gt; ℹ 0.001</span></span>
 <span><span class="co">#&gt; • Computing PRS for threshold 0.001</span></span>
 <span><span class="co">#&gt; ℹ 0.05</span></span>
@@ -739,10 +718,8 @@ model with covariates, such as genetic PCs.</strong></p>
 <span><span class="co">#&gt; • Computing PRS for threshold 0.4</span></span>
 <span><span class="co">#&gt; ℹ 0.5</span></span>
 <span><span class="co">#&gt; • Computing PRS for threshold 0.5</span></span>
-<span><span class="va">PRSresult</span><span class="op">$</span><span class="va">PRS_plot</span></span></code></pre></div>
-<div class="float">
-<img src="compute_prs_2-1.png" alt="plot of chunk compute_prs_2"><div class="figcaption">plot of chunk compute_prs_2</div>
-</div>
+<span><span class="va">PRSresult</span><span class="op">$</span><span class="va">PRS_plot</span></span>
+<span><span class="co">#&gt; Error in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, : Metric information not available for this family/device</span></span></code></pre></div>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## This table shows 10 samples with phenotype, covariates and a PRS column.</span></span>
 <span><span class="va">PRS</span> <span class="op">&lt;-</span> <span class="va">PRSresult</span><span class="op">$</span><span class="va">PRS</span></span>
@@ -1018,12 +995,12 @@ datasets.</strong></p>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"maletarget"</span></span>
 <span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="st">"males"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetMFPlink.html">GetMFPlink</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, sex <span class="op">=</span> <span class="va">sex</span>, xplink <span class="op">=</span> <span class="cn">FALSE</span>, autoplink <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Output plink files, prefixed as maletarget, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB</span></span>
+<span><span class="co">#&gt; ✔ Output PLINK files, prefixed as maletarget, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ</span></span>
 <span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"femaletarget"</span></span>
 <span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="st">"females"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetMFPlink.html">GetMFPlink</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, sex <span class="op">=</span> <span class="va">sex</span>, xplink <span class="op">=</span> <span class="cn">FALSE</span>, autoplink <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Output plink files, prefixed as femaletarget, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp47EYmB</span></span></code></pre></div>
+<span><span class="co">#&gt; ✔ Output PLINK files, prefixed as femaletarget, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ</span></span></code></pre></div>
 <p><strong>(C) Perform LD clumping separately in both discovery
 data.</strong></p>
 <p><strong>(D) Compute PRS at a variety of p-value thresholds, using
@@ -1076,7 +1053,7 @@ data<a class="anchor" aria-label="anchor" href="#computing-prs-for-female-only-t
 <span><span class="va">ldclump</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span><span class="va">effectsize</span> <span class="op">&lt;-</span> <span class="st">"BETA"</span></span>
 <span><span class="va">PRSresultFemale</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputePRS.html">ComputePRS</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span>, <span class="va">summarystat</span>, <span class="va">phenofile</span>, <span class="va">covarfile</span>, effectsize <span class="op">=</span> <span class="st">"BETA"</span>, LDreference <span class="op">=</span> <span class="st">"GXwasR_example"</span>, ldclump <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">clump_p1</span>, <span class="va">clump_p2</span>, <span class="va">clump_r2</span>, <span class="va">clump_kb</span>, byCHR <span class="op">=</span> <span class="cn">TRUE</span>, pthreshold <span class="op">=</span> <span class="va">pthreshold</span>, highLD_regions <span class="op">=</span> <span class="va">highLD_regions</span>, ld_prunning <span class="op">=</span> <span class="cn">TRUE</span>, window_size <span class="op">=</span> <span class="fl">50</span>, step_size <span class="op">=</span> <span class="fl">5</span>, r2_threshold <span class="op">=</span> <span class="fl">0.02</span>, nPC <span class="op">=</span> <span class="fl">6</span>, pheno_type <span class="op">=</span> <span class="st">"binary"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/temp_libpath102938d3a72d', reason 'Directory not empty'</span></span>
+<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpcRh9ZZ/temp_libpath4e4d53c96c8f', reason 'Directory not empty'</span></span>
 <span><span class="co">#&gt; ℹ 0.001</span></span>
 <span><span class="co">#&gt; • Computing PRS for threshold 0.001</span></span>
 <span><span class="co">#&gt; ℹ 0.05</span></span>
@@ -1091,10 +1068,8 @@ data<a class="anchor" aria-label="anchor" href="#computing-prs-for-female-only-t
 <span><span class="co">#&gt; • Computing PRS for threshold 0.4</span></span>
 <span><span class="co">#&gt; ℹ 0.5</span></span>
 <span><span class="co">#&gt; • Computing PRS for threshold 0.5</span></span>
-<span><span class="va">PRSresultFemale</span><span class="op">$</span><span class="va">PRS_plot</span></span></code></pre></div>
-<div class="float">
-<img src="compute_prs_female-1.png" alt="plot of chunk compute_prs_female"><div class="figcaption">plot of chunk compute_prs_female</div>
-</div>
+<span><span class="va">PRSresultFemale</span><span class="op">$</span><span class="va">PRS_plot</span></span>
+<span><span class="co">#&gt; Error in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, : Metric information not available for this family/device</span></span></code></pre></div>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## This table shows 10 samples with phenotype, covariates and a PRS column.</span></span>
 <span><span class="va">PRSfemale</span> <span class="op">&lt;-</span> <span class="va">PRSresultFemale</span><span class="op">$</span><span class="va">PRS</span></span>
@@ -1326,7 +1301,7 @@ data<a class="anchor" aria-label="anchor" href="#computing-prs-for-male-only-tar
 <span><span class="va">ldclump</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span><span class="va">effectsize</span> <span class="op">&lt;-</span> <span class="st">"BETA"</span></span>
 <span><span class="va">PRSresultmale</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ComputePRS.html">ComputePRS</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span>, <span class="va">summarystat</span>, <span class="va">phenofile</span>, <span class="va">covarfile</span>, effectsize <span class="op">=</span> <span class="st">"BETA"</span>, LDreference <span class="op">=</span> <span class="st">"GXwasR_example"</span>, ldclump <span class="op">=</span> <span class="cn">FALSE</span>, clump_p1 <span class="op">=</span> <span class="va">clump_p1</span>, clump_p2 <span class="op">=</span> <span class="va">clump_p2</span>, clump_r2 <span class="op">=</span> <span class="va">clump_r2</span>, clump_kb <span class="op">=</span> <span class="va">clump_kb</span>, byCHR <span class="op">=</span> <span class="cn">TRUE</span>, pthreshold <span class="op">=</span> <span class="va">pthreshold</span>, highLD_regions <span class="op">=</span> <span class="va">highLD_regions</span>, ld_prunning <span class="op">=</span> <span class="cn">TRUE</span>, window_size <span class="op">=</span> <span class="fl">50</span>, step_size <span class="op">=</span> <span class="fl">5</span>, r2_threshold <span class="op">=</span> <span class="fl">0.02</span>, nPC <span class="op">=</span> <span class="fl">6</span>, pheno_type <span class="op">=</span> <span class="st">"binary"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/temp_libpath102938d3a72d', reason 'Directory not empty'</span></span>
+<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpcRh9ZZ/temp_libpath4e4d53c96c8f', reason 'Directory not empty'</span></span>
 <span><span class="co">#&gt; ℹ 0.001</span></span>
 <span><span class="co">#&gt; • Computing PRS for threshold 0.001</span></span>
 <span><span class="co">#&gt; ℹ 0.05</span></span>
@@ -1341,10 +1316,8 @@ data<a class="anchor" aria-label="anchor" href="#computing-prs-for-male-only-tar
 <span><span class="co">#&gt; • Computing PRS for threshold 0.4</span></span>
 <span><span class="co">#&gt; ℹ 0.5</span></span>
 <span><span class="co">#&gt; • Computing PRS for threshold 0.5</span></span>
-<span><span class="va">PRSresultmale</span><span class="op">$</span><span class="va">PRS_plot</span></span></code></pre></div>
-<div class="float">
-<img src="compute_prs_male-1.png" alt="plot of chunk compute_prs_male"><div class="figcaption">plot of chunk compute_prs_male</div>
-</div>
+<span><span class="va">PRSresultmale</span><span class="op">$</span><span class="va">PRS_plot</span></span>
+<span><span class="co">#&gt; Error in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, : Metric information not available for this family/device</span></span></code></pre></div>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## This table shows 10 samples with phenotype, covariates and a PRS column.</span></span>
 <span><span class="va">PRSmale</span> <span class="op">&lt;-</span> <span class="va">PRSresultmale</span><span class="op">$</span><span class="va">PRS</span></span>
@@ -1570,7 +1543,9 @@ to cite the package and the overall approach. Thank you!</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"GXwasR"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; To cite package 'GXwasR' in publications use:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   Bose B, Blostein F, Kim J, Winters J, Actkins KV, Mayer D, Congivaram H, Niarchou M, Edwards DV, Davis LK, Stranger BE (2025). "GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic Effects on Complex Traits." _medRxiv 2025.06.10.25329327_. doi:10.1101/2025.06.10.25329327</span></span>
+<span><span class="co">#&gt;   Bose B, Blostein F, Kim J, Winters J, Actkins KV, Mayer D, Congivaram H, Niarchou M, Edwards DV, Davis</span></span>
+<span><span class="co">#&gt;   LK, Stranger BE (2025). "GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic Effects on</span></span>
+<span><span class="co">#&gt;   Complex Traits." _medRxiv 2025.06.10.25329327_. doi:10.1101/2025.06.10.25329327</span></span>
 <span><span class="co">#&gt;   &lt;https://doi.org/10.1101/2025.06.10.25329327&gt;.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; A BibTeX entry for LaTeX users is</span></span>
@@ -1588,8 +1563,7 @@ to cite the package and the overall approach. Thank you!</p>
 <h2 id="reproducibility">Reproducibility<a class="anchor" aria-label="anchor" href="#reproducibility"></a>
 </h2>
 <p>The <em><a href="https://bioconductor.org/packages/3.21/GXwasR" class="external-link">GXwasR</a></em>
-package (Bose, Blostein, Kim, Winters, Actkins, Mayer, Congivaram,
-Niarchou, Edwards, Davis, and Stranger, 2025) was made possible thanks
+package (Bose, Blostein, Kim et al., 2025) was made possible thanks
 to:</p>
 <ul>
 <li>R (R Core Team, 2025)</li>
@@ -1604,11 +1578,10 @@ to:</p>
 (McLean, 2017)</li>
 <li>
 <em><a href="https://CRAN.R-project.org/package=rmarkdown" class="external-link">rmarkdown</a></em>
-(Allaire, Xie, Dervieux, McPherson, Luraschi, Ushey, Atkins, Wickham,
-Cheng, Chang, and Iannone, 2024)</li>
+(Allaire, Xie, Dervieux et al., 2024)</li>
 <li>
 <em><a href="https://CRAN.R-project.org/package=sessioninfo" class="external-link">sessioninfo</a></em>
-(Wickham, Chang, Flight, Müller, and Hester, 2025)</li>
+(Wickham, Chang, Flight et al., 2025)</li>
 <li>
 <em><a href="https://CRAN.R-project.org/package=testthat" class="external-link">testthat</a></em>
 (Wickham, 2011)</li>
@@ -1618,16 +1591,16 @@ Cheng, Chang, and Iannone, 2024)</li>
 <pre><code><span><span class="co">#&gt; ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt;  setting  value</span></span>
 <span><span class="co">#&gt;  version  R version 4.5.1 (2025-06-13)</span></span>
-<span><span class="co">#&gt;  os       macOS Sequoia 15.5</span></span>
+<span><span class="co">#&gt;  os       macOS Sequoia 15.6</span></span>
 <span><span class="co">#&gt;  system   aarch64, darwin24.4.0</span></span>
 <span><span class="co">#&gt;  ui       unknown</span></span>
 <span><span class="co">#&gt;  language (EN)</span></span>
 <span><span class="co">#&gt;  collate  en_US.UTF-8</span></span>
 <span><span class="co">#&gt;  ctype    en_US.UTF-8</span></span>
 <span><span class="co">#&gt;  tz       America/New_York</span></span>
-<span><span class="co">#&gt;  date     2025-08-05</span></span>
+<span><span class="co">#&gt;  date     2025-08-08</span></span>
 <span><span class="co">#&gt;  pandoc   3.6.3 @ /Applications/Positron.app/Contents/Resources/app/quarto/bin/tools/aarch64/ (via rmarkdown)</span></span>
-<span><span class="co">#&gt;  quarto   1.7.32 @ /usr/local/bin/quarto</span></span>
+<span><span class="co">#&gt;  quarto   1.7.33 @ /usr/local/bin/quarto</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt;  package              * version    date (UTC) lib source</span></span>
@@ -1668,6 +1641,7 @@ Cheng, Chang, and Iannone, 2024)</li>
 <span><span class="co">#&gt;  digest                 0.6.37     2024-08-19 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  doParallel             1.0.17     2022-02-07 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  doRNG                  1.8.6.2    2025-04-02 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  doSNOW                 1.0.20     2022-02-04 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  dplyr                  1.1.4      2023-11-17 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  ellipsis               0.3.2      2021-04-29 [3] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  evaluate               1.0.4      2025-06-18 [2] CRAN (R 4.5.1)</span></span>
@@ -1690,7 +1664,7 @@ Cheng, Chang, and Iannone, 2024)</li>
 <span><span class="co">#&gt;  glue                   1.8.0      2024-09-30 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  gridExtra              2.3        2017-09-09 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  gtable                 0.3.6      2024-10-25 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  GXwasR               * 0.99.0     2025-08-06 [1] Bioconductor</span></span>
+<span><span class="co">#&gt;  GXwasR               * 0.99.0     2025-08-08 [1] Bioconductor</span></span>
 <span><span class="co">#&gt;  hms                    1.1.3      2023-03-21 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  htmltools              0.5.8.1    2024-04-04 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  htmlwidgets            1.6.4      2023-12-06 [2] CRAN (R 4.5.0)</span></span>
@@ -1705,15 +1679,17 @@ Cheng, Chang, and Iannone, 2024)</li>
 <span><span class="co">#&gt;  lattice                0.22-7     2025-04-02 [4] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;  lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  lubridate              1.9.4      2024-12-08 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  magrittr               2.0.3      2022-03-30 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  magrittr             * 2.0.3      2022-03-30 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  MASS                   7.3-65     2025-02-28 [4] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;  mathjaxr               1.8-0      2025-04-30 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;  Matrix                 1.7-3      2025-03-11 [4] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;  MatrixGenerics         1.20.0     2025-04-15 [2] Bioconduc~</span></span>
 <span><span class="co">#&gt;  matrixStats            1.5.0      2025-01-07 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  memoise                2.0.1      2021-11-26 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  mgcv                   1.9-3      2025-04-04 [4] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;  mime                   0.13       2025-03-17 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  miniUI                 0.1.2      2025-04-17 [3] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  nlme                   3.1-168    2025-03-31 [4] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;  pillar                 1.11.0     2025-07-04 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;  pkgbuild               1.4.8      2025-05-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.5.0)</span></span>
@@ -1721,6 +1697,7 @@ Cheng, Chang, and Iannone, 2024)</li>
 <span><span class="co">#&gt;  pkgload                1.4.0      2024-06-28 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;  plyranges              1.28.0     2025-04-15 [2] Bioconduc~</span></span>
+<span><span class="co">#&gt;  polynom                1.4-1      2022-04-11 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  poolr                  1.2-0      2025-05-07 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  prettyunits            1.2.0      2023-09-24 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  printr               * 0.3        2023-03-08 [2] CRAN (R 4.5.0)</span></span>
@@ -1735,6 +1712,7 @@ Cheng, Chang, and Iannone, 2024)</li>
 <span><span class="co">#&gt;  R.oo                   1.27.1     2025-05-02 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  R.utils                2.13.0     2025-02-24 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  R6                     2.6.1      2025-02-15 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  ragg                   1.4.0      2025-04-10 [3] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  rbibutils              2.3        2024-10-04 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;  RColorBrewer           1.1-3      2022-04-03 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  Rcpp                   1.1.0      2025-07-02 [2] CRAN (R 4.5.1)</span></span>
@@ -1756,8 +1734,10 @@ Cheng, Chang, and Iannone, 2024)</li>
 <span><span class="co">#&gt;  S4Arrays               1.8.1      2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  S4Vectors              0.46.0     2025-04-15 [2] Bioconduc~</span></span>
 <span><span class="co">#&gt;  scales                 1.4.0      2025-04-24 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  seqminer               9.7        2024-10-02 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;  sessioninfo          * 1.2.3      2025-02-05 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;  shiny                  1.11.1     2025-07-03 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  snow                   0.4-4      2021-10-27 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  SNPRelate              1.42.0     2025-04-15 [2] Bioconduc~</span></span>
 <span><span class="co">#&gt;  SparseArray            1.8.1      2025-07-23 [2] Bioconduc~</span></span>
 <span><span class="co">#&gt;  stringi                1.8.7      2025-03-27 [2] CRAN (R 4.5.0)</span></span>
@@ -1765,7 +1745,9 @@ Cheng, Chang, and Iannone, 2024)</li>
 <span><span class="co">#&gt;  sumFREGAT              1.2.5      2022-06-07 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;  SummarizedExperiment   1.38.1     2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  sys                    3.4.3      2024-10-04 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt;  systemfonts            1.2.3      2025-04-30 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  testthat             * 3.2.3      2025-01-13 [2] CRAN (R 4.5.1)</span></span>
+<span><span class="co">#&gt;  textshaping            1.0.1      2025-05-01 [3] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  tibble                 3.3.0      2025-06-08 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  tidyr                  1.3.1      2024-01-24 [2] CRAN (R 4.5.1)</span></span>
 <span><span class="co">#&gt;  tidyselect             1.2.1      2024-03-11 [2] CRAN (R 4.5.0)</span></span>
@@ -1784,7 +1766,7 @@ Cheng, Chang, and Iannone, 2024)</li>
 <span><span class="co">#&gt;  XVector                0.48.0     2025-04-15 [2] Bioconduc~</span></span>
 <span><span class="co">#&gt;  yaml                   2.3.10     2024-07-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp47EYmB/temp_libpath102938d3a72d</span></span>
+<span><span class="co">#&gt;  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpcRh9ZZ/temp_libpath4e4d53c96c8f</span></span>
 <span><span class="co">#&gt;  [2] /Users/mayerdav/Library/R/arm64/4.5/library</span></span>
 <span><span class="co">#&gt;  [3] /opt/homebrew/lib/R/4.5/site-library</span></span>
 <span><span class="co">#&gt;  [4] /opt/homebrew/Cellar/r/4.5.1/lib/R/library</span></span>

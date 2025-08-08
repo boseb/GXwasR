@@ -57,7 +57,7 @@ females everywhere else). Then, rerun the function with the parameters that corr
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>SexCheck: Compare sex assignments in the input PLINK files with those imputed from X chromosome inbreeding coefficients</h1>
-      <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/main/R/GXwasR_main_functions.R" class="external-link"><code>R/GXwasR_main_functions.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/HEAD/R/GXwasR_main_functions.R" class="external-link"><code>R/GXwasR_main_functions.R</code></a></small>
       <div class="d-none name"><code>SexCheck.Rd</code></div>
     </div>
 
@@ -183,11 +183,6 @@ to use <code>compute_freq</code> = <code>TRUE</code> for computing MAF from an i
 <span class="r-in"><span>    compute_freq <span class="op">=</span> <span class="va">compute_freq</span>, LD_window_size <span class="op">=</span> <span class="va">LD_window_size</span>, LD_step_size <span class="op">=</span> <span class="va">LD_step_size</span>,</span></span>
 <span class="r-in"><span>    LD_r2_threshold <span class="op">=</span> <span class="fl">0.02</span>, fmax_F <span class="op">=</span> <span class="fl">0.2</span>, mmin_F <span class="op">=</span> <span class="fl">0.8</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> An error occurred: An error occurred while executing Plink: PLINK binary not found.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> Attempted to locate the 'PLINK_PATH' environment variable and 'plink' in system PATH.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Ensure PLINK is available and executable (bioinformatics version).</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> You can permanently set the path to 'plink' by running:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   usethis::edit_r_environ()  # then add a line like: PLINK_PATH=/full/path/to/plink</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Checking if there is any wrong sex assignment</span></span></span>
 <span class="r-in"><span><span class="va">problematic_sex</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span><span class="va">x</span><span class="op">$</span><span class="va">STATUS</span> <span class="op">!=</span> <span class="st">"OK"</span>, <span class="op">]</span></span></span>

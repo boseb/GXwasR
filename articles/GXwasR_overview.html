@@ -35,7 +35,7 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="active nav-item dropdown">
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/GXwasR_overview.html">GXwasR Overview</a></li>
@@ -75,9 +75,9 @@ Bose</h4>
 Campus<br><a class="author_email" href="mailto:#"></a><a href="mailto:banabithi.bose@gmail.com" class="email">banabithi.bose@gmail.com</a>
       </address>
                   
-            <h4 data-toc-skip class="date">6 August 2025</h4>
+            <h4 data-toc-skip class="date">8 August 2025</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/main/vignettes/GXwasR_overview.Rmd" class="external-link"><code>vignettes/GXwasR_overview.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/HEAD/vignettes/GXwasR_overview.Rmd" class="external-link"><code>vignettes/GXwasR_overview.Rmd</code></a></small>
       <div class="d-none name"><code>GXwasR_overview.Rmd</code></div>
     </div>
 
@@ -339,19 +339,6 @@ statistical analysis in GXwasR.</td>
 </table>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/boseb/GXwasR/" class="external-link">GXwasR</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; GXwasR: Genome-wide and x-chromosome wide association analyses applying best practices of quality control over genetic data</span></span>
-<span><span class="co">#&gt; Version 0.99.0 () installed</span></span>
-<span><span class="co">#&gt; Author: c(</span></span>
-<span><span class="co">#&gt;     person(given = "Banabithi",</span></span>
-<span><span class="co">#&gt;            family = "Bose",</span></span>
-<span><span class="co">#&gt;            role = c("cre", "aut"),</span></span>
-<span><span class="co">#&gt;            email = "banabithi.bose@gmail.com",</span></span>
-<span><span class="co">#&gt;            comment = c(ORCID = "0000-0003-0842-8768"))</span></span>
-<span><span class="co">#&gt;            )</span></span>
-<span><span class="co">#&gt; Maintainer: Banabithi Bose &lt;banabithi.bose@gmail.com&gt;</span></span>
-<span><span class="co">#&gt; Tutorial: https://github.com</span></span>
-<span><span class="co">#&gt; Use citation("GXwasR") to know how to cite this work.</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Attaching package: 'magrittr'</span></span>
@@ -359,9 +346,6 @@ statistical analysis in GXwasR.</td>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     equals, is_less_than, not</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/printr/" class="external-link">printr</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Registered S3 method overwritten by 'printr':</span></span>
-<span><span class="co">#&gt;   method                from     </span></span>
-<span><span class="co">#&gt;   knit_print.data.frame rmarkdown</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rstudio/rmarkdown" class="external-link">rmarkdown</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="function-1">Function 1<a class="anchor" aria-label="anchor" href="#function-1"></a>
@@ -809,9 +793,11 @@ statistical analysis in GXwasR.</td>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Value:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;      A list containing two data frames: one with the IDs of outlier</span></span>
-<span><span class="co">#&gt;      samples (Outlier_samples), and another with samples annotated with</span></span>
-<span><span class="co">#&gt;      predicted ancestry (Samples_with_predicted_ancestry).</span></span>
+<span><span class="co">#&gt;      A list containing three data frames: one with the IDs of outlier</span></span>
+<span><span class="co">#&gt;      samples (Outlier_samples), another with samples annotated with</span></span>
+<span><span class="co">#&gt;      predicted ancestry (Samples_with_predicted_ancestry), and one with</span></span>
+<span><span class="co">#&gt;      the IDs of non-outlier samples (Non_outlier_samples). A PCA plot</span></span>
+<span><span class="co">#&gt;      is also returned.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Author(s):</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -4464,7 +4450,6 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 <span>    ld_prunning <span class="op">=</span> <span class="va">ld_prunning</span>, casecontrol <span class="op">=</span> <span class="va">casecontrol</span>, monomorphicSNPs <span class="op">=</span> <span class="va">monomorphicSNPs</span>,</span>
 <span>    caldiffmiss <span class="op">=</span> <span class="va">caldiffmiss</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Using PLINK v1.9.0-b.7.7 64-bit (22 Oct 2024)</span></span>
 <span><span class="co">#&gt; ℹ 4214 Ambiguous SNPs (A-T/G-C), indels etc. were removed.</span></span>
 <span><span class="co">#&gt; ✔ Thresholds for maf, geno and hwe worked.</span></span>
 <span><span class="co">#&gt; ℹ 5467 variants removed due to minor allele threshold(s)</span></span>
@@ -4472,7 +4457,6 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 <span><span class="co">#&gt; ✔ Output PLINK files prefixed as ,Test_output, with passed SNPs are saved in ResultDir.</span></span>
 <span><span class="co">#&gt; ℹ Input file has 26527 SNPs.</span></span>
 <span><span class="co">#&gt; ℹ Output file has 16846 SNPs after filtering.</span></span>
-<span><span class="co">#&gt; This message is displayed once every 8 hours.</span></span>
 <span><span class="va">x</span></span>
 <span><span class="co">#&gt; $MonomorSNPs</span></span>
 <span><span class="co">#&gt; NULL</span></span>
@@ -4508,7 +4492,7 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 <span><span class="co">#&gt; ℹ No. of samples marked to be filtered out for IDB after missingness and heterozygosity filter: 2</span></span>
 <span><span class="co">#&gt; ℹ No. of samples in input PLINK files: 276</span></span>
 <span><span class="co">#&gt; ℹ No. of samples in output PLINK files: 271</span></span>
-<span><span class="co">#&gt; ✔ Output PLINK files, Test_output with final samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX.</span></span>
+<span><span class="co">#&gt; ✔ Output PLINK files, Test_output with final samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ.</span></span>
 <span><span class="va">x</span><span class="op">$</span><span class="va">HM</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -4683,21 +4667,16 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 <span>    study_pop <span class="op">=</span> <span class="va">study_pop</span>, studyLD <span class="op">=</span> <span class="va">studyLD</span>, referLD <span class="op">=</span> <span class="va">referLD</span>,</span>
 <span>    outlierOf <span class="op">=</span> <span class="st">"EUR"</span>, outlier <span class="op">=</span> <span class="va">outlier</span>, outlier_threshold <span class="op">=</span> <span class="va">outlier_threshold</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ 'HapMapIII_NCBI36' reference data found at /Users/mayerdav/Downloads/HapMapIII_NCBI36.</span></span>
 <span><span class="co">#&gt; 4214 ambiguous SNPs removed from study data.</span></span>
 <span><span class="co">#&gt; 111854 ambiguous SNPs removed from reference data.</span></span>
 <span><span class="co">#&gt; ! LD pruning is recommended for reference dataset. Set referLD = TRUE.</span></span>
 <span><span class="co">#&gt; ! LD pruning is recommended for study dataset. Set studyLD = TRUE.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ℹ Number of overlapping SNPs between study and reference data using rsID: 3722</span></span>
-<span><span class="co">#&gt; This message is displayed once every 8 hours.</span></span></code></pre></div>
-<div class="float">
-<img src="overview-AncestryCheck-1.png" alt="plot of chunk overview-AncestryCheck"><div class="figcaption">plot of chunk overview-AncestryCheck</div>
-</div>
-<pre><code><span><span class="co">#&gt; ℹ No allele flips between study and reference data.</span></span>
+<span><span class="co">#&gt; ℹ No allele flips between study and reference data.</span></span>
 <span><span class="co">#&gt; ℹ 20 samples are outliers of selected reference population.</span></span>
 <span><span class="co">#&gt; ℹ 168 samples are NOT outliers of selected reference population.</span></span>
-<span><span class="va">x</span><span class="op">$</span><span class="va">Outlier_samples</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></code></pre>
+<span><span class="va">x</span><span class="op">$</span><span class="va">Outlier_samples</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">FID</th>
@@ -4730,7 +4709,7 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="va">Samples_with_predicted_ancestry</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -4771,7 +4750,7 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="va">NonOutlier_samples</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -4812,6 +4791,11 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 </tr>
 </tbody>
 </table>
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="va">pca_plot</span></span></code></pre></div>
+<div class="float">
+<img src="overview-AncestryCheck-1.png" alt="plot of chunk overview-AncestryCheck"><div class="figcaption">plot of chunk overview-AncestryCheck</div>
+</div>
 </div>
 <div class="section level4">
 <h4 id="sexcheck">
@@ -4902,9 +4886,10 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 <span>    DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>,</span>
 <span>    finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, filterSNP <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Output PLINK files, prefixed as female, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX</span></span>
+<span><span class="co">#&gt; ✔ Output PLINK files, prefixed as female, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ</span></span>
 <span><span class="co">#&gt; This test is running on a case-control dataset with female samples.</span></span>
-<span><span class="co">#&gt; ℹ Failed SNPs are excluded from the output PLINK files prefixed as Test_output is in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX</span></span>
+<span><span class="co">#&gt; ℹ Failed SNPs are excluded from the output PLINK files prefixed as Test_output is in</span></span>
+<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ</span></span>
 <span><span class="va">x</span></span>
 <span><span class="co">#&gt; [1] "rs56053951" "rs12353847" "rs5940058"</span></span></code></pre></div>
 </div>
@@ -4944,8 +4929,8 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 <span><span class="co">#&gt; ℹ Changing filterXTR to FALSE</span></span>
 <span><span class="co">#&gt; ℹ Ampliconic SNPs:9</span></span>
 <span><span class="co">#&gt; ℹ 9 SNPs are discarded.</span></span>
-<span><span class="co">#&gt; ✔ PLINK files with passed SNPs are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX prefixed as PostimputeEX_QC1</span></span>
-<span><span class="co">#&gt; ✔ PLINK files with discarded SNPs are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX prefixed as PostimputeEX_QC1_snps_extracted</span></span>
+<span><span class="co">#&gt; ✔ PLINK files with passed SNPs are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ prefixed as PostimputeEX_QC1</span></span>
+<span><span class="co">#&gt; ✔ PLINK files with discarded SNPs are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ prefixed as PostimputeEX_QC1_snps_extracted</span></span>
 <span><span class="va">x</span></span>
 <span><span class="co">#&gt; $PAR</span></span>
 <span><span class="co">#&gt; NULL</span></span>
@@ -4997,7 +4982,6 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 <span>    MF.mc.cores <span class="op">=</span> <span class="fl">1</span>, ncores <span class="op">=</span> <span class="va">ncores</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; • Running FMcombx02 model</span></span>
-<span><span class="co">#&gt; ℹ If you want parallel computation, please provide non-zero value for argument ncores.</span></span>
 <span><span class="va">ResultGXwas</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
@@ -5132,11 +5116,11 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 <span>    combtest <span class="op">=</span> <span class="st">"fisher.method"</span>, MF.mc.cores <span class="op">=</span> <span class="fl">1</span>, snp_pval <span class="op">=</span> <span class="fl">0.001</span>, plot.jpeg <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>    suggestiveline <span class="op">=</span> <span class="fl">3</span>, genomewideline <span class="op">=</span> <span class="fl">5.69897</span>, ncores <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX/Stratified_GWAS.png</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ/Stratified_GWAS.png</span></span></code></pre></div>
 <div class="float">
 <img src="overview-PvalComb-1.png" alt="plot of chunk overview-PvalComb"><div class="figcaption">plot of chunk overview-PvalComb</div>
 </div>
-<pre><code><span><span class="co">#&gt; ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX/Stratified_XWAS.png</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ/Stratified_XWAS.png</span></span></code></pre>
 <p><img src="overview-PvalComb-2.png" alt="plot of chunk overview-PvalComb"><img src="overview-PvalComb-3.png" alt="plot of chunk overview-PvalComb"><img src="overview-PvalComb-4.png" alt="plot of chunk overview-PvalComb"><img src="overview-PvalComb-5.png" alt="plot of chunk overview-PvalComb"><img src="overview-PvalComb-6.png" alt="plot of chunk overview-PvalComb"></p>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">PvalComb_Result</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -5519,7 +5503,7 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 <span><span class="co">#&gt; ℹ 80 of 80 variants found in reference</span></span>
 <span><span class="co">#&gt; ℹ Effect sizes recoded for 0 variant(s)</span></span>
 <span><span class="co">#&gt; ✔ Allele frequencies found and linked</span></span>
-<span><span class="co">#&gt; ✔ File /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp7SvuuX/gene.test.score.file.vcf.gz has been created and indexed</span></span>
+<span><span class="co">#&gt; ✔ File /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpcRh9ZZ/gene.test.score.file.vcf.gz has been created and indexed</span></span>
 <span><span class="co">#&gt; ℹ 157 genes are having 321 SNPs</span></span>
 <span><span class="co">#&gt; • SNP-SNP correlation matrices are being created...</span></span>
 <span><span class="co">#&gt; ✔ SNP-SNP correlation matrices are done.</span></span>
@@ -5690,9 +5674,9 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 <span><span class="co">#&gt; Processing chromosome</span></span></code></pre></div>
 <p><img src="overview-MetaGWAS-1.png" alt="plot of chunk overview-MetaGWAS"><img src="overview-MetaGWAS-2.png" alt="plot of chunk overview-MetaGWAS"><img src="overview-MetaGWAS-3.png" alt="plot of chunk overview-MetaGWAS"></p>
 <pre><code><span><span class="co">#&gt; ✔ Forest plot files for Meta_Analysis.plot SNPs have been created.</span></span>
-<span><span class="co">#&gt; ℹ You can find them in the directory: /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX</span></span>
+<span><span class="co">#&gt; ℹ You can find them in the directory: /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ</span></span>
 <span><span class="co">#&gt; ✔ Forest plot files for Meta_Analysis.plot SNPs have been created.</span></span>
-<span><span class="co">#&gt; ℹ You can find them in the directory: /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX</span></span>
+<span><span class="co">#&gt; ℹ You can find them in the directory: /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ</span></span>
 <span><span class="va">x</span><span class="op">$</span><span class="va">Resultfixed</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></code></pre>
 <table class="table">
 <colgroup>
@@ -5825,32 +5809,32 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp7SvuuX/SNPdata_2</td>
+<td align="left">/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpcRh9ZZ/SNPdata_2</td>
 <td align="left">rs2803333</td>
 <td align="left">ALLELE_MISMATCH</td>
 </tr>
 <tr class="even">
-<td align="left">/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp7SvuuX/SNPdata_2</td>
+<td align="left">/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpcRh9ZZ/SNPdata_2</td>
 <td align="left">rs672606</td>
 <td align="left">ALLELE_MISMATCH</td>
 </tr>
 <tr class="odd">
-<td align="left">/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp7SvuuX/SNPdata_2</td>
+<td align="left">/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpcRh9ZZ/SNPdata_2</td>
 <td align="left">rs7519955</td>
 <td align="left">ALLELE_MISMATCH</td>
 </tr>
 <tr class="even">
-<td align="left">/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp7SvuuX/SNPdata_2</td>
+<td align="left">/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpcRh9ZZ/SNPdata_2</td>
 <td align="left">rs1538466</td>
 <td align="left">ALLELE_MISMATCH</td>
 </tr>
 <tr class="odd">
-<td align="left">/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp7SvuuX/SNPdata_2</td>
+<td align="left">/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpcRh9ZZ/SNPdata_2</td>
 <td align="left">rs61777960</td>
 <td align="left">ALLELE_MISMATCH</td>
 </tr>
 <tr class="even">
-<td align="left">/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp7SvuuX/SNPdata_2</td>
+<td align="left">/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpcRh9ZZ/SNPdata_2</td>
 <td align="left">rs2865211</td>
 <td align="left">ALLELE_MISMATCH</td>
 </tr>
@@ -5894,7 +5878,7 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 <span>    ld_prunning <span class="op">=</span> <span class="cn">TRUE</span>, window_size <span class="op">=</span> <span class="fl">50</span>, step_size <span class="op">=</span> <span class="fl">5</span>, r2_threshold <span class="op">=</span> <span class="fl">0.02</span>, nPC <span class="op">=</span> <span class="fl">6</span>,</span>
 <span>    pheno_type <span class="op">=</span> <span class="st">"binary"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp7SvuuX/temp_libpatheab742dff3cd', reason 'Directory not empty'</span></span>
+<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpcRh9ZZ/temp_libpath4e4d53c96c8f', reason 'Directory not empty'</span></span>
 <span><span class="co">#&gt; ℹ 0.001</span></span>
 <span><span class="co">#&gt; • Computing PRS for threshold 0.001</span></span>
 <span><span class="co">#&gt; ℹ 0.05</span></span>
@@ -6037,10 +6021,8 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 </tr></tbody>
 </table>
 <div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">PRSresult</span><span class="op">$</span><span class="va">PRS_plot</span></span></code></pre></div>
-<div class="float">
-<img src="overview-ComputePRS-1.png" alt="plot of chunk compute_prs"><div class="figcaption">plot of chunk compute_prs</div>
-</div>
+<code class="sourceCode R"><span><span class="va">PRSresult</span><span class="op">$</span><span class="va">PRS_plot</span></span>
+<span><span class="co">#&gt; Error in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, : Metric information not available for this family/device</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="geneticcorrbt">
@@ -6183,8 +6165,8 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 23</span></span>
-<span><span class="co">#&gt; ✔ GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX/xGXwasR.grm.bin]</span></span>
-<span><span class="co">#&gt; ℹ Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX/xGXwasR.grm.N.bin]</span></span>
+<span><span class="co">#&gt; ✔ GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ/xGXwasR.grm.bin]</span></span>
+<span><span class="co">#&gt; ℹ Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ/xGXwasR.grm.N.bin]</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -6202,64 +6184,43 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 <th align="right">chromosome</th>
 <th align="left">Source</th>
 <th align="right">Variance</th>
-<th align="right">NA</th>
-<th align="right">NA</th>
-<th align="right">NA</th>
 <th align="right">SE</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td align="right">1</td>
-<td align="left">343.88</td>
-<td align="right">350.43000</td>
-<td align="right">351.09000</td>
-<td align="right">351.29000</td>
-<td align="right">334.23000</td>
-<td align="right">NA</td>
-</tr>
-<tr class="even">
-<td align="right">1</td>
-<td align="left">0.05138</td>
-<td align="right">0.01988</td>
-<td align="right">0.01092</td>
-<td align="right">0.00000</td>
-<td align="right">0.00000</td>
-<td align="right">NA</td>
-</tr>
-<tr class="odd">
-<td align="right">1</td>
-<td align="left">0.00213</td>
-<td align="right">0.00014</td>
-<td align="right">0.00075</td>
-<td align="right">0.00000</td>
+<td align="left">V.G._tr1</td>
 <td align="right">0.00000</td>
 <td align="right">NA</td>
 </tr>
 <tr class="even">
 <td align="right">1</td>
-<td align="left">0.00469</td>
-<td align="right">-0.00166</td>
-<td align="right">-0.00286</td>
-<td align="right">0.00000</td>
+<td align="left">V.G._tr2</td>
 <td align="right">0.00000</td>
 <td align="right">NA</td>
 </tr>
 <tr class="odd">
 <td align="right">1</td>
-<td align="left">0.18285</td>
-<td align="right">0.21472</td>
-<td align="right">0.22398</td>
-<td align="right">0.23846</td>
+<td align="left">C.G._tr12</td>
+<td align="right">0.00000</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="left">V.e._tr1</td>
 <td align="right">0.23783</td>
 <td align="right">NA</td>
 </tr>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">V.e._tr2</td>
+<td align="right">0.02517</td>
+<td align="right">NA</td>
+</tr>
 <tr class="even">
 <td align="right">1</td>
-<td align="left">0.03878</td>
-<td align="right">0.04109</td>
-<td align="right">0.04135</td>
-<td align="right">0.03513</td>
-<td align="right">0.02517</td>
+<td align="left">X</td>
+<td align="right">NA</td>
 <td align="right">NA</td>
 </tr>
 </tbody>
@@ -6322,14 +6283,14 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 <span><span class="co">#&gt; Processing chromosome 9</span></span>
 <span><span class="co">#&gt; Processing chromosome 10</span></span>
 <span><span class="co">#&gt; Processing chromosome 23</span></span>
-<span><span class="co">#&gt; ✔ GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX/xGXwasR.grm.bin]</span></span>
-<span><span class="co">#&gt; ℹ Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX/xGXwasR.grm.N.bin]</span></span>
+<span><span class="co">#&gt; ✔ GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ/xGXwasR.grm.bin]</span></span>
+<span><span class="co">#&gt; ℹ Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ/xGXwasR.grm.N.bin]</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 24</span></span>
-<span><span class="co">#&gt; ✔ Plots are saved in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX with name Heritability_Plots.jpeg</span></span>
-<span><span class="co">#&gt; ✔ All GRM related files are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX</span></span>
+<span><span class="co">#&gt; ✔ Plots are saved in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ with name Heritability_Plots.jpeg</span></span>
+<span><span class="co">#&gt; ✔ All GRM related files are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ</span></span>
 <span><span class="va">H2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <colgroup>
@@ -6450,7 +6411,7 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 <span>    finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, keep_remove_sample_file <span class="op">=</span> <span class="va">keep_remove_sample_file</span>,</span>
 <span>    keep <span class="op">=</span> <span class="va">keep</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ casesPlink PLINK files with desired samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX</span></span>
+<span><span class="co">#&gt; ✔ casesPlink PLINK files with desired samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ</span></span>
 <span><span class="co">#&gt; NULL</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -6473,7 +6434,7 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 <span>    DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>,</span>
 <span>    finput <span class="op">=</span> <span class="va">finput</span>, highLD_regions <span class="op">=</span> <span class="va">highLD_hg19</span>, countPC <span class="op">=</span> <span class="fl">20</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp7SvuuX/temp_libpatheab742dff3cd', reason 'Directory not empty'</span></span>
+<span><span class="co">#&gt; Warning: cannot remove file '/private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpcRh9ZZ/temp_libpath4e4d53c96c8f', reason 'Directory not empty'</span></span>
 <span><span class="va">GP</span><span class="op">$</span><span class="va">PCs1</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <colgroup>
@@ -6767,7 +6728,7 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 <span>    finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, sex <span class="op">=</span> <span class="va">sex</span>,</span>
 <span>    xplink <span class="op">=</span> <span class="cn">FALSE</span>, autoplink <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Output PLINK files, prefixed as Test_output, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX</span></span>
+<span><span class="co">#&gt; ✔ Output PLINK files, prefixed as Test_output, are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ</span></span>
 <span><span class="va">x</span></span>
 <span><span class="co">#&gt; NULL</span></span></code></pre></div>
 </div>
@@ -6785,7 +6746,7 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 <span><span class="va">Famfile</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
 <span><span class="va">PVbyCHR</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span><span class="fu"><a href="../reference/plinkVCF.html">plinkVCF</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span>, <span class="va">foutput</span>, <span class="va">VtoP</span>, <span class="va">PtoV</span>, <span class="va">Famfile</span>, <span class="va">PVbyCHR</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Output files created in ResultDir: /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX</span></span></code></pre></div>
+<span><span class="co">#&gt; ✔ Output files created in ResultDir: /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="mergeregion">
@@ -6799,7 +6760,7 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"Test_output"</span></span>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MergeRegion.html">MergeRegion</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput1</span>, <span class="va">finput2</span>, <span class="va">foutput</span>, use_common_snps <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ✔ Merging is done using the common SNPs between the input genotype files.</span></span>
-<span><span class="co">#&gt; ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX prefixed as Test_output</span></span>
+<span><span class="co">#&gt; ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ prefixed as Test_output</span></span>
 <span><span class="va">y</span></span>
 <span><span class="co">#&gt; NULL</span></span></code></pre></div>
 </div>
@@ -6866,7 +6827,7 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"Filter_Test"</span></span>
 <span><span class="fu"><a href="../reference/FilterSNP.html">FilterSNP</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span>, <span class="va">foutput</span>, SNPvec <span class="op">=</span> <span class="va">SNPvec</span>, extract <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ 3 SNPs are extracted</span></span>
-<span><span class="co">#&gt; ✔ Plink files with extracted SNPs are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX prefixed as Filter_Test</span></span>
+<span><span class="co">#&gt; ✔ Plink files with extracted SNPs are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ prefixed as Filter_Test</span></span>
 <span><span class="co">#&gt; NULL</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -6884,7 +6845,7 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 <span>    bfile <span class="op">=</span> <span class="va">bfile</span>, incovar <span class="op">=</span> <span class="va">incovar</span>,</span>
 <span>    outcovar <span class="op">=</span> <span class="va">outcovar</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Covariate file: dummycovarfile.cov is in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX</span></span>
+<span><span class="co">#&gt; ℹ Covariate file: dummycovarfile.cov is in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ</span></span>
 <span><span class="va">dummy_covars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -6940,11 +6901,11 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 <span></span>
 <span><span class="fu"><a href="../reference/GXWASmiami.html">GXWASmiami</a></span><span class="op">(</span>FemaleWAS <span class="op">=</span> <span class="va">FemaleWAS</span>, MaleWAS <span class="op">=</span> <span class="va">MaleWAS</span>, snp_pval <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
 <span><span class="co">#&gt; • Generating Miami plots for stratified test.</span></span>
-<span><span class="co">#&gt; ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX/Stratified_GWAS.png</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ/Stratified_GWAS.png</span></span></code></pre></div>
 <div class="float">
 <img src="overview-GXWASmiami-1.png" alt="plot of chunk overview-GXWASmiami"><div class="figcaption">plot of chunk overview-GXWASmiami</div>
 </div>
-<pre><code><span><span class="co">#&gt; ✔ Miami plot of stratified GWAS is saved in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp7SvuuX</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; ✔ Miami plot of stratified GWAS is saved in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ</span></span></code></pre>
 </div>
 <div class="section level4">
 <h4 id="sumstatgencorr">
@@ -6962,144 +6923,180 @@ GXwasR: <a href="https://boseb.github.io/GXwasR/articles/genetic_correlation_sum
 <span id="cb81-10"><a href="#cb81-10" tabindex="-1"></a>    )</span>
 <span id="cb81-11"><a href="#cb81-11" tabindex="-1"></a>    res</span>
 <span id="cb81-12"><a href="#cb81-12" tabindex="-1"></a>}</span>
-<span id="cb81-13"><a href="#cb81-13" tabindex="-1"></a><span class="co">#&gt; Analysis starts on Wed Aug  6 11:42:35 2025</span></span>
-<span id="cb81-14"><a href="#cb81-14" tabindex="-1"></a><span class="co">#&gt; ℹ 9436 out of 769306 (1.23%) SNPs in reference panel are available in GWAS 1.</span></span>
-<span id="cb81-15"><a href="#cb81-15" tabindex="-1"></a><span class="co">#&gt; ℹ 9409 out of 769306 (1.22%) SNPs in reference panel are available in GWAS 2.</span></span>
+<span id="cb81-13"><a href="#cb81-13" tabindex="-1"></a><span class="co">#&gt; Analysis starts on Fri Aug  8 09:34:41 2025</span></span>
+<span id="cb81-14"><a href="#cb81-14" tabindex="-1"></a><span class="co">#&gt; ℹ 9321 out of 769306 (1.21%) SNPs in reference panel are available in GWAS 1.</span></span>
+<span id="cb81-15"><a href="#cb81-15" tabindex="-1"></a><span class="co">#&gt; ℹ 9356 out of 769306 (1.22%) SNPs in reference panel are available in GWAS 2.</span></span>
 <span id="cb81-16"><a href="#cb81-16" tabindex="-1"></a><span class="co">#&gt; ! Warning: More than 1% SNPs in reference panel are missed in GWAS 1. This may generate bias in estimation. Please make sure that you are using the correct reference panel.</span></span>
 <span id="cb81-17"><a href="#cb81-17" tabindex="-1"></a><span class="co">#&gt; ! Warning: More than 1% SNPs in reference panel are missed in GWAS 2. This may generate bias in estimation. Please make sure that you are using the correct reference panel.</span></span>
 <span id="cb81-18"><a href="#cb81-18" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb81-19"><a href="#cb81-19" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-20"><a href="#cb81-20" tabindex="-1"></a>  <span class="er">|</span>                                                                                                                                                                                                                                                                              <span class="er">|</span>   <span class="dv">0</span>%</span>
-<span id="cb81-21"><a href="#cb81-21" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-22"><a href="#cb81-22" tabindex="-1"></a>  <span class="er">|====</span>                                                                                                                                                                                                                                                                          <span class="er">|</span>   <span class="dv">2</span>%</span>
-<span id="cb81-23"><a href="#cb81-23" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-24"><a href="#cb81-24" tabindex="-1"></a>  <span class="er">|=========</span>                                                                                                                                                                                                                                                                     <span class="er">|</span>   <span class="dv">3</span>%</span>
-<span id="cb81-25"><a href="#cb81-25" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-26"><a href="#cb81-26" tabindex="-1"></a>  <span class="er">|=============</span>                                                                                                                                                                                                                                                                 <span class="er">|</span>   <span class="dv">5</span>%</span>
-<span id="cb81-27"><a href="#cb81-27" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-28"><a href="#cb81-28" tabindex="-1"></a>  <span class="er">|=================</span>                                                                                                                                                                                                                                                             <span class="er">|</span>   <span class="dv">6</span>%</span>
-<span id="cb81-29"><a href="#cb81-29" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-30"><a href="#cb81-30" tabindex="-1"></a>  <span class="er">|======================</span>                                                                                                                                                                                                                                                        <span class="er">|</span>   <span class="dv">8</span>%</span>
-<span id="cb81-31"><a href="#cb81-31" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-32"><a href="#cb81-32" tabindex="-1"></a>  <span class="er">|==========================</span>                                                                                                                                                                                                                                                    <span class="er">|</span>  <span class="dv">10</span>%</span>
-<span id="cb81-33"><a href="#cb81-33" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-34"><a href="#cb81-34" tabindex="-1"></a>  <span class="er">|==============================</span>                                                                                                                                                                                                                                                <span class="er">|</span>  <span class="dv">11</span>%</span>
-<span id="cb81-35"><a href="#cb81-35" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-36"><a href="#cb81-36" tabindex="-1"></a>  <span class="er">|===================================</span>                                                                                                                                                                                                                                           <span class="er">|</span>  <span class="dv">13</span>%</span>
-<span id="cb81-37"><a href="#cb81-37" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-38"><a href="#cb81-38" tabindex="-1"></a>  <span class="er">|=======================================</span>                                                                                                                                                                                                                                       <span class="er">|</span>  <span class="dv">15</span>%</span>
-<span id="cb81-39"><a href="#cb81-39" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-40"><a href="#cb81-40" tabindex="-1"></a>  <span class="er">|============================================</span>                                                                                                                                                                                                                                  <span class="er">|</span>  <span class="dv">16</span>%</span>
-<span id="cb81-41"><a href="#cb81-41" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-42"><a href="#cb81-42" tabindex="-1"></a>  <span class="er">|================================================</span>                                                                                                                                                                                                                              <span class="er">|</span>  <span class="dv">18</span>%</span>
-<span id="cb81-43"><a href="#cb81-43" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-44"><a href="#cb81-44" tabindex="-1"></a>  <span class="er">|====================================================</span>                                                                                                                                                                                                                          <span class="er">|</span>  <span class="dv">19</span>%</span>
-<span id="cb81-45"><a href="#cb81-45" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-46"><a href="#cb81-46" tabindex="-1"></a>  <span class="er">|=========================================================</span>                                                                                                                                                                                                                     <span class="er">|</span>  <span class="dv">21</span>%</span>
-<span id="cb81-47"><a href="#cb81-47" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-48"><a href="#cb81-48" tabindex="-1"></a>  <span class="er">|=============================================================</span>                                                                                                                                                                                                                 <span class="er">|</span>  <span class="dv">23</span>%</span>
-<span id="cb81-49"><a href="#cb81-49" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-50"><a href="#cb81-50" tabindex="-1"></a>  <span class="er">|=================================================================</span>                                                                                                                                                                                                             <span class="er">|</span>  <span class="dv">24</span>%</span>
-<span id="cb81-51"><a href="#cb81-51" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-52"><a href="#cb81-52" tabindex="-1"></a>  <span class="er">|======================================================================</span>                                                                                                                                                                                                        <span class="er">|</span>  <span class="dv">26</span>%</span>
-<span id="cb81-53"><a href="#cb81-53" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-54"><a href="#cb81-54" tabindex="-1"></a>  <span class="er">|==========================================================================</span>                                                                                                                                                                                                    <span class="er">|</span>  <span class="dv">27</span>%</span>
-<span id="cb81-55"><a href="#cb81-55" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-56"><a href="#cb81-56" tabindex="-1"></a>  <span class="er">|==============================================================================</span>                                                                                                                                                                                                <span class="er">|</span>  <span class="dv">29</span>%</span>
-<span id="cb81-57"><a href="#cb81-57" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-58"><a href="#cb81-58" tabindex="-1"></a>  <span class="er">|===================================================================================</span>                                                                                                                                                                                           <span class="er">|</span>  <span class="dv">31</span>%</span>
-<span id="cb81-59"><a href="#cb81-59" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-60"><a href="#cb81-60" tabindex="-1"></a>  <span class="er">|=======================================================================================</span>                                                                                                                                                                                       <span class="er">|</span>  <span class="dv">32</span>%</span>
-<span id="cb81-61"><a href="#cb81-61" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-62"><a href="#cb81-62" tabindex="-1"></a>  <span class="er">|===========================================================================================</span>                                                                                                                                                                                   <span class="er">|</span>  <span class="dv">34</span>%</span>
-<span id="cb81-63"><a href="#cb81-63" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-64"><a href="#cb81-64" tabindex="-1"></a>  <span class="er">|================================================================================================</span>                                                                                                                                                                              <span class="er">|</span>  <span class="dv">35</span>%</span>
-<span id="cb81-65"><a href="#cb81-65" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-66"><a href="#cb81-66" tabindex="-1"></a>  <span class="er">|====================================================================================================</span>                                                                                                                                                                          <span class="er">|</span>  <span class="dv">37</span>%</span>
-<span id="cb81-67"><a href="#cb81-67" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-68"><a href="#cb81-68" tabindex="-1"></a>  <span class="er">|=========================================================================================================</span>                                                                                                                                                                     <span class="er">|</span>  <span class="dv">39</span>%</span>
-<span id="cb81-69"><a href="#cb81-69" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-70"><a href="#cb81-70" tabindex="-1"></a>  <span class="er">|=============================================================================================================</span>                                                                                                                                                                 <span class="er">|</span>  <span class="dv">40</span>%</span>
-<span id="cb81-71"><a href="#cb81-71" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-72"><a href="#cb81-72" tabindex="-1"></a>  <span class="er">|=================================================================================================================</span>                                                                                                                                                             <span class="er">|</span>  <span class="dv">42</span>%</span>
-<span id="cb81-73"><a href="#cb81-73" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-74"><a href="#cb81-74" tabindex="-1"></a>  <span class="er">|======================================================================================================================</span>                                                                                                                                                        <span class="er">|</span>  <span class="dv">44</span>%</span>
-<span id="cb81-75"><a href="#cb81-75" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-76"><a href="#cb81-76" tabindex="-1"></a>  <span class="er">|==========================================================================================================================</span>                                                                                                                                                    <span class="er">|</span>  <span class="dv">45</span>%</span>
-<span id="cb81-77"><a href="#cb81-77" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-78"><a href="#cb81-78" tabindex="-1"></a>  <span class="er">|==============================================================================================================================</span>                                                                                                                                                <span class="er">|</span>  <span class="dv">47</span>%</span>
-<span id="cb81-79"><a href="#cb81-79" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-80"><a href="#cb81-80" tabindex="-1"></a>  <span class="er">|===================================================================================================================================</span>                                                                                                                                           <span class="er">|</span>  <span class="dv">48</span>%</span>
-<span id="cb81-81"><a href="#cb81-81" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-82"><a href="#cb81-82" tabindex="-1"></a>  <span class="er">|=======================================================================================================================================</span>                                                                                                                                       <span class="er">|</span>  <span class="dv">50</span>%</span>
-<span id="cb81-83"><a href="#cb81-83" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-84"><a href="#cb81-84" tabindex="-1"></a>  <span class="er">|===========================================================================================================================================</span>                                                                                                                                   <span class="er">|</span>  <span class="dv">52</span>%</span>
-<span id="cb81-85"><a href="#cb81-85" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-86"><a href="#cb81-86" tabindex="-1"></a>  <span class="er">|================================================================================================================================================</span>                                                                                                                              <span class="er">|</span>  <span class="dv">53</span>%</span>
-<span id="cb81-87"><a href="#cb81-87" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-88"><a href="#cb81-88" tabindex="-1"></a>  <span class="er">|====================================================================================================================================================</span>                                                                                                                          <span class="er">|</span>  <span class="dv">55</span>%</span>
-<span id="cb81-89"><a href="#cb81-89" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-90"><a href="#cb81-90" tabindex="-1"></a>  <span class="er">|========================================================================================================================================================</span>                                                                                                                      <span class="er">|</span>  <span class="dv">56</span>%</span>
-<span id="cb81-91"><a href="#cb81-91" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-92"><a href="#cb81-92" tabindex="-1"></a>  <span class="er">|=============================================================================================================================================================</span>                                                                                                                 <span class="er">|</span>  <span class="dv">58</span>%</span>
-<span id="cb81-93"><a href="#cb81-93" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-94"><a href="#cb81-94" tabindex="-1"></a>  <span class="er">|=================================================================================================================================================================</span>                                                                                                             <span class="er">|</span>  <span class="dv">60</span>%</span>
-<span id="cb81-95"><a href="#cb81-95" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-96"><a href="#cb81-96" tabindex="-1"></a>  <span class="er">|=====================================================================================================================================================================</span>                                                                                                         <span class="er">|</span>  <span class="dv">61</span>%</span>
-<span id="cb81-97"><a href="#cb81-97" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-98"><a href="#cb81-98" tabindex="-1"></a>  <span class="er">|==========================================================================================================================================================================</span>                                                                                                    <span class="er">|</span>  <span class="dv">63</span>%</span>
-<span id="cb81-99"><a href="#cb81-99" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-100"><a href="#cb81-100" tabindex="-1"></a>  <span class="er">|==============================================================================================================================================================================</span>                                                                                                <span class="er">|</span>  <span class="dv">65</span>%</span>
-<span id="cb81-101"><a href="#cb81-101" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-102"><a href="#cb81-102" tabindex="-1"></a>  <span class="er">|===================================================================================================================================================================================</span>                                                                                           <span class="er">|</span>  <span class="dv">66</span>%</span>
-<span id="cb81-103"><a href="#cb81-103" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-104"><a href="#cb81-104" tabindex="-1"></a>  <span class="er">|=======================================================================================================================================================================================</span>                                                                                       <span class="er">|</span>  <span class="dv">68</span>%</span>
-<span id="cb81-105"><a href="#cb81-105" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-106"><a href="#cb81-106" tabindex="-1"></a>  <span class="er">|===========================================================================================================================================================================================</span>                                                                                   <span class="er">|</span>  <span class="dv">69</span>%</span>
-<span id="cb81-107"><a href="#cb81-107" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-108"><a href="#cb81-108" tabindex="-1"></a>  <span class="er">|================================================================================================================================================================================================</span>                                                                              <span class="er">|</span>  <span class="dv">71</span>%</span>
-<span id="cb81-109"><a href="#cb81-109" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-110"><a href="#cb81-110" tabindex="-1"></a>  <span class="er">|====================================================================================================================================================================================================</span>                                                                          <span class="er">|</span>  <span class="dv">73</span>%</span>
-<span id="cb81-111"><a href="#cb81-111" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-112"><a href="#cb81-112" tabindex="-1"></a>  <span class="er">|========================================================================================================================================================================================================</span>                                                                      <span class="er">|</span>  <span class="dv">74</span>%</span>
-<span id="cb81-113"><a href="#cb81-113" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-114"><a href="#cb81-114" tabindex="-1"></a>  <span class="er">|=============================================================================================================================================================================================================</span>                                                                 <span class="er">|</span>  <span class="dv">76</span>%</span>
-<span id="cb81-115"><a href="#cb81-115" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-116"><a href="#cb81-116" tabindex="-1"></a>  <span class="er">|=================================================================================================================================================================================================================</span>                                                             <span class="er">|</span>  <span class="dv">77</span>%</span>
-<span id="cb81-117"><a href="#cb81-117" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-118"><a href="#cb81-118" tabindex="-1"></a>  <span class="er">|=====================================================================================================================================================================================================================</span>                                                         <span class="er">|</span>  <span class="dv">79</span>%</span>
-<span id="cb81-119"><a href="#cb81-119" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-120"><a href="#cb81-120" tabindex="-1"></a>  <span class="er">|==========================================================================================================================================================================================================================</span>                                                    <span class="er">|</span>  <span class="dv">81</span>%</span>
-<span id="cb81-121"><a href="#cb81-121" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-122"><a href="#cb81-122" tabindex="-1"></a>  <span class="er">|==============================================================================================================================================================================================================================</span>                                                <span class="er">|</span>  <span class="dv">82</span>%</span>
-<span id="cb81-123"><a href="#cb81-123" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-124"><a href="#cb81-124" tabindex="-1"></a>  <span class="er">|==================================================================================================================================================================================================================================</span>                                            <span class="er">|</span>  <span class="dv">84</span>%</span>
-<span id="cb81-125"><a href="#cb81-125" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-126"><a href="#cb81-126" tabindex="-1"></a>  <span class="er">|=======================================================================================================================================================================================================================================</span>                                       <span class="er">|</span>  <span class="dv">85</span>%</span>
-<span id="cb81-127"><a href="#cb81-127" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-128"><a href="#cb81-128" tabindex="-1"></a>  <span class="er">|===========================================================================================================================================================================================================================================</span>                                   <span class="er">|</span>  <span class="dv">87</span>%</span>
-<span id="cb81-129"><a href="#cb81-129" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-130"><a href="#cb81-130" tabindex="-1"></a>  <span class="er">|================================================================================================================================================================================================================================================</span>                              <span class="er">|</span>  <span class="dv">89</span>%</span>
-<span id="cb81-131"><a href="#cb81-131" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-132"><a href="#cb81-132" tabindex="-1"></a>  <span class="er">|====================================================================================================================================================================================================================================================</span>                          <span class="er">|</span>  <span class="dv">90</span>%</span>
-<span id="cb81-133"><a href="#cb81-133" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-134"><a href="#cb81-134" tabindex="-1"></a>  <span class="er">|========================================================================================================================================================================================================================================================</span>                      <span class="er">|</span>  <span class="dv">92</span>%</span>
-<span id="cb81-135"><a href="#cb81-135" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-136"><a href="#cb81-136" tabindex="-1"></a>  <span class="er">|=============================================================================================================================================================================================================================================================</span>                 <span class="er">|</span>  <span class="dv">94</span>%</span>
-<span id="cb81-137"><a href="#cb81-137" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-138"><a href="#cb81-138" tabindex="-1"></a>  <span class="er">|=================================================================================================================================================================================================================================================================</span>             <span class="er">|</span>  <span class="dv">95</span>%</span>
-<span id="cb81-139"><a href="#cb81-139" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-140"><a href="#cb81-140" tabindex="-1"></a>  <span class="er">|=====================================================================================================================================================================================================================================================================</span>         <span class="er">|</span>  <span class="dv">97</span>%</span>
-<span id="cb81-141"><a href="#cb81-141" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-142"><a href="#cb81-142" tabindex="-1"></a>  <span class="er">|==========================================================================================================================================================================================================================================================================</span>    <span class="er">|</span>  <span class="dv">98</span>%</span>
-<span id="cb81-143"><a href="#cb81-143" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                                                                                                                                                                                    </span>
-<span id="cb81-144"><a href="#cb81-144" tabindex="-1"></a>  <span class="er">|==============================================================================================================================================================================================================================================================================|</span> <span class="dv">100</span>%</span>
+<span id="cb81-19"><a href="#cb81-19" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-20"><a href="#cb81-20" tabindex="-1"></a>  <span class="er">|</span>                                                                                                              <span class="er">|</span>   <span class="dv">0</span>%</span>
+<span id="cb81-21"><a href="#cb81-21" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-22"><a href="#cb81-22" tabindex="-1"></a>  <span class="er">|==</span>                                                                                                            <span class="er">|</span>   <span class="dv">2</span>%</span>
+<span id="cb81-23"><a href="#cb81-23" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-24"><a href="#cb81-24" tabindex="-1"></a>  <span class="er">|====</span>                                                                                                          <span class="er">|</span>   <span class="dv">3</span>%</span>
+<span id="cb81-25"><a href="#cb81-25" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-26"><a href="#cb81-26" tabindex="-1"></a>  <span class="er">|=====</span>                                                                                                         <span class="er">|</span>   <span class="dv">5</span>%</span>
+<span id="cb81-27"><a href="#cb81-27" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-28"><a href="#cb81-28" tabindex="-1"></a>  <span class="er">|=======</span>                                                                                                       <span class="er">|</span>   <span class="dv">6</span>%</span>
+<span id="cb81-29"><a href="#cb81-29" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-30"><a href="#cb81-30" tabindex="-1"></a>  <span class="er">|=========</span>                                                                                                     <span class="er">|</span>   <span class="dv">8</span>%</span>
+<span id="cb81-31"><a href="#cb81-31" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-32"><a href="#cb81-32" tabindex="-1"></a>  <span class="er">|===========</span>                                                                                                   <span class="er">|</span>  <span class="dv">10</span>%</span>
+<span id="cb81-33"><a href="#cb81-33" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-34"><a href="#cb81-34" tabindex="-1"></a>  <span class="er">|============</span>                                                                                                  <span class="er">|</span>  <span class="dv">11</span>%</span>
+<span id="cb81-35"><a href="#cb81-35" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-36"><a href="#cb81-36" tabindex="-1"></a>  <span class="er">|==============</span>                                                                                                <span class="er">|</span>  <span class="dv">13</span>%</span>
+<span id="cb81-37"><a href="#cb81-37" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-38"><a href="#cb81-38" tabindex="-1"></a>  <span class="er">|================</span>                                                                                              <span class="er">|</span>  <span class="dv">15</span>%</span>
+<span id="cb81-39"><a href="#cb81-39" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-40"><a href="#cb81-40" tabindex="-1"></a>  <span class="er">|==================</span>                                                                                            <span class="er">|</span>  <span class="dv">16</span>%</span>
+<span id="cb81-41"><a href="#cb81-41" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-42"><a href="#cb81-42" tabindex="-1"></a>  <span class="er">|====================</span>                                                                                          <span class="er">|</span>  <span class="dv">18</span>%</span>
+<span id="cb81-43"><a href="#cb81-43" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-44"><a href="#cb81-44" tabindex="-1"></a>  <span class="er">|=====================</span>                                                                                         <span class="er">|</span>  <span class="dv">19</span>%</span>
+<span id="cb81-45"><a href="#cb81-45" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-46"><a href="#cb81-46" tabindex="-1"></a>  <span class="er">|=======================</span>                                                                                       <span class="er">|</span>  <span class="dv">21</span>%</span>
+<span id="cb81-47"><a href="#cb81-47" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-48"><a href="#cb81-48" tabindex="-1"></a>  <span class="er">|=========================</span>                                                                                     <span class="er">|</span>  <span class="dv">23</span>%</span>
+<span id="cb81-49"><a href="#cb81-49" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-50"><a href="#cb81-50" tabindex="-1"></a>  <span class="er">|===========================</span>                                                                                   <span class="er">|</span>  <span class="dv">24</span>%</span>
+<span id="cb81-51"><a href="#cb81-51" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-52"><a href="#cb81-52" tabindex="-1"></a>  <span class="er">|============================</span>                                                                                  <span class="er">|</span>  <span class="dv">26</span>%</span>
+<span id="cb81-53"><a href="#cb81-53" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-54"><a href="#cb81-54" tabindex="-1"></a>  <span class="er">|==============================</span>                                                                                <span class="er">|</span>  <span class="dv">27</span>%</span>
+<span id="cb81-55"><a href="#cb81-55" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-56"><a href="#cb81-56" tabindex="-1"></a>  <span class="er">|================================</span>                                                                              <span class="er">|</span>  <span class="dv">29</span>%</span>
+<span id="cb81-57"><a href="#cb81-57" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-58"><a href="#cb81-58" tabindex="-1"></a>  <span class="er">|==================================</span>                                                                            <span class="er">|</span>  <span class="dv">31</span>%</span>
+<span id="cb81-59"><a href="#cb81-59" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-60"><a href="#cb81-60" tabindex="-1"></a>  <span class="er">|===================================</span>                                                                           <span class="er">|</span>  <span class="dv">32</span>%</span>
+<span id="cb81-61"><a href="#cb81-61" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-62"><a href="#cb81-62" tabindex="-1"></a>  <span class="er">|=====================================</span>                                                                         <span class="er">|</span>  <span class="dv">34</span>%</span>
+<span id="cb81-63"><a href="#cb81-63" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-64"><a href="#cb81-64" tabindex="-1"></a>  <span class="er">|=======================================</span>                                                                       <span class="er">|</span>  <span class="dv">35</span>%</span>
+<span id="cb81-65"><a href="#cb81-65" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-66"><a href="#cb81-66" tabindex="-1"></a>  <span class="er">|=========================================</span>                                                                     <span class="er">|</span>  <span class="dv">37</span>%</span>
+<span id="cb81-67"><a href="#cb81-67" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-68"><a href="#cb81-68" tabindex="-1"></a>  <span class="er">|===========================================</span>                                                                   <span class="er">|</span>  <span class="dv">39</span>%</span>
+<span id="cb81-69"><a href="#cb81-69" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-70"><a href="#cb81-70" tabindex="-1"></a>  <span class="er">|============================================</span>                                                                  <span class="er">|</span>  <span class="dv">40</span>%</span>
+<span id="cb81-71"><a href="#cb81-71" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-72"><a href="#cb81-72" tabindex="-1"></a>  <span class="er">|==============================================</span>                                                                <span class="er">|</span>  <span class="dv">42</span>%</span>
+<span id="cb81-73"><a href="#cb81-73" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-74"><a href="#cb81-74" tabindex="-1"></a>  <span class="er">|================================================</span>                                                              <span class="er">|</span>  <span class="dv">44</span>%</span>
+<span id="cb81-75"><a href="#cb81-75" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-76"><a href="#cb81-76" tabindex="-1"></a>  <span class="er">|==================================================</span>                                                            <span class="er">|</span>  <span class="dv">45</span>%</span>
+<span id="cb81-77"><a href="#cb81-77" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-78"><a href="#cb81-78" tabindex="-1"></a>  <span class="er">|===================================================</span>                                                           <span class="er">|</span>  <span class="dv">47</span>%</span>
+<span id="cb81-79"><a href="#cb81-79" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-80"><a href="#cb81-80" tabindex="-1"></a>  <span class="er">|=====================================================</span>                                                         <span class="er">|</span>  <span class="dv">48</span>%</span>
+<span id="cb81-81"><a href="#cb81-81" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-82"><a href="#cb81-82" tabindex="-1"></a>  <span class="er">|=======================================================</span>                                                       <span class="er">|</span>  <span class="dv">50</span>%</span>
+<span id="cb81-83"><a href="#cb81-83" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-84"><a href="#cb81-84" tabindex="-1"></a>  <span class="er">|=========================================================</span>                                                     <span class="er">|</span>  <span class="dv">52</span>%</span>
+<span id="cb81-85"><a href="#cb81-85" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-86"><a href="#cb81-86" tabindex="-1"></a>  <span class="er">|===========================================================</span>                                                   <span class="er">|</span>  <span class="dv">53</span>%</span>
+<span id="cb81-87"><a href="#cb81-87" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-88"><a href="#cb81-88" tabindex="-1"></a>  <span class="er">|============================================================</span>                                                  <span class="er">|</span>  <span class="dv">55</span>%</span>
+<span id="cb81-89"><a href="#cb81-89" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-90"><a href="#cb81-90" tabindex="-1"></a>  <span class="er">|==============================================================</span>                                                <span class="er">|</span>  <span class="dv">56</span>%</span>
+<span id="cb81-91"><a href="#cb81-91" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-92"><a href="#cb81-92" tabindex="-1"></a>  <span class="er">|================================================================</span>                                              <span class="er">|</span>  <span class="dv">58</span>%</span>
+<span id="cb81-93"><a href="#cb81-93" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-94"><a href="#cb81-94" tabindex="-1"></a>  <span class="er">|==================================================================</span>                                            <span class="er">|</span>  <span class="dv">60</span>%</span>
+<span id="cb81-95"><a href="#cb81-95" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-96"><a href="#cb81-96" tabindex="-1"></a>  <span class="er">|===================================================================</span>                                           <span class="er">|</span>  <span class="dv">61</span>%</span>
+<span id="cb81-97"><a href="#cb81-97" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-98"><a href="#cb81-98" tabindex="-1"></a>  <span class="er">|=====================================================================</span>                                         <span class="er">|</span>  <span class="dv">63</span>%</span>
+<span id="cb81-99"><a href="#cb81-99" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-100"><a href="#cb81-100" tabindex="-1"></a>  <span class="er">|=======================================================================</span>                                       <span class="er">|</span>  <span class="dv">65</span>%</span>
+<span id="cb81-101"><a href="#cb81-101" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-102"><a href="#cb81-102" tabindex="-1"></a>  <span class="er">|=========================================================================</span>                                     <span class="er">|</span>  <span class="dv">66</span>%</span>
+<span id="cb81-103"><a href="#cb81-103" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-104"><a href="#cb81-104" tabindex="-1"></a>  <span class="er">|===========================================================================</span>                                   <span class="er">|</span>  <span class="dv">68</span>%</span>
+<span id="cb81-105"><a href="#cb81-105" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-106"><a href="#cb81-106" tabindex="-1"></a>  <span class="er">|============================================================================</span>                                  <span class="er">|</span>  <span class="dv">69</span>%</span>
+<span id="cb81-107"><a href="#cb81-107" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-108"><a href="#cb81-108" tabindex="-1"></a>  <span class="er">|==============================================================================</span>                                <span class="er">|</span>  <span class="dv">71</span>%</span>
+<span id="cb81-109"><a href="#cb81-109" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-110"><a href="#cb81-110" tabindex="-1"></a>  <span class="er">|================================================================================</span>                              <span class="er">|</span>  <span class="dv">73</span>%</span>
+<span id="cb81-111"><a href="#cb81-111" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-112"><a href="#cb81-112" tabindex="-1"></a>  <span class="er">|==================================================================================</span>                            <span class="er">|</span>  <span class="dv">74</span>%</span>
+<span id="cb81-113"><a href="#cb81-113" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-114"><a href="#cb81-114" tabindex="-1"></a>  <span class="er">|===================================================================================</span>                           <span class="er">|</span>  <span class="dv">76</span>%</span>
+<span id="cb81-115"><a href="#cb81-115" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-116"><a href="#cb81-116" tabindex="-1"></a>  <span class="er">|=====================================================================================</span>                         <span class="er">|</span>  <span class="dv">77</span>%</span>
+<span id="cb81-117"><a href="#cb81-117" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-118"><a href="#cb81-118" tabindex="-1"></a>  <span class="er">|=======================================================================================</span>                       <span class="er">|</span>  <span class="dv">79</span>%</span>
+<span id="cb81-119"><a href="#cb81-119" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-120"><a href="#cb81-120" tabindex="-1"></a>  <span class="er">|=========================================================================================</span>                     <span class="er">|</span>  <span class="dv">81</span>%</span>
+<span id="cb81-121"><a href="#cb81-121" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-122"><a href="#cb81-122" tabindex="-1"></a>  <span class="er">|==========================================================================================</span>                    <span class="er">|</span>  <span class="dv">82</span>%</span>
+<span id="cb81-123"><a href="#cb81-123" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-124"><a href="#cb81-124" tabindex="-1"></a>  <span class="er">|============================================================================================</span>                  <span class="er">|</span>  <span class="dv">84</span>%</span>
+<span id="cb81-125"><a href="#cb81-125" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-126"><a href="#cb81-126" tabindex="-1"></a>  <span class="er">|==============================================================================================</span>                <span class="er">|</span>  <span class="dv">85</span>%</span>
+<span id="cb81-127"><a href="#cb81-127" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-128"><a href="#cb81-128" tabindex="-1"></a>  <span class="er">|================================================================================================</span>              <span class="er">|</span>  <span class="dv">87</span>%</span>
+<span id="cb81-129"><a href="#cb81-129" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-130"><a href="#cb81-130" tabindex="-1"></a>  <span class="er">|==================================================================================================</span>            <span class="er">|</span>  <span class="dv">89</span>%</span>
+<span id="cb81-131"><a href="#cb81-131" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-132"><a href="#cb81-132" tabindex="-1"></a>  <span class="er">|===================================================================================================</span>           <span class="er">|</span>  <span class="dv">90</span>%</span>
+<span id="cb81-133"><a href="#cb81-133" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-134"><a href="#cb81-134" tabindex="-1"></a>  <span class="er">|=====================================================================================================</span>         <span class="er">|</span>  <span class="dv">92</span>%</span>
+<span id="cb81-135"><a href="#cb81-135" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-136"><a href="#cb81-136" tabindex="-1"></a>  <span class="er">|=======================================================================================================</span>       <span class="er">|</span>  <span class="dv">94</span>%</span>
+<span id="cb81-137"><a href="#cb81-137" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-138"><a href="#cb81-138" tabindex="-1"></a>  <span class="er">|=========================================================================================================</span>     <span class="er">|</span>  <span class="dv">95</span>%</span>
+<span id="cb81-139"><a href="#cb81-139" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-140"><a href="#cb81-140" tabindex="-1"></a>  <span class="er">|==========================================================================================================</span>    <span class="er">|</span>  <span class="dv">97</span>%</span>
+<span id="cb81-141"><a href="#cb81-141" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-142"><a href="#cb81-142" tabindex="-1"></a>  <span class="er">|============================================================================================================</span>  <span class="er">|</span>  <span class="dv">98</span>%</span>
+<span id="cb81-143"><a href="#cb81-143" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-144"><a href="#cb81-144" tabindex="-1"></a>  <span class="er">|==============================================================================================================|</span> <span class="dv">100</span>%</span>
 <span id="cb81-145"><a href="#cb81-145" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb81-146"><a href="#cb81-146" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb81-147"><a href="#cb81-147" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb81-148"><a href="#cb81-148" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb81-149"><a href="#cb81-149" tabindex="-1"></a><span class="co">#&gt; Integrating piecewise resultsError in estimating Genetic Correlation: Algorithm failed to converge after trying different initial values.</span></span>
-<span id="cb81-150"><a href="#cb81-150" tabindex="-1"></a><span class="co">#&gt; NULL</span></span></code></pre></div>
+<span id="cb81-149"><a href="#cb81-149" tabindex="-1"></a><span class="co">#&gt; Integrating piecewise resultsPoint estimates:• Heritability of phenotype 1:  2.62e-10</span></span>
+<span id="cb81-150"><a href="#cb81-150" tabindex="-1"></a><span class="co">#&gt; • Heritability of phenotype 2:  4.26e-09</span></span>
+<span id="cb81-151"><a href="#cb81-151" tabindex="-1"></a><span class="co">#&gt; • Genetic Covariance:  -5.60e-05</span></span>
+<span id="cb81-152"><a href="#cb81-152" tabindex="-1"></a><span class="co">#&gt; • Genetic Correlation:  -52946.2415ℹ Continuing computing standard error with jackknife</span></span>
+<span id="cb81-153"><a href="#cb81-153" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb81-154"><a href="#cb81-154" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-155"><a href="#cb81-155" tabindex="-1"></a>  <span class="er">|</span>                                                                                                              <span class="er">|</span>   <span class="dv">0</span>%</span>
+<span id="cb81-156"><a href="#cb81-156" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                                    </span>
+<span id="cb81-157"><a href="#cb81-157" tabindex="-1"></a>  <span class="er">|==</span>                                                                                                            <span class="er">|</span>   <span class="dv">2</span>%</span>
+<span id="cb81-158"><a href="#cb81-158" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb81-159"><a href="#cb81-159" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb81-160"><a href="#cb81-160" tabindex="-1"></a><span class="co">#&gt; • Heritability of phenotype 1: 2.62e-10 ( 0.00e+00 )</span></span>
+<span id="cb81-161"><a href="#cb81-161" tabindex="-1"></a><span class="co">#&gt; • Heritability of phenotype 2: 4.26e-09 ( 0.00e+00 )</span></span>
+<span id="cb81-162"><a href="#cb81-162" tabindex="-1"></a><span class="co">#&gt; • Genetic Covariance: -5.60e-05 ( 0.00e+00 )</span></span>
+<span id="cb81-163"><a href="#cb81-163" tabindex="-1"></a><span class="co">#&gt; • Genetic Correlation: -52946.2415 ( 0.00e+00 )</span></span>
+<span id="cb81-164"><a href="#cb81-164" tabindex="-1"></a><span class="co">#&gt; • P: 0.00e+00</span></span>
+<span id="cb81-165"><a href="#cb81-165" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb81-166"><a href="#cb81-166" tabindex="-1"></a><span class="co">#&gt; Analysis finished at Fri Aug  8 09:35:19 2025</span></span>
+<span id="cb81-167"><a href="#cb81-167" tabindex="-1"></a><span class="co">#&gt; $rg</span></span>
+<span id="cb81-168"><a href="#cb81-168" tabindex="-1"></a><span class="co">#&gt;           </span></span>
+<span id="cb81-169"><a href="#cb81-169" tabindex="-1"></a><span class="co">#&gt; -52946.24 </span></span>
+<span id="cb81-170"><a href="#cb81-170" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb81-171"><a href="#cb81-171" tabindex="-1"></a><span class="co">#&gt; $rg.se</span></span>
+<span id="cb81-172"><a href="#cb81-172" tabindex="-1"></a><span class="co">#&gt; [1] 0</span></span>
+<span id="cb81-173"><a href="#cb81-173" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb81-174"><a href="#cb81-174" tabindex="-1"></a><span class="co">#&gt; $P</span></span>
+<span id="cb81-175"><a href="#cb81-175" tabindex="-1"></a><span class="co">#&gt;   </span></span>
+<span id="cb81-176"><a href="#cb81-176" tabindex="-1"></a><span class="co">#&gt; 0 </span></span>
+<span id="cb81-177"><a href="#cb81-177" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb81-178"><a href="#cb81-178" tabindex="-1"></a><span class="co">#&gt; $estimates.df</span></span>
+<span id="cb81-179"><a href="#cb81-179" tabindex="-1"></a><span class="co">#&gt;                          Estimate se</span></span>
+<span id="cb81-180"><a href="#cb81-180" tabindex="-1"></a><span class="co">#&gt; Heritability_1       2.623944e-10  0</span></span>
+<span id="cb81-181"><a href="#cb81-181" tabindex="-1"></a><span class="co">#&gt; Heritability_2       4.257231e-09  0</span></span>
+<span id="cb81-182"><a href="#cb81-182" tabindex="-1"></a><span class="co">#&gt; Genetic_Covariance  -5.595978e-05  0</span></span>
+<span id="cb81-183"><a href="#cb81-183" tabindex="-1"></a><span class="co">#&gt; Genetic_Correlation -5.294624e+04  0</span></span>
+<span id="cb81-184"><a href="#cb81-184" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb81-185"><a href="#cb81-185" tabindex="-1"></a><span class="co">#&gt; $eigen.use</span></span>
+<span id="cb81-186"><a href="#cb81-186" tabindex="-1"></a><span class="co">#&gt; [1] 0.95</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="ldprune">
@@ -7275,8 +7272,10 @@ to cite the package and the overall approach. Thank you!</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"GXwasR"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; To cite package 'GXwasR' in publications use:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   Bose B, Blostein F, Kim J, Winters J, Actkins KV, Mayer D, Congivaram H, Niarchou M, Edwards DV, Davis LK, Stranger BE (2025). "GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic Effects on Complex Traits." _medRxiv 2025.06.10.25329327_.</span></span>
-<span><span class="co">#&gt;   doi:10.1101/2025.06.10.25329327 &lt;https://doi.org/10.1101/2025.06.10.25329327&gt;.</span></span>
+<span><span class="co">#&gt;   Bose B, Blostein F, Kim J, Winters J, Actkins KV, Mayer D, Congivaram H, Niarchou M, Edwards DV, Davis</span></span>
+<span><span class="co">#&gt;   LK, Stranger BE (2025). "GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic Effects on</span></span>
+<span><span class="co">#&gt;   Complex Traits." _medRxiv 2025.06.10.25329327_. doi:10.1101/2025.06.10.25329327</span></span>
+<span><span class="co">#&gt;   &lt;https://doi.org/10.1101/2025.06.10.25329327&gt;.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; A BibTeX entry for LaTeX users is</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -7292,8 +7291,7 @@ to cite the package and the overall approach. Thank you!</p>
 <h2 id="reproducibility">Reproducibility<a class="anchor" aria-label="anchor" href="#reproducibility"></a>
 </h2>
 <p>The <em><a href="https://bioconductor.org/packages/3.21/GXwasR" class="external-link">GXwasR</a></em>
-package (Bose, Blostein, Kim, Winters, Actkins, Mayer, Congivaram,
-Niarchou, Edwards, Davis, and Stranger, 2025) was made possible thanks
+package (Bose, Blostein, Kim et al., 2025) was made possible thanks
 to:</p>
 <ul>
 <li>R (R Core Team, 2025)</li>
@@ -7308,11 +7306,10 @@ to:</p>
 (McLean, 2017)</li>
 <li>
 <em><a href="https://CRAN.R-project.org/package=rmarkdown" class="external-link">rmarkdown</a></em>
-(Allaire, Xie, Dervieux, McPherson, Luraschi, Ushey, Atkins, Wickham,
-Cheng, Chang, and Iannone, 2024)</li>
+(Allaire, Xie, Dervieux et al., 2024)</li>
 <li>
 <em><a href="https://CRAN.R-project.org/package=sessioninfo" class="external-link">sessioninfo</a></em>
-(Wickham, Chang, Flight, Müller, and Hester, 2025)</li>
+(Wickham, Chang, Flight et al., 2025)</li>
 <li>
 <em><a href="https://CRAN.R-project.org/package=testthat" class="external-link">testthat</a></em>
 (Wickham, 2011)</li>
@@ -7321,16 +7318,16 @@ Cheng, Chang, and Iannone, 2024)</li>
 <pre><code><span><span class="co">#&gt; ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt;  setting  value</span></span>
 <span><span class="co">#&gt;  version  R version 4.5.1 (2025-06-13)</span></span>
-<span><span class="co">#&gt;  os       macOS Sequoia 15.5</span></span>
+<span><span class="co">#&gt;  os       macOS Sequoia 15.6</span></span>
 <span><span class="co">#&gt;  system   aarch64, darwin24.4.0</span></span>
 <span><span class="co">#&gt;  ui       unknown</span></span>
 <span><span class="co">#&gt;  language (EN)</span></span>
 <span><span class="co">#&gt;  collate  en_US.UTF-8</span></span>
 <span><span class="co">#&gt;  ctype    en_US.UTF-8</span></span>
 <span><span class="co">#&gt;  tz       America/New_York</span></span>
-<span><span class="co">#&gt;  date     2025-08-06</span></span>
+<span><span class="co">#&gt;  date     2025-08-08</span></span>
 <span><span class="co">#&gt;  pandoc   3.6.3 @ /Applications/Positron.app/Contents/Resources/app/quarto/bin/tools/aarch64/ (via rmarkdown)</span></span>
-<span><span class="co">#&gt;  quarto   1.7.32 @ /usr/local/bin/quarto</span></span>
+<span><span class="co">#&gt;  quarto   1.7.33 @ /usr/local/bin/quarto</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt;  package              * version    date (UTC) lib source</span></span>
@@ -7394,7 +7391,7 @@ Cheng, Chang, and Iannone, 2024)</li>
 <span><span class="co">#&gt;  glue                   1.8.0      2024-09-30 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  gridExtra              2.3        2017-09-09 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  gtable                 0.3.6      2024-10-25 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  GXwasR               * 0.99.0     2025-08-06 [1] Bioconductor</span></span>
+<span><span class="co">#&gt;  GXwasR               * 0.99.0     2025-08-08 [1] Bioconductor</span></span>
 <span><span class="co">#&gt;  hms                    1.1.3      2023-03-21 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  htmltools              0.5.8.1    2024-04-04 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt;  htmlwidgets            1.6.4      2023-12-06 [2] CRAN (R 4.5.0)</span></span>
@@ -7496,7 +7493,7 @@ Cheng, Chang, and Iannone, 2024)</li>
 <span><span class="co">#&gt;  XVector                0.48.0     2025-04-15 [2] Bioconduc~</span></span>
 <span><span class="co">#&gt;  yaml                   2.3.10     2024-07-26 [2] CRAN (R 4.5.0)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/Rtmp7SvuuX/temp_libpatheab742dff3cd</span></span>
+<span><span class="co">#&gt;  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpcRh9ZZ/temp_libpath4e4d53c96c8f</span></span>
 <span><span class="co">#&gt;  [2] /Users/mayerdav/Library/R/arm64/4.5/library</span></span>
 <span><span class="co">#&gt;  [3] /opt/homebrew/lib/R/4.5/site-library</span></span>
 <span><span class="co">#&gt;  [4] /opt/homebrew/Cellar/r/4.5.1/lib/R/library</span></span>
