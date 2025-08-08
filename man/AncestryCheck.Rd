@@ -67,7 +67,9 @@ Eucledean distance from the center of the PC1 and PC2 to the maximum Euclidean d
 outside this distance will be considered as outlier. The default is 3.}
 }
 \value{
-A list containing two data frames: one with the IDs of outlier samples (Outlier_samples), and another with samples annotated with predicted ancestry (Samples_with_predicted_ancestry).
+A list containing three data frames: one with the IDs of outlier samples (Outlier_samples), another with samples
+annotated with predicted ancestry (Samples_with_predicted_ancestry), and one with the IDs of non-outlier samples (Non_outlier_samples).
+A PCA plot is also returned.
 }
 \description{
 This function displays the result of the ancestry analysis in a color-coded scatter plot of the first two principal

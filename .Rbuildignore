@@ -26,8 +26,11 @@
 ^vignettes/GXwasR_overview\.Rmd\.orig$
 ^vignettes/meta_analysis\.Rmd\.orig$
 ^vignettes/postimputationQC\.Rmd\.orig$
-^vignettes/gwas1.imputed.example.rds$
-^vignettes/gwas2.imputed.example.rds$
-^vignettes/gwas1.array.example.rds$
-^vignettes/gwas2.array.example.rds$
+^vignettes/FemaleWAS.Rda$
+^vignettes/MaleWAS.Rda$
+^vignettes/CombinedWAS.Rda$
+^vignettes/gwas1\.imputed.example\.rds$
+^vignettes/gwas2\.imputed.example\.rds$
+^vignettes/gwas1\.array.example\.rds$
+^vignettes/gwas2\.array.example\.rds$
 ^vignettes/genetic_correlation_sumstat\.Rmd\.orig$
