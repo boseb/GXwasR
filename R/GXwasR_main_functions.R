@@ -6007,8 +6007,8 @@ LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, st
 #' The number of cores to be used. The default is 2.
 #'
 #' @details
-#' This function requires access to the reference LD data via an environment variable.
-#' You must set one of the following environment variables to the appropriate directory:
+#' This function requires access to the \href{https://zenodo.org/records/16923484}{reference LD data} via an 
+#' environment variable. You must set one of the following environment variables to the appropriate directory:
 #'
 #' - `UKB_ARRAY_PATH` for the Axiom Array reference (`UKB_array_SVD_eigen90_extraction`)
 #' - `UKB_IMPUTED_PATH` for the full imputed reference (`UKB_imputed_SVD_eigen99_extraction`)
