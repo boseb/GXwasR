@@ -6059,9 +6059,9 @@ SumstatGenCorr <- function(ResultDir = tempdir(),
     )
 
     reference_urls <- c(
-        UKB_imputed_hapmap2_SVD_eigen99_extraction = "https://www.dropbox.com/s/kv5zhgu274wg9z5/UKB_imputed_hapmap2_SVD_eigen99_extraction.tar.gz?dl=1",
-        UKB_imputed_SVD_eigen99_extraction = "https://www.dropbox.com/s/6js1dzy4tkc3gac/UKB_imputed_SVD_eigen99_extraction.tar.gz?dl=1",
-        UKB_array_SVD_eigen90_extraction = "https://www.dropbox.com/s/fuvpwsf6r8tjd6c/UKB_array_SVD_eigen90_extraction.tar.gz?dl=1"
+        UKB_imputed_hapmap2_SVD_eigen99_extraction = "https://zenodo.org/records/16923484/files/UKB_imputed_hapmap2_SVD_eigen99_extraction.tar.gz?download=1",
+        UKB_imputed_SVD_eigen99_extraction = "https://zenodo.org/records/16923484/files/UKB_imputed_hapmap2_SVD_eigen99_extraction.tar.gz?download=1",
+        UKB_array_SVD_eigen90_extraction = "https://zenodo.org/records/16923484/files/UKB_array_SVD_eigen90_extraction.tar.gz?download=1"
     )
 
     if (!referenceLD %in% names(reference_paths)) {
