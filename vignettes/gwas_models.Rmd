@@ -123,9 +123,9 @@ xmodel <- "FMstratified"
 combtest <- "fisher.method"
 snp_pval <- 1e-08
 covarfile <- NULL
-ncores <- 0
+ncores <- 2
 plot.jpeg <- FALSE
-MF.mc.cores <- 1
+MF.mc.cores <- 2
 genomewideline <- 7.3
 suggestiveline <- 5
 plotname <- "GXwas.plot"
@@ -152,6 +152,7 @@ x1 <- FemaleWAS
 x2 <- x1[x1$TEST == "ADD", ]
 x3 <- x2[order(x2$P), ]
 x <- x3[1:10, -c(5:6)]
+x
 ```
 
 ```{r}
@@ -161,6 +162,7 @@ x1 <- MaleWAS
 x2 <- x1[x1$TEST == "ADD", ]
 x3 <- x2[order(x2$P), ]
 x <- x3[1:10, -c(5:6)]
+x
 ```
 
 ```{r}
@@ -169,6 +171,7 @@ load(file.path(ResultDir, "CombinedWAS.Rda"))
 x1 <- CombinedWAS
 x2 <- x1[order(x1$P), ]
 x <- x2[1:10, ]
+x
 ```
 
 To know more about the function GXwas() to run different GWAS and XWAS models with different arguments, please follow this tutorial: [https://boseb.github.io/GXwasR/articles/GXwasR_overview.html](https://boseb.github.io/GXwasR/articles/GXwasR_overview.html)
@@ -203,7 +206,11 @@ Difftest <- SexDiff(Mfile = x1, Ffile = x2)
 ## Significant SNPs with sex-differential effect
 sig.snps <- Difftest[Difftest$adjP < 0.05, ]
 colnames(sig.snps) <- c("SNP", "CHR", "BP", "A1", "T_statistic", "Pvalue", "Adjusted_Pvalue")
-knitr::kable(sig.snps, caption = "SNPs with significant sex-differential effect.")
+if (nrow(sig.snps) > 0) {
+  knitr::kable(sig.snps, caption = "SNPs with significant sex-differential effect.")
+} else {
+  message("No SNPs with significant sex-differential effect were found.")
+}
 ```
 
 # Citing `GXwasR`
