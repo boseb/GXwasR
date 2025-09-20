@@ -1469,7 +1469,7 @@ paraGwas <- function(chunks, chunk, ResultDir, DataDir, finput, trait, modelv, r
             Inphenocovv,
             covar,
             covarv,
-            "--out", normalizePath(file.path(ResultDir, chunks, "_ss")),
+            "--out", normalizePath(file.path(ResultDir, paste0(chunks, "_ss"))),
             "--silent"
         ),
         std_out = FALSE,
