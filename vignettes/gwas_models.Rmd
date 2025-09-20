@@ -56,7 +56,7 @@ Users must perform pre-imputation and post-imputation quality control (QC) on ge
 
 # Example Datasets
 
-The PLINK bed, bim, and fam files are the three mandatory files representing a genotype dataset to run this tutorial. To know about these file extensions, please check https://www.cog-genomics.org/plink/1.9/formats.
+The PLINK bed, bim, and fam files are the three mandatory files representing a genotype dataset to run this tutorial. To know about these file extensions, please check [https://www.cog-genomics.org/plink/1.9/formats](https://www.cog-genomics.org/plink/1.9/formats).
 
 **GXwasR_example:**
 
