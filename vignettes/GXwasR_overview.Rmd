@@ -191,7 +191,16 @@ For more details, see Apple’s official guide: <https://support.apple.com/en-us
 
 # Functions Overview
 
-This document lists all the functions in GXwasR package.It offers thirty-three distinct functions, which are organized into six main categories: A) Pre-imputation QC, B) Post-imputation QC, C) Sex-combined and sex-stratified GWAS with specialized analysis for XWAS, D) Sex-differential test, E) High level analysis and a range of F) Utility Functions. These categories and their respective functions are detailed in the table below.
+This document provies an overview of all the functions in GXwasR package. It offers thirty-three distinct functions, which are organized into six main categories: 
+
+    A) Pre-imputation QC
+    B) Post-imputation QC
+    C) Sex-combined and sex-stratified GWAS with specialized analysis for XWAS
+    D) Sex-differential test
+    E) High level analysis 
+    F) Utility Functions
+
+These categories and their respective functions are detailed in the table below.
 
 ## Table of Functions
 | Function        | Description                                                                                                                                    | Category                                       |
