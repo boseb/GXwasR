@@ -36,7 +36,8 @@ Suggests:
     stats,
     testthat (>= 3.0.0),
     tools,
-    spelling
+    spelling,
+    readr
 Imports:
     BiocStyle,
     bigparallelr,

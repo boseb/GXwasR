@@ -78,9 +78,10 @@ help(SumstatGenCorr)
 Birth weight and type 2 diabetes based on the summary statistics with around 20,000 individuals.
 
 ```{r imputed_hapmap_sumstat}
+library(readr)
 ResultDir <- tempdir()
-sumstat1 <- readRDS("gwas1.imputed.example.rds")
-sumstat2 <- readRDS("gwas2.imputed.example.rds")
+sumstat1 <- read_rds("https://zenodo.org/records/17177917/files/gwas1.imputed.example.rds?download=1")
+sumstat2 <- read_rds("https://zenodo.org/records/17177917/files/gwas2.imputed.example.rds?download=1")
 referenceLD = "UKB_imputed_hapmap2_SVD_eigen99_extraction"
 res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=sumstat1, sumstat2=sumstat2)
 ```
@@ -89,8 +90,8 @@ res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=su
 # Example: HDL Sample Data (20K SNPs, UKB Array SVD Eigen90)
 
 ```{r ukb_eigen90_sumstat}
-gwas1.example <- readRDS('gwas1.array.example.rds')
-gwas2.example <- readRDS('gwas2.array.example.rds')
+gwas1.example <- read_rds('https://zenodo.org/records/17177917/files/gwas1.array.example.rds?download=1')
+gwas2.example <- read_rds('https://zenodo.org/records/17177917/files/gwas2.array.example.rds?download=1')
 referenceLD = "UKB_array_SVD_eigen90_extraction"
 res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=gwas1.example, sumstat2=gwas2.example)
 ```
