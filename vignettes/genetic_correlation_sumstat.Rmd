@@ -83,7 +83,7 @@ ResultDir <- tempdir()
 sumstat1 <- read_rds("https://zenodo.org/records/17177917/files/gwas1.imputed.example.rds?download=1")
 sumstat2 <- read_rds("https://zenodo.org/records/17177917/files/gwas2.imputed.example.rds?download=1")
 referenceLD = "UKB_imputed_hapmap2_SVD_eigen99_extraction"
-res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=sumstat1, sumstat2=sumstat2)
+res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=sumstat1, sumstat2=sumstat2, parallel = TRUE, numCores = 2)
 ```
 
 
@@ -93,7 +93,7 @@ res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=su
 gwas1.example <- read_rds('https://zenodo.org/records/17177917/files/gwas1.array.example.rds?download=1')
 gwas2.example <- read_rds('https://zenodo.org/records/17177917/files/gwas2.array.example.rds?download=1')
 referenceLD = "UKB_array_SVD_eigen90_extraction"
-res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=gwas1.example, sumstat2=gwas2.example)
+res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=gwas1.example, sumstat2=gwas2.example, parallel = TRUE, numCores = 2)
 ```
 **Small number of SNPs anyways not good.**
 
