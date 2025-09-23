@@ -191,7 +191,7 @@ For more details, see Apple’s official guide: <https://support.apple.com/en-us
 
 # Functions Overview
 
-This document provies an overview of all the functions in GXwasR package. It offers thirty-three distinct functions, which are organized into six main categories: 
+This document provdies an overview of all the functions in GXwasR package. It offers thirty-three distinct functions, which are organized into six main categories: 
 
     A) Pre-imputation QC
     B) Post-imputation QC
@@ -219,7 +219,7 @@ These categories and their respective functions are detailed in the table below.
 | `DiffZeroOne()`      | Assesses Z-scores for deviation from one and zero for statistics like genetic correlation.                                                 | Sex-differential test                          |
 | `TestXGene()`        | Performs gene-based association tests using GWAS/XWAS summary statistics.                                                                  | High level analysis                            |
 | `MetaGWAS()`         | Combines summary-level GWAS results using fixed-effect and random-effect models.                                                           | High level analysis                            |
-| `ComputePRS()`       | Calculates polygenic risk scores from GWAS summary statistics.                                                                             | High level analysis                            |
+| `ComputePGS()`       | Calculates polygenic scores from GWAS summary statistics.                                                                             | High level analysis                            |
 | `GeneticCorrBT()`    | Computes genetic correlation between to traits.                                                                                            | High level analysis                            |
 | `EstimateHerit()`    | Computes SNP heritability using GREML or LDSC models.                                                                                      | High level analysis                            |
 | `SexRegress()`       | Not previously described. Presumably involves regression analyses specific to sex-stratified data.                                         | High level analysis                            |
@@ -248,7 +248,7 @@ Tutorial for performing post-imputation QC followed by sex-aware association tes
 * Tutorial for performing pre-imputation QC using GXwasR: [https://boseb.github.io/GXwasR/articles/preimputationQC.html](https://boseb.github.io/GXwasR/articles/preimputationQC.html)
 * Tutorial for performing post-imputation QC using GXwasR: [https://boseb.github.io/GXwasR/articles/postimputationQC.html](https://boseb.github.io/GXwasR/articles/postimputationQC.html)
 * Tutorial for running GWAS, XWAS and Sex-differential Tests using GXwasR: [https://boseb.github.io/GXwasR/articles/gwas_models.html](https://boseb.github.io/GXwasR/articles/gwas_models.html)
-* Tutorial for computing Polygenic Risk Score using GXwasR: [https://boseb.github.io/GXwasR/articles/GXwasR_PRS.html](https://boseb.github.io/GXwasR/articles/GXwasR_PRS.html)
+* Tutorial for computing Polygenic Score using GXwasR: [https://boseb.github.io/GXwasR/articles/GXwasR_PGS.html](https://boseb.github.io/GXwasR/articles/GXwasR_PGS.html)
 * Tutorial for ancestry estimation: [https://boseb.github.io/GXwasR/articles/decoding_ancestry.html](https://boseb.github.io/GXwasR/articles/decoding_ancestry.html)
 * Tutorial for meta analysis using GXwasR: [https://boseb.github.io/GXwasR/articles/meta_analysis.html](https://boseb.github.io/GXwasR/articles/meta_analysis.html)
 * Tutorial for genetic correlation using GWAS Summary Statistics using GXwasR: [https://boseb.github.io/GXwasR/articles/genetic_correlation_sumstat.html](https://boseb.github.io/GXwasR/articles/genetic_correlation_sumstat.html)

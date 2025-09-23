@@ -1,5 +1,5 @@
 ---
-title: "Computing Polygenic Risk Score using GXwasR"
+title: "Computing Polygenic Score using GXwasR"
 author: 
   - name: "Banabithi Bose"
     affiliation:
@@ -16,7 +16,7 @@ output:
 date: "`r BiocStyle::doc_date()`"
 package: "`r BiocStyle::pkg_ver('GXwasR')`"
 vignette: >
-  %\VignetteIndexEntry{GXwasR_PRS}
+  %\VignetteIndexEntry{GXwasR_PGS}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}  
 ---
@@ -48,7 +48,7 @@ bib <- c(
 )
 ```
 
-**This document provides a tutorial for computing state-of-the-art polygenic risk score and sex-aware ploygenic risk score utilizing GXwasR R package.**
+**This document provides a tutorial for computing state-of-the-art polygenic score and sex-aware ploygenic score utilizing GXwasR R package.**
 
 ```{r}
 ## Call some libraries (Users can ignore this.)
@@ -63,17 +63,17 @@ library(rmarkdown)
 library(GXwasR)
 ```
 
-# Computing standard PRS using ComputePRS():
+# Computing standard PGS using ComputePGS():
 
-## About ComputePRS()
+## About ComputePGS()
 
 ```{r}
-help(ComputePRS, package = GXwasR)
+help(ComputePGS, package = GXwasR)
 ```
 
-## Running ComputePRS()
+## Running ComputePGS()
 
-```{r, compute_prs, fig.width=10,fig.height=6}
+```{r, compute_pgs, fig.width=10,fig.height=6}
 # Running
 data(Summary_Stat_Ex1)
 data(Example_phenofile)
@@ -97,26 +97,26 @@ highLD_regions <- highLD_hg19
 window_size <- 50
 step_size <- 5
 r2_threshold <- 0.02
-nPC <- 6 # We can incorporate PCs into our PRS analysis to account for population stratification.
+nPC <- 6 # We can incorporate PCs into our PGS analysis to account for population stratification.
 pheno_type <- "binary"
 ldclump <- FALSE
 pheno_type <- "binary"
-PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
-PRSresult$PRS_plot
+PGSresult <- ComputePGS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
+PGSresult$PGS_plot
 ```
 
 ```{r}
-## This table shows 10 samples with phenotype, covariates and a PRS column.
-PRS <- PRSresult$PRS
-PRS[1:10, ]
+## This table shows 10 samples with phenotype, covariates and a PGS column.
+PGS <- PGSresult$PGS
+PGS[1:10, ]
 ## The best threshold
-BestPvalue <- PRSresult$BestP$Threshold
+BestPvalue <- PGSresult$BestP$Threshold
 BestPvalue
 ```
 
-# Computing sex-aware PRS
+# Computing sex-aware PGS
 
-## Datasets for computing PRS
+## Datasets for computing PGS
 
 **Discovery Data** i.e., GWAS summary statistics with mandatory columns such as "SNP"(SNP names), "A1"(effect allele), "BETA"(effect size in beta value) and "P"(p-value).
 
@@ -135,7 +135,7 @@ DataDir <- GXwasR:::GXwasR_data()
 finput <- "GXwasR_example"
 ```
 
-## Quality control of the datasets before computing sex-aware PRS.
+## Quality control of the datasets before computing sex-aware PGS.
 
 Users must ensure that both datasets are having the **same genome built**.
 Here's the quality control procedure:
@@ -209,18 +209,18 @@ foutput <- "NewtargetData"
 FilterSNP(DataDir, ResultDir, finput, foutput, SNPvec, extract = TRUE)
 ```
 
-Now, our discovery data and target data are ready. We will proceed towards computing first sex-combined PRS and then sex-stratified PRS.
+Now, our discovery data and target data are ready. We will proceed towards computing first sex-combined PGS and then sex-stratified PGS.
 
-# Sex-combined PRS computation
+# Sex-combined PGS computation
 **(A) Perform LD clumping for discovery data using target data as reference.**
 
-**(B) Compute PRS at a variety of p-value thresholds.**
+**(B) Compute PGS at a variety of p-value thresholds.**
 
 **(C) Select best threshold based on R-square (for quantitative trait) or MacFadden R-square (for binary trait) using generalized linear model with covariates, such as genetic PCs.**
 
-We will utilize the `ComputePRS()` to perform the steps (A), (B) and (C).
+We will utilize the `ComputePGS()` to perform the steps (A), (B) and (C).
 
-```{r, compute_prs_2, fig.width=10,fig.height=6}
+```{r, compute_pgs_2, fig.width=10,fig.height=6}
 # Running
 # Filtered target data needs to be copied from ResultDir to DataDir.
 ftemp <- list.files(paste0(ResultDir, "/"), pattern = "NewtargetData")
@@ -244,30 +244,30 @@ highLD_regions <- highLD_hg19
 window_size <- 50
 step_size <- 5
 r2_threshold <- 0.02
-nPC <- 6 # We can incorporate PCs into our PRS analysis to account for population stratification.
+nPC <- 6 # We can incorporate PCs into our PGS analysis to account for population stratification.
 pheno_type <- "binary"
 effectsize <- "BETA"
 ldclump <- FALSE
-PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
-PRSresult$PRS_plot
+PGSresult <- ComputePGS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
+PGSresult$PGS_plot
 ```
 
 ```{r}
-## This table shows 10 samples with phenotype, covariates and a PRS column.
-PRS <- PRSresult$PRS
-PRS[1:10, ]
+## This table shows 10 samples with phenotype, covariates and a PGS column.
+PGS <- PGSresult$PGS
+PGS[1:10, ]
 ## The best threshold
-BestPvalue <- PRSresult$BestP$Threshold
+BestPvalue <- PGSresult$BestP$Threshold
 BestPvalue
 ```
 
-**(D) Perform regression to test the association of PRS and sex.**
+**(D) Perform regression to test the association of PGS and sex.**
 
-**(E) Perform the regression using different thresholds of PRS to check for consistent evidence of sex difference.**
+**(E) Perform the regression using different thresholds of PGS to check for consistent evidence of sex difference.**
 
 In this regression, we could include genetic PCs and other covariates as well.
 
-**PRS ~ Sex + PCs + Other Covariates.**
+**PGS ~ Sex + PCs + Other Covariates.**
 
 For this test, we will use `SexRegress()` function.
 
@@ -284,7 +284,7 @@ help(SexRegress, package = GXwasR)
 library(GXwasR)
 famfile <- read.table(paste0(ResultDir, "/NewtargetData.fam"))[, c(1, 2, 5)]
 colnames(famfile) <- c("FID", "IID", "Sex")
-prefdata <- merge(famfile, PRS, by = c("IID", "FID"))
+prefdata <- merge(famfile, PGS, by = c("IID", "FID"))
 
 fdata <- prefdata[, c(13, 3:12)]
 fdata$Sex <- as.factor(as.character(fdata$Sex))
@@ -295,9 +295,9 @@ x <- SexRegress(fdata, regressor_index, response_index)
 x
 ```
 
-In this case, the association between PRS and sex seems insignificant. Users can check with different thresholds of PRS as mentioned in step (D).
+In this case, the association between PGS and sex seems insignificant. Users can check with different thresholds of PGS as mentioned in step (D).
 
-## Sex-stratified PRS
+## Sex-stratified PGS
 
 The steps are:
 
@@ -324,11 +324,11 @@ x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutp
 
 **(C) Perform LD clumping separately in both discovery data.**
 
-**(D) Compute PRS at a variety of p-value thresholds, using male-only discovery data to compute scores for female-only target data and vice versa.**
+**(D) Compute PGS at a variety of p-value thresholds, using male-only discovery data to compute scores for female-only target data and vice versa.**
 
 **(E) Select best threshold based on R-square (for quantitative trait) or MacFadden R-square (for binary trait) using generalized linear model with covariates, such as genetic PCs.**
 
-We will utilize the `ComputePRS()` to perform the steps (C), (D) and (E).
+We will utilize the `ComputePGS()` to perform the steps (C), (D) and (E).
 
 ```{r, fig.width=10,fig.height=6}
 # Running
@@ -337,9 +337,9 @@ ftemp <- list.files(paste0(ResultDir, "/"), pattern = "target")
 invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
 ```
 
-# Computing PRS for female-only target data using male-only discovery data
+# Computing PGS for female-only target data using male-only discovery data
 
-```{r, compute_prs_female, fig.width=10,fig.height=6}
+```{r, compute_pgs_female, fig.width=10,fig.height=6}
 # DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 finput <- "femaletarget"
@@ -365,25 +365,25 @@ highLD_regions <- highLD_hg19
 window_size <- 50
 step_size <- 5
 r2_threshold <- 0.02
-nPC <- 6 # We can incorporate PCs into our PRS analysis to account for population stratification.
+nPC <- 6 # We can incorporate PCs into our PGS analysis to account for population stratification.
 pheno_type <- "binary"
 ldclump <- FALSE
 effectsize <- "BETA"
-PRSresultFemale <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
-PRSresultFemale$PRS_plot
+PGSresultFemale <- ComputePGS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
+PGSresultFemale$PGS_plot
 ```
 
 ```{r}
-## This table shows 10 samples with phenotype, covariates and a PRS column.
-PRSfemale <- PRSresultFemale$PRS
-PRSfemale[1:10, ]
+## This table shows 10 samples with phenotype, covariates and a PGS column.
+PGSfemale <- PGSresultFemale$PGS
+PGSfemale[1:10, ]
 ## The best threshold
-BestPvalue <- PRSresultFemale$BestP$Threshold
+BestPvalue <- PGSresultFemale$BestP$Threshold
 BestPvalue
 ```
 
-# Computing PRS for male-only target data using female-only discovery data
-```{r, compute_prs_male, fig.width=10,fig.height=6}
+# Computing PGS for male-only target data using female-only discovery data
+```{r, compute_pgs_male, fig.width=10,fig.height=6}
 library(GXwasR)
 data(Summary_Stat_Ex2)
 # DataDir <- system.file("extdata", package = "GXwasR")
@@ -411,34 +411,34 @@ highLD_regions <- highLD_hg19
 window_size <- 50
 step_size <- 5
 r2_threshold <- 0.02
-nPC <- 6 # We can incorporate PCs into our PRS analysis to account for population stratification.
+nPC <- 6 # We can incorporate PCs into our PGS analysis to account for population stratification.
 pheno_type <- "binary"
 ldclump <- FALSE
 effectsize <- "BETA"
-PRSresultmale <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1 = clump_p1, clump_p2 = clump_p2, clump_r2 = clump_r2, clump_kb = clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
-PRSresultmale$PRS_plot
+PGSresultmale <- ComputePGS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1 = clump_p1, clump_p2 = clump_p2, clump_r2 = clump_r2, clump_kb = clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
+PGSresultmale$PGS_plot
 ```
 
 ```{r}
-## This table shows 10 samples with phenotype, covariates and a PRS column.
-PRSmale <- PRSresultmale$PRS
-PRSmale[1:10, ]
+## This table shows 10 samples with phenotype, covariates and a PGS column.
+PGSmale <- PGSresultmale$PGS
+PGSmale[1:10, ]
 ## The best threshold
-BestPvalue <- PRSresultmale$BestP$Threshold
+BestPvalue <- PGSresultmale$BestP$Threshold
 BestPvalue
 ```
 
-**(F) Perform regression to test the association of PRS for a trait in one sex and case status in other sex.**
+**(F) Perform regression to test the association of PGS for a trait in one sex and case status in other sex.**
 
-**PRS ~ trait + PCs + other covariates**
+**PGS ~ trait + PCs + other covariates**
 
-Let's check the association between PRS and trait in female.
+Let's check the association between PGS and trait in female.
 ```{r, fig.width=10,fig.height=6}
 # Running
 # First, we need to make fdata object.
 famfile <- read.table(paste0(ResultDir, "/femaletarget.fam"))[, c(1, 2, 6)]
 colnames(famfile) <- c("FID", "IID", "Trait")
-prefdata <- merge(famfile, PRS, by = c("IID", "FID"))
+prefdata <- merge(famfile, PGS, by = c("IID", "FID"))
 
 fdata <- prefdata[, c(13, 3:12)]
 fdata$Sex <- as.factor(as.character(fdata$Trait))
@@ -447,7 +447,7 @@ regressor_index <- 2
 
 x <- SexRegress(fdata, regressor_index, response_index)
 x
-# In this case, there is a significant association between PRS and trait value.
+# In this case, there is a significant association between PGS and trait value.
 ```
 
 ## Citing `GXwasR`

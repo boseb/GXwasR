@@ -18,7 +18,7 @@ Numeric value containing the regression estimate ("Estimate"), standard error ("
 p-value (\eqn{Pr(>|t|)})
 }
 \description{
-This function could be used to check association of two variables. For instance, PRS with sex.
+This function could be used to check association of two variables. For instance, PGS with sex.
 }
 \examples{
 data("Regression_Ex", package = "GXwasR")

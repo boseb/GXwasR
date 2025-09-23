@@ -1192,9 +1192,9 @@ computeNullModel <- function(pheno, pheno_type) {
 
 ## Function 40
 ######### Added in 3.0
-prsFun <- function(pthreshold, ResultDir, DataDir, finput, clumpExtract, clumpSNP, pheno, pheno_type, null_model) {
+pgsFun <- function(pthreshold, ResultDir, DataDir, finput, clumpExtract, clumpSNP, pheno, pheno_type, null_model) {
     rlang::inform(rlang::format_error_bullets(c("i" = pthreshold)))
-    rlang::inform(rlang::format_error_bullets(paste0("Computing PRS for threshold ", pthreshold)))
+    rlang::inform(rlang::format_error_bullets(paste0("Computing PGS for threshold ", pthreshold)))
 
     pt <- data.table::as.data.table(cbind(pthreshold, 0, pthreshold))
     colnames(pt) <- c("Threshold", "Lowerbound", "UpperBound")
@@ -1204,53 +1204,53 @@ prsFun <- function(pthreshold, ResultDir, DataDir, finput, clumpExtract, clumpSN
         plink(),
         args = c(
             "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
-            "--score", normalizePath(file.path(ResultDir, "prssummarystat"), mustWork = FALSE), 1, 2, 3, "header",
+            "--score", normalizePath(file.path(ResultDir, "pgssummarystat"), mustWork = FALSE), 1, 2, 3, "header",
             "--q-score-range", normalizePath(file.path(ResultDir, "range_list"), mustWork = FALSE), normalizePath(file.path(ResultDir, "SNP.pvalue"), mustWork = FALSE),
             clumpExtract, clumpSNP,
-            "--out", normalizePath(file.path(ResultDir, "PRS"), mustWork = FALSE),
+            "--out", normalizePath(file.path(ResultDir, "PGS"), mustWork = FALSE),
             "--silent"
         ),
         std_out = FALSE,
         std_err = FALSE
     ))
 
-    prs <- read.table(normalizePath(file.path(ResultDir, paste0("PRS.", pthreshold, ".profile")), mustWork = FALSE), header = TRUE)
-    pheno.prs <- merge(pheno, prs[, c("FID", "IID", "SCORE")], by = c("FID", "IID"))
+    pgs <- read.table(normalizePath(file.path(ResultDir, paste0("PGS.", pthreshold, ".profile")), mustWork = FALSE), header = TRUE)
+    pheno.pgs <- merge(pheno, pgs[, c("FID", "IID", "SCORE")], by = c("FID", "IID"))
 
     if (pheno_type == "binary") {
-        phenoBin.prs <- pheno.prs
-        phenoBin.prs$Pheno1 <- as.integer(phenoBin.prs$Pheno1 == 2)
-        model <- glm(Pheno1 ~ ., data = phenoBin.prs[, !colnames(phenoBin.prs) %in% c("FID", "IID")], family = binomial)
+        phenoBin.pgs <- pheno.pgs
+        phenoBin.pgs$Pheno1 <- as.integer(phenoBin.pgs$Pheno1 == 2)
+        model <- glm(Pheno1 ~ ., data = phenoBin.pgs[, !colnames(phenoBin.pgs) %in% c("FID", "IID")], family = binomial)
         McFaddenR2 <- 1 - stats::logLik(model) / stats::logLik(null_model)
-        prs.r2 <- McFaddenR2[1]
+        pgs.r2 <- McFaddenR2[1]
     } else {
-        model <- lm(Pheno1 ~ ., data = pheno.prs[, !colnames(pheno.prs) %in% c("FID", "IID")])
-        prs.r2 <- summary(model)$r.squared - summary(null_model)$r.squared
+        model <- lm(Pheno1 ~ ., data = pheno.pgs[, !colnames(pheno.pgs) %in% c("FID", "IID")])
+        pgs.r2 <- summary(model)$r.squared - summary(null_model)$r.squared
     }
 
-    prs.coef <- summary(model)$coefficients["SCORE", ]
-    prs.result <- rbind(data.frame(pthreshold, R2 = prs.r2, P = prs.coef[4], BETA = prs.coef[1], SE = prs.coef[2]))
-    colnames(prs.result) <- c("Threshold", "R2", "P", "BETA", "SE")
+    pgs.coef <- summary(model)$coefficients["SCORE", ]
+    pgs.result <- rbind(data.frame(pthreshold, R2 = pgs.r2, P = pgs.coef[4], BETA = pgs.coef[1], SE = pgs.coef[2]))
+    colnames(pgs.result) <- c("Threshold", "R2", "P", "BETA", "SE")
 
-    return(prs.result)
+    return(pgs.result)
 }
 
 ## Function 41
 ######### Added in 3.0
-createPRSPlot <- function(prsResult) {
-    p1 <- ggplot2::ggplot(data = prsResult, ggplot2::aes(x = factor(prsResult$Threshold), y = prsResult$R2)) +
+createPGSPlot <- function(pgsResult) {
+    p1 <- ggplot2::ggplot(data = pgsResult, ggplot2::aes(x = factor(pgsResult$Threshold), y = pgsResult$R2)) +
         ggplot2::geom_text(
-            ggplot2::aes(label = paste(prsResult$P)),
+            ggplot2::aes(label = paste(pgsResult$P)),
             vjust = -1.5,
             hjust = 0,
             angle = 45,
             cex = 2,
             parse = TRUE
         ) +
-        ggplot2::scale_y_continuous(limits = c(0, max(prsResult$R2) * 1.25)) +
+        ggplot2::scale_y_continuous(limits = c(0, max(pgsResult$R2) * 1.25)) +
         ggplot2::xlab("P-value thresholds") +
-        ggplot2::ylab("PRS model fit: R^2") +
-        ggplot2::geom_bar(ggplot2::aes(fill = -log10(prsResult$P)), stat = "identity") +
+        ggplot2::ylab("PGS model fit: R^2") +
+        ggplot2::geom_bar(ggplot2::aes(fill = -log10(pgsResult$P)), stat = "identity") +
         ggplot2::scale_fill_gradient2(
             low = "dodgerblue",
             high = "firebrick",
@@ -1265,7 +1265,7 @@ createPRSPlot <- function(prsResult) {
             legend.text = ggplot2::element_text(size = 7),
             axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)
         ) +
-        ggplot2::ggtitle("P-value thresholds vs PRS model fit") +
+        ggplot2::ggtitle("P-value thresholds vs PGS model fit") +
         ggplot2::theme(plot.title = ggplot2::element_text(size = 10, face = "bold"))
 
     return(p1)
@@ -1277,16 +1277,16 @@ createSexDistributionPlot <- function(dat) {
     dat <- as.data.frame(dat)
     # Determine the title based on the available data
     title <- if (nrow(dat[dat$SEX == 1, ]) != 0 && nrow(dat[dat$SEX == 2, ]) != 0) {
-        "Best PRS distribution\n(males vs females)"
+        "Best PGS distribution\n(males vs females)"
     } else {
-        "Best PRS distribution"
+        "Best PGS distribution"
     }
 
     # Create the plot
     p2 <- ggplot2::ggplot(dat, ggplot2::aes(x = .data$SCORE, color = .data$SEX)) +
         ggplot2::geom_density() +
         ggplot2::ggtitle(title) +
-        ggplot2::xlab("PRS") +
+        ggplot2::xlab("PGS") +
         ggplot2::theme(
             plot.title = ggplot2::element_text(size = 10, face = "bold"),
             axis.title.x = ggplot2::element_text(size = 8)
@@ -1304,8 +1304,8 @@ createBinaryPhenotypePlots <- function(dat, p1, p2) {
     # Generate density plot for overall distribution
     p3 <- ggplot2::ggplot(dat, ggplot2::aes(x = .data$`SCORE`, color = .data$Pheno1)) +
         ggplot2::geom_density() +
-        ggplot2::ggtitle("Best PRS distribution\n(cases vs controls)") +
-        ggplot2::xlab("PRS") +
+        ggplot2::ggtitle("Best PGS distribution\n(cases vs controls)") +
+        ggplot2::xlab("PGS") +
         ggplot2::theme(plot.title = ggplot2::element_text(size = 10, face = "bold")) +
         ggplot2::theme(axis.title.x = ggplot2::element_text(size = 8))
 
@@ -1315,15 +1315,15 @@ createBinaryPhenotypePlots <- function(dat, p1, p2) {
 
     p4 <- ggplot2::ggplot(mdat, ggplot2::aes(x = .data$SCORE, color = .data$Pheno1)) +
         ggplot2::geom_density() +
-        ggplot2::ggtitle("Best PRS distribution in males\n(cases vs controls)") +
-        ggplot2::xlab("PRS") +
+        ggplot2::ggtitle("Best PGS distribution in males\n(cases vs controls)") +
+        ggplot2::xlab("PGS") +
         ggplot2::theme(plot.title = ggplot2::element_text(size = 10, face = "bold")) +
         ggplot2::theme(axis.title.x = ggplot2::element_text(size = 8))
 
     p5 <- ggplot2::ggplot(fdat, ggplot2::aes(x = .data$SCORE, color = .data$Pheno1)) +
         ggplot2::geom_density() +
-        ggplot2::ggtitle("Best PRS distribution in females\n(cases vs controls)") +
-        ggplot2::xlab("PRS") +
+        ggplot2::ggtitle("Best PGS distribution in females\n(cases vs controls)") +
+        ggplot2::xlab("PGS") +
         ggplot2::theme(plot.title = ggplot2::element_text(size = 10, face = "bold")) +
         ggplot2::theme(axis.title.x = ggplot2::element_text(size = 8))
 
@@ -6289,7 +6289,7 @@ validateInputForComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), fin
 
 ## Function 131
 ## Added in 3.0
-validateInputForComputePRS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phenofile, covarfile = NULL, effectsize = c("BETA", "OR"), ldclump = FALSE, LDreference, clump_p1 = 0.0001, clump_p2 = 0.01, clump_r2 = 0.50, clump_kb = 250, byCHR = TRUE, pthreshold = c(0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5), highLD_regions = "high-LD-regions-hg19-GRCh37.txt", ld_prunning = FALSE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary") {
+validateInputForComputePGS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phenofile, covarfile = NULL, effectsize = c("BETA", "OR"), ldclump = FALSE, LDreference, clump_p1 = 0.0001, clump_p2 = 0.01, clump_r2 = 0.50, clump_kb = 250, byCHR = TRUE, pthreshold = c(0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5), highLD_regions = "high-LD-regions-hg19-GRCh37.txt", ld_prunning = FALSE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary") {
     # Validate directories
     if (!dir.exists(DataDir)) {
         stop("Error in DataDir: Directory does not exist.")

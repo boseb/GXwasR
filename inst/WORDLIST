@@ -50,7 +50,7 @@ Cochrane's
 Cochrane’s
 ComputeGeneticPC
 ComputeLD
-ComputePRS
+ComputePGS
 Congivaram
 CrossMap
 Crossmap
@@ -184,7 +184,7 @@ PMC
 PMCID
 PMID
 POS
-PRS
+PGS
 PSNP
 Panscan
 Pawitan
@@ -373,7 +373,6 @@ ogical
 optim
 ositive
 outlierOf
-pRS
 pihat
 pleiotropic
 plink
@@ -383,7 +382,7 @@ ploygenic
 polygenic
 poolr
 pre
-prs
+pgs
 pval
 pvalue
 quantitative’
