@@ -2236,7 +2236,7 @@ plinkVCF <- function(
 #' @param finput
 #' Character string, specifying the prefix of the input PLINK binary files. Note: Input dataset should contain X and Y regions.
 #'
-#' @param impute_sex
+#' @param infer_sex
 #' Boolean value, `TRUE` or `FALSE`, specifying sex to be imputed or not. If `TRUE` then sex-imputed PLINK files, prefixed, 'seximputed_plink', will
 #' be produced in `DataDir`.
 #'
@@ -2289,11 +2289,11 @@ plinkVCF <- function(
 #' LD_r2_threshold <- 0.02
 #' fmax_F <- 0.2
 #' mmin_F <- 0.8
-#' impute_sex <- FALSE
+#' infer_sex <- FALSE
 #' compute_freq <- FALSE
 #'
 #' x <- SexCheck(
-#'     DataDir = DataDir, ResultDir = ResultDir, finput = finput, impute_sex = impute_sex,
+#'     DataDir = DataDir, ResultDir = ResultDir, finput = finput, infer_sex = infer_sex,
 #'     compute_freq = compute_freq, LD_window_size = LD_window_size, LD_step_size = LD_step_size,
 #'     LD_r2_threshold = 0.02, fmax_F = 0.2, mmin_F = 0.8
 #' )
@@ -2305,7 +2305,7 @@ SexCheck <-
         DataDir,
         ResultDir = tempdir(),
         finput,
-        impute_sex = FALSE,
+        infer_sex = FALSE,
         compute_freq = FALSE,
         LD = TRUE,
         LD_window_size = 50,
@@ -2314,7 +2314,7 @@ SexCheck <-
         fmax_F = 0.2,
         mmin_F = 0.8) {
         # Validate inputs
-        if (!validateInputForSexCheck(DataDir, ResultDir, finput, impute_sex, compute_freq, LD, LD_window_size, LD_step_size, LD_r2_threshold, fmax_F, mmin_F)) {
+        if (!validateInputForSexCheck(DataDir, ResultDir, finput, infer_sex, compute_freq, LD, LD_window_size, LD_step_size, LD_r2_threshold, fmax_F, mmin_F)) {
             return(NULL)
         }
 
@@ -2338,7 +2338,7 @@ SexCheck <-
                     rlang::inform(rlang::format_error_bullets(c("i" = "There are no Y chromosomes in the input PLINK files. Estimates will be based solely on the X chromosome.")))
                 }
 
-                if (impute_sex == FALSE) {
+                if (infer_sex == FALSE) {
                     if (compute_freq == TRUE) {
                         freq_file_args <- c(
                             "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
@@ -2399,7 +2399,7 @@ SexCheck <-
                                 header = TRUE
                             )
                     }
-                } else if (impute_sex == TRUE) {
+                } else if (infer_sex == TRUE) {
                     if (LD == TRUE) {
                         plink_args <- c(
                             "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),

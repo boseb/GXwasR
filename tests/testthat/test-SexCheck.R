@@ -9,10 +9,10 @@ test_that("SexCheck returns a data.frame", {
     LD_r2_threshold <- 0.02
     fmax_F <- 0.2
     mmin_F <- 0.8
-    impute_sex <- FALSE
+    infer_sex <- FALSE
     compute_freq <- FALSE
     x <- SexCheck(
-        DataDir = DataDir, ResultDir = ResultDir, finput = finput, impute_sex = impute_sex,
+        DataDir = DataDir, ResultDir = ResultDir, finput = finput, infer_sex = infer_sex,
         compute_freq = compute_freq, LD_window_size = LD_window_size, LD_step_size = LD_step_size,
         LD_r2_threshold = 0.02, fmax_F = 0.2, mmin_F = 0.8
     )

@@ -178,10 +178,10 @@ LD_step_size <- 5
 LD_r2_threshold <- 0.02
 fmax_F <- 0.3
 mmin_F <- 0.7
-# We will not impute sex
-impute_sex <- FALSE
+# We will not infer sex
+infer_sex <- FALSE
 compute_freq <- FALSE
-SexCheckResult <-SexCheck(DataDir=DataDir,ResultDir = ResultDir, finput=finput,impute_sex=impute_sex,compute_freq =compute_freq,LD_window_size=LD_window_size,LD_step_size=LD_step_size,LD_r2_threshold=0.02,fmax_F = fmax_F,mmin_F=mmin_F)
+SexCheckResult <-SexCheck(DataDir=DataDir,ResultDir = ResultDir, finput=finput, infer_sex = infer_sex,compute_freq =compute_freq,LD_window_size=LD_window_size,LD_step_size=LD_step_size,LD_r2_threshold=0.02,fmax_F = fmax_F,mmin_F=mmin_F)
 problematic_sex <- SexCheckResult[SexCheckResult$STATUS != "OK",]
 problematic_sex <- problematic_sex[,1:2]
 ```

@@ -6494,7 +6494,7 @@ validateInputForPlinkVCF <- function(DataDir, ResultDir = tempdir(), finput, fou
 
 ## Function 134
 ## Added in 3.0
-validateInputForSexCheck <- function(DataDir, ResultDir = tempdir(), finput, impute_sex = FALSE, compute_freq = FALSE, LD = TRUE, LD_window_size = 50, LD_step_size = 5, LD_r2_threshold = 0.02, fmax_F = 0.2, mmin_F = 0.8) {
+validateInputForSexCheck <- function(DataDir, ResultDir = tempdir(), finput, infer_sex = FALSE, compute_freq = FALSE, LD = TRUE, LD_window_size = 50, LD_step_size = 5, LD_r2_threshold = 0.02, fmax_F = 0.2, mmin_F = 0.8) {
     # Validate directories
     if (!dir.exists(DataDir)) {
         stop("Error in DataDir: Directory does not exist.")
@@ -6509,7 +6509,7 @@ validateInputForSexCheck <- function(DataDir, ResultDir = tempdir(), finput, imp
     }
 
     # Validate boolean parameters
-    boolean_params <- list(impute_sex = impute_sex, compute_freq = compute_freq, LD = LD)
+    boolean_params <- list(infer_sex = infer_sex, compute_freq = compute_freq, LD = LD)
     for (param_name in names(boolean_params)) {
         param_value <- boolean_params[[param_name]]
         if (!is.logical(param_value)) {
