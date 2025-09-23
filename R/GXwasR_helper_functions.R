@@ -4372,7 +4372,7 @@ allForestplot <- function(i, MR2, Sbeta) {
 
     plot1 <- ggplot2::ggplot(data = df, ggplot2::aes(y = df$index, x = df$effect, xmin = df$lower, xmax = df$upper)) +
         ggplot2::geom_point() +
-        ggplot2::geom_errorbarh(height = .1) +
+        ggplot2::geom_errorbarh(width = .1) +
         ggplot2::scale_y_continuous(breaks = seq_len(nrow(df)), labels = df$study) +
         ggplot2::labs(title = paste0("Forest plot for ", SNPs), x = "Effect Size (95% CI)", y = "Studies and tests") +
         ggplot2::geom_vline(xintercept = 0, color = "black", linetype = "dashed", alpha = .5) +
