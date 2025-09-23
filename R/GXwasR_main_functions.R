@@ -3863,7 +3863,7 @@ GXwas <- function(
 #' Numeric value, specifying the p-value threshold for plotting Manhattan plots.
 #'
 #' @returns
-#' A list object containing five dataframes. The first three dataframes, such as Mfixed, Mrandom and Mweighted contain results
+#' A list object containing five dataframes and a list of forest plots. The first three dataframes, such as Mfixed, Mrandom and Mweighted contain results
 #' for fixed effect, random effect and weighted model. Each of these dataframes can have maximum 12 columns, such as:
 #' * `CHR` (Chromosome code)
 #' * `BP` (Basepair position)
@@ -4035,7 +4035,7 @@ MetaGWAS <- function(
             }
 
             # Visualization
-            generatePlots(MRfiltered, Sbeta, ResultDir, plotname, useSNPposition, pval_threshold_manplot, chosen_snps_file)
+            forest_plots <- generatePlots(MRfiltered, Sbeta, ResultDir, plotname, useSNPposition, pval_threshold_manplot, chosen_snps_file)
 
 
             ## Produce all forest plots in .pdf
@@ -4121,7 +4121,7 @@ MetaGWAS <- function(
 
                 rlang::inform(rlang::format_error_bullets(c("i" = "Since useSNPposition = FALSE, there will be no Manhattan and QQ plot will be generated.")))
             }
-            return(list(Resultfixed = Mfixed, Resultrandom = Mrandom, Resultweighted = Mweighted, Metadata = Msummdata, ProblemSNP = MP))
+            return(list(Resultfixed = Mfixed, Resultrandom = Mrandom, Resultweighted = Mweighted, Metadata = Msummdata, ProblemSNP = MP, forestPlots = forest_plots))
         },
         error = function(e) {
             message("An error occurred: ", e$message)

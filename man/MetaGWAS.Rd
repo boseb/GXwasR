@@ -71,7 +71,7 @@ The default is \code{FALSE}.}
 \item{pval_threshold_manplot}{Numeric value, specifying the p-value threshold for plotting Manhattan plots.}
 }
 \value{
-A list object containing five dataframes. The first three dataframes, such as Mfixed, Mrandom and Mweighted contain results
+A list object containing five dataframes and a list of forest plots. The first three dataframes, such as Mfixed, Mrandom and Mweighted contain results
 for fixed effect, random effect and weighted model. Each of these dataframes can have maximum 12 columns, such as:
 \itemize{
 \item \code{CHR} (Chromosome code)

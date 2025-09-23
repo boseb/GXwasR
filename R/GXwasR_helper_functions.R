@@ -4284,48 +4284,68 @@ getCI <- function(mn1, se1, method) {
 
 ## Function 87
 ## Updated in 3.0
+#' @importFrom ggplot2 scale_color_manual scale_size_manual theme_minimal
 topForestplot <- function(i, MR2, Sbeta) {
+    # Extract the SNP row
     SNPs <- MR2$SNP[i]
-    Fixed_Effect <- MR2[i, c("BETA", "CIfixedLL", "CIfixedUL")]
-    Random_Effect <- MR2[i, c("BETA.R.", "CIrandomLL", "CIrandomUL")]
-    Weighted_Effect <- MR2[i, c("WEIGHTED_Z", "CIweightedLL", "CIweightedUL")]
+    Fixed_Effect    <- MR2[i, c("BETA",      "CIfixedLL",   "CIfixedUL")]
+    Random_Effect   <- MR2[i, c("BETA.R.",   "CIrandomLL",  "CIrandomUL")]
+    Weighted_Effect <- MR2[i, c("WEIGHTED_Z","CIweightedLL","CIweightedUL")]
+    
+    # Collect per-study estimates
     Study_EFFect <- Sbeta[Sbeta$SNP == SNPs, , drop = FALSE]
-    Study_EFFect <- Study_EFFect[, -1]
-    D1 <- rbind(Study_EFFect, Fixed_Effect, Random_Effect, Weighted_Effect, use.names = FALSE)
-
-    D1$V2 <- row.names(D1)
+    Study_EFFect <- Study_EFFect[, -1]  # drop SNP column
+    
+    # Combine all rows
+    D1 <- rbind(
+        Study_EFFect,
+        Fixed_Effect,
+        Random_Effect,
+        Weighted_Effect,
+        use.names = FALSE
+    )
+    
+    # Add labels + reorder
+    D1$V2    <- row.names(D1)
     D1$index <- as.integer(D1$V2)
     D1$study <- paste0("S", D1$index)
-    D1 <- D1[, c(6, 5, seq_len(3))]
+    D1       <- D1[, c(6, 5, seq_len(3))]
     colnames(D1) <- c("study", "index", "effect", "lower", "upper")
-    D1[nrow(D1), "study"] <- "W"
-    D1[nrow(D1) - 1, "study"] <- "R"
-    D1[nrow(D1) - 2, "study"] <- "F"
-    D1$CI <- paste0("(", D1$lower, ",", D1$upper, ")")
-    df <- D1
-    ############
-    forest.plot <- function(
-        x, intervals, labels = NULL, main = NULL, xlab = "Effect size",
-        pchs = rep(19, length(x)), cols = rep("black", length(x)),
-        cexs = rep(1, length(x))) {
-        K <- length(x)
-        stopifnot(nrow(intervals) == K)
-        graphics::plot(0,
-            col = "white", xlim = c(min(c(intervals[, 1], 0) - 0.05), max(c(intervals[, 2], 0) + 0.05)),
-            ylim = c(0, K + 1), xlab = xlab, ylab = "", yaxt = "n", main = main
+    
+    # Relabel last three rows
+    D1[nrow(D1),   "study"] <- "W"
+    D1[nrow(D1)-1, "study"] <- "R"
+    D1[nrow(D1)-2, "study"] <- "F"
+    
+    # For ordering: keep studies at bottom, meta rows at top
+    D1$study <- factor(D1$study, levels = rev(D1$study))
+    
+    # Add aesthetics for color and size
+    D1$group <- ifelse(D1$study %in% c("F", "R", "W"), "meta", "study")
+    
+    # ---- build ggplot ----
+    p <- ggplot(D1, aes(x = effect, y = study)) +
+        geom_vline(xintercept = 0, linetype = 2, color = "grey50") +
+        geom_errorbarh(aes(xmin = lower, xmax = upper),
+                       width = 0.2,
+                       color = ifelse(D1$group == "meta", "blue", "black")) +
+        geom_point(aes(shape = group, color = group, size = group)) +
+        scale_color_manual(values = c(study = "black", meta = "blue")) +
+        scale_shape_manual(values = c(study = 19, meta = 18)) +
+        scale_size_manual(values  = c(study = 2, meta = 3.5)) +
+        labs(
+            title = SNPs,
+            x = "Effect size (beta, 95% CI)",
+            y = NULL,
+            caption = "W: Weighted, R: Random, F: Fixed, S1, S2, …: Studies"
+        ) +
+        theme_minimal(base_size = 12) +
+        theme(
+            legend.position = "none",
+            plot.title = element_text(hjust = 0.5)
         )
-        graphics::axis(2, at = K:1, labels = labels, cex.axis = 0.8)
-        graphics::arrows(intervals[, 1], K:1, intervals[, 2], K:1,
-            code = 3, angle = 90, length = 0.02, col = cols
-        )
-        graphics::points(x, K:1, pch = pchs, cex = cexs, col = cols)
-        graphics::abline(v = 0, lty = 2)
-    }
-
-    suppressWarnings(forest.plot(D1$effect,
-        intervals = as.matrix(D1[, 4:5]), labels = D1$study, main = SNPs, xlab = "Effect size (beta, 95% CI)\nW:Weighted, R:Random, F:Fixed, S1, S2,..:Studies",
-        pchs = c(rep(19, length(D1$effect) - 3), 18, 18, 18), cexs = c(rep(.8, length(D1$effect) - 3), 1.3, 1.3, 1.3), cols = c(rep(1, length(D1$effect) - 3), 4, 4, 4)
-    ))
+    
+    return(p)
 }
 
 ## Function 88
@@ -4484,26 +4504,32 @@ metaFun <- function(DataDir, ResultDir, SummData, CHR, chromosome, nomap, UseA1v
 
 ## Function 94
 # Added in 3.0
-generatePlots <- function(MRfiltered, Sbeta, ResultDir, plotname, useSNPposition, pval_threshold_manplot, chosen_snps_file) {
+generatePlots <- function(MRfiltered, Sbeta, ResultDir, plotname,
+                          useSNPposition, pval_threshold_manplot,
+                          chosen_snps_file) {
     # Determine the number of SNPs to plot
     numSNPs <- min(length(unique(MRfiltered$SNP)), 10)
     if (length(unique(MRfiltered$SNP)) > 10) {
-        rlang::inform(rlang::format_error_bullets(c("i" = "Maximum 10 Forest plots of 10 chosen SNPs will be drawn in the plot window. For all other Forest plots, please check ResultDir.")))
+        rlang::inform(rlang::format_error_bullets(c(
+            "i" = "Maximum 10 Forest plots of 10 chosen SNPs will be returned. 
+                   For all other Forest plots, please check ResultDir."
+        )))
     }
 
-    # Generate Forest plots
-    invisible(suppressWarnings(lapply(seq_len(numSNPs), topForestplot, MR2 = MRfiltered, Sbeta = Sbeta)))
+    # Generate forest plots and collect them
+    plots <- lapply(seq_len(numSNPs),
+                    topForestplot,
+                    MR2 = MRfiltered,
+                    Sbeta = Sbeta)
 
-    # Add mtext for all plots
-    options(warn = -1)
-    invisible(suppressWarnings(graphics::mtext(text = "Studies (black) and tests (blue)", side = 4, line = 0, outer = TRUE)))
-    invisible(suppressWarnings(graphics::mtext(text = "Effect size (beta, 95% CI)", side = 1, line = 1, outer = TRUE)))
-
-    if (is.null(chosen_snps_file)) {
-        invisible(suppressWarnings(graphics::mtext(text = "Forest plots of a few chosen SNPs", side = 3, line = .5, outer = TRUE)))
+    # Add a label about what kind of plots these are
+    attr(plots, "description") <- if (is.null(chosen_snps_file)) {
+        "Forest plots of a few chosen SNPs"
     } else {
-        invisible(suppressWarnings(graphics::mtext(text = "Forest plots of the top SNPs", side = 3, line = .5, outer = TRUE)))
+        "Forest plots of the top SNPs"
     }
+
+    return(plots)
 }
 
 ## Function 95
