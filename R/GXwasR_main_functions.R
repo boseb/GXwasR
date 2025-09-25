@@ -1836,7 +1836,7 @@ ComputePGS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phen
 
             summarystat <- as.data.frame(dplyr::distinct(summarystat, summarystat$SNP, .keep_all = TRUE))
 
-            write.table(summarystat, file = normalizePath(file.path(ResultDir, "PGSsummarystat"), mustWork = FALSE), quote = FALSE, row.names = FALSE)
+            write.table(summarystat, file = normalizePath(file.path(ResultDir, "pgssummarystat"), mustWork = FALSE), quote = FALSE, row.names = FALSE)
             SNP.pvalue <- unique(summarystat[, c("SNP", "P")])
             write.table(SNP.pvalue, file = normalizePath(file.path(ResultDir, "SNP.pvalue"), mustWork = FALSE), quote = FALSE, row.names = FALSE)
 
