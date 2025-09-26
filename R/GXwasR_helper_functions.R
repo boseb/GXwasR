@@ -4284,7 +4284,7 @@ getCI <- function(mn1, se1, method) {
 
 ## Function 87
 ## Updated in 3.0
-#' @importFrom ggplot2 scale_color_manual scale_size_manual theme_minimal
+#' @importFrom ggplot2 scale_color_manual scale_size_manual theme_minimal geom_errorbar
 topForestplot <- function(i, MR2, Sbeta) {
     # Extract the SNP row
     SNPs <- MR2$SNP[i]
@@ -4326,9 +4326,15 @@ topForestplot <- function(i, MR2, Sbeta) {
     # ---- build ggplot ----
     p <- ggplot(D1, aes(x = effect, y = study)) +
         geom_vline(xintercept = 0, linetype = 2, color = "grey50") +
-        geom_errorbarh(aes(xmin = lower, xmax = upper),
-                       width = 0.2,
-                       color = ifelse(D1$group == "meta", "blue", "black")) +
+        # geom_errorbarh(aes(xmin = lower, xmax = upper),
+        #                width = 0.2,
+        #                color = ifelse(D1$group == "meta", "blue", "black")) +
+        geom_errorbar(
+            aes(xmin = lower, xmax = upper, y = study),
+            width = 0.2,
+            orientation = "y",
+            color = ifelse(D1$group == "meta", "blue", "black")
+        ) +
         geom_point(aes(shape = group, color = group, size = group)) +
         scale_color_manual(values = c(study = "black", meta = "blue")) +
         scale_shape_manual(values = c(study = 19, meta = 18)) +
