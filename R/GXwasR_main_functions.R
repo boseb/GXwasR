@@ -4045,7 +4045,7 @@ MetaGWAS <- function(
             dev.off()
 
             rlang::inform(rlang::format_error_bullets(c(
-                "v" = paste0("Forest plot files for ", plotname, " SNPs have been created."),
+                "v" = paste0("Forest plots for SNPS have compiled and saved as ", plotname, ".pdf"),
                 "i" = paste("You can find them in the directory:", ResultDir)
             )))
 
@@ -4104,7 +4104,7 @@ MetaGWAS <- function(
                 invisible(suppressWarnings(qqman::qq(mR$P, main = paste0(("Q-Q plot of weighted Z-score meta GWAS p-values with GIF = "), lamdaGC))))
                 dev.off()
                 rlang::inform(rlang::format_error_bullets(c(
-                    "v" = paste0("Forest plot files for ", plotname, " SNPs have been created."),
+                    "v" = paste0("Manhattan and QQ plots for SNPS have been compiled and saved as ", plotname, ".jpeg"),
                     "i" = paste("You can find them in the directory:", ResultDir)
                 )))
 
