@@ -191,7 +191,7 @@ For more details, see Apple’s official guide: <https://support.apple.com/en-us
 
 # Functions Overview
 
-This document provdies an overview of all the functions in GXwasR package. It offers thirty-three distinct functions, which are organized into six main categories: 
+This document provides an overview of all the functions in GXwasR package. It offers thirty-three distinct functions, which are organized into six main categories: 
 
     A) Pre-imputation QC
     B) Post-imputation QC
