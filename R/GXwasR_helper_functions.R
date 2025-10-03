@@ -4324,18 +4324,18 @@ topForestplot <- function(i, MR2, Sbeta) {
     D1$group <- ifelse(D1$study %in% c("F", "R", "W"), "meta", "study")
     
     # ---- build ggplot ----
-    p <- ggplot(D1, aes(x = effect, y = study)) +
+    p <- ggplot(D1, aes(x = .data$effect, y = .data$study)) +
         geom_vline(xintercept = 0, linetype = 2, color = "grey50") +
         # geom_errorbarh(aes(xmin = lower, xmax = upper),
         #                width = 0.2,
         #                color = ifelse(D1$group == "meta", "blue", "black")) +
         geom_errorbar(
-            aes(xmin = lower, xmax = upper, y = study),
+            aes(xmin = .data$lower, xmax = .data$upper, y = .data$study),
             width = 0.2,
             orientation = "y",
             color = ifelse(D1$group == "meta", "blue", "black")
         ) +
-        geom_point(aes(shape = group, color = group, size = group)) +
+        geom_point(aes(shape = .data$group, color = .data$group, size = .data$group)) +
         scale_color_manual(values = c(study = "black", meta = "blue")) +
         scale_shape_manual(values = c(study = 19, meta = 18)) +
         scale_size_manual(values  = c(study = 2, meta = 3.5)) +
@@ -4343,7 +4343,7 @@ topForestplot <- function(i, MR2, Sbeta) {
             title = SNPs,
             x = "Effect size (beta, 95% CI)",
             y = NULL,
-            caption = "W: Weighted, R: Random, F: Fixed, S1, S2, …: Studies"
+            caption = "W: Weighted, R: Random, F: Fixed, S1, S2, ...: Studies"
         ) +
         theme_minimal(base_size = 12) +
         theme(
