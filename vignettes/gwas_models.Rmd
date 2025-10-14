@@ -3,8 +3,8 @@ title: "Running GWAS, XWAS and Sex-differential tests Using GXwasR"
 author: 
   - name: "Banabithi Bose"
     affiliation:
+    - University of Colorado Anschutz Medical; 
     - Northwestern University
-    - University of Colorado Anschutz Medical Campus
     email: banabithi.bose@gmail.com
 output: 
   BiocStyle::html_document:

@@ -3,8 +3,8 @@ title: "Computing Polygenic Score using GXwasR"
 author: 
   - name: "Banabithi Bose"
     affiliation:
+    - University of Colorado Anschutz Medical; 
     - Northwestern University
-    - University of Colorado Anschutz Medical Campus
     email: banabithi.bose@gmail.com
 output: 
   BiocStyle::html_document:
@@ -48,7 +48,7 @@ bib <- c(
 )
 ```
 
-**This document provides a tutorial for computing state-of-the-art polygenic score and sex-aware ploygenic score utilizing GXwasR R package.**
+**This document provides a tutorial for computing state-of-the-art polygenic scores and sex-aware polygenic scores utilizing the GXwasR R package.**
 
 ```{r}
 ## Call some libraries (Users can ignore this.)
@@ -56,7 +56,7 @@ library(printr)
 library(rmarkdown)
 ```
 
-## Load GXwasR and Example Datasets:
+## Load the GXwasR and Example Datasets:
 
 ```{r}
 ## Load GXwasR
@@ -70,7 +70,7 @@ data(Example_pthresoldfile)
 data(highLD_hg19)
 ```
 
-# Computing Standard PGS using ComputePGS():
+# Compute Standard PGSs using ComputePGS():
 
 ## About ComputePGS()
 
@@ -107,7 +107,7 @@ PGSresult$PGS_plot
 ```
 
 ```{r}
-## This table shows 10 samples with phenotype, covariates and a PGS column.
+## Table 1: A table showing 10 samples with phenotype, covariates, and sex-combined PGS scores.
 PGS <- PGSresult$PGS
 PGS[1:10, ]
 ## The best threshold
@@ -137,8 +137,7 @@ finput <- "GXwasR_example"
 
 ## Quality control of the datasets before computing sex-aware PGS.
 
-Users must ensure that both datasets are having the **same genome built**.
-Here's the quality control procedure:
+Users must first ensure that both datasets  are mapped to the **same genome build**. The quality control procedure is:
 
 **(A) Discovery Data: Remove multi-allelic, indels and ambiguous (A/T or C/G) SNPs. Then remove SNPs with minor allele frequency (MAF) < 0.05 and quality info score < 0.1.  For this filtering, R packages like data.table, dplyr, tidyverse can be used.**
 
@@ -146,7 +145,7 @@ Here's the quality control procedure:
 
 Let's see how to use these functions. For the details of these utility functions, please follow [https://boseb.github.io/GXwasR/articles/GXwasR_overview.html](https://boseb.github.io/GXwasR/articles/GXwasR_overview.html).
 
-We will use `FilterAllele()` on target data to filter out the multi-allelic SNPs. Also, note that GXwasR doesn't work with multi-allelic variants. So this filtering step is important.
+We will use `FilterAllele()` on target data to filter out the multi-allelic SNPs. Also, note that GXwasR does not work with multi-allelic variants. So, this filtering step is critical.
 
 ```{r}
 # Target data
@@ -157,7 +156,7 @@ foutput <- "filtered_multiallelic"
 x <- FilterAllele(DataDir, ResultDir, finput, foutput)
 ```
 
-Now, we will use `QCsnp()` to remove ambiguous (A/T or C/G) SNPs and SNPs with MAF < 0.05 and Hardy Weinberg Equilibrium (hwe) > e-10.
+We will next use `QCsnp()` to remove ambiguous (A/T or C/G) SNPs and SNPs with MAF < 0.05 and Hardy Weinberg Equilibrium (hwe) > e-10.
 
 ```{r}
 ## Since there was no multiallelic SNPs, we will continue with original input data.
@@ -182,9 +181,9 @@ ld_prunning <- FALSE
 x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl, hwe = hwe, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, dmissX = dmissX, dmissAutoY = dmissAutoY, diffmissFilter = diffmissFilter)
 ```
 
-**(C) Check whether SNPs present in discovery data are in target data.**
+**(C) Check whether SNPs present in the GWAS discovery dataset are in target dataset.**
 
-  Let's gather the common SNPs between these.
+  Gather SNPs common to discovery and target datasets.
 
 ```{r}
 SNP1 <- unique(summarystat$SNP)
@@ -193,7 +192,7 @@ SNP2 <- unique(targetbim$V2)
 commonSNP <- intersect(SNP1, SNP2) ## 991 SNPs are common between our discovery data and target data
 ```
 
-## Filtering discovery data and target data with common SNPs
+## Filtering discovery data and target data to retain SNPs common to both datasets
 
 ```{r}
 commonSNP <- data.table::as.data.table(commonSNP)
@@ -209,16 +208,16 @@ foutput <- "NewtargetData"
 FilterSNP(DataDir, ResultDir, finput, foutput, SNPvec, extract = TRUE)
 ```
 
-Now, our discovery data and target data are ready. We will proceed towards computing first sex-combined PGS and then sex-stratified PGS.
+Now, discovery and target datasets are ready for computing sex-combined and sex-stratified PGS.
 
 # Sex-combined PGS computation
-**(A) Perform LD clumping for discovery data using target data as reference.**
+**(A) Perform LD-clumping of the discovery data using the target data as the reference.**
 
 **(B) Compute PGS at a variety of p-value thresholds.**
 
 **(C) Select best threshold based on R-square (for quantitative trait) or MacFadden R-square (for binary trait) using generalized linear model with covariates, such as genetic PCs.**
 
-We will utilize the `ComputePGS()` to perform the steps (A), (B) and (C).
+Use `ComputePGS()` to perform the steps (A), (B) and (C).
 
 ```{r, compute_pgs_2, fig.width=10,fig.height=6}
 # Running
@@ -251,9 +250,11 @@ ldclump <- FALSE
 PGSresult <- ComputePGS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions, ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary")
 PGSresult$PGS_plot
 ```
+Figure 2: PGS analysis. (A) Sex-combined PGS analysis showing model fit across p-value thresholds,  PGS distributions by: (B) sex, (C) case-control status, and PGS stratified by: case-control status within: (D) males, and (E) females.
 
+**Note:** In real population, plot B) should show similar distribution of PGS scores in males and females. Slight difference in male vs female cases maybe possible.
 ```{r}
-## This table shows 10 samples with phenotype, covariates and a PGS column.
+## Table 2: A table showing 10 samples with phenotype, covariates, and sex-combined PGS scores.
 PGS <- PGSresult$PGS
 PGS[1:10, ]
 ## The best threshold
@@ -261,15 +262,16 @@ BestPvalue <- PGSresult$BestP$Threshold
 BestPvalue
 ```
 
-**(D) Perform regression to test the association of PGS and sex.**
+**(D) Check whether there is a different liability threshold between sexes.**
 
-**(E) Perform the regression using different thresholds of PGS to check for consistent evidence of sex difference.**
+To evaluate whether there is a sex-specific liability threshold, users can test whether the genetic burden (measured by PGS) differs between male and female cases. Under the liability threshold model, a sex difference would suggest that one sex requires a higher genetic burden to manifest the trait (i.e., a higher threshold), while the other requires fewer or smaller genetic burden factors.
 
-In this regression, we could include genetic PCs and other covariates as well.
+Users can perform regression analyses across different PGS thresholds within cases only to assess the consistency of the sex effect. In this model, sex is the main predictor, with genetic principal components (PCs) and other relevant covariates included for adjustment:
 
 **PGS ~ Sex + PCs + Other Covariates.**
 
-For this test, we will use `SexRegress()` function.
+
+This test can be implemented using SexRegress(), which evaluates whether male and female cases differ significantly in their polygenic burden.
 
 # About SexRegress()
 
@@ -277,7 +279,10 @@ For this test, we will use `SexRegress()` function.
 help(SexRegress, package = GXwasR)
 ```
 
-# Running SexRegress()
+# Run SexRegress in cases()
+
+In this case, the argument “famfile” should be used for the case-only file from the target data.
+
 ```{r, fig.width=10,fig.height=6}
 # Running
 # First, we need to make fdata object.
@@ -295,9 +300,9 @@ x <- SexRegress(fdata, regressor_index, response_index)
 x
 ```
 
-In this case, the association between PGS and sex seems insignificant. Users can check with different thresholds of PGS as mentioned in step (D).
+In this example, the association between PGS and sex is not significant. Users can test across different p-value thresholds of PGS as mentioned in step (E).
 
-## Sex-stratified PGS
+## Sex-stratified PGS computation
 
 The steps are:
 
@@ -337,7 +342,9 @@ ftemp <- list.files(paste0(ResultDir, "/"), pattern = "target")
 invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
 ```
 
-# Computing PGS for female-only target data using male-only discovery data
+# Computing PGS in female-only target data using male-only discovery data
+
+Evaluate the transferability of genetic risk prediction across sexes and to test whether associations identified in one sex generalize to the other.
 
 ```{r, compute_pgs_female, fig.width=10,fig.height=6}
 # DataDir <- GXwasR:::GXwasR_data()
@@ -373,8 +380,10 @@ PGSresultFemale <- ComputePGS(DataDir, ResultDir, finput, summarystat, phenofile
 PGSresultFemale$PGS_plot
 ```
 
+Figure 3: Female-specific PGS analysis showing: (A) model fit across p-value thresholds, PGS distributions in: (B) females, and (C) stratified by case-control status within females.
+
 ```{r}
-## This table shows 10 samples with phenotype, covariates and a PGS column.
+## Table 3: A table showing eight male samples with phenotype, covariates, and with female-specific PGS scores.
 PGSfemale <- PGSresultFemale$PGS
 PGSfemale[1:10, ]
 ## The best threshold
@@ -382,7 +391,8 @@ BestPvalue <- PGSresultFemale$BestP$Threshold
 BestPvalue
 ```
 
-# Computing PGS for male-only target data using female-only discovery data
+# Compute PGS for male-only target data using female-only discovery data
+
 ```{r, compute_pgs_male, fig.width=10,fig.height=6}
 library(GXwasR)
 data(Summary_Stat_Ex2)
@@ -419,35 +429,15 @@ PGSresultmale <- ComputePGS(DataDir, ResultDir, finput, summarystat, phenofile, 
 PGSresultmale$PGS_plot
 ```
 
+Figure 4: Male-specific PGS analysis showing: (A) model fit across p-value thresholds, PGS distributions in: (B) males, and (C) stratified by case-control status within males.
+
 ```{r}
-## This table shows 10 samples with phenotype, covariates and a PGS column.
+## Table 4: A table showing eight female samples with phenotype, covariates and with male-specific PGS scores.
 PGSmale <- PGSresultmale$PGS
 PGSmale[1:10, ]
 ## The best threshold
 BestPvalue <- PGSresultmale$BestP$Threshold
 BestPvalue
-```
-
-**(F) Perform regression to test the association of PGS for a trait in one sex and case status in other sex.**
-
-**PGS ~ trait + PCs + other covariates**
-
-Let's check the association between PGS and trait in female.
-```{r, fig.width=10,fig.height=6}
-# Running
-# First, we need to make fdata object.
-famfile <- read.table(paste0(ResultDir, "/femaletarget.fam"))[, c(1, 2, 6)]
-colnames(famfile) <- c("FID", "IID", "Trait")
-prefdata <- merge(famfile, PGS, by = c("IID", "FID"))
-
-fdata <- prefdata[, c(13, 3:12)]
-fdata$Sex <- as.factor(as.character(fdata$Trait))
-response_index <- 1
-regressor_index <- 2
-
-x <- SexRegress(fdata, regressor_index, response_index)
-x
-# In this case, there is a significant association between PGS and trait value.
 ```
 
 ## Citing `GXwasR`
@@ -481,8 +471,6 @@ library("sessioninfo")
 options(width = 120)
 session_info()
 ```
-
-
 
 # Bibliography
 

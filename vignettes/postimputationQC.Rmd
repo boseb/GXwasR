@@ -3,8 +3,8 @@ title: "Sex-aware Post-impute Quality Control Pipeline Using GXwasR"
 author: 
   - name: "Banabithi Bose"
     affiliation:
+    - University of Colorado Anschutz Medical; 
     - Northwestern University
-    - University of Colorado Anschutz Medical Campus
     email: banabithi.bose@gmail.com
 output: 
   BiocStyle::html_document:
