@@ -1569,26 +1569,20 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 #'
 #' @author Banabithi Bose
 #'
-#' @description This function calculates the polygenic risk score, which is the total of allele counts (genotypes) weighted by estimated
-#' effect sizes from genome-wide association studies. It uses C+T filtering techniques. The users could perform clumping procedure
-#' choromosome-wise and genome-wide. Also, the function offers the choice of including several genetic principal components along with
-#' other covariates. Using this function, users have the freedom to experiment with various clumping and thresholding arrangements to
-#' test a wide range of various parameter values.
+#' @description This function calculates the polygenic risk score, which summarizes the estimated effect of many genetic variants on an individual’s phenotype. It is calculated  as the sum of the allele counts (genotypes), each weighted by their estimated phenotypic effect sizes from genome-wide association studies. It uses C+T filtering techniques. Users can perform the clumping procedure chromosome-wise or genome-wide. Also, the function offers the choice of including genetic principal components and other covariates. Using this function, users have freedom to experiment with various clumping and thresholding arrangements to test a wide range of various parameter values.
 #'
 #'
 #' @param DataDir
-#' A character string for the file path of the all the input files.
+#' A character string specifying the file path of the all the input.
 #'
 #' @param ResultDir
-#' A character string for the file path where all output files will be stored. The default is tempdir().
+#'A character string specifying the file path where all output files will be stored. The default is tempdir().
 #'
 #' @param finput
-#' Character string, specifying the prefix of the input PLINK binary files for the genotype data i.e., the target data based on which
-#' clumping procedure will be performed. This file needs to be in DataDir. If your target data are small (e.g. N < 500) then you can use
-#' the 1000 Genomes Project samples. Make sure to use the population that most closely reflects represents the base sample.
+#'Character string, specifying the prefix of the input PLINK binary files containing the genotype data i.e., the target data based on which the clumping procedure will be performed. This file needs to be in DataDir. If the sample size of the target dataset is small  (e.g., N < 500 individuals) then users can utilize the 1000 Genomes Project samples, ensuring the use of the population that most closely represents the target sample.
 #'
 #' @param summarystat
-#' A dataframe object with GWAS summary statistics.
+#' A dataframe object containing GWAS summary statistics.
 #'
 #' The mandatory column headers in this dataframe are:
 #' * `CHR`(Chromosome code)
@@ -1601,27 +1595,22 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 #' Special Notes: The first three columns needed to be `SNP`, `A1` and `BETA` or `OR`.
 #'
 #' @param phenofile
-#' A character string, specifying the name of the mandatory phenotype file. This is a plain text file with no header line; columns
-#' family ID, individual ID and phenotype columns. For binary trait, the phenotypic value should be coded as 0 or 1, then it will be
-#' recognized as a case-control study (0 for controls and 1 for cases). Missing value should be represented by "-9" or "NA". The
-#' interested phenotype column should be labeled as "Pheno1". This file needs to be in `DataDir`.
+#' A character string, specifying the name of the mandatory phenotype file. This is a plain text file with no header line; columns are: family ID, individual ID, and phenotype.  For a binary trait, the phenotypic value should be coded as 0 or 1, then it will be recognized as a case-control study (0 for controls and 1 for cases). The missing value should be represented by "-9" or "NA". The desired phenotype column should be labeled as "Pheno1". This file needs to be in 'DataDir'.
 #'
 #' @param covarfile
-#' A character string, specifying the name of the covariate file which is a plain .text file with no header line; columns are family ID,
-#' individual ID and the covariates. The default is `NULL`. This file needs to be in `DataDir`.
+#'A character string, specifying the name of the covariate file which is a plain .text file with no header line; columns are family ID, individual ID, and the covariates. The default is 'NULL'. This file needs to be in 'DataDir'.
 #'
 #' @param pheno_type
 #' Boolean value, ‘binary’ or ‘quantitative’, specifying the type of the trait. The default is ‘binary’.
 #'
 #' @param effectsize
-#' Boolean value, `BETA` or `OR`, specifying the type of the GWAS effectsize. The default is `BETA`.
+#'Boolean value, 'BETA' or 'OR', specifying the type of the GWAS effect size. The default is 'BETA'.
 #'
 #' @param ldclump
 #' Boolean value, `TRUE` or `FALSE`, specifying whether to perform clumping or not.
 #'
 #' @param LDreference
-#' A character string, specifying the  prefix of the PLINK files of the population reference panel of the same ancestry, and ideally
-#' the one that was used for imputing your target dataset. These files should be in `DataDir`.
+#' A character string, specifying the prefix of the PLINK files of the genetic similarity reference panel, (ideally the same that was used to impute the target dataset). These files should be in 'DataDir'.
 #'
 #' @param clump_p1
 #' Numeric value, specifying the significance threshold for index SNPs if `ldclump` was set to be `TRUE`. The default is 0.0001.
@@ -1636,7 +1625,7 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 #' Integer value, specifying the physical distance threshold in base-pair for clumping if `ldclump` was set to be `TRUE`. The default is 250.
 #'
 #' @param byCHR
-#' Boolean value, 'TRUE' or 'FALSE', specifying chromosome-wise clumping procedure if `ldclump` was set to be `TRUE`. The default is `TRUE`
+#' Boolean value, 'TRUE' or 'FALSE', specifying chromosome-wise clumping if 'ldclump' was set to be 'TRUE'. The default is 'TRUE'.
 #'
 #' @param pthreshold
 #' Numeric vector, containing several p value thresholds to maximize predictive ability of the derived polygenic scores.
@@ -1645,7 +1634,7 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 #' Boolean value, `TRUE` or `FALSE` for LD-based filtering for computing genetic PC as covariates.
 #'
 #' @param nPC
-#' Positive integer value, specifying the number of genetic PCs to be included as predictor in the PRS model fit. The default is 6.
+#' Positive integer value, specifying the number of genetic PCs to be included as predictor in the PGS model fit. The default is 6.
 #'
 #' @param window_size
 #' Integer value, specifying a window size in variant count or kilobase for LD-based filtering in computing genetic PC. The default is 50.
@@ -1660,10 +1649,7 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 #' Character string, specifying the .txt file name with known genomic regions with high LD. The default is `NULL`.
 #'
 #' @return
-#' A list object containing a dataframe and a numeric value. The dataframe,PRS, contains four mandatory columns, such as,
-#' IID (i.e., Individual ID), FID (i.e., Family ID), Pheno1 (i.e., the trait for PRS) and Score (i.e., the best PRS).
-#' Other columns of covariates could be there. The numeric value, BestP contains the threshold of
-#' of the best p-value for the best pRS model fit.
+#' A list object containing a dataframe, a numeric value, a GeneticPC plot (if requested), and a PGS plot. The dataframe, PGS, contains four mandatory columns: IID (i.e., Individual ID), FID (i.e., Family ID), Pheno1 (i.e., the trait for PGS) and Score (i.e., the best PGS). Other columns of covariates could be there. The numeric value, BestP contains the threshold of the best p-value for the best PGS model fit. Also, the function produces several plots, including p-value thresholds vs PGS model fit and PGS distribution among male and females. For case-control data, it also plots the PGS distribution among cases and controls, and plots ROC curves.
 #'
 #' Also, the function produces several plots such as p-value thresholds vs PRS model fit and PRS distribution among male and females.
 #' For case-control data, it shows PRS distribution among cases and controls and ROC curves as well.
