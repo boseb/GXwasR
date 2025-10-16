@@ -30,15 +30,16 @@ ComputePGS(
 )
 }
 \arguments{
-\item{DataDir}{A character string for the file path of the all the input files.}
+\item{DataDir}{A character string specifying file path of the all the input files.}
 
-\item{ResultDir}{A character string for the file path where all output files will be stored. The default is tempdir().}
+\item{ResultDir}{A character string specifying file path where all output files will be stored. The default is tempdir().}
 
-\item{finput}{Character string, specifying the prefix of the input PLINK binary files for the genotype data i.e., the target data based on which
-clumping procedure will be performed. This file needs to be in DataDir. If your target data are small (e.g. N < 500) then you can use
-the 1000 Genomes Project samples. Make sure to use the population that most closely reflects represents the base sample.}
+\item{finput}{Character string, specifying the prefix of the input PLINK binary files containing the genotype data i.e., the target data based on
+which the clumping procedure will be performed. This file needs to be in DataDir. If the sample size of the target dataset is small
+(e.g., N < 500 individuals) then users can utilize the 1000 Genomes Project samples, ensuring the use of the population that most
+closely represents the target sample.}
 
-\item{summarystat}{A dataframe object with GWAS summary statistics.
+\item{summarystat}{A dataframe object containing GWAS summary statistics.
 
 The mandatory column headers in this dataframe are:
 \itemize{
@@ -52,20 +53,20 @@ The mandatory column headers in this dataframe are:
 
 Special Notes: The first three columns needed to be \code{SNP}, \code{A1} and \code{BETA} or \code{OR}.}
 
-\item{phenofile}{A character string, specifying the name of the mandatory phenotype file. This is a plain text file with no header line; columns
-family ID, individual ID and phenotype columns. For binary trait, the phenotypic value should be coded as 0 or 1, then it will be
-recognized as a case-control study (0 for controls and 1 for cases). Missing value should be represented by "-9" or "NA". The
-interested phenotype column should be labeled as "Pheno1". This file needs to be in \code{DataDir}.}
+\item{phenofile}{A character string, specifying the name of the mandatory phenotype file. This is a plain text file with no header line; columns are:
+family ID, individual ID, and phenotype.  For a binary trait, the phenotypic value should be coded as 0 or 1, then it will be recognized
+as a case-control study (0 for controls and 1 for cases). The missing value should be represented by "-9" or "NA". The desired phenotype
+column should be labeled as "Pheno1". This file needs to be in 'DataDir'.}
 
 \item{covarfile}{A character string, specifying the name of the covariate file which is a plain .text file with no header line; columns are family ID,
-individual ID and the covariates. The default is \code{NULL}. This file needs to be in \code{DataDir}.}
+individual ID, and the covariates. The default is 'NULL'. This file needs to be in 'DataDir'.}
 
-\item{effectsize}{Boolean value, \code{BETA} or \code{OR}, specifying the type of the GWAS effectsize. The default is \code{BETA}.}
+\item{effectsize}{Boolean value, 'BETA' or 'OR', specifying the type of the GWAS effect size. The default is 'BETA'.}
 
 \item{ldclump}{Boolean value, \code{TRUE} or \code{FALSE}, specifying whether to perform clumping or not.}
 
-\item{LDreference}{A character string, specifying the  prefix of the PLINK files of the population reference panel of the same ancestry, and ideally
-the one that was used for imputing your target dataset. These files should be in \code{DataDir}.}
+\item{LDreference}{A character string, specifying the prefix of the PLINK files of the genetic similarity reference panel, (ideally the same that was used
+to impute the target dataset). These files should be in 'DataDir'.}
 
 \item{clump_p1}{Numeric value, specifying the significance threshold for index SNPs if \code{ldclump} was set to be \code{TRUE}. The default is 0.0001.}
 
@@ -75,7 +76,7 @@ the one that was used for imputing your target dataset. These files should be in
 
 \item{clump_kb}{Integer value, specifying the physical distance threshold in base-pair for clumping if \code{ldclump} was set to be \code{TRUE}. The default is 250.}
 
-\item{byCHR}{Boolean value, 'TRUE' or 'FALSE', specifying chromosome-wise clumping procedure if \code{ldclump} was set to be \code{TRUE}. The default is \code{TRUE}}
+\item{byCHR}{Boolean value, 'TRUE' or 'FALSE', specifying chromosome-wise clumping if 'ldclump' was set to be 'TRUE'. The default is 'TRUE'.}
 
 \item{pthreshold}{Numeric vector, containing several p value thresholds to maximize predictive ability of the derived polygenic scores.}
 
@@ -94,20 +95,22 @@ the one that was used for imputing your target dataset. These files should be in
 \item{pheno_type}{Boolean value, ‘binary’ or ‘quantitative’, specifying the type of the trait. The default is ‘binary’.}
 }
 \value{
-A list object containing a dataframe a numeric value, a GeneticPC plot (if requested), and a PGS plot. The dataframe,PGS, contains four mandatory
-columns, such as, IID (i.e., Individual ID), FID (i.e., Family ID), Pheno1 (i.e., the trait for PGS) and Score (i.e., the best PGS).
-Other columns of covariates could be there. The numeric value, BestP contains the threshold of
-of the best p-value for the best PGS model fit.
+A list object containing a dataframe, a numeric value, a GeneticPC plot (if requested), and a PGS plot. The dataframe, PGS, contains four
+mandatory columns: IID (i.e., Individual ID), FID (i.e., Family ID), Pheno1 (i.e., the trait for PGS) and Score (i.e., the best PGS). Other
+columns of covariates could be there. The numeric value, BestP contains the threshold of the best p-value for the best PGS model fit. Also,
+the function produces several plots, including p-value thresholds vs PGS model fit and PGS distribution among male and females. For
+case-control data, it also plots the PGS distribution among cases and controls, and plots ROC curves.
 
 Also, the function produces several plots such as p-value thresholds vs PGS model fit and PGS distribution among male and females.
 For case-control data, it shows PGS distribution among cases and controls and ROC curves as well.
 }
 \description{
-This function calculates the polygenic score, which is the total of allele counts (genotypes) weighted by estimated
-effect sizes from genome-wide association studies. It uses C+T filtering techniques. The users could perform clumping procedure
-choromosome-wise and genome-wide. Also, the function offers the choice of including several genetic principal components along with
-other covariates. Using this function, users have the freedom to experiment with various clumping and thresholding arrangements to
-test a wide range of various parameter values.
+This function calculates the polygenic risk score, which summarizes the estimated effect of many genetic variants on an
+individual’s phenotype. It is calculated  as the sum of the allele counts (genotypes), each weighted by their estimated phenotypic
+effect sizes from genome-wide association studies. It uses C+T filtering techniques. Users can perform the clumping procedure
+chromosome-wise or genome-wide. Also, the function offers the choice of including genetic principal components and other covariates.
+Using this function, users have freedom to experiment with various clumping and thresholding arrangements to test a wide range of
+various parameter values.
 }
 \examples{
 data("Summary_Stat_Ex1", package = "GXwasR")
