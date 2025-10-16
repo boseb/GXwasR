@@ -8,7 +8,7 @@ SexCheck(
   DataDir,
   ResultDir = tempdir(),
   finput,
-  impute_sex = FALSE,
+  infer_sex = FALSE,
   compute_freq = FALSE,
   LD = TRUE,
   LD_window_size = 50,
@@ -25,7 +25,7 @@ SexCheck(
 
 \item{finput}{Character string, specifying the prefix of the input PLINK binary files. Note: Input dataset should contain X and Y regions.}
 
-\item{impute_sex}{Boolean value, \code{TRUE} or \code{FALSE}, specifying sex to be imputed or not. If \code{TRUE} then sex-imputed PLINK files, prefixed, 'seximputed_plink', will
+\item{infer_sex}{Boolean value, \code{TRUE} or \code{FALSE}, specifying sex to be imputed or not. If \code{TRUE} then sex-imputed PLINK files, prefixed, 'seximputed_plink', will
 be produced in \code{DataDir}.}
 
 \item{compute_freq}{Boolean value, \code{TRUE} or \code{FALSE}, specifying minor allele frequency (MAF). This function requires reasonable MAF estimates, so it is essential
@@ -78,11 +78,11 @@ LD_step_size <- 5
 LD_r2_threshold <- 0.02
 fmax_F <- 0.2
 mmin_F <- 0.8
-impute_sex <- FALSE
+infer_sex <- FALSE
 compute_freq <- FALSE
 
 x <- SexCheck(
-    DataDir = DataDir, ResultDir = ResultDir, finput = finput, impute_sex = impute_sex,
+    DataDir = DataDir, ResultDir = ResultDir, finput = finput, infer_sex = infer_sex,
     compute_freq = compute_freq, LD_window_size = LD_window_size, LD_step_size = LD_step_size,
     LD_r2_threshold = 0.02, fmax_F = 0.2, mmin_F = 0.8
 )

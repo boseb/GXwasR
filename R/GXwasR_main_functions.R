@@ -1664,11 +1664,11 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
     )
 }
 
-#' ComputePRS: Computing polygenic risk score (PRS)
+#' ComputePGS: Computing polygenic score (PGS)
 #'
 #' @author Banabithi Bose
 #'
-#' @description This function calculates the polygenic risk score, which is the total of allele counts (genotypes) weighted by estimated
+#' @description This function calculates the polygenic score, which is the total of allele counts (genotypes) weighted by estimated
 #' effect sizes from genome-wide association studies. It uses C+T filtering techniques. The users could perform clumping procedure
 #' choromosome-wise and genome-wide. Also, the function offers the choice of including several genetic principal components along with
 #' other covariates. Using this function, users have the freedom to experiment with various clumping and thresholding arrangements to
@@ -1744,7 +1744,7 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 #' Boolean value, `TRUE` or `FALSE` for LD-based filtering for computing genetic PC as covariates.
 #'
 #' @param nPC
-#' Positive integer value, specifying the number of genetic PCs to be included as predictor in the PRS model fit. The default is 6.
+#' Positive integer value, specifying the number of genetic PCs to be included as predictor in the PGS model fit. The default is 6.
 #'
 #' @param window_size
 #' Integer value, specifying a window size in variant count or kilobase for LD-based filtering in computing genetic PC. The default is 50.
@@ -1759,13 +1759,13 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 #' Character string, specifying the .txt file name with known genomic regions with high LD. The default is `NULL`.
 #'
 #' @return
-#' A list object containing a dataframe a numeric value, a GeneticPC plot (if requested), and a PRS plot. The dataframe,PRS, contains four mandatory
-#' columns, such as, IID (i.e., Individual ID), FID (i.e., Family ID), Pheno1 (i.e., the trait for PRS) and Score (i.e., the best PRS).
+#' A list object containing a dataframe a numeric value, a GeneticPC plot (if requested), and a PGS plot. The dataframe,PGS, contains four mandatory
+#' columns, such as, IID (i.e., Individual ID), FID (i.e., Family ID), Pheno1 (i.e., the trait for PGS) and Score (i.e., the best PGS).
 #' Other columns of covariates could be there. The numeric value, BestP contains the threshold of
-#' of the best p-value for the best pRS model fit.
+#' of the best p-value for the best PGS model fit.
 #'
-#' Also, the function produces several plots such as p-value thresholds vs PRS model fit and PRS distribution among male and females.
-#' For case-control data, it shows PRS distribution among cases and controls and ROC curves as well.
+#' Also, the function produces several plots such as p-value thresholds vs PGS model fit and PGS distribution among male and females.
+#' For case-control data, it shows PGS distribution among cases and controls and ROC curves as well.
 #'
 #' @importFrom dplyr distinct
 #' @importFrom stats lm predict logLik
@@ -1799,28 +1799,28 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 #' window_size <- 50
 #' step_size <- 5
 #' r2_threshold <- 0.02
-#' nPC <- 6 # We can incorporate PCs into our PRS analysis to account for population stratification.
+#' nPC <- 6 # We can incorporate PCs into our PGS analysis to account for population stratification.
 #' pheno_type <- "binary"
 #'
-#' PRSresult <- ComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile,
+#' PGSresult <- ComputePGS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile,
 #'     effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2,
 #'     clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions,
 #'     ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6,
 #'     pheno_type = "binary"
 #' )
 #'
-#' ## This table shows 10 samples with phenotype, covariates and a PRS column.
-#' PRS <- PRSresult$PRS
-#' PRS[seq_len(10), ]
+#' ## This table shows 10 samples with phenotype, covariates and a PGS column.
+#' PGS <- PGSresult$PGS
+#' PGS[seq_len(10), ]
 #' ## The best threshold
-#' BestPvalue <- PRSresult$BestP$Threshold
+#' BestPvalue <- PGSresult$BestP$Threshold
 #' BestPvalue
-ComputePRS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phenofile, covarfile = NULL,
+ComputePGS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phenofile, covarfile = NULL,
     effectsize = c("BETA", "OR"), ldclump = FALSE, LDreference, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE,
     pthreshold = c(0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5), highLD_regions, ld_prunning = FALSE,
     window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary") {
     # Validate inputs
-    if (!validateInputForComputePRS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize, ldclump, LDreference, clump_p1, clump_p2, clump_r2, clump_kb, byCHR, pthreshold, highLD_regions, ld_prunning, window_size, step_size, r2_threshold, nPC, pheno_type)) {
+    if (!validateInputForComputePGS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize, ldclump, LDreference, clump_p1, clump_p2, clump_r2, clump_kb, byCHR, pthreshold, highLD_regions, ld_prunning, window_size, step_size, r2_threshold, nPC, pheno_type)) {
         stop("Please validate all inputs")
     }
 
@@ -1836,7 +1836,7 @@ ComputePRS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phen
 
             summarystat <- as.data.frame(dplyr::distinct(summarystat, summarystat$SNP, .keep_all = TRUE))
 
-            write.table(summarystat, file = normalizePath(file.path(ResultDir, "prssummarystat"), mustWork = FALSE), quote = FALSE, row.names = FALSE)
+            write.table(summarystat, file = normalizePath(file.path(ResultDir, "pgssummarystat"), mustWork = FALSE), quote = FALSE, row.names = FALSE)
             SNP.pvalue <- unique(summarystat[, c("SNP", "P")])
             write.table(SNP.pvalue, file = normalizePath(file.path(ResultDir, "SNP.pvalue"), mustWork = FALSE), quote = FALSE, row.names = FALSE)
 
@@ -1862,7 +1862,7 @@ ComputePRS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phen
                 pheno <- merge(merge(phenotype, covariate, by = c("FID", "IID")), GP$PCs1, by = c("FID", "IID"))
             }
 
-            # We can then calculate the null model (model with PRS) using a linear regression
+            # We can then calculate the null model (model with PGS) using a linear regression
             # (as height is quantitative) ## Check for binary
             # Compute Null Model
             null_model_result <- computeNullModel(pheno, pheno_type)
@@ -1871,23 +1871,23 @@ ComputePRS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phen
             null_model <- null_model_result$model
             # null_r2 <- null_model_result$r_squared
 
-            ## PRS using thresholding
-            ## Best fit PRS
-            prsResult <- data.table::rbindlist(lapply(pthreshold, function(pt) {
-                prsFun(pt, ResultDir, DataDir, finput, clumpExtract, clumpSNP, pheno, pheno_type, null_model)
+            ## PGS using thresholding
+            ## Best fit PGS
+            pgsResult <- data.table::rbindlist(lapply(pthreshold, function(pt) {
+                pgsFun(pt, ResultDir, DataDir, finput, clumpExtract, clumpSNP, pheno, pheno_type, null_model)
             }))
 
 
             # Generate a pretty format for p-value output
-            prsResult$WriteP <- round(prsResult$P, digits = 3)
-            prsResult$WriteP[!is.na(prsResult$WriteP) & prsResult$WriteP == 0] <- format(prsResult$P[!is.na(prsResult$WriteP) & prsResult$WriteP == 0], digits = 2)
-            prsResult$WriteP <- sub("e", "*x*10^", prsResult$WriteP)
+            pgsResult$WriteP <- round(pgsResult$P, digits = 3)
+            pgsResult$WriteP[!is.na(pgsResult$WriteP) & pgsResult$WriteP == 0] <- format(pgsResult$P[!is.na(pgsResult$WriteP) & pgsResult$WriteP == 0], digits = 2)
+            pgsResult$WriteP <- sub("e", "*x*10^", pgsResult$WriteP)
 
-            p1 <- createPRSPlot(prsResult)
+            p1 <- createPGSPlot(pgsResult)
 
             # Best result is:
-            bestP <- prsResult[which.max(prsResult$R2), "Threshold"]
-            # Getting PRS score with best p-value threshold
+            bestP <- pgsResult[which.max(pgsResult$R2), "Threshold"]
+            # Getting PGS score with best p-value threshold
             pt <- cbind(bestP, 0, bestP)
             write.table(pt, file = normalizePath(file.path(ResultDir, "range_list"), mustWork = FALSE), quote = FALSE, row.names = FALSE)
             # By default, if a genotype in the score is missing for a particular individual, then the expected value is imputed, i.e. based on the sample allele frequency. To change this behavior, add the flag --score-no-mean-imputation
@@ -1895,21 +1895,21 @@ ComputePRS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phen
                 plink(),
                 args = c(
                     "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
-                    "--score", normalizePath(file.path(ResultDir, "prssummarystat"), mustWork = FALSE), 1, 2, 3, "header",
+                    "--score", normalizePath(file.path(ResultDir, "pgssummarystat"), mustWork = FALSE), 1, 2, 3, "header",
                     "--q-score-range", normalizePath(file.path(ResultDir, "range_list"), mustWork = FALSE), normalizePath(file.path(ResultDir, "SNP.pvalue"), mustWork = FALSE),
                     clumpExtract, clumpSNP,
-                    "--out", normalizePath(file.path(ResultDir, "PRS"), mustWork = FALSE),
+                    "--out", normalizePath(file.path(ResultDir, "PGS"), mustWork = FALSE),
                     "--silent"
                 ),
                 std_out = FALSE,
                 std_err = FALSE
             ))
 
-            prs <- read.table(normalizePath(file.path(ResultDir, paste0("PRS.", bestP, ".profile")), mustWork = FALSE), header = TRUE)
-            pheno.prs <- merge(pheno, prs[, c("FID", "IID", "SCORE")], by = c("FID", "IID"))
+            pgs <- read.table(normalizePath(file.path(ResultDir, paste0("PGS.", bestP, ".profile")), mustWork = FALSE), header = TRUE)
+            pheno.pgs <- merge(pheno, pgs[, c("FID", "IID", "SCORE")], by = c("FID", "IID"))
 
-            ## PRS with sex
-            d1 <- pheno.prs[, c("FID", "IID", "Pheno1"), drop = FALSE]
+            ## PGS with sex
+            d1 <- pheno.pgs[, c("FID", "IID", "Pheno1"), drop = FALSE]
             famfile <- read.table(normalizePath(file.path(DataDir, paste0(finput, ".fam")), mustWork = FALSE), header = FALSE)
             sex <- famfile[!famfile$V5 == 0, c(1, 2, 5)]
             colnames(sex) <- c("FID", "IID", "SEX")
@@ -1921,7 +1921,7 @@ ComputePRS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phen
             dat$SEX <- as.factor(as.character(dat$SEX))
 
             # Merge the files
-            dat <- merge(dat, prs, by = c("FID", "IID"))
+            dat <- merge(dat, pgs, by = c("FID", "IID"))
 
             # Basic density plot with custom color
             p2 <- createSexDistributionPlot(dat)
@@ -1933,7 +1933,7 @@ ComputePRS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phen
             }
 
             # Define patterns for files to be removed
-            filePatternsToRemove <- c("pruned_", "PRS", "Clump", "pcfile")
+            filePatternsToRemove <- c("pruned_", "PGS", "Clump", "pcfile")
 
             # Remove files for each pattern
             for (pattern in filePatternsToRemove) {
@@ -1942,7 +1942,7 @@ ComputePRS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phen
             }
 
             # Additional specific files to remove
-            additionalFilesToRemove <- c("range_list", "Valid.SNP", "SNPdata_1", "SNP.pvalue", "prssummarystat")
+            additionalFilesToRemove <- c("range_list", "Valid.SNP", "SNPdata_1", "SNP.pvalue", "pgssummarystat")
             removeFiles(additionalFilesToRemove, ResultDir)
         },
         error = function(e) {
@@ -1954,7 +1954,7 @@ ComputePRS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phen
         }
     )
 
-    return(list(PRS = pheno.prs, BestP = bestP, GeneticPC_plot = GP$plot, PRS_plot = plot_out))
+    return(list(PGS = pheno.pgs, BestP = bestP, GeneticPC_plot = GP$plot, PGS_plot = plot_out))
 }
 
 
@@ -2236,7 +2236,7 @@ plinkVCF <- function(
 #' @param finput
 #' Character string, specifying the prefix of the input PLINK binary files. Note: Input dataset should contain X and Y regions.
 #'
-#' @param impute_sex
+#' @param infer_sex
 #' Boolean value, `TRUE` or `FALSE`, specifying sex to be imputed or not. If `TRUE` then sex-imputed PLINK files, prefixed, 'seximputed_plink', will
 #' be produced in `DataDir`.
 #'
@@ -2289,11 +2289,11 @@ plinkVCF <- function(
 #' LD_r2_threshold <- 0.02
 #' fmax_F <- 0.2
 #' mmin_F <- 0.8
-#' impute_sex <- FALSE
+#' infer_sex <- FALSE
 #' compute_freq <- FALSE
 #'
 #' x <- SexCheck(
-#'     DataDir = DataDir, ResultDir = ResultDir, finput = finput, impute_sex = impute_sex,
+#'     DataDir = DataDir, ResultDir = ResultDir, finput = finput, infer_sex = infer_sex,
 #'     compute_freq = compute_freq, LD_window_size = LD_window_size, LD_step_size = LD_step_size,
 #'     LD_r2_threshold = 0.02, fmax_F = 0.2, mmin_F = 0.8
 #' )
@@ -2305,7 +2305,7 @@ SexCheck <-
         DataDir,
         ResultDir = tempdir(),
         finput,
-        impute_sex = FALSE,
+        infer_sex = FALSE,
         compute_freq = FALSE,
         LD = TRUE,
         LD_window_size = 50,
@@ -2314,7 +2314,7 @@ SexCheck <-
         fmax_F = 0.2,
         mmin_F = 0.8) {
         # Validate inputs
-        if (!validateInputForSexCheck(DataDir, ResultDir, finput, impute_sex, compute_freq, LD, LD_window_size, LD_step_size, LD_r2_threshold, fmax_F, mmin_F)) {
+        if (!validateInputForSexCheck(DataDir, ResultDir, finput, infer_sex, compute_freq, LD, LD_window_size, LD_step_size, LD_r2_threshold, fmax_F, mmin_F)) {
             return(NULL)
         }
 
@@ -2338,7 +2338,7 @@ SexCheck <-
                     rlang::inform(rlang::format_error_bullets(c("i" = "There are no Y chromosomes in the input PLINK files. Estimates will be based solely on the X chromosome.")))
                 }
 
-                if (impute_sex == FALSE) {
+                if (infer_sex == FALSE) {
                     if (compute_freq == TRUE) {
                         freq_file_args <- c(
                             "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
@@ -2399,7 +2399,7 @@ SexCheck <-
                                 header = TRUE
                             )
                     }
-                } else if (impute_sex == TRUE) {
+                } else if (infer_sex == TRUE) {
                     if (LD == TRUE) {
                         plink_args <- c(
                             "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
@@ -3863,7 +3863,7 @@ GXwas <- function(
 #' Numeric value, specifying the p-value threshold for plotting Manhattan plots.
 #'
 #' @returns
-#' A list object containing five dataframes. The first three dataframes, such as Mfixed, Mrandom and Mweighted contain results
+#' A list object containing five dataframes and a list of forest plots. The first three dataframes, such as Mfixed, Mrandom and Mweighted contain results
 #' for fixed effect, random effect and weighted model. Each of these dataframes can have maximum 12 columns, such as:
 #' * `CHR` (Chromosome code)
 #' * `BP` (Basepair position)
@@ -4035,7 +4035,7 @@ MetaGWAS <- function(
             }
 
             # Visualization
-            generatePlots(MRfiltered, Sbeta, ResultDir, plotname, useSNPposition, pval_threshold_manplot, chosen_snps_file)
+            forest_plots <- generatePlots(MRfiltered, Sbeta, ResultDir, plotname, useSNPposition, pval_threshold_manplot, chosen_snps_file)
 
 
             ## Produce all forest plots in .pdf
@@ -4045,7 +4045,7 @@ MetaGWAS <- function(
             dev.off()
 
             rlang::inform(rlang::format_error_bullets(c(
-                "v" = paste0("Forest plot files for ", plotname, " SNPs have been created."),
+                "v" = paste0("Forest plots for SNPS have compiled and saved as ", plotname, ".pdf"),
                 "i" = paste("You can find them in the directory:", ResultDir)
             )))
 
@@ -4104,7 +4104,7 @@ MetaGWAS <- function(
                 invisible(suppressWarnings(qqman::qq(mR$P, main = paste0(("Q-Q plot of weighted Z-score meta GWAS p-values with GIF = "), lamdaGC))))
                 dev.off()
                 rlang::inform(rlang::format_error_bullets(c(
-                    "v" = paste0("Forest plot files for ", plotname, " SNPs have been created."),
+                    "v" = paste0("Manhattan and QQ plots for SNPS have been compiled and saved as ", plotname, ".jpeg"),
                     "i" = paste("You can find them in the directory:", ResultDir)
                 )))
 
@@ -4121,7 +4121,7 @@ MetaGWAS <- function(
 
                 rlang::inform(rlang::format_error_bullets(c("i" = "Since useSNPposition = FALSE, there will be no Manhattan and QQ plot will be generated.")))
             }
-            return(list(Resultfixed = Mfixed, Resultrandom = Mrandom, Resultweighted = Mweighted, Metadata = Msummdata, ProblemSNP = MP))
+            return(list(Resultfixed = Mfixed, Resultrandom = Mrandom, Resultweighted = Mweighted, Metadata = Msummdata, ProblemSNP = MP, forestPlots = forest_plots))
         },
         error = function(e) {
             message("An error occurred: ", e$message)
@@ -4866,7 +4866,7 @@ GeneticCorrBT <- function(DataDir, ResultDir, finput, byCHR = FALSE,
 #' SexRegress: Performing linear regression analysis with quantitative response variable.
 #'
 #' @description
-#' This function could be used to check association of two variables. For instance, PRS with sex.
+#' This function could be used to check association of two variables. For instance, PGS with sex.
 #'
 #' @param fdata
 #' R dataframe object. The column with header `response` should contain the response variable. All other column are the regressor.

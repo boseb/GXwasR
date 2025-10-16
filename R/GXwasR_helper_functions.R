@@ -1192,9 +1192,9 @@ computeNullModel <- function(pheno, pheno_type) {
 
 ## Function 40
 ######### Added in 3.0
-prsFun <- function(pthreshold, ResultDir, DataDir, finput, clumpExtract, clumpSNP, pheno, pheno_type, null_model) {
+pgsFun <- function(pthreshold, ResultDir, DataDir, finput, clumpExtract, clumpSNP, pheno, pheno_type, null_model) {
     rlang::inform(rlang::format_error_bullets(c("i" = pthreshold)))
-    rlang::inform(rlang::format_error_bullets(paste0("Computing PRS for threshold ", pthreshold)))
+    rlang::inform(rlang::format_error_bullets(paste0("Computing PGS for threshold ", pthreshold)))
 
     pt <- data.table::as.data.table(cbind(pthreshold, 0, pthreshold))
     colnames(pt) <- c("Threshold", "Lowerbound", "UpperBound")
@@ -1204,53 +1204,53 @@ prsFun <- function(pthreshold, ResultDir, DataDir, finput, clumpExtract, clumpSN
         plink(),
         args = c(
             "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
-            "--score", normalizePath(file.path(ResultDir, "prssummarystat"), mustWork = FALSE), 1, 2, 3, "header",
+            "--score", normalizePath(file.path(ResultDir, "pgssummarystat"), mustWork = FALSE), 1, 2, 3, "header",
             "--q-score-range", normalizePath(file.path(ResultDir, "range_list"), mustWork = FALSE), normalizePath(file.path(ResultDir, "SNP.pvalue"), mustWork = FALSE),
             clumpExtract, clumpSNP,
-            "--out", normalizePath(file.path(ResultDir, "PRS"), mustWork = FALSE),
+            "--out", normalizePath(file.path(ResultDir, "PGS"), mustWork = FALSE),
             "--silent"
         ),
         std_out = FALSE,
         std_err = FALSE
     ))
 
-    prs <- read.table(normalizePath(file.path(ResultDir, paste0("PRS.", pthreshold, ".profile")), mustWork = FALSE), header = TRUE)
-    pheno.prs <- merge(pheno, prs[, c("FID", "IID", "SCORE")], by = c("FID", "IID"))
+    pgs <- read.table(normalizePath(file.path(ResultDir, paste0("PGS.", pthreshold, ".profile")), mustWork = FALSE), header = TRUE)
+    pheno.pgs <- merge(pheno, pgs[, c("FID", "IID", "SCORE")], by = c("FID", "IID"))
 
     if (pheno_type == "binary") {
-        phenoBin.prs <- pheno.prs
-        phenoBin.prs$Pheno1 <- as.integer(phenoBin.prs$Pheno1 == 2)
-        model <- glm(Pheno1 ~ ., data = phenoBin.prs[, !colnames(phenoBin.prs) %in% c("FID", "IID")], family = binomial)
+        phenoBin.pgs <- pheno.pgs
+        phenoBin.pgs$Pheno1 <- as.integer(phenoBin.pgs$Pheno1 == 2)
+        model <- glm(Pheno1 ~ ., data = phenoBin.pgs[, !colnames(phenoBin.pgs) %in% c("FID", "IID")], family = binomial)
         McFaddenR2 <- 1 - stats::logLik(model) / stats::logLik(null_model)
-        prs.r2 <- McFaddenR2[1]
+        pgs.r2 <- McFaddenR2[1]
     } else {
-        model <- lm(Pheno1 ~ ., data = pheno.prs[, !colnames(pheno.prs) %in% c("FID", "IID")])
-        prs.r2 <- summary(model)$r.squared - summary(null_model)$r.squared
+        model <- lm(Pheno1 ~ ., data = pheno.pgs[, !colnames(pheno.pgs) %in% c("FID", "IID")])
+        pgs.r2 <- summary(model)$r.squared - summary(null_model)$r.squared
     }
 
-    prs.coef <- summary(model)$coefficients["SCORE", ]
-    prs.result <- rbind(data.frame(pthreshold, R2 = prs.r2, P = prs.coef[4], BETA = prs.coef[1], SE = prs.coef[2]))
-    colnames(prs.result) <- c("Threshold", "R2", "P", "BETA", "SE")
+    pgs.coef <- summary(model)$coefficients["SCORE", ]
+    pgs.result <- rbind(data.frame(pthreshold, R2 = pgs.r2, P = pgs.coef[4], BETA = pgs.coef[1], SE = pgs.coef[2]))
+    colnames(pgs.result) <- c("Threshold", "R2", "P", "BETA", "SE")
 
-    return(prs.result)
+    return(pgs.result)
 }
 
 ## Function 41
 ######### Added in 3.0
-createPRSPlot <- function(prsResult) {
-    p1 <- ggplot2::ggplot(data = prsResult, ggplot2::aes(x = factor(prsResult$Threshold), y = prsResult$R2)) +
+createPGSPlot <- function(pgsResult) {
+    p1 <- ggplot2::ggplot(data = pgsResult, ggplot2::aes(x = factor(pgsResult$Threshold), y = pgsResult$R2)) +
         ggplot2::geom_text(
-            ggplot2::aes(label = paste(prsResult$P)),
+            ggplot2::aes(label = paste(pgsResult$P)),
             vjust = -1.5,
             hjust = 0,
             angle = 45,
             cex = 2,
             parse = TRUE
         ) +
-        ggplot2::scale_y_continuous(limits = c(0, max(prsResult$R2) * 1.25)) +
+        ggplot2::scale_y_continuous(limits = c(0, max(pgsResult$R2) * 1.25)) +
         ggplot2::xlab("P-value thresholds") +
-        ggplot2::ylab("PRS model fit: R^2") +
-        ggplot2::geom_bar(ggplot2::aes(fill = -log10(prsResult$P)), stat = "identity") +
+        ggplot2::ylab("PGS model fit: R^2") +
+        ggplot2::geom_bar(ggplot2::aes(fill = -log10(pgsResult$P)), stat = "identity") +
         ggplot2::scale_fill_gradient2(
             low = "dodgerblue",
             high = "firebrick",
@@ -1265,7 +1265,7 @@ createPRSPlot <- function(prsResult) {
             legend.text = ggplot2::element_text(size = 7),
             axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)
         ) +
-        ggplot2::ggtitle("P-value thresholds vs PRS model fit") +
+        ggplot2::ggtitle("P-value thresholds vs PGS model fit") +
         ggplot2::theme(plot.title = ggplot2::element_text(size = 10, face = "bold"))
 
     return(p1)
@@ -1277,16 +1277,16 @@ createSexDistributionPlot <- function(dat) {
     dat <- as.data.frame(dat)
     # Determine the title based on the available data
     title <- if (nrow(dat[dat$SEX == 1, ]) != 0 && nrow(dat[dat$SEX == 2, ]) != 0) {
-        "Best PRS distribution\n(males vs females)"
+        "Best PGS distribution\n(males vs females)"
     } else {
-        "Best PRS distribution"
+        "Best PGS distribution"
     }
 
     # Create the plot
     p2 <- ggplot2::ggplot(dat, ggplot2::aes(x = .data$SCORE, color = .data$SEX)) +
         ggplot2::geom_density() +
         ggplot2::ggtitle(title) +
-        ggplot2::xlab("PRS") +
+        ggplot2::xlab("PGS") +
         ggplot2::theme(
             plot.title = ggplot2::element_text(size = 10, face = "bold"),
             axis.title.x = ggplot2::element_text(size = 8)
@@ -1304,8 +1304,8 @@ createBinaryPhenotypePlots <- function(dat, p1, p2) {
     # Generate density plot for overall distribution
     p3 <- ggplot2::ggplot(dat, ggplot2::aes(x = .data$`SCORE`, color = .data$Pheno1)) +
         ggplot2::geom_density() +
-        ggplot2::ggtitle("Best PRS distribution\n(cases vs controls)") +
-        ggplot2::xlab("PRS") +
+        ggplot2::ggtitle("Best PGS distribution\n(cases vs controls)") +
+        ggplot2::xlab("PGS") +
         ggplot2::theme(plot.title = ggplot2::element_text(size = 10, face = "bold")) +
         ggplot2::theme(axis.title.x = ggplot2::element_text(size = 8))
 
@@ -1315,15 +1315,15 @@ createBinaryPhenotypePlots <- function(dat, p1, p2) {
 
     p4 <- ggplot2::ggplot(mdat, ggplot2::aes(x = .data$SCORE, color = .data$Pheno1)) +
         ggplot2::geom_density() +
-        ggplot2::ggtitle("Best PRS distribution in males\n(cases vs controls)") +
-        ggplot2::xlab("PRS") +
+        ggplot2::ggtitle("Best PGS distribution in males\n(cases vs controls)") +
+        ggplot2::xlab("PGS") +
         ggplot2::theme(plot.title = ggplot2::element_text(size = 10, face = "bold")) +
         ggplot2::theme(axis.title.x = ggplot2::element_text(size = 8))
 
     p5 <- ggplot2::ggplot(fdat, ggplot2::aes(x = .data$SCORE, color = .data$Pheno1)) +
         ggplot2::geom_density() +
-        ggplot2::ggtitle("Best PRS distribution in females\n(cases vs controls)") +
-        ggplot2::xlab("PRS") +
+        ggplot2::ggtitle("Best PGS distribution in females\n(cases vs controls)") +
+        ggplot2::xlab("PGS") +
         ggplot2::theme(plot.title = ggplot2::element_text(size = 10, face = "bold")) +
         ggplot2::theme(axis.title.x = ggplot2::element_text(size = 8))
 
@@ -1469,7 +1469,7 @@ paraGwas <- function(chunks, chunk, ResultDir, DataDir, finput, trait, modelv, r
             Inphenocovv,
             covar,
             covarv,
-            "--out", normalizePath(file.path(ResultDir, chunks, "_ss")),
+            "--out", normalizePath(file.path(ResultDir, paste0(chunks, "_ss"))),
             "--silent"
         ),
         std_out = FALSE,
@@ -4284,48 +4284,74 @@ getCI <- function(mn1, se1, method) {
 
 ## Function 87
 ## Updated in 3.0
+#' @importFrom ggplot2 scale_color_manual scale_size_manual theme_minimal geom_errorbar
 topForestplot <- function(i, MR2, Sbeta) {
+    # Extract the SNP row
     SNPs <- MR2$SNP[i]
-    Fixed_Effect <- MR2[i, c("BETA", "CIfixedLL", "CIfixedUL")]
-    Random_Effect <- MR2[i, c("BETA.R.", "CIrandomLL", "CIrandomUL")]
-    Weighted_Effect <- MR2[i, c("WEIGHTED_Z", "CIweightedLL", "CIweightedUL")]
+    Fixed_Effect    <- MR2[i, c("BETA",      "CIfixedLL",   "CIfixedUL")]
+    Random_Effect   <- MR2[i, c("BETA.R.",   "CIrandomLL",  "CIrandomUL")]
+    Weighted_Effect <- MR2[i, c("WEIGHTED_Z","CIweightedLL","CIweightedUL")]
+    
+    # Collect per-study estimates
     Study_EFFect <- Sbeta[Sbeta$SNP == SNPs, , drop = FALSE]
-    Study_EFFect <- Study_EFFect[, -1]
-    D1 <- rbind(Study_EFFect, Fixed_Effect, Random_Effect, Weighted_Effect, use.names = FALSE)
-
-    D1$V2 <- row.names(D1)
+    Study_EFFect <- Study_EFFect[, -1]  # drop SNP column
+    
+    # Combine all rows
+    D1 <- rbind(
+        Study_EFFect,
+        Fixed_Effect,
+        Random_Effect,
+        Weighted_Effect,
+        use.names = FALSE
+    )
+    
+    # Add labels + reorder
+    D1$V2    <- row.names(D1)
     D1$index <- as.integer(D1$V2)
     D1$study <- paste0("S", D1$index)
-    D1 <- D1[, c(6, 5, seq_len(3))]
+    D1       <- D1[, c(6, 5, seq_len(3))]
     colnames(D1) <- c("study", "index", "effect", "lower", "upper")
-    D1[nrow(D1), "study"] <- "W"
-    D1[nrow(D1) - 1, "study"] <- "R"
-    D1[nrow(D1) - 2, "study"] <- "F"
-    D1$CI <- paste0("(", D1$lower, ",", D1$upper, ")")
-    df <- D1
-    ############
-    forest.plot <- function(
-        x, intervals, labels = NULL, main = NULL, xlab = "Effect size",
-        pchs = rep(19, length(x)), cols = rep("black", length(x)),
-        cexs = rep(1, length(x))) {
-        K <- length(x)
-        stopifnot(nrow(intervals) == K)
-        graphics::plot(0,
-            col = "white", xlim = c(min(c(intervals[, 1], 0) - 0.05), max(c(intervals[, 2], 0) + 0.05)),
-            ylim = c(0, K + 1), xlab = xlab, ylab = "", yaxt = "n", main = main
+    
+    # Relabel last three rows
+    D1[nrow(D1),   "study"] <- "W"
+    D1[nrow(D1)-1, "study"] <- "R"
+    D1[nrow(D1)-2, "study"] <- "F"
+    
+    # For ordering: keep studies at bottom, meta rows at top
+    D1$study <- factor(D1$study, levels = rev(D1$study))
+    
+    # Add aesthetics for color and size
+    D1$group <- ifelse(D1$study %in% c("F", "R", "W"), "meta", "study")
+    
+    # ---- build ggplot ----
+    p <- ggplot(D1, aes(x = .data$effect, y = .data$study)) +
+        geom_vline(xintercept = 0, linetype = 2, color = "grey50") +
+        # geom_errorbarh(aes(xmin = lower, xmax = upper),
+        #                width = 0.2,
+        #                color = ifelse(D1$group == "meta", "blue", "black")) +
+        geom_errorbar(
+            aes(xmin = .data$lower, xmax = .data$upper, y = .data$study),
+            width = 0.2,
+            orientation = "y",
+            color = ifelse(D1$group == "meta", "blue", "black")
+        ) +
+        geom_point(aes(shape = .data$group, color = .data$group, size = .data$group)) +
+        scale_color_manual(values = c(study = "black", meta = "blue")) +
+        scale_shape_manual(values = c(study = 19, meta = 18)) +
+        scale_size_manual(values  = c(study = 2, meta = 3.5)) +
+        labs(
+            title = SNPs,
+            x = "Effect size (beta, 95% CI)",
+            y = NULL,
+            caption = "W: Weighted, R: Random, F: Fixed, S1, S2, ...: Studies"
+        ) +
+        theme_minimal(base_size = 12) +
+        theme(
+            legend.position = "none",
+            plot.title = element_text(hjust = 0.5)
         )
-        graphics::axis(2, at = K:1, labels = labels, cex.axis = 0.8)
-        graphics::arrows(intervals[, 1], K:1, intervals[, 2], K:1,
-            code = 3, angle = 90, length = 0.02, col = cols
-        )
-        graphics::points(x, K:1, pch = pchs, cex = cexs, col = cols)
-        graphics::abline(v = 0, lty = 2)
-    }
-
-    suppressWarnings(forest.plot(D1$effect,
-        intervals = as.matrix(D1[, 4:5]), labels = D1$study, main = SNPs, xlab = "Effect size (beta, 95% CI)\nW:Weighted, R:Random, F:Fixed, S1, S2,..:Studies",
-        pchs = c(rep(19, length(D1$effect) - 3), 18, 18, 18), cexs = c(rep(.8, length(D1$effect) - 3), 1.3, 1.3, 1.3), cols = c(rep(1, length(D1$effect) - 3), 4, 4, 4)
-    ))
+    
+    return(p)
 }
 
 ## Function 88
@@ -4352,7 +4378,7 @@ allForestplot <- function(i, MR2, Sbeta) {
 
     plot1 <- ggplot2::ggplot(data = df, ggplot2::aes(y = df$index, x = df$effect, xmin = df$lower, xmax = df$upper)) +
         ggplot2::geom_point() +
-        ggplot2::geom_errorbarh(height = .1) +
+        ggplot2::geom_errorbarh(width = .1) +
         ggplot2::scale_y_continuous(breaks = seq_len(nrow(df)), labels = df$study) +
         ggplot2::labs(title = paste0("Forest plot for ", SNPs), x = "Effect Size (95% CI)", y = "Studies and tests") +
         ggplot2::geom_vline(xintercept = 0, color = "black", linetype = "dashed", alpha = .5) +
@@ -4484,26 +4510,32 @@ metaFun <- function(DataDir, ResultDir, SummData, CHR, chromosome, nomap, UseA1v
 
 ## Function 94
 # Added in 3.0
-generatePlots <- function(MRfiltered, Sbeta, ResultDir, plotname, useSNPposition, pval_threshold_manplot, chosen_snps_file) {
+generatePlots <- function(MRfiltered, Sbeta, ResultDir, plotname,
+                          useSNPposition, pval_threshold_manplot,
+                          chosen_snps_file) {
     # Determine the number of SNPs to plot
     numSNPs <- min(length(unique(MRfiltered$SNP)), 10)
     if (length(unique(MRfiltered$SNP)) > 10) {
-        rlang::inform(rlang::format_error_bullets(c("i" = "Maximum 10 Forest plots of 10 chosen SNPs will be drawn in the plot window. For all other Forest plots, please check ResultDir.")))
+        rlang::inform(rlang::format_error_bullets(c(
+            "i" = "Maximum 10 Forest plots of 10 chosen SNPs will be returned. 
+                   For all other Forest plots, please check ResultDir."
+        )))
     }
 
-    # Generate Forest plots
-    invisible(suppressWarnings(lapply(seq_len(numSNPs), topForestplot, MR2 = MRfiltered, Sbeta = Sbeta)))
+    # Generate forest plots and collect them
+    plots <- lapply(seq_len(numSNPs),
+                    topForestplot,
+                    MR2 = MRfiltered,
+                    Sbeta = Sbeta)
 
-    # Add mtext for all plots
-    options(warn = -1)
-    invisible(suppressWarnings(graphics::mtext(text = "Studies (black) and tests (blue)", side = 4, line = 0, outer = TRUE)))
-    invisible(suppressWarnings(graphics::mtext(text = "Effect size (beta, 95% CI)", side = 1, line = 1, outer = TRUE)))
-
-    if (is.null(chosen_snps_file)) {
-        invisible(suppressWarnings(graphics::mtext(text = "Forest plots of a few chosen SNPs", side = 3, line = .5, outer = TRUE)))
+    # Add a label about what kind of plots these are
+    attr(plots, "description") <- if (is.null(chosen_snps_file)) {
+        "Forest plots of a few chosen SNPs"
     } else {
-        invisible(suppressWarnings(graphics::mtext(text = "Forest plots of the top SNPs", side = 3, line = .5, outer = TRUE)))
+        "Forest plots of the top SNPs"
     }
+
+    return(plots)
 }
 
 ## Function 95
@@ -6289,7 +6321,7 @@ validateInputForComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), fin
 
 ## Function 131
 ## Added in 3.0
-validateInputForComputePRS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phenofile, covarfile = NULL, effectsize = c("BETA", "OR"), ldclump = FALSE, LDreference, clump_p1 = 0.0001, clump_p2 = 0.01, clump_r2 = 0.50, clump_kb = 250, byCHR = TRUE, pthreshold = c(0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5), highLD_regions = "high-LD-regions-hg19-GRCh37.txt", ld_prunning = FALSE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary") {
+validateInputForComputePGS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phenofile, covarfile = NULL, effectsize = c("BETA", "OR"), ldclump = FALSE, LDreference, clump_p1 = 0.0001, clump_p2 = 0.01, clump_r2 = 0.50, clump_kb = 250, byCHR = TRUE, pthreshold = c(0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5), highLD_regions = "high-LD-regions-hg19-GRCh37.txt", ld_prunning = FALSE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary") {
     # Validate directories
     if (!dir.exists(DataDir)) {
         stop("Error in DataDir: Directory does not exist.")
@@ -6468,7 +6500,7 @@ validateInputForPlinkVCF <- function(DataDir, ResultDir = tempdir(), finput, fou
 
 ## Function 134
 ## Added in 3.0
-validateInputForSexCheck <- function(DataDir, ResultDir = tempdir(), finput, impute_sex = FALSE, compute_freq = FALSE, LD = TRUE, LD_window_size = 50, LD_step_size = 5, LD_r2_threshold = 0.02, fmax_F = 0.2, mmin_F = 0.8) {
+validateInputForSexCheck <- function(DataDir, ResultDir = tempdir(), finput, infer_sex = FALSE, compute_freq = FALSE, LD = TRUE, LD_window_size = 50, LD_step_size = 5, LD_r2_threshold = 0.02, fmax_F = 0.2, mmin_F = 0.8) {
     # Validate directories
     if (!dir.exists(DataDir)) {
         stop("Error in DataDir: Directory does not exist.")
@@ -6483,7 +6515,7 @@ validateInputForSexCheck <- function(DataDir, ResultDir = tempdir(), finput, imp
     }
 
     # Validate boolean parameters
-    boolean_params <- list(impute_sex = impute_sex, compute_freq = compute_freq, LD = LD)
+    boolean_params <- list(infer_sex = infer_sex, compute_freq = compute_freq, LD = LD)
     for (param_name in names(boolean_params)) {
         param_value <- boolean_params[[param_name]]
         if (!is.logical(param_value)) {

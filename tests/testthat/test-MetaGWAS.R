@@ -22,9 +22,9 @@ test_that("MetaGWAS produces the correct output", {
         SNPfile = NULL, useSNPposition = TRUE, UseA1 = UseA1, GCse = GCse,
         plotname = "Meta_Analysis.plot", pval_filter, top_snp_pval, max_top_snps,
         chosen_snps_file = NULL, byCHR, pval_threshold_manplot
-    )
+        )
     expect_type(x, "list")
-    expect_equal(length(x), 5)
+    expect_equal(length(x), 6)
     expect_equal(x$Resultfixed %>% head(), data.frame(
         CHR = c(1, 1, 1, 1, 1, 1),
         BP = c(73841, 775125, 863863, 928969, 1109154, 1127860),

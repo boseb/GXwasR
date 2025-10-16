@@ -3,8 +3,8 @@ title: "Genetic Correlation using GWAS Summary Statistics"
 author: 
   - name: "Banabithi Bose"
     affiliation:
+    - University of Colorado Anschutz Medical; 
     - Northwestern University
-    - University of Colorado Anschutz Medical Campus
     email: banabithi.bose@gmail.com
 output: 
   BiocStyle::html_document:
@@ -23,7 +23,7 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-    fig.path = "./",
+    fig.path = "./figures/",
     collapse = TRUE,
     comment = "#>",
     crop = NULL ## Related to https://stat.ethz.ch/pipermail/bioc-devel/2020-April/016656.html
@@ -78,21 +78,22 @@ help(SumstatGenCorr)
 Birth weight and type 2 diabetes based on the summary statistics with around 20,000 individuals.
 
 ```{r imputed_hapmap_sumstat}
+library(readr)
 ResultDir <- tempdir()
-sumstat1 <- readRDS("gwas1.imputed.example.rds")
-sumstat2 <- readRDS("gwas2.imputed.example.rds")
+sumstat1 <- read_rds("https://zenodo.org/records/17177917/files/gwas1.imputed.example.rds?download=1")
+sumstat2 <- read_rds("https://zenodo.org/records/17177917/files/gwas2.imputed.example.rds?download=1")
 referenceLD = "UKB_imputed_hapmap2_SVD_eigen99_extraction"
-res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=sumstat1, sumstat2=sumstat2)
+res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=sumstat1, sumstat2=sumstat2, parallel = TRUE, numCores = 2)
 ```
 
 
 # Example: HDL Sample Data (20K SNPs, UKB Array SVD Eigen90)
 
 ```{r ukb_eigen90_sumstat}
-gwas1.example <- readRDS('gwas1.array.example.rds')
-gwas2.example <- readRDS('gwas2.array.example.rds')
+gwas1.example <- read_rds('https://zenodo.org/records/17177917/files/gwas1.array.example.rds?download=1')
+gwas2.example <- read_rds('https://zenodo.org/records/17177917/files/gwas2.array.example.rds?download=1')
 referenceLD = "UKB_array_SVD_eigen90_extraction"
-res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=gwas1.example, sumstat2=gwas2.example)
+res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=gwas1.example, sumstat2=gwas2.example, parallel = TRUE, numCores = 2)
 ```
 **Small number of SNPs anyways not good.**
 
@@ -108,42 +109,7 @@ If the summary statistics are identical between two traits:
 
 **Collinearity:** The covariance matrix may become singular or nearly singular, which can make the optimization unstable.
 
-Example snippet where identical Z-scores may cause collinearity issues
-
-```
-llfun.gcov.part.2 <- function(param, h11, h22, rho12, M, N1, N2, N0, Nref,
-                              lam0, lam1, lam2, bstar1, bstar2, lim = exp(-10)){
-   # Estimating covariance matrices
-   lam11 = h11[1] / M * lam1^2 - h11[1] * lam1 / Nref + h11[2] * lam1 / N1
-   lam22 = h22[1] / M * lam2^2 - h22[1] * lam2 / Nref + h22[2] * lam2 / N2
-   lam12 = if (N0 > 0) h12 / M * lam1 * lam2 + N0 / (N1 * N2) * int * lam1 else h12 / M * lam1 * lam2
-
-   # High collinearity leads to potential singularity
-   if (is.singular(matrix(c(lam11, lam12, lam12, lam22), nrow = 2))) {
-       stop("Singular matrix due to collinearity")
-   }
-}
-```
-
 **Identical Statistics:** The functions rely on variability between the traits, and identical statistics can lead to a flat or undefined likelihood surface, causing numerical instability.
-
-Example where identical summary stats lead to flat likelihood surface
-
-```
-llfun <- function(param, N, M, Nref = 1000, lam, bstar, lim = exp(-10)){
-   h2 = param[1]
-   int = param[2]
-   lamh2 = h2 / M * lam^2 - h2 * lam / Nref + int * lam / N
-
-   if (all(bstar == bstar[1])) {
-       stop("Identical statistics detected, leading to undefined likelihood surface")
-   }
-
-   lamh2 = ifelse(lamh2 < lim, lim, lamh2)
-   ll = sum(log(lamh2)) + sum(bstar^2 / (lamh2))
-   return(ll)
-}
-```
 
 **2. Flat Likelihood Surface:**
 
@@ -191,53 +157,6 @@ In summary, the differences in convergence for the two LD panels when computing 
 - The inherent properties of the SNPs in the panels
 - The Axiom array may offer a cleaner, more stable set of SNPs with well-defined LD, which is critical for achieving convergence in the genetic correlation computation
 
-## Trying the GenomicSEM Package
-
-763976 out of 769306 (99.31%) SNPs in reference panel are available in the GWAS of Data1.txt
-
-Estimation for cell: 1 out of: 3 cells is ongoing ... 100%
-
-Estimation for cell: 2 out of: 3 cells is ongoing ... 100%
-
-301051 out of 769306 (39.13%) SNPs in reference panel are available in the GWAS of Data2.txt
-
-Warning: More than 1% SNPs in reference panel are missed in the GWAS. This may generate bias in estimation.
-
-Please make sure that you are using correct reference panel.
-
-Estimation for cell: 3 out of: 3 cells is ongoing ... 100%Warning message:
-
-In cov2cor(V) : diag(.) had 0 or NA entries; non-finite result is doubtful
-
-**I thought this is happening because DBgap summary statistics is in hg18, whereas ours is in hg19, also hm3 is in hg19.**
-
-In cov2cor(V) : diag(.) had 0 or NA entries; non-finite result is doubtful
-
-Hence, I updated the SNPs using proper bim file but with no use.
-
-**I realized this is happening because DBgap's summary statistics is not imputed.**
-
-**I used .Bed file made from summary statistics** and processed via Crossmap to update the coordinates but got lower overlap between DBgap and reference panel Hapmap3 provided by the GenomicSem.
-
-## Can LD-Pruned SNPs Be Used in This Computation?
-
-**The answer is NO.**
-
-if we use LD pruned SNPs:
-
-32641 out of 769306 (4.24%) SNPs in reference panel are available in the GWAS of Data1.txt 
-
-Warning: More than 1% SNPs in reference panel are missed in the GWAS. This may generate bias in estimation. Please make sure that you are using correct reference panel. 
-
-## What Happened When Correlating the Same Dataset in GenomicSEM
-
-**It did not converge.**
-
-If two summary statistics are exactly the same, the covariance between them will be equal to the variance of either one of the statistics. 
-
-The presence of the same value for variance in both 𝐷1 and 𝐷2 could suggest similar traits or measurements under the same conditions but with different outcomes based on the conditions or methods of measurement leading to a negative covariance.
-
-
 ## Conclusion
 
 **The genetic correlation analysis is sensitive to the number of SNPs in the summary statistics and the quality of the LD reference panel.**
@@ -261,89 +180,6 @@ Genetic Correlation:  -Inf (NA)
           3) Many SNPs in the chosen reference panel misses in the GWAS.
           
           4) There is a severe mismatch between the GWAS population and the population for computing reference panel
-
-**Note:** True heritability in pancreatic cancer is 21%. Summary statistics may not give this estimate.
-
-**Potential Calculation Issues**
-
-  **HDL Package:** 
-   It uses likelihood-based methods which can also run into numerical difficulties with very low or zero heritability data, possibly leading to non-finite results.
-
-**Relevant Sections in the HDL Algorithm**:
-
- **Heritability Calculation:**
-
-The heritability of each trait is calculated using linear models (lm()) on squared z-scores against LD scores.
-Later, likelihood-based methods (optim()) refine these estimates. **Here, having small number of SNPs with a few significant hits may lead to low to no variation that leads towards zero heritability estimate.**
-
-  **Genetic Covariance:**
-
-Genetic covariance between traits is calculated using a linear model (lm()) on the product of z-scores.
-
-  **Genetic Correlation:**
-
-The genetic correlation (rg) is derived by dividing the genetic covariance by the square root of the product of heritability values: The genetic correlation (\(r_g\)) can be calculated as shown below:
-
-$$
-r_g = \frac{h_{12}}{\sqrt{h_{11} \cdot h_{22}}}
-$$
-
-Where:
-- \(h_{11}\) is the heritability of Trait 1
-- \(h_{22}\) is the heritability of Trait 2
-- \(h_{12}\) is the genetic covariance between the two traits
-
-**Impact of Zero Heritability**
-
-  **Zero Heritability:**
-   
-   If the heritability for one of the traits is zero, it implies that genetic factors don't explain any variance in that trait.
-
-  **Mathematical Impact:**
-   
-   In the calculation for h11 or h22 is zero, the denominator becomes zero.
-This results in division by zero, which in mathematical operations typically yields NaN, Inf, or -Inf.
-
-**Analysis and Impact**
-
-The number of SNPs and their overlap with the reference LD panel and the **quality** of the reference significantly impact genetic correlation computation.
-
-**What is the best LD panel:** Best LD reference panel for Panscan seems to be UKB_array_SVD_eigen90_extraction due to accurate heritability estimate. This UK Biobank Axiom Array has extensive genomic coverage, including common and rare variants than hapmap or 1000 genome. The quality of the SNPs is higher in Axiom array. Also it is meant for only EUR in UKB.
-
-**Number of SNPs:**
-
-More SNPs in the summary statistics generate more variation, leading to more accurate results.
-LD Reference Panel: The choice of the LD reference panel is crucial for accurate computation, as the algorithm is sensitive to **LD information quality** and **overlap** with the GWAS data.
-
-**Other factors:**
-
-**1. Difficulty in Detecting Genetic Associations**
-
-The combination of a **small sample size** and low heritability makes it challenging to detect genetic associations accurately. Genetic factors may only account for a small portion of the trait's variability, which is further overshadowed by environmental factors or measurement errors. This challenge becomes more pronounced with the reliance on summary statistics.
-
-**2. Larger Sample Sizes and Imputed Summary Statistics are Required**
-
-Increasing the sample size is necessary to enhance statistical power, making it easier to detect even minor genetic influences on pancreatic cancer. However, the limited sample size in the current dataset hinders this approach, making it challenging to achieve sufficient power for reliable results.
-
-**3. Statistical Significance and Noise**
-
-With a limited sample size, the signal-to-noise ratio in the data is diminished. This makes it difficult to distinguish true genetic effects from random fluctuations, leading to a higher likelihood of false positives (type I errors) or missing true effects (type II errors). This instability is further exacerbated by using summary statistics.
-
-**4. Polygenic Traits**
-
-Pancreatic cancer's genetic basis likely involves many genes with small effects, underscoring its polygenic nature. This dilution of effect sizes complicates the identification of significant genetic variants in underpowered datasets.
-
-**5. Impact on Heritability Estimates**
-
-The small sample size and low heritability bias the estimates, and the genetic architecture of pancreatic cancer includes non-additive factors like gene-gene and gene-environment interactions.
-
-**6. Meta-Analyses and Collaborative Efforts**
-
-Given the difficulties with small sample size and low heritability, GWAS on pancreatic cancer often require meta-analyses and collaborations to pool data and resources, boosting statistical power and reliability.
-
-## Summary
-
-In summary, the genetic correlation analysis is highly sensitive to the number of SNPs and the quality of the LD reference panel. More SNPs in the summary statistics provide more variation and yield better results, while good overlap with the reference LD panel enhances the quality of genetic correlation computations. Also, good sample size is required to have power in this estimation.
 
 # Citing `GXwasR`
 

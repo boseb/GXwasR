@@ -1,0 +1,304 @@
+---
+title: "Tutorial for heritability estimate and computing genetic correlation in GXwasR R package."
+author: 
+  - name: "Banabithi Bose"
+    affiliation:
+    - University of Colorado Anschutz Medical; 
+    - Northwestern University
+    email: banabithi.bose@gmail.com
+output: 
+  BiocStyle::html_document:
+    self_contained: false
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    code_folding: show
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('GXwasR')`"
+vignette: >
+  %\VignetteIndexEntry{GXwasR_heritability}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+    fig.path = "./figures/",
+    collapse = TRUE,
+    comment = "#>",
+    crop = NULL ## Related to https://stat.ethz.ch/pipermail/bioc-devel/2020-April/016656.html
+)
+```
+
+```{r vignetteSetup, echo=FALSE, message=FALSE, warning = FALSE}
+## Bib setup
+library("RefManageR")
+
+## Write bibliography information
+bib <- c(
+    R = citation(),
+    BiocStyle = citation("BiocStyle")[1],
+    knitr = citation("knitr")[1],
+    RefManageR = citation("RefManageR")[1],
+    rmarkdown = citation("rmarkdown")[1],
+    sessioninfo = citation("sessioninfo")[1],
+    testthat = citation("testthat")[1],
+    GXwasR = citation("GXwasR")[1]
+)
+```
+
+**This document provides a tutorial for heritability estimate and computing genetic correlation utilizing GXwasR R package.**
+
+```{r}
+## Call some libraries
+library(GXwasR)
+library(printr)
+library(rmarkdown)
+```
+# <a id = "EstimateHerit():"> </a>Computing heritability estimate using EstimateHerit():
+
+```{r}
+help(EstimateHerit, package = GXwasR)
+```
+
+## <a id = "Running EstimateHerit() with model = 'GREML'"> </a> Running EstimateHerit() with model = "GREML"
+
+```{r}
+# Running
+data("highLD_hg19", package = "GXwasR")
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir = tempdir()
+finput <- "GXwasR_example"
+ncores = 3
+model = "GREML"
+byCHR = FALSE
+r2_LD = 0
+LDSC_blocks = 20
+REMLalgo = 0
+nitr = 100
+cat_covarfile = NULL
+quant_covarfile = NULL
+prevalence = 0.01
+partGRM = FALSE
+autosome = TRUE
+Xsome = TRUE
+nGRM = 3
+cripticut = 0.025
+minMAF = NULL
+maxMAF = NULL
+hg = "hg19"
+byCHR = TRUE
+PlotIndepSNP = TRUE
+IndepSNP_window_size = 50
+IndepSNP_step_size = 5
+IndepSNP_r2_threshold = 0.02
+
+# For saving the plot in .jpeg file, make plotjpeg = TRUE.
+
+H2 <- EstimateHerit(DataDir = DataDir, ResultDir = ResultDir, finput = finput, summarystat = NULL, ncores = 5, model = model, byCHR = TRUE, r2_LD = 0, LDSC_blocks = 20,REMLalgo = 0, nitr = nitr, cat_covarfile = NULL, quant_covarfile = NULL,prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3, computeGRM = TRUE, grmfile_name = NULL, cripticut = 0.025, minMAF = NULL, maxMAF = NULL,hg = "hg19",PlotIndepSNP = TRUE, IndepSNP_window_size = 50,IndepSNP_step_size = 5,IndepSNP_r2_threshold = 0.02,highLD_regions = highLD_hg19, plotjpeg = TRUE, plotname = "Heritability_Plots")
+
+#Heritability
+H2
+```
+
+## Running the EstimateHerit() by providing chromosome-wise GRM files in ResultDir
+Set:
+
+`computeGRM` = FALSE
+
+`grmfile_name` = "GXwasR"...... This is the prefix. These files are created in the previous run in ResultDir. Users are encouraged to check that folder.
+
+
+```{r}
+
+H2 <- EstimateHerit(DataDir = DataDir, ResultDir = ResultDir, finput = finput, summarystat = NULL, ncores = 5, model = model, byCHR = TRUE, r2_LD = 0, LDSC_blocks = 20,REMLalgo = 0, nitr = nitr, cat_covarfile = NULL, quant_covarfile = NULL,prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3, computeGRM = FALSE, grmfile_name = "GXwasR", cripticut = 0.025, minMAF = NULL, maxMAF = NULL,hg = "hg19",PlotIndepSNP = TRUE, IndepSNP_window_size = 50,IndepSNP_step_size = 5,IndepSNP_r2_threshold = 0.02,highLD_regions = highLD_hg19, plotjpeg = FALSE, plotname = "Heritability_Plots")
+
+#Heritability
+H2
+```
+
+## Running the EstimateHerit() for genome-wide heritability estimate by creating GRM files
+Set:
+
+computeGRM = TRUE
+
+byCHR = FALSE
+
+grmfile_name = NULL.......if computeGRM = TRUE the grmfile_name is by default NULL.
+
+In genome-wide case, there no plot will be generated.
+
+```{r}
+
+H2 <- EstimateHerit(DataDir = DataDir, ResultDir = ResultDir, finput = finput, summarystat = NULL, ncores = 5, model = model, byCHR = FALSE, r2_LD = 0, LDSC_blocks = 20,REMLalgo = 0, nitr = nitr, cat_covarfile = NULL, quant_covarfile = NULL,prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3, computeGRM = TRUE, grmfile_name = NULL, cripticut = 0.025, minMAF = NULL, maxMAF = NULL,hg = "hg19",PlotIndepSNP = TRUE, IndepSNP_window_size = 50,IndepSNP_step_size = 5,IndepSNP_r2_threshold = 0.02,highLD_regions = highLD_hg19, plotjpeg = FALSE, plotname = "Heritability_Plots")
+
+#Heritability
+H2
+```
+
+## Running the EstimateHerit() for genome-wide heritability estimate by utilizing the pre-computed GRM files in ResultDir
+Set:
+
+computeGRM = FALSE
+
+byCHR = FALSE
+
+grmfile_name = "GXwasR"
+
+In genome-wide case, there no plot will be generated.
+
+```{r}
+
+H2 <- EstimateHerit(DataDir = DataDir, ResultDir = ResultDir, finput = finput, summarystat = NULL, ncores = 5, model = model, byCHR = FALSE, r2_LD = 0, LDSC_blocks = 20,REMLalgo = 0, nitr = nitr, cat_covarfile = NULL, quant_covarfile = NULL,prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3, computeGRM = FALSE, grmfile_name = "GXwasR", cripticut = 0.025, minMAF = NULL, maxMAF = NULL,hg = "hg19",PlotIndepSNP = TRUE, IndepSNP_window_size = 50,IndepSNP_step_size = 5,IndepSNP_r2_threshold = 0.02,highLD_regions = highLD_hg19, plotjpeg = FALSE, plotname = "Heritability_Plots")
+
+#Heritability
+H2
+```
+
+## <a id = "Running EstimateHerit() with model = 'LDSC'"> </a> Running EstimateHerit() genome-wide with model = "LDSC" 
+```{r}
+data("Summary_Stat_Ex1", package = "GXwasR")
+model <- "LDSC"
+data("GXwasRData")
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir = tempdir()
+finput <- "GXwasR_example"
+test.sumstats <- na.omit(Summary_Stat_Ex1[Summary_Stat_Ex1$TEST=="ADD",c(1:4,6:8)])
+colnames(test.sumstats) <- c("chr","rsid","pos","a1","n_eff","beta","beta_se")
+summarystat = test.sumstats
+highLD_regions = highLD_hg19
+
+H2 <- EstimateHerit(DataDir = DataDir, ResultDir = ResultDir, finput = "GXwasR_example", summarystat = summarystat, ncores, model = model, byCHR = FALSE, r2_LD = 0, LDSC_blocks = 20,REMLalgo = 0, nitr = 100, cat_covarfile = NULL, quant_covarfile = NULL,prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,cripticut = 0.025, minMAF = NULL, maxMAF = NULL,hg = "hg19",PlotIndepSNP = TRUE, IndepSNP_window_size = 50,IndepSNP_step_size = 5,IndepSNP_r2_threshold = 0.02,highLD_regions = highLD_hg19)
+#Heritability
+H2
+```
+
+## <a id = "Running EstimateHerit() with model = 'LDSC'"> </a> Running EstimateHerit() chromosome-wise with model = "LDSC"
+```{r}
+model <- "LDSC"
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir = tempdir()
+finput <- "GXwasR_example"
+test.sumstats <- na.omit(Summary_Stat_Ex1[Summary_Stat_Ex1$TEST=="ADD",c(1:4,6:8)])
+colnames(test.sumstats) <- c("chr","rsid","pos","a1","n_eff","beta","beta_se")
+summarystat = test.sumstats
+highLD_regions = highLD_hg19
+
+H2 <- EstimateHerit(DataDir = DataDir, ResultDir = ResultDir, finput = "GXwasR_example", summarystat = summarystat, ncores, model = model, byCHR = TRUE, r2_LD = 0, LDSC_blocks = 20,REMLalgo = 0, nitr = 100, cat_covarfile = NULL, quant_covarfile = NULL,prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,cripticut = 0.025, minMAF = NULL, maxMAF = NULL,hg = "hg19",PlotIndepSNP = TRUE, IndepSNP_window_size = 50,IndepSNP_step_size = 5,IndepSNP_r2_threshold = 0.02,highLD_regions = highLD_hg19)
+
+# Chromosome-wise Heritability Estimate
+H2
+```
+
+# <a id = "GeneticCorrBT()"> </a> Computing genetic correlation between traits using GeneticCorrBT()
+```{r}
+help(GeneticCorrBT, package = GXwasR)
+```
+## <a id = "Running GeneticCorrBT()"> </a> Running GeneticCorrBT() by computing GRM genome-wide
+```{r}
+
+# Running
+DataDir <- GXwasR:::GXwasR_data()
+ResultDir <- tempdir()
+finput <- "GXwasR_example"
+byCHR = FALSE
+REMLalgo = 0
+nitr <- 3
+ncores <- 3
+data("Example_phenofile", package = "GXwasR")
+phenofile <- Example_phenofile #Cannot be NULL, the interested phenotype column should be labeled as
+cat_covarfile <- NULL
+quant_covarfile <- NULL
+partGRM <- FALSE #Partition the GRM into m parts (by row),
+autosome = TRUE
+Xsome <- TRUE
+cripticut = 0.025
+minMAF <- 0.01 # if MAF filter apply
+maxMAF <- 0.04
+excludeResidual = TRUE
+GC <- GeneticCorrBT(DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = byCHR,
+                    REMLalgo = 0, nitr = nitr, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL, computeGRM = TRUE, grmfile_name = NULL, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,cripticut = 0.025, minMAF = NULL, maxMAF = NULL,excludeResidual = TRUE, ncores = ncores)
+##Genetic correlation from the last iteration. In this example there was no rg value since the program stopped after nitr-1 = 2 iteration due to convergence issue.
+GC
+```
+
+## Running GeneticCorrBT() using precomputed genome-wide GRM 
+```{r}
+
+byCHR = FALSE
+computeGRM = FALSE
+grmfile_name = "GXwasR"
+
+GC <- GeneticCorrBT(DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = byCHR,
+                    REMLalgo = 0, nitr = nitr, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL, computeGRM = FALSE, grmfile_name = grmfile_name, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,cripticut = 0.025, minMAF = NULL, maxMAF = NULL,excludeResidual = TRUE, ncores = ncores)
+##Genetic correlation from the last iteration. In this example there was no rg value since the program stopped after nitr-1 = 2 iteration due to convergence issue.
+GC
+```
+
+## Running GeneticCorrBT() by computing GRM chromosome-wise
+```{r}
+byCHR = TRUE
+computeGRM = TRUE
+grmfile_name = NULL
+
+GC <- GeneticCorrBT(DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = byCHR,
+                    REMLalgo = 0, nitr = nitr, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL, computeGRM = computeGRM, grmfile_name = grmfile_name, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,cripticut = 0.025, minMAF = NULL, maxMAF = NULL,excludeResidual = TRUE, ncores = ncores)
+GC
+```
+
+## Running GeneticCorrBT() using chromosome-wide pre-computed GRM
+```{r}
+byCHR = TRUE
+computeGRM = FALSE
+grmfile_name = "GXwasR"
+
+GC <- GeneticCorrBT(DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = byCHR,
+                    REMLalgo = 0, nitr = nitr, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL, computeGRM = computeGRM, grmfile_name = grmfile_name, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,cripticut = 0.025, minMAF = NULL, maxMAF = NULL,excludeResidual = TRUE, ncores = ncores)
+GC
+```
+
+Note: When computeGRM = FALSE, the function assumes that all required GRM files already exist in ResultDir with the expected naming convention (e.g., Chr1_GXwasR.grm.*). If these files are not present, the analysis will fail because GCTA will be unable to locate the input GRM files.
+
+# Citing `GXwasR`
+
+We hope that `r BiocStyle::Biocpkg("GXwasR")` will be useful for your research. Please use the following information to cite the package and the overall approach. Thank you!
+
+```{r "citation"}
+## Citation info
+citation("GXwasR")
+```
+
+# Reproducibility
+
+The `r BiocStyle::Biocpkg("GXwasR")` package `r Citep(bib[["GXwasR"]])` was made possible thanks to:
+
+* R `r Citep(bib[["R"]])`
+* `r BiocStyle::Biocpkg("BiocStyle")` `r Citep(bib[["BiocStyle"]])`
+* `r BiocStyle::CRANpkg("knitr")` `r Citep(bib[["knitr"]])`
+* `r BiocStyle::CRANpkg("RefManageR")` `r Citep(bib[["RefManageR"]])`
+* `r BiocStyle::CRANpkg("rmarkdown")` `r Citep(bib[["rmarkdown"]])`
+* `r BiocStyle::CRANpkg("sessioninfo")` `r Citep(bib[["sessioninfo"]])`
+* `r BiocStyle::CRANpkg("testthat")` `r Citep(bib[["testthat"]])`
+
+This package was developed using `r BiocStyle::Biocpkg("biocthis")`.
+
+`R` session information.
+
+```{r reproduce3, echo=FALSE}
+## Session info
+library("sessioninfo")
+options(width = 120)
+session_info()
+```
+
+# Bibliography
+
+This vignette was generated using `r BiocStyle::Biocpkg("BiocStyle")` `r Citep(bib[["BiocStyle"]])`
+with `r BiocStyle::CRANpkg("knitr")` `r Citep(bib[["knitr"]])` and `r BiocStyle::CRANpkg("rmarkdown")` `r Citep(bib[["rmarkdown"]])` running behind the scenes.
+
+Citations made with `r BiocStyle::CRANpkg("RefManageR")` `r Citep(bib[["RefManageR"]])`.
+
+```{r vignetteBiblio, results = "asis", echo = FALSE, warning = FALSE, message = FALSE}
+## Print bibliography
+PrintBibliography(bib, .opts = list(hyperlink = "to.doc", style = "html"))
+```
