@@ -4,81 +4,122 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pre-impute Quality Control Pipeline Using GXwasR • GXwasR</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="48x48" href="../favicon-48x48.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Pre-impute Quality Control Pipeline Using GXwasR">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Pre-impute Quality Control Pipeline Using GXwasR">
+<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->
 </head>
-<body>
-    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
+<body data-spy="scroll" data-target="#toc">
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+    <div class="container template-article">
+      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">GXwasR</a>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+      </span>
+    </div>
 
-    <a class="navbar-brand me-2" href="../index.html">GXwasR</a>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+<li>
+  <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Articles
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
-
-
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/GXwasR_overview.html">GXwasR Overview</a></li>
-    <li><a class="dropdown-item" href="../articles/preimputationQC.html">Pre-impute Quality Control Pipeline Using GXwasR</a></li>
-    <li><a class="dropdown-item" href="../articles/postimputationQC.html">Sex-aware Post-impute Quality Control Pipeline Using GXwasR</a></li>
-    <li><a class="dropdown-item" href="../articles/gwas_models.html">Running GWAS, XWAS and Sex-differential tests Using GXwasR</a></li>
-    <li><a class="dropdown-item" href="../articles/GXwasR_PRS.html">Computing Polygenic Risk Score using GXwasR</a></li>
-    <li><a class="dropdown-item" href="../articles/decoding_ancestry.html">Decoding Ancestry: A Guide to Using GXwasR for Genetic Ancestry Estimation</a></li>
-    <li><a class="dropdown-item" href="../articles/meta_analysis.html">GWAS Meta analysis Using GXwasR</a></li>
-    <li><a class="dropdown-item" href="../articles/genetic_correlation_sumstat.html">Genetic Correlation using GWAS Summary Statistics</a></li>
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/decoding_ancestry.html">Decoding Ancestry: A Guide to Using GXwasR for Genetic Ancestry Estimation</a>
+    </li>
+    <li>
+      <a href="../articles/genetic_correlation_sumstat.html">Genetic Correlation using GWAS Summary Statistics</a>
+    </li>
+    <li>
+      <a href="../articles/gwas_models.html">Running GWAS, XWAS and Sex-differential tests Using GXwasR</a>
+    </li>
+    <li>
+      <a href="../articles/GXwasR_HeritabilityGeneticCorr.html">Tutorial for heritability estimate and computing genetic correlation in GXwasR R package.</a>
+    </li>
+    <li>
+      <a href="../articles/GXwasR_overview.html">GXwasR Overview</a>
+    </li>
+    <li>
+      <a href="../articles/GXwasR_PGS.html">Computing Polygenic Score using GXwasR</a>
+    </li>
+    <li>
+      <a href="../articles/meta_analysis.html">GWAS Meta analysis Using GXwasR</a>
+    </li>
+    <li>
+      <a href="../articles/postimputationQC.html">Sex-aware Post-impute Quality Control Pipeline Using GXwasR</a>
+    </li>
+    <li>
+      <a href="../articles/preimputationQC.html">Pre-impute Quality Control Pipeline Using GXwasR</a>
+    </li>
   </ul>
 </li>
-<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
-<ul class="navbar-nav">
-<li class="nav-item"><form class="form-inline" role="search">
- <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
-</form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/boseb/GXwasR/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/boseb/GXwasR/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+
+  </a>
+</li>
       </ul>
 </div>
-
-
+<!--/.nav-collapse -->
   </div>
-</nav><div class="container template-article">
+<!--/.container -->
+</div>
+<!--/.navbar -->
 
 
 
-
-<div class="row">
-  <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.svg" class="logo" alt=""><h1>Pre-impute Quality Control Pipeline Using GXwasR</h1>
+      </header><div class="row">
+  <div class="col-md-9 contents">
+    <div class="page-header toc-ignore">
+      <h1 data-toc-skip>Pre-impute Quality Control Pipeline Using
+GXwasR</h1>
                         <h4 data-toc-skip class="author">Banabithi
 Bose</h4>
             <address class="author_afil">
-      Northwestern UniversityUniversity of Colorado Anschutz Medical
-Campus<br><a class="author_email" href="mailto:#"></a><a href="mailto:banabithi.bose@gmail.com" class="email">banabithi.bose@gmail.com</a>
+      University of Colorado Anschutz Medical;Northwestern
+University<br><a class="author_email" href="mailto:#"></a><a href="mailto:banabithi.bose@gmail.com" class="email">banabithi.bose@gmail.com</a>
       </address>
                   
-            <h4 data-toc-skip class="date">8 August 2025</h4>
+            <h4 data-toc-skip class="date">16 October 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/boseb/GXwasR/blob/HEAD/vignettes/preimputationQC.Rmd" class="external-link"><code>vignettes/preimputationQC.Rmd</code></a></small>
-      <div class="d-none name"><code>preimputationQC.Rmd</code></div>
+      <div class="hidden name"><code>preimputationQC.Rmd</code></div>
+
     </div>
 
     
@@ -168,8 +209,30 @@ set.</p></li>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Call some libraries</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/boseb/GXwasR/" class="external-link">GXwasR</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; GXwasR: Genome-wide and x-chromosome wide association analyses applying</span></span>
+<span><span class="co">#&gt; best practices of quality control over genetic data</span></span>
+<span><span class="co">#&gt; Version 0.99.0 () installed</span></span>
+<span><span class="co">#&gt; Author: c(</span></span>
+<span><span class="co">#&gt;     person(given = "Banabithi",</span></span>
+<span><span class="co">#&gt;            family = "Bose",</span></span>
+<span><span class="co">#&gt;            role = c("cre", "aut"),</span></span>
+<span><span class="co">#&gt;            email = "banabithi.bose@gmail.com",</span></span>
+<span><span class="co">#&gt;            comment = c(ORCID = "0000-0003-0842-8768"))</span></span>
+<span><span class="co">#&gt;            )</span></span>
+<span><span class="co">#&gt; Maintainer: Banabithi Bose &lt;banabithi.bose@gmail.com&gt;</span></span>
+<span><span class="co">#&gt; Tutorial: https://github.com</span></span>
+<span><span class="co">#&gt; Use citation("GXwasR") to know how to cite this work.</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/printr/" class="external-link">printr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rstudio/rmarkdown" class="external-link">rmarkdown</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt; Registered S3 method overwritten by 'printr':</span></span>
+<span><span class="co">#&gt;   method                from     </span></span>
+<span><span class="co">#&gt;   knit_print.data.frame rmarkdown</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rstudio/rmarkdown" class="external-link">rmarkdown</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'rmarkdown'</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:BiocStyle':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     html_document, md_document, pdf_document</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="learn-about-all-the-gxwasr-functions">Learn about all the GXwasR functions<a class="anchor" aria-label="anchor" href="#learn-about-all-the-gxwasr-functions"></a>
@@ -193,18 +256,18 @@ GXwasR library and then use the browseVignettes() function:</p>
 <span><span class="va">ResultDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"GXwasR_example"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PlinkSummary.html">PlinkSummary</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Dataset: GXwasR_example</span></span>
-<span><span class="co">#&gt; ℹ Number of missing phenotypes: 0</span></span>
-<span><span class="co">#&gt; ℹ Number of males: 125</span></span>
-<span><span class="co">#&gt; ℹ Number of females: 151</span></span>
-<span><span class="co">#&gt; ℹ This is case-control data</span></span>
-<span><span class="co">#&gt; ℹ Number of cases: 108</span></span>
-<span><span class="co">#&gt; ℹ Number of controls: 168</span></span>
-<span><span class="co">#&gt; ℹ Number of cases in males: 53</span></span>
-<span><span class="co">#&gt; ℹ Number of controls in males: 72</span></span>
-<span><span class="co">#&gt; ℹ Number of cases in females: 55</span></span>
-<span><span class="co">#&gt; ℹ Number of controls in females: 96</span></span>
-<span><span class="co">#&gt; ℹ Number of chromosomes: 12</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Dataset: GXwasR_example</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of missing phenotypes: 0</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of males: 125</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of females: 151</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> This is case-control data</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of cases: 108</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of controls: 168</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of cases in males: 53</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of controls in males: 72</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of cases in females: 55</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of controls in females: 96</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of chromosomes: 12</span></span>
 <span><span class="co">#&gt;   - Chr: 1</span></span>
 <span><span class="co">#&gt;   - Chr: 2</span></span>
 <span><span class="co">#&gt;   - Chr: 3</span></span>
@@ -217,8 +280,8 @@ GXwasR library and then use the browseVignettes() function:</p>
 <span><span class="co">#&gt;   - Chr: 10</span></span>
 <span><span class="co">#&gt;   - Chr: 23</span></span>
 <span><span class="co">#&gt;   - Chr: 24</span></span>
-<span><span class="co">#&gt; ℹ Total number of SNPs: 26527</span></span>
-<span><span class="co">#&gt; ℹ Total number of samples: 276</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Total number of SNPs: 26527</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Total number of samples: 276</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="step-1-filtering-multi-allelic-variants">Step 1: Filtering multi-allelic variants<a class="anchor" aria-label="anchor" href="#step-1-filtering-multi-allelic-variants"></a>
@@ -229,7 +292,7 @@ function with the input dataset.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"PreimputeEX_QC1"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/FilterAllele.html">FilterAllele</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span>, <span class="va">foutput</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ There is no multi-allelic SNP present in the input dataset.</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> There is no multi-allelic SNP present in the input dataset.</span></span></code></pre></div>
 <p>Since there was no multi-allelic SNPs, we will proceed with the same
 input data.</p>
 </div>
@@ -258,31 +321,33 @@ threshold.</p>
 <span><span class="va">monomorphicSNPs</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span><span class="va">ld_prunning</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/QCsnp.html">QCsnp</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>,foutput <span class="op">=</span> <span class="va">foutput</span>, geno <span class="op">=</span> <span class="va">geno</span>, maf <span class="op">=</span> <span class="va">maf</span>,hweCase <span class="op">=</span> <span class="va">hweCase</span>, hweControl <span class="op">=</span> <span class="va">hweControl</span>, ld_prunning <span class="op">=</span> <span class="va">ld_prunning</span>, casecontrol <span class="op">=</span> <span class="va">casecontrol</span>, monomorphicSNPs <span class="op">=</span> <span class="va">monomorphicSNPs</span>, caldiffmiss <span class="op">=</span> <span class="va">caldiffmiss</span>, dmissX <span class="op">=</span> <span class="va">dmissX</span>, dmissAutoY <span class="op">=</span> <span class="va">dmissAutoY</span>, diffmissFilter <span class="op">=</span> <span class="va">diffmissFilter</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ 4214 Ambiguous SNPs (A-T/G-C), indels etc. were removed.</span></span>
-<span><span class="co">#&gt; ✔ Thresholds for maf, geno and hwe worked.</span></span>
-<span><span class="co">#&gt; ℹ 11 variants removed due to missing genotype data (--geno).</span></span>
-<span><span class="co">#&gt; ℹ No filter based on differential missingness will be applied.</span></span>
-<span><span class="co">#&gt; ✔ Output PLINK files prefixed as ,PreimputeEX_QC1, with passed SNPs are saved in ResultDir.</span></span>
-<span><span class="co">#&gt; ℹ Input file has 26527 SNPs.</span></span>
-<span><span class="co">#&gt; ℹ Output file has 22302 SNPs after filtering.</span></span></code></pre></div>
+<span><span class="co">#&gt; Using PLINK v1.9.0-b.7.7 64-bit (22 Oct 2024)</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> 4214 Ambiguous SNPs (A-T/G-C), indels etc. were removed.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Thresholds for maf, geno and hwe worked.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> 11 variants removed due to missing genotype data (--geno).</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No filter based on differential missingness will be applied.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files prefixed as ,PreimputeEX_QC1, with passed SNPs are saved in ResultDir.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Input file has 26527 SNPs.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Output file has 22302 SNPs after filtering.</span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This message is displayed once every 8 hours.</span></span></span></code></pre></div>
 <p>Copying the plink files from ResultDir to DataDir.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>,<span class="st">"/"</span><span class="op">)</span>,pattern <span class="op">=</span> <span class="st">"PreimputeEX_QC1"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>,<span class="st">"/"</span>,<span class="va">ftemp</span><span class="op">)</span>,<span class="va">DataDir</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE TRUE TRUE TRUE</span></span>
 <span><span class="fu"><a href="../reference/PlinkSummary.html">PlinkSummary</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="st">"PreimputeEX_QC1"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Dataset: PreimputeEX_QC1</span></span>
-<span><span class="co">#&gt; ℹ Number of missing phenotypes: 0</span></span>
-<span><span class="co">#&gt; ℹ Number of males: 125</span></span>
-<span><span class="co">#&gt; ℹ Number of females: 151</span></span>
-<span><span class="co">#&gt; ℹ This is case-control data</span></span>
-<span><span class="co">#&gt; ℹ Number of cases: 108</span></span>
-<span><span class="co">#&gt; ℹ Number of controls: 168</span></span>
-<span><span class="co">#&gt; ℹ Number of cases in males: 53</span></span>
-<span><span class="co">#&gt; ℹ Number of controls in males: 72</span></span>
-<span><span class="co">#&gt; ℹ Number of cases in females: 55</span></span>
-<span><span class="co">#&gt; ℹ Number of controls in females: 96</span></span>
-<span><span class="co">#&gt; ℹ Number of chromosomes: 11</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Dataset: PreimputeEX_QC1</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of missing phenotypes: 0</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of males: 125</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of females: 151</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> This is case-control data</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of cases: 108</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of controls: 168</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of cases in males: 53</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of controls in males: 72</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of cases in females: 55</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of controls in females: 96</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of chromosomes: 11</span></span>
 <span><span class="co">#&gt;   - Chr: 1</span></span>
 <span><span class="co">#&gt;   - Chr: 2</span></span>
 <span><span class="co">#&gt;   - Chr: 3</span></span>
@@ -294,8 +359,8 @@ threshold.</p>
 <span><span class="co">#&gt;   - Chr: 9</span></span>
 <span><span class="co">#&gt;   - Chr: 10</span></span>
 <span><span class="co">#&gt;   - Chr: 23</span></span>
-<span><span class="co">#&gt; ℹ Total number of SNPs: 22302</span></span>
-<span><span class="co">#&gt; ℹ Total number of samples: 276</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Total number of SNPs: 22302</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Total number of samples: 276</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="step-3-filtering-samples-with-high-missing-rate-threshold-">Step 3: Filtering samples with high missing rate threshold.<a class="anchor" aria-label="anchor" href="#step-3-filtering-samples-with-high-missing-rate-threshold-"></a>
@@ -312,9 +377,9 @@ threshold.</p>
 <span><span class="va">filterSample</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
 <span><span class="va">ambi_out</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
 <span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/QCsample.html">QCsample</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>,ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>,foutput <span class="op">=</span> <span class="va">foutput</span>, imiss <span class="op">=</span> <span class="va">imiss</span>,het <span class="op">=</span> <span class="va">het</span>, IBD <span class="op">=</span> <span class="cn">NULL</span>, filterSample <span class="op">=</span> <span class="va">filterSample</span>, ambi_out <span class="op">=</span> <span class="va">ambi_out</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Missingness and heterogygosity thresholds are NULL.</span></span>
-<span><span class="co">#&gt; ℹ There will be no sample to be filtered for IBD with 'IBD' threshold.</span></span>
-<span><span class="co">#&gt; Warning: cannot open file '/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ/PreimputeEX_QC2.fam': No such file or directory</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Missingness and heterogygosity thresholds are NULL.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> There will be no sample to be filtered for IBD with 'IBD' threshold.</span></span>
+<span><span class="co">#&gt; Warning: cannot open file '/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpYHZcER/PreimputeEX_QC2.fam': No such file or directory</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="step-4-apply-sex-check">Step 4: Apply sex check<a class="anchor" aria-label="anchor" href="#step-4-apply-sex-check"></a>
@@ -327,11 +392,12 @@ threshold.</p>
 <span><span class="va">LD_r2_threshold</span> <span class="op">&lt;-</span> <span class="fl">0.02</span></span>
 <span><span class="va">fmax_F</span> <span class="op">&lt;-</span> <span class="fl">0.3</span></span>
 <span><span class="va">mmin_F</span> <span class="op">&lt;-</span> <span class="fl">0.7</span></span>
-<span><span class="co"># We will not impute sex</span></span>
-<span><span class="va">impute_sex</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
+<span><span class="co"># We will not infer sex</span></span>
+<span><span class="va">infer_sex</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span><span class="va">compute_freq</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
-<span><span class="va">SexCheckResult</span> <span class="op">&lt;-</span><span class="fu"><a href="../reference/SexCheck.html">SexCheck</a></span><span class="op">(</span>DataDir<span class="op">=</span><span class="va">DataDir</span>,ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput<span class="op">=</span><span class="va">finput</span>,impute_sex<span class="op">=</span><span class="va">impute_sex</span>,compute_freq <span class="op">=</span><span class="va">compute_freq</span>,LD_window_size<span class="op">=</span><span class="va">LD_window_size</span>,LD_step_size<span class="op">=</span><span class="va">LD_step_size</span>,LD_r2_threshold<span class="op">=</span><span class="fl">0.02</span>,fmax_F <span class="op">=</span> <span class="va">fmax_F</span>,mmin_F<span class="op">=</span><span class="va">mmin_F</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ There are no Y chromosomes in the input PLINK files. Estimates will be based solely on the X chromosome.</span></span>
+<span><span class="va">SexCheckResult</span> <span class="op">&lt;-</span><span class="fu"><a href="../reference/SexCheck.html">SexCheck</a></span><span class="op">(</span>DataDir<span class="op">=</span><span class="va">DataDir</span>,ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput<span class="op">=</span><span class="va">finput</span>, infer_sex <span class="op">=</span> <span class="va">infer_sex</span>,compute_freq <span class="op">=</span><span class="va">compute_freq</span>,LD_window_size<span class="op">=</span><span class="va">LD_window_size</span>,LD_step_size<span class="op">=</span><span class="va">LD_step_size</span>,LD_r2_threshold<span class="op">=</span><span class="fl">0.02</span>,fmax_F <span class="op">=</span> <span class="va">fmax_F</span>,mmin_F<span class="op">=</span><span class="va">mmin_F</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> There are no Y chromosomes in the input PLINK files. Estimates will</span></span>
+<span><span class="co">#&gt; be based solely on the X chromosome.</span></span>
 <span><span class="va">problematic_sex</span> <span class="op">&lt;-</span> <span class="va">SexCheckResult</span><span class="op">[</span><span class="va">SexCheckResult</span><span class="op">$</span><span class="va">STATUS</span> <span class="op">!=</span> <span class="st">"OK"</span>,<span class="op">]</span></span>
 <span><span class="va">problematic_sex</span> <span class="op">&lt;-</span> <span class="va">problematic_sex</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span></span></code></pre></div>
 <p>Number of samples with problematic sex assignment: 4</p>
@@ -419,18 +485,18 @@ is more than 0.8; a female call is made if F is less than 0.2.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>,<span class="st">"/"</span>,<span class="va">ftemp</span><span class="op">)</span>,<span class="va">DataDir</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE TRUE TRUE TRUE TRUE</span></span>
 <span><span class="fu"><a href="../reference/PlinkSummary.html">PlinkSummary</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="st">"PreimputeEX_QC2"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Dataset: PreimputeEX_QC2</span></span>
-<span><span class="co">#&gt; ℹ Number of missing phenotypes: 0</span></span>
-<span><span class="co">#&gt; ℹ Number of males: 125</span></span>
-<span><span class="co">#&gt; ℹ Number of females: 151</span></span>
-<span><span class="co">#&gt; ℹ This is case-control data</span></span>
-<span><span class="co">#&gt; ℹ Number of cases: 108</span></span>
-<span><span class="co">#&gt; ℹ Number of controls: 168</span></span>
-<span><span class="co">#&gt; ℹ Number of cases in males: 53</span></span>
-<span><span class="co">#&gt; ℹ Number of controls in males: 72</span></span>
-<span><span class="co">#&gt; ℹ Number of cases in females: 55</span></span>
-<span><span class="co">#&gt; ℹ Number of controls in females: 96</span></span>
-<span><span class="co">#&gt; ℹ Number of chromosomes: 11</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Dataset: PreimputeEX_QC2</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of missing phenotypes: 0</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of males: 125</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of females: 151</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> This is case-control data</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of cases: 108</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of controls: 168</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of cases in males: 53</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of controls in males: 72</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of cases in females: 55</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of controls in females: 96</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of chromosomes: 11</span></span>
 <span><span class="co">#&gt;   - Chr: 1</span></span>
 <span><span class="co">#&gt;   - Chr: 2</span></span>
 <span><span class="co">#&gt;   - Chr: 3</span></span>
@@ -442,8 +508,8 @@ is more than 0.8; a female call is made if F is less than 0.2.</p>
 <span><span class="co">#&gt;   - Chr: 9</span></span>
 <span><span class="co">#&gt;   - Chr: 10</span></span>
 <span><span class="co">#&gt;   - Chr: 23</span></span>
-<span><span class="co">#&gt; ℹ Total number of SNPs: 22302</span></span>
-<span><span class="co">#&gt; ℹ Total number of samples: 276</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Total number of SNPs: 22302</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Total number of samples: 276</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="step-6-second-round-of-snp-filtering-">Step 6: Second round of SNP filtering.<a class="anchor" aria-label="anchor" href="#step-6-second-round-of-snp-filtering-"></a>
@@ -465,37 +531,37 @@ is more than 0.8; a female call is made if F is less than 0.2.</p>
 <span><span class="va">hweCase</span> <span class="op">&lt;-</span> <span class="fl">1e-10</span></span>
 <span><span class="va">hweControl</span> <span class="op">&lt;-</span> <span class="fl">1e-06</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/QCsnp.html">QCsnp</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>,foutput <span class="op">=</span> <span class="va">foutput</span>, geno <span class="op">=</span> <span class="va">geno</span>, maf <span class="op">=</span> <span class="va">maf</span>,hweCase <span class="op">=</span> <span class="va">hweCase</span>, hweControl <span class="op">=</span> <span class="va">hweControl</span>, ld_prunning <span class="op">=</span> <span class="va">ld_prunning</span>, casecontrol <span class="op">=</span> <span class="va">casecontrol</span>, monomorphicSNPs <span class="op">=</span> <span class="va">monomorphicSNPs</span>, caldiffmiss <span class="op">=</span> <span class="va">caldiffmiss</span>, dmissX <span class="op">=</span> <span class="va">dmissX</span>, dmissAutoY <span class="op">=</span> <span class="va">dmissAutoY</span>, diffmissFilter <span class="op">=</span> <span class="va">diffmissFilter</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ 0 Ambiguous SNPs (A-T/G-C), indels etc. were removed.</span></span>
-<span><span class="co">#&gt; ✔ Thresholds for maf, geno and hwe worked.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> 0 Ambiguous SNPs (A-T/G-C), indels etc. were removed.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Thresholds for maf, geno and hwe worked.</span></span>
 <span><span class="co">#&gt; 0 variants removed due to missing genotype data (--geno).</span></span>
 <span><span class="co">#&gt; 1930 variants removed due to minor allele threshold(s)</span></span>
-<span><span class="co">#&gt; • In cases,  1 variant removed due to Hardy-Weinberg exact test.</span></span>
-<span><span class="co">#&gt; • In controls,  19 variants removed due to Hardy-Weinberg exact test.</span></span>
-<span><span class="co">#&gt; ✔ Merging is done using the common SNPs between the input genotype files.</span></span>
-<span><span class="co">#&gt; ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ prefixed as filtered_temp2</span></span>
-<span><span class="co">#&gt; ℹ There are no monomorphic SNPs.</span></span>
-<span><span class="co">#&gt; ℹ No SNP with differential missingness between cases and controls.</span></span>
-<span><span class="co">#&gt; ✔ Output PLINK files prefixed as ,PreimputeEX_QC3, with passed SNPs are saved in ResultDir.</span></span>
-<span><span class="co">#&gt; ℹ Input file has 22302 SNPs.</span></span>
-<span><span class="co">#&gt; ℹ Output file has 20353 SNPs after filtering.</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> In cases,  1 variant removed due to Hardy-Weinberg exact test.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> In controls,  19 variants removed due to Hardy-Weinberg exact test.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Merging is done using the common SNPs between the input genotype files.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpYHZcER prefixed as filtered_temp2</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> There are no monomorphic SNPs.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No SNP with differential missingness between cases and controls.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files prefixed as ,PreimputeEX_QC3, with passed SNPs are saved in ResultDir.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Input file has 22302 SNPs.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Output file has 20353 SNPs after filtering.</span></span></code></pre></div>
 <p>Copying the plink files from ResultDir to DataDir.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>,<span class="st">"/"</span><span class="op">)</span>,pattern <span class="op">=</span> <span class="st">"PreimputeEX_QC3"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>,<span class="st">"/"</span>,<span class="va">ftemp</span><span class="op">)</span>,<span class="va">DataDir</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE TRUE TRUE TRUE</span></span>
 <span><span class="fu"><a href="../reference/PlinkSummary.html">PlinkSummary</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="st">"PreimputeEX_QC3"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Dataset: PreimputeEX_QC3</span></span>
-<span><span class="co">#&gt; ℹ Number of missing phenotypes: 0</span></span>
-<span><span class="co">#&gt; ℹ Number of males: 125</span></span>
-<span><span class="co">#&gt; ℹ Number of females: 151</span></span>
-<span><span class="co">#&gt; ℹ This is case-control data</span></span>
-<span><span class="co">#&gt; ℹ Number of cases: 108</span></span>
-<span><span class="co">#&gt; ℹ Number of controls: 168</span></span>
-<span><span class="co">#&gt; ℹ Number of cases in males: 53</span></span>
-<span><span class="co">#&gt; ℹ Number of controls in males: 72</span></span>
-<span><span class="co">#&gt; ℹ Number of cases in females: 55</span></span>
-<span><span class="co">#&gt; ℹ Number of controls in females: 96</span></span>
-<span><span class="co">#&gt; ℹ Number of chromosomes: 11</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Dataset: PreimputeEX_QC3</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of missing phenotypes: 0</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of males: 125</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of females: 151</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> This is case-control data</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of cases: 108</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of controls: 168</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of cases in males: 53</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of controls in males: 72</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of cases in females: 55</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of controls in females: 96</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of chromosomes: 11</span></span>
 <span><span class="co">#&gt;   - Chr: 1</span></span>
 <span><span class="co">#&gt;   - Chr: 2</span></span>
 <span><span class="co">#&gt;   - Chr: 3</span></span>
@@ -507,8 +573,8 @@ is more than 0.8; a female call is made if F is less than 0.2.</p>
 <span><span class="co">#&gt;   - Chr: 9</span></span>
 <span><span class="co">#&gt;   - Chr: 10</span></span>
 <span><span class="co">#&gt;   - Chr: 23</span></span>
-<span><span class="co">#&gt; ℹ Total number of SNPs: 20353</span></span>
-<span><span class="co">#&gt; ℹ Total number of samples: 276</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Total number of SNPs: 20353</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Total number of samples: 276</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="step-7-second-round-of-sample-filtering">Step 7: Second round of sample filtering<a class="anchor" aria-label="anchor" href="#step-7-second-round-of-sample-filtering"></a>
@@ -525,32 +591,32 @@ is more than 0.8; a female call is made if F is less than 0.2.</p>
 <span><span class="va">filterSample</span> <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="va">ambi_out</span> <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/QCsample.html">QCsample</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>,ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>,foutput <span class="op">=</span> <span class="va">foutput</span>, imiss <span class="op">=</span> <span class="va">imiss</span>,het <span class="op">=</span> <span class="va">het</span>, IBD <span class="op">=</span> <span class="va">IBD</span>, IBDmatrix <span class="op">=</span> <span class="va">IBDmatrix</span>, filterSample <span class="op">=</span> <span class="va">filterSample</span>, ambi_out <span class="op">=</span> <span class="va">ambi_out</span><span class="op">)</span></span>
-<span><span class="co">#&gt; • Plots are initiated.</span></span>
-<span><span class="co">#&gt; ℹ No. of samples filtered/flagged for missingness: 0</span></span>
-<span><span class="co">#&gt; ℹ No. of samples filtered/flagged for heterozygosity: 0</span></span>
-<span><span class="co">#&gt; ℹ No. of samples filtered for missingness and heterozygosity: 0</span></span>
-<span><span class="co">#&gt; ℹ No. of samples marked to be filtered out for IDB after missingness and heterozygosity filter: 2</span></span>
-<span><span class="co">#&gt; ℹ No. of samples in input PLINK files: 276</span></span>
-<span><span class="co">#&gt; ℹ No. of samples in output PLINK files: 274</span></span>
-<span><span class="co">#&gt; ✔ Output PLINK files, PreimputeEX_QC4 with final samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ.</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Plots are initiated.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No. of samples filtered/flagged for missingness: 0</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No. of samples filtered/flagged for heterozygosity: 0</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No. of samples filtered for missingness and heterozygosity: 0</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No. of samples marked to be filtered out for IDB after missingness and heterozygosity filter: 2</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No. of samples in input PLINK files: 276</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No. of samples in output PLINK files: 274</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files, PreimputeEX_QC4 with final samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpYHZcER.</span></span></code></pre></div>
 <p>Copying the plink files from ResultDir to DataDir.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>,<span class="st">"/"</span><span class="op">)</span>,pattern <span class="op">=</span> <span class="st">"PreimputeEX_QC4"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>,<span class="st">"/"</span>,<span class="va">ftemp</span><span class="op">)</span>,<span class="va">DataDir</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE TRUE TRUE TRUE</span></span>
 <span><span class="fu"><a href="../reference/PlinkSummary.html">PlinkSummary</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="st">"PreimputeEX_QC4"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Dataset: PreimputeEX_QC4</span></span>
-<span><span class="co">#&gt; ℹ Number of missing phenotypes: 0</span></span>
-<span><span class="co">#&gt; ℹ Number of males: 124</span></span>
-<span><span class="co">#&gt; ℹ Number of females: 150</span></span>
-<span><span class="co">#&gt; ℹ This is case-control data</span></span>
-<span><span class="co">#&gt; ℹ Number of cases: 106</span></span>
-<span><span class="co">#&gt; ℹ Number of controls: 168</span></span>
-<span><span class="co">#&gt; ℹ Number of cases in males: 52</span></span>
-<span><span class="co">#&gt; ℹ Number of controls in males: 72</span></span>
-<span><span class="co">#&gt; ℹ Number of cases in females: 54</span></span>
-<span><span class="co">#&gt; ℹ Number of controls in females: 96</span></span>
-<span><span class="co">#&gt; ℹ Number of chromosomes: 11</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Dataset: PreimputeEX_QC4</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of missing phenotypes: 0</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of males: 124</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of females: 150</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> This is case-control data</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of cases: 106</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of controls: 168</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of cases in males: 52</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of controls in males: 72</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of cases in females: 54</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of controls in females: 96</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of chromosomes: 11</span></span>
 <span><span class="co">#&gt;   - Chr: 1</span></span>
 <span><span class="co">#&gt;   - Chr: 2</span></span>
 <span><span class="co">#&gt;   - Chr: 3</span></span>
@@ -562,8 +628,8 @@ is more than 0.8; a female call is made if F is less than 0.2.</p>
 <span><span class="co">#&gt;   - Chr: 9</span></span>
 <span><span class="co">#&gt;   - Chr: 10</span></span>
 <span><span class="co">#&gt;   - Chr: 23</span></span>
-<span><span class="co">#&gt; ℹ Total number of SNPs: 20353</span></span>
-<span><span class="co">#&gt; ℹ Total number of samples: 274</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Total number of SNPs: 20353</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Total number of samples: 274</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="step-8-ancestry-check">Step 8: Ancestry check<a class="anchor" aria-label="anchor" href="#step-8-ancestry-check"></a>
@@ -608,95 +674,18 @@ Ancestry Estimation”.</p>
 <span>    outlier <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>    outlierOf <span class="op">=</span> <span class="st">"EUR"</span>,</span>
 <span>    outlier_threshold <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
-<span><span class="co">#&gt; No A-T or G-C SNPs found in study data.</span></span>
-<span><span class="co">#&gt; 111854 ambiguous SNPs removed from reference data.</span></span>
-<span><span class="co">#&gt; ! LD pruning is recommended for reference dataset. Set referLD = TRUE.</span></span>
-<span><span class="co">#&gt; ✔ LD pruning was performed for study dataset.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ℹ Number of overlapping SNPs between study and reference data using rsID: 1032</span></span>
-<span><span class="co">#&gt; ✔ PCA done.</span></span>
-<span><span class="co">#&gt; ℹ No allele flips between study and reference data.</span></span>
-<span><span class="co">#&gt; ℹ 7 samples are outliers of selected reference population.</span></span>
-<span><span class="co">#&gt; ℹ 179 samples are NOT outliers of selected reference population.</span></span>
+<span><span class="co">#&gt; An error occurred: Environment variable 'HAPMAPIII_NCBI36_DIR' is not set or points to an invalid directory.</span></span>
+<span><span class="co">#&gt; Set it using Sys.setenv(HAPMAPIII_NCBI36_DIR = '/path/to/your/data')</span></span>
 <span></span>
 <span><span class="va">Samples_with_predicted_ancestry</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[[</span><span class="st">"Samples_with_predicted_ancestry"</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
 <span><span class="va">outlier</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[[</span><span class="st">"Outlier_samples"</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
-<span><span class="va">outlier</span></span></code></pre></div>
-<table class="table">
-<thead><tr class="header">
-<th align="left">FID</th>
-<th align="left">IID</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">EUR_FIN</td>
-<td align="left">HG00280</td>
-</tr>
-<tr class="even">
-<td align="left">EUR_FIN</td>
-<td align="left">HG00315</td>
-</tr>
-<tr class="odd">
-<td align="left">EUR_FIN</td>
-<td align="left">HG00321</td>
-</tr>
-<tr class="even">
-<td align="left">EUR_FIN</td>
-<td align="left">HG00350</td>
-</tr>
-<tr class="odd">
-<td align="left">EUR_FIN</td>
-<td align="left">HG00369</td>
-</tr>
-<tr class="even">
-<td align="left">EUR_FIN</td>
-<td align="left">HG00377</td>
-</tr>
-<tr class="odd">
-<td align="left">EUR_FIN</td>
-<td align="left">HG00383</td>
-</tr>
-</tbody>
-</table>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="va">Samples_with_predicted_ancestry</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,<span class="op">]</span></span></code></pre></div>
-<table class="table">
-<thead><tr class="header">
-<th align="left">FID</th>
-<th align="left">IID</th>
-<th align="left">Predicted Ancestry</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">EUR_GBR</td>
-<td align="left">HG00096</td>
-<td align="left">EUR</td>
-</tr>
-<tr class="even">
-<td align="left">EUR_GBR</td>
-<td align="left">HG00097</td>
-<td align="left">EUR</td>
-</tr>
-<tr class="odd">
-<td align="left">EUR_GBR</td>
-<td align="left">HG00099</td>
-<td align="left">EUR</td>
-</tr>
-<tr class="even">
-<td align="left">EUR_GBR</td>
-<td align="left">HG00100</td>
-<td align="left">EUR</td>
-</tr>
-<tr class="odd">
-<td align="left">EUR_GBR</td>
-<td align="left">HG00101</td>
-<td align="left">EUR</td>
-</tr>
-</tbody>
-</table>
+<span><span class="va">outlier</span></span>
+<span><span class="co">#&gt; NULL</span></span>
+<span></span>
+<span><span class="va">Samples_with_predicted_ancestry</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,<span class="op">]</span></span>
+<span><span class="co">#&gt; NULL</span></span></code></pre></div>
 <p>There was no outlier samples.</p>
 </div>
 <div class="section level3">
@@ -704,7 +693,7 @@ Ancestry Estimation”.</p>
 </h3>
 <p>To make sure all the filtering thresholds for SNPs are maintained
 after sample filtering.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/boseb/GXwasR/" class="external-link">GXwasR</a></span><span class="op">)</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"PreimputeEX_QC4"</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"Preimpute_Final"</span></span>
@@ -721,37 +710,37 @@ after sample filtering.</p>
 <span><span class="va">hweCase</span> <span class="op">&lt;-</span> <span class="fl">1e-10</span></span>
 <span><span class="va">hweControl</span> <span class="op">&lt;-</span> <span class="fl">1e-06</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/QCsnp.html">QCsnp</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">ResultDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>,foutput <span class="op">=</span> <span class="va">foutput</span>, geno <span class="op">=</span> <span class="va">geno</span>, maf <span class="op">=</span> <span class="va">maf</span>,hweCase <span class="op">=</span> <span class="va">hweCase</span>, hweControl <span class="op">=</span> <span class="va">hweControl</span>, ld_prunning <span class="op">=</span> <span class="va">ld_prunning</span>, casecontrol <span class="op">=</span> <span class="va">casecontrol</span>, monomorphicSNPs <span class="op">=</span> <span class="va">monomorphicSNPs</span>, caldiffmiss <span class="op">=</span> <span class="va">caldiffmiss</span>, dmissX <span class="op">=</span> <span class="va">dmissX</span>, dmissAutoY <span class="op">=</span> <span class="va">dmissAutoY</span>, diffmissFilter <span class="op">=</span> <span class="va">diffmissFilter</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ 0 Ambiguous SNPs (A-T/G-C), indels etc. were removed.</span></span>
-<span><span class="co">#&gt; ✔ Thresholds for maf, geno and hwe worked.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> 0 Ambiguous SNPs (A-T/G-C), indels etc. were removed.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Thresholds for maf, geno and hwe worked.</span></span>
 <span><span class="co">#&gt; 0 variants removed due to missing genotype data (--geno).</span></span>
 <span><span class="co">#&gt; 3 variants removed due to minor allele threshold(s)</span></span>
-<span><span class="co">#&gt; • In cases,  0 variants removed due to Hardy-Weinberg exact test.</span></span>
-<span><span class="co">#&gt; • In controls,  0 variants removed due to Hardy-Weinberg exact test.</span></span>
-<span><span class="co">#&gt; ✔ Merging is done using the common SNPs between the input genotype files.</span></span>
-<span><span class="co">#&gt; ✔ Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcRh9ZZ prefixed as filtered_temp2</span></span>
-<span><span class="co">#&gt; ℹ There are no monomorphic SNPs.</span></span>
-<span><span class="co">#&gt; ℹ No SNP with differential missingness between cases and controls.</span></span>
-<span><span class="co">#&gt; ✔ Output PLINK files prefixed as ,Preimpute_Final, with passed SNPs are saved in ResultDir.</span></span>
-<span><span class="co">#&gt; ℹ Input file has 20353 SNPs.</span></span>
-<span><span class="co">#&gt; ℹ Output file has 20350 SNPs after filtering.</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> In cases,  0 variants removed due to Hardy-Weinberg exact test.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> In controls,  0 variants removed due to Hardy-Weinberg exact test.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Merging is done using the common SNPs between the input genotype files.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpYHZcER prefixed as filtered_temp2</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> There are no monomorphic SNPs.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No SNP with differential missingness between cases and controls.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files prefixed as ,Preimpute_Final, with passed SNPs are saved in ResultDir.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Input file has 20353 SNPs.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Output file has 20350 SNPs after filtering.</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="final-summary-of-final-qc-ed-dataset-">Final Summary of final Qc-ed dataset.<a class="anchor" aria-label="anchor" href="#final-summary-of-final-qc-ed-dataset-"></a>
 </h3>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlinkSummary.html">PlinkSummary</a></span><span class="op">(</span><span class="va">ResultDir</span>,<span class="va">ResultDir</span>,<span class="va">foutput</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Dataset: Preimpute_Final</span></span>
-<span><span class="co">#&gt; ℹ Number of missing phenotypes: 0</span></span>
-<span><span class="co">#&gt; ℹ Number of males: 124</span></span>
-<span><span class="co">#&gt; ℹ Number of females: 150</span></span>
-<span><span class="co">#&gt; ℹ This is case-control data</span></span>
-<span><span class="co">#&gt; ℹ Number of cases: 106</span></span>
-<span><span class="co">#&gt; ℹ Number of controls: 168</span></span>
-<span><span class="co">#&gt; ℹ Number of cases in males: 52</span></span>
-<span><span class="co">#&gt; ℹ Number of controls in males: 72</span></span>
-<span><span class="co">#&gt; ℹ Number of cases in females: 54</span></span>
-<span><span class="co">#&gt; ℹ Number of controls in females: 96</span></span>
-<span><span class="co">#&gt; ℹ Number of chromosomes: 11</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Dataset: Preimpute_Final</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of missing phenotypes: 0</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of males: 124</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of females: 150</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> This is case-control data</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of cases: 106</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of controls: 168</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of cases in males: 52</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of controls in males: 72</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of cases in females: 54</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of controls in females: 96</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of chromosomes: 11</span></span>
 <span><span class="co">#&gt;   - Chr: 1</span></span>
 <span><span class="co">#&gt;   - Chr: 2</span></span>
 <span><span class="co">#&gt;   - Chr: 3</span></span>
@@ -763,21 +752,23 @@ after sample filtering.</p>
 <span><span class="co">#&gt;   - Chr: 9</span></span>
 <span><span class="co">#&gt;   - Chr: 10</span></span>
 <span><span class="co">#&gt;   - Chr: 23</span></span>
-<span><span class="co">#&gt; ℹ Total number of SNPs: 20350</span></span>
-<span><span class="co">#&gt; ℹ Total number of samples: 274</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Total number of SNPs: 20350</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Total number of samples: 274</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h3>
 <p>If you are using GXwasR package and/or following this pipeline in
 your study, please cite it as:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"GXwasR"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; To cite package 'GXwasR' in publications use:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   Bose B, Blostein F, Kim J, Winters J, Actkins KV, Mayer D, Congivaram H, Niarchou M, Edwards DV, Davis</span></span>
-<span><span class="co">#&gt;   LK, Stranger BE (2025). "GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic Effects on</span></span>
-<span><span class="co">#&gt;   Complex Traits." _medRxiv 2025.06.10.25329327_. doi:10.1101/2025.06.10.25329327</span></span>
+<span><span class="co">#&gt;   Bose B, Blostein F, Kim J, Winters J, Actkins KV, Mayer D, Congivaram</span></span>
+<span><span class="co">#&gt;   H, Niarchou M, Edwards DV, Davis LK, Stranger BE (2025). "GXwasR: A</span></span>
+<span><span class="co">#&gt;   Toolkit for Investigating Sex-Differentiated Genetic Effects on</span></span>
+<span><span class="co">#&gt;   Complex Traits." _medRxiv 2025.06.10.25329327_.</span></span>
+<span><span class="co">#&gt;   doi:10.1101/2025.06.10.25329327</span></span>
 <span><span class="co">#&gt;   &lt;https://doi.org/10.1101/2025.06.10.25329327&gt;.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; A BibTeX entry for LaTeX users is</span></span>
@@ -794,7 +785,8 @@ your study, please cite it as:</p>
 <h2 id="reproducibility">Reproducibility<a class="anchor" aria-label="anchor" href="#reproducibility"></a>
 </h2>
 <p>The <em><a href="https://bioconductor.org/packages/3.21/GXwasR" class="external-link">GXwasR</a></em>
-package (Bose, Blostein, Kim et al., 2025) was made possible thanks
+package (Bose, Blostein, Kim, Winters, Actkins, Mayer, Congivaram,
+Niarchou, Edwards, Davis, and Stranger, 2025) was made possible thanks
 to:</p>
 <ul>
 <li>R (R Core Team, 2025)</li>
@@ -809,201 +801,178 @@ to:</p>
 (McLean, 2017)</li>
 <li>
 <em><a href="https://CRAN.R-project.org/package=rmarkdown" class="external-link">rmarkdown</a></em>
-(Allaire, Xie, Dervieux et al., 2024)</li>
+(Allaire, Xie, Dervieux, McPherson, Luraschi, Ushey, Atkins, Wickham,
+Cheng, Chang, and Iannone, 2025)</li>
 <li>
 <em><a href="https://CRAN.R-project.org/package=sessioninfo" class="external-link">sessioninfo</a></em>
-(Wickham, Chang, Flight et al., 2025)</li>
+(Wickham, Chang, Flight, Müller, and Hester, 2025)</li>
 <li>
 <em><a href="https://CRAN.R-project.org/package=testthat" class="external-link">testthat</a></em>
 (Wickham, 2011)</li>
 </ul>
 <p>This package was developed using <em><a href="https://bioconductor.org/packages/3.21/biocthis" class="external-link">biocthis</a></em>.</p>
 <p><code>R</code> session information.</p>
-<pre><code><span><span class="co">#&gt; ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt;  setting  value</span></span>
+<pre><code><span><span class="co">#&gt; <span style="color: #00BBBB; font-weight: bold;">─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt;  <span style="color: #555555; font-style: italic;">setting </span> <span style="color: #555555; font-style: italic;">value</span></span></span>
 <span><span class="co">#&gt;  version  R version 4.5.1 (2025-06-13)</span></span>
-<span><span class="co">#&gt;  os       macOS Sequoia 15.6</span></span>
+<span><span class="co">#&gt;  os       macOS Sequoia 15.7.1</span></span>
 <span><span class="co">#&gt;  system   aarch64, darwin24.4.0</span></span>
 <span><span class="co">#&gt;  ui       unknown</span></span>
-<span><span class="co">#&gt;  language (EN)</span></span>
+<span><span class="co">#&gt;  language en-US</span></span>
 <span><span class="co">#&gt;  collate  en_US.UTF-8</span></span>
 <span><span class="co">#&gt;  ctype    en_US.UTF-8</span></span>
 <span><span class="co">#&gt;  tz       America/New_York</span></span>
-<span><span class="co">#&gt;  date     2025-08-08</span></span>
+<span><span class="co">#&gt;  date     2025-10-16</span></span>
 <span><span class="co">#&gt;  pandoc   3.6.3 @ /Applications/Positron.app/Contents/Resources/app/quarto/bin/tools/aarch64/ (via rmarkdown)</span></span>
-<span><span class="co">#&gt;  quarto   1.7.33 @ /usr/local/bin/quarto</span></span>
+<span><span class="co">#&gt;  quarto   1.8.25 @ /usr/local/bin/quarto</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt;  package              * version    date (UTC) lib source</span></span>
-<span><span class="co">#&gt;  abind                  1.4-8      2024-09-12 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  backports              1.5.0      2024-05-23 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  bibtex                 0.5.1      2023-01-26 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  bigassertr             0.1.7      2025-06-27 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  bigparallelr           0.3.2      2021-10-02 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  bigsnpr                1.12.18    2024-11-26 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  bigsparser             0.7.3      2024-09-06 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  bigstatsr              1.6.2      2025-07-29 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  Biobase                2.68.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;  BiocGenerics           0.54.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;  BiocIO                 1.18.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;  BiocManager            1.30.26    2025-06-05 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  BiocParallel           1.42.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  BiocStyle              2.36.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;  Biostrings             2.76.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;  bit                    4.6.0      2025-03-06 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  bit64                  4.6.0-1    2025-01-16 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  bitops                 1.0-9      2024-10-03 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  brio                   1.1.5      2024-04-24 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  broom                  1.0.9      2025-07-28 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  BSgenome               1.76.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;  cachem                 1.1.0      2024-05-16 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  calibrate              1.7.7      2020-06-19 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  callr                  3.7.6      2024-03-25 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  car                    3.1-3      2024-09-27 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  carData                3.0-5      2022-01-06 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  cli                    3.6.5      2025-04-23 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  codetools              0.2-20     2024-03-31 [4] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  cowplot                1.2.0      2025-07-07 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  crayon                 1.5.3      2024-06-20 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  curl                   6.4.0      2025-06-22 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  data.table             1.17.8     2025-07-10 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  DelayedArray           0.34.1     2025-04-17 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;  devtools             * 2.4.5      2022-10-11 [3] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  digest                 0.6.37     2024-08-19 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  doParallel             1.0.17     2022-02-07 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  doRNG                  1.8.6.2    2025-04-02 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  doSNOW                 1.0.20     2022-02-04 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  dplyr                  1.1.4      2023-11-17 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  ellipsis               0.3.2      2021-04-29 [3] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  evaluate               1.0.4      2025-06-18 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  farver                 2.1.2      2024-05-13 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  fastmap                1.2.0      2024-05-15 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  flock                  0.7        2016-11-12 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  foreach                1.5.2      2022-02-02 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  Formula                1.2-5      2023-02-24 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  fs                     1.6.6      2025-04-12 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  gdsfmt                 1.44.1     2025-07-09 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;  generics               0.1.4      2025-05-09 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  GenomeInfoDb           1.44.1     2025-07-23 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;  GenomeInfoDbData       1.2.14     2025-04-21 [2] Bioconductor</span></span>
-<span><span class="co">#&gt;  GenomicAlignments      1.44.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;  GenomicRanges          1.60.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;  ggplot2                3.5.2      2025-04-09 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  ggpubr                 0.6.1      2025-06-27 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  ggrepel                0.9.6      2024-09-07 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  ggsignif               0.6.4      2022-10-13 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  glue                   1.8.0      2024-09-30 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  gridExtra              2.3        2017-09-09 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  gtable                 0.3.6      2024-10-25 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  GXwasR               * 0.99.0     2025-08-08 [1] Bioconductor</span></span>
-<span><span class="co">#&gt;  hms                    1.1.3      2023-03-21 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  htmltools              0.5.8.1    2024-04-04 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  htmlwidgets            1.6.4      2023-12-06 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  httpuv                 1.6.16     2025-04-16 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  httr                   1.4.7      2023-08-15 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  IRanges                2.42.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;  iterators              1.0.14     2022-02-05 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  jsonlite               2.0.0      2025-03-27 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  knitr                  1.50       2025-03-16 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  labeling               0.4.3      2023-08-29 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  later                  1.4.2      2025-04-08 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  lattice                0.22-7     2025-04-02 [4] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  lubridate              1.9.4      2024-12-08 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  magrittr             * 2.0.3      2022-03-30 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  MASS                   7.3-65     2025-02-28 [4] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  mathjaxr               1.8-0      2025-04-30 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  Matrix                 1.7-3      2025-03-11 [4] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  MatrixGenerics         1.20.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;  matrixStats            1.5.0      2025-01-07 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  memoise                2.0.1      2021-11-26 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  mgcv                   1.9-3      2025-04-04 [4] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  mime                   0.13       2025-03-17 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  miniUI                 0.1.2      2025-04-17 [3] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  nlme                   3.1-168    2025-03-31 [4] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  pillar                 1.11.0     2025-07-04 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  pkgbuild               1.4.8      2025-05-26 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  pkgdev                 0.1.0.9060 2025-08-04 [2] Github (dieghernan/pkgdev@e56f2a8)</span></span>
-<span><span class="co">#&gt;  pkgload                1.4.0      2024-06-28 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  plyranges              1.28.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;  polynom                1.4-1      2022-04-11 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  poolr                  1.2-0      2025-05-07 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  prettyunits            1.2.0      2023-09-24 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  printr               * 0.3        2023-03-08 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  processx               3.8.6      2025-02-21 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  profvis                0.4.0      2024-09-20 [3] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  progress               1.2.3      2023-12-06 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  promises               1.3.3      2025-05-29 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  ps                     1.9.1      2025-04-12 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  purrr                  1.1.0      2025-07-10 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  qqman                  0.1.9      2023-08-23 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  R.methodsS3            1.8.2      2022-06-13 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  R.oo                   1.27.1     2025-05-02 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  R.utils                2.13.0     2025-02-24 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  R6                     2.6.1      2025-02-15 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  ragg                   1.4.0      2025-04-10 [3] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  rbibutils              2.3        2024-10-04 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  RColorBrewer           1.1-3      2022-04-03 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  Rcpp                   1.1.0      2025-07-02 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  RCurl                  1.98-1.17  2025-03-22 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  Rdpack                 2.6.4      2025-04-09 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  RefManageR           * 1.4.0      2022-09-30 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  regioneR               1.40.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  remotes                2.5.0      2024-03-17 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  restfulr               0.0.16     2025-06-27 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  rjson                  0.2.23     2024-09-16 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  rlang                  1.1.6      2025-04-11 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  rmarkdown            * 2.29       2024-11-04 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  rmio                   0.4.0      2022-02-17 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  rngtools               1.5.2      2021-09-20 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  rprojroot              2.1.0      2025-07-12 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  Rsamtools              2.24.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;  rstatix                0.7.2      2023-02-01 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  rtracklayer            1.68.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;  S4Arrays               1.8.1      2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  S4Vectors              0.46.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;  scales                 1.4.0      2025-04-24 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  seqminer               9.7        2024-10-02 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  sessioninfo          * 1.2.3      2025-02-05 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  shiny                  1.11.1     2025-07-03 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  snow                   0.4-4      2021-10-27 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  SNPRelate              1.42.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;  SparseArray            1.8.1      2025-07-23 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;  stringi                1.8.7      2025-03-27 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  stringr                1.5.1      2023-11-14 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  sumFREGAT              1.2.5      2022-06-07 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  SummarizedExperiment   1.38.1     2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  sys                    3.4.3      2024-10-04 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  systemfonts            1.2.3      2025-04-30 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  testthat             * 3.2.3      2025-01-13 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  textshaping            1.0.1      2025-05-01 [3] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  tibble                 3.3.0      2025-06-08 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  tidyr                  1.3.1      2024-01-24 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  tidyselect             1.2.1      2024-03-11 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  timechange             0.3.0      2024-01-18 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  tzdb                   0.5.0      2025-03-15 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  UCSC.utils             1.4.0      2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;  urlchecker             1.0.1      2021-11-30 [3] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  usethis              * 3.1.0      2024-11-26 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  vctrs                  0.6.5      2023-12-01 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  vroom                  1.6.5      2023-12-05 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  withr                  3.0.2      2024-10-28 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  xfun                   0.52       2025-04-02 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  XML                    3.99-0.18  2025-01-01 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  xml2                   1.3.8      2025-03-14 [2] CRAN (R 4.5.1)</span></span>
-<span><span class="co">#&gt;  xtable                 1.8-4      2019-04-21 [2] CRAN (R 4.5.0)</span></span>
-<span><span class="co">#&gt;  XVector                0.48.0     2025-04-15 [2] Bioconduc~</span></span>
-<span><span class="co">#&gt;  yaml                   2.3.10     2024-07-26 [2] CRAN (R 4.5.0)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB; font-weight: bold;">─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt;  <span style="color: #555555; font-style: italic;">package             </span> <span style="color: #555555; font-style: italic;">*</span> <span style="color: #555555; font-style: italic;">version  </span> <span style="color: #555555; font-style: italic;">date (UTC)</span> <span style="color: #555555; font-style: italic;">lib</span> <span style="color: #555555; font-style: italic;">source</span></span></span>
+<span><span class="co">#&gt;  abind                  1.4-8     <span style="color: #555555;">2024-09-12</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  backports              1.5.0     <span style="color: #555555;">2024-05-23</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  bibtex                 0.5.1     <span style="color: #555555;">2023-01-26</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  bigassertr             0.1.7     <span style="color: #555555;">2025-06-27</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  bigparallelr           0.3.2     <span style="color: #555555;">2021-10-02</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  bigsnpr                1.12.21   <span style="color: #555555;">2025-08-21</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  bigsparser             0.7.3     <span style="color: #555555;">2024-09-06</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  bigstatsr              1.6.2     <span style="color: #555555;">2025-07-29</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  Biobase                2.68.0    <span style="color: #555555;">2025-04-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Bioconduc~</span></span></span>
+<span><span class="co">#&gt;  BiocGenerics           0.54.0    <span style="color: #555555;">2025-04-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Bioconduc~</span></span></span>
+<span><span class="co">#&gt;  BiocIO                 1.18.0    <span style="color: #555555;">2025-04-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Bioconduc~</span></span></span>
+<span><span class="co">#&gt;  BiocManager            1.30.26   <span style="color: #555555;">2025-06-05</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  BiocParallel           1.42.2    <span style="color: #555555;">2025-09-14</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.21 (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  BiocStyle            * 2.36.0    <span style="color: #555555;">2025-04-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Bioconduc~</span></span></span>
+<span><span class="co">#&gt;  Biostrings             2.76.0    <span style="color: #555555;">2025-04-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Bioconduc~</span></span></span>
+<span><span class="co">#&gt;  bit                    4.6.0     <span style="color: #555555;">2025-03-06</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  bit64                  4.6.0-1   <span style="color: #555555;">2025-01-16</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  bitops                 1.0-9     <span style="color: #555555;">2024-10-03</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  bookdown               0.45      <span style="color: #555555;">2025-10-03</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  broom                  1.0.10    <span style="color: #555555;">2025-09-13</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  BSgenome               1.76.0    <span style="color: #555555;">2025-04-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Bioconduc~</span></span></span>
+<span><span class="co">#&gt;  bslib                  0.9.0     <span style="color: #555555;">2025-01-30</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  cachem                 1.1.0     <span style="color: #555555;">2024-05-16</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  calibrate              1.7.7     <span style="color: #555555;">2020-06-19</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  car                    3.1-3     <span style="color: #555555;">2024-09-27</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  carData                3.0-5     <span style="color: #555555;">2022-01-06</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  cli                    3.6.5     <span style="color: #555555;">2025-04-23</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  codetools              0.2-20    <span style="color: #555555;">2024-03-31</span> <span style="color: #555555;">[3]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  cowplot                1.2.0     <span style="color: #555555;">2025-07-07</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  crayon                 1.5.3     <span style="color: #555555;">2024-06-20</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  curl                   7.0.0     <span style="color: #555555;">2025-08-19</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  data.table             1.17.8    <span style="color: #555555;">2025-07-10</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  DelayedArray           0.34.1    <span style="color: #555555;">2025-04-17</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Bioconduc~</span></span></span>
+<span><span class="co">#&gt;  desc                   1.4.3     <span style="color: #555555;">2023-12-10</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  digest                 0.6.37    <span style="color: #555555;">2024-08-19</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  doParallel             1.0.17    <span style="color: #555555;">2022-02-07</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  doRNG                  1.8.6.2   <span style="color: #555555;">2025-04-02</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  dplyr                  1.1.4     <span style="color: #555555;">2023-11-17</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  evaluate               1.0.5     <span style="color: #555555;">2025-08-27</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  farver                 2.1.2     <span style="color: #555555;">2024-05-13</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  fastmap                1.2.0     <span style="color: #555555;">2024-05-15</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  flock                  0.7       <span style="color: #555555;">2016-11-12</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  foreach                1.5.2     <span style="color: #555555;">2022-02-02</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  Formula                1.2-5     <span style="color: #555555;">2023-02-24</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  fs                     1.6.6     <span style="color: #555555;">2025-04-12</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  gdsfmt                 1.44.1    <span style="color: #555555;">2025-07-09</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Bioconduc~</span></span></span>
+<span><span class="co">#&gt;  generics               0.1.4     <span style="color: #555555;">2025-05-09</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  GenomeInfoDb           1.44.3    <span style="color: #555555;">2025-09-21</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.21 (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  GenomeInfoDbData       1.2.14    <span style="color: #555555;">2025-04-21</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor</span></span></span>
+<span><span class="co">#&gt;  GenomicAlignments      1.44.0    <span style="color: #555555;">2025-04-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Bioconduc~</span></span></span>
+<span><span class="co">#&gt;  GenomicRanges          1.60.0    <span style="color: #555555;">2025-04-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Bioconduc~</span></span></span>
+<span><span class="co">#&gt;  ggplot2                4.0.0     <span style="color: #555555;">2025-09-11</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  ggpubr                 0.6.1     <span style="color: #555555;">2025-06-27</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  ggrepel                0.9.6     <span style="color: #555555;">2024-09-07</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  ggsignif               0.6.4     <span style="color: #555555;">2022-10-13</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  glue                   1.8.0     <span style="color: #555555;">2024-09-30</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  gridExtra              2.3       <span style="color: #555555;">2017-09-09</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  gtable                 0.3.6     <span style="color: #555555;">2024-10-25</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  GXwasR               * 0.99.0    <span style="color: #555555;">2025-10-02</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor</span></span></span>
+<span><span class="co">#&gt;  hms                    1.1.3     <span style="color: #555555;">2023-03-21</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  htmltools              0.5.8.1   <span style="color: #555555;">2024-04-04</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  htmlwidgets            1.6.4     <span style="color: #555555;">2023-12-06</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  httr                   1.4.7     <span style="color: #555555;">2023-08-15</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  IRanges                2.42.0    <span style="color: #555555;">2025-04-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Bioconduc~</span></span></span>
+<span><span class="co">#&gt;  iterators              1.0.14    <span style="color: #555555;">2022-02-05</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  jquerylib              0.1.4     <span style="color: #555555;">2021-04-26</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  jsonlite               2.0.0     <span style="color: #555555;">2025-03-27</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  knitr                  1.50      <span style="color: #555555;">2025-03-16</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  lattice                0.22-7    <span style="color: #555555;">2025-04-02</span> <span style="color: #555555;">[3]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  lifecycle              1.0.4     <span style="color: #555555;">2023-11-07</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  lubridate              1.9.4     <span style="color: #555555;">2024-12-08</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  magrittr               2.0.4     <span style="color: #555555;">2025-09-12</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  MASS                   7.3-65    <span style="color: #555555;">2025-02-28</span> <span style="color: #555555;">[3]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  mathjaxr               1.8-0     <span style="color: #555555;">2025-04-30</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  Matrix                 1.7-4     <span style="color: #555555;">2025-08-28</span> <span style="color: #555555;">[3]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  MatrixGenerics         1.20.0    <span style="color: #555555;">2025-04-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Bioconduc~</span></span></span>
+<span><span class="co">#&gt;  matrixStats            1.5.0     <span style="color: #555555;">2025-01-07</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  memoise                2.0.1     <span style="color: #555555;">2021-11-26</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  pillar                 1.11.1    <span style="color: #555555;">2025-09-17</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  pkgconfig              2.0.3     <span style="color: #555555;">2019-09-22</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  pkgdown                2.1.3     <span style="color: #555555;">2025-05-25</span> <span style="color: #555555;">[2]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  plyr                   1.8.9     <span style="color: #555555;">2023-10-02</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  plyranges              1.28.0    <span style="color: #555555;">2025-04-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Bioconduc~</span></span></span>
+<span><span class="co">#&gt;  poolr                  1.2-0     <span style="color: #555555;">2025-05-07</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  prettyunits            1.2.0     <span style="color: #555555;">2023-09-24</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  printr               * 0.3       <span style="color: #555555;">2023-03-08</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  progress               1.2.3     <span style="color: #555555;">2023-12-06</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  purrr                  1.1.0     <span style="color: #555555;">2025-07-10</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  qqman                  0.1.9     <span style="color: #555555;">2023-08-23</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  R.methodsS3            1.8.2     <span style="color: #555555;">2022-06-13</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  R.oo                   1.27.1    <span style="color: #555555;">2025-05-02</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  R.utils                2.13.0    <span style="color: #555555;">2025-02-24</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  R6                     2.6.1     <span style="color: #555555;">2025-02-15</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  ragg                   1.5.0     <span style="color: #555555;">2025-09-02</span> <span style="color: #555555;">[2]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  rbibutils              2.3       <span style="color: #555555;">2024-10-04</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  RColorBrewer           1.1-3     <span style="color: #555555;">2022-04-03</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  Rcpp                   1.1.0     <span style="color: #555555;">2025-07-02</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  RCurl                  1.98-1.17 <span style="color: #555555;">2025-03-22</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  Rdpack                 2.6.4     <span style="color: #555555;">2025-04-09</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  RefManageR           * 1.4.0     <span style="color: #555555;">2022-09-30</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  regioneR               1.40.1    <span style="color: #555555;">2025-06-01</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.21 (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  restfulr               0.0.16    <span style="color: #555555;">2025-06-27</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  rjson                  0.2.23    <span style="color: #555555;">2024-09-16</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  rlang                  1.1.6     <span style="color: #555555;">2025-04-11</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  rmarkdown            * 2.30      <span style="color: #555555;">2025-09-28</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  rmio                   0.4.0     <span style="color: #555555;">2022-02-17</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  rngtools               1.5.2     <span style="color: #555555;">2021-09-20</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  Rsamtools              2.24.1    <span style="color: #555555;">2025-09-07</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.21 (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  rstatix                0.7.2     <span style="color: #555555;">2023-02-01</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  rtracklayer            1.68.0    <span style="color: #555555;">2025-04-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Bioconduc~</span></span></span>
+<span><span class="co">#&gt;  S4Arrays               1.8.1     <span style="color: #555555;">2025-06-01</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.21 (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  S4Vectors              0.46.0    <span style="color: #555555;">2025-04-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Bioconduc~</span></span></span>
+<span><span class="co">#&gt;  S7                     0.2.0     <span style="color: #555555;">2024-11-07</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  sass                   0.4.10    <span style="color: #555555;">2025-04-11</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  scales                 1.4.0     <span style="color: #555555;">2025-04-24</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  sessioninfo          * 1.2.3     <span style="color: #555555;">2025-02-05</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  SNPRelate              1.42.0    <span style="color: #555555;">2025-04-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Bioconduc~</span></span></span>
+<span><span class="co">#&gt;  SparseArray            1.8.1     <span style="color: #555555;">2025-07-23</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Bioconduc~</span></span></span>
+<span><span class="co">#&gt;  stringi                1.8.7     <span style="color: #555555;">2025-03-27</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  stringr                1.5.2     <span style="color: #555555;">2025-09-08</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  sumFREGAT              1.2.5     <span style="color: #555555;">2022-06-07</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  SummarizedExperiment   1.38.1    <span style="color: #555555;">2025-04-30</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.21 (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  sys                    3.4.3     <span style="color: #555555;">2024-10-04</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  systemfonts            1.3.1     <span style="color: #555555;">2025-10-01</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  textshaping            1.0.3     <span style="color: #555555;">2025-09-02</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  tibble                 3.3.0     <span style="color: #555555;">2025-06-08</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  tidyr                  1.3.1     <span style="color: #555555;">2024-01-24</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  tidyselect             1.2.1     <span style="color: #555555;">2024-03-11</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  timechange             0.3.0     <span style="color: #555555;">2024-01-18</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  tzdb                   0.5.0     <span style="color: #555555;">2025-03-15</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  UCSC.utils             1.4.0     <span style="color: #555555;">2025-04-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Bioconduc~</span></span></span>
+<span><span class="co">#&gt;  vctrs                  0.6.5     <span style="color: #555555;">2023-12-01</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  vroom                  1.6.6     <span style="color: #555555;">2025-09-19</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  xfun                   0.53      <span style="color: #555555;">2025-08-19</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  XML                    3.99-0.19 <span style="color: #555555;">2025-08-22</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  xml2                   1.4.0     <span style="color: #555555;">2025-08-20</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  XVector                0.48.0    <span style="color: #555555;">2025-04-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Bioconduc~</span></span></span>
+<span><span class="co">#&gt;  yaml                   2.3.10    <span style="color: #555555;">2024-07-26</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpcRh9ZZ/temp_libpath4e4d53c96c8f</span></span>
-<span><span class="co">#&gt;  [2] /Users/mayerdav/Library/R/arm64/4.5/library</span></span>
-<span><span class="co">#&gt;  [3] /opt/homebrew/lib/R/4.5/site-library</span></span>
-<span><span class="co">#&gt;  [4] /opt/homebrew/Cellar/r/4.5.1/lib/R/library</span></span>
-<span><span class="co">#&gt;  * ── Packages attached to the search path.</span></span>
+<span><span class="co">#&gt; <span style="color: #555555;"> [1] /Users/mayerdav/Library/R/arm64/4.5/library</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;"> [2] /opt/homebrew/lib/R/4.5/site-library</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;"> [3] /opt/homebrew/Cellar/r/4.5.1/lib/R/library</span></span></span>
+<span><span class="co">#&gt;  <span style="color: #BBBBBB; background-color: #BB0000;">*</span> ── Packages attached to the search path.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span></code></pre>
+<span><span class="co">#&gt; <span style="color: #00BBBB; font-weight: bold;">──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="bibliography">Bibliography<a class="anchor" aria-label="anchor" href="#bibliography"></a>
@@ -1011,13 +980,13 @@ to:</p>
 <p>This vignette was generated using <em><a href="https://bioconductor.org/packages/3.21/BiocStyle" class="external-link">BiocStyle</a></em>
 (Oleś, 2025) with <em><a href="https://CRAN.R-project.org/package=knitr" class="external-link">knitr</a></em> (Xie,
 2025) and <em><a href="https://CRAN.R-project.org/package=rmarkdown" class="external-link">rmarkdown</a></em>
-(Allaire, Xie, Dervieux et al., 2024) running behind the scenes.</p>
+(Allaire, Xie, Dervieux et al., 2025) running behind the scenes.</p>
 <p>Citations made with <em><a href="https://CRAN.R-project.org/package=RefManageR" class="external-link">RefManageR</a></em>
 (McLean, 2017).</p>
 <p>
-<a id="bib-allaire2024rmarkdown"></a><a href="#cite-allaire2024rmarkdown">[1]</a><cite>
+<a id="bib-allaire2025rmarkdown"></a><a href="#cite-allaire2025rmarkdown">[1]</a><cite>
 J. Allaire, Y. Xie, C. Dervieux, et al. <em>rmarkdown: Dynamic Documents
-for R</em>. R package version 2.29. 2024. URL:
+for R</em>. R package version 2.30. 2025. URL:
 <a href="https://github.com/rstudio/rmarkdown" class="external-link">https://github.com/rstudio/rmarkdown</a>.</cite>
 </p>
 <p>
@@ -1070,22 +1039,29 @@ Generation in R</em>. R package version 1.50. 2025. URL:
 <a href="https://yihui.org/knitr/" class="external-link">https://yihui.org/knitr/</a>.</cite>
 </p>
 </div>
-  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
-    </nav></aside>
+  </div>
+
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+
+      </div>
+
 </div>
 
 
 
-    <footer><div class="pkgdown-footer-left">
-  <p>Developed by Banabithi Bose.</p>
+      <footer><div class="copyright">
+  <p></p>
+<p>Developed by Banabithi Bose.</p>
 </div>
 
-<div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+<div class="pkgdown">
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
-    </footer>
+      </footer>
 </div>
+
 
 
 

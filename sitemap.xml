@@ -3,7 +3,8 @@
 <url><loc>/CODE_OF_CONDUCT.html</loc></url>
 <url><loc>/LICENSE-text.html</loc></url>
 <url><loc>/LICENSE.html</loc></url>
-<url><loc>/articles/GXwasR_PRS.html</loc></url>
+<url><loc>/articles/GXwasR_HeritabilityGeneticCorr.html</loc></url>
+<url><loc>/articles/GXwasR_PGS.html</loc></url>
 <url><loc>/articles/GXwasR_overview.html</loc></url>
 <url><loc>/articles/decoding_ancestry.html</loc></url>
 <url><loc>/articles/genetic_correlation_sumstat.html</loc></url>
@@ -19,7 +20,7 @@
 <url><loc>/reference/ClumpLD.html</loc></url>
 <url><loc>/reference/ComputeGeneticPC.html</loc></url>
 <url><loc>/reference/ComputeLD.html</loc></url>
-<url><loc>/reference/ComputePRS.html</loc></url>
+<url><loc>/reference/ComputePGS.html</loc></url>
 <url><loc>/reference/DiffZeroOne.html</loc></url>
 <url><loc>/reference/DummyCovar.html</loc></url>
 <url><loc>/reference/EstimateHerit.html</loc></url>
