@@ -8,4 +8,6 @@ vignettes/*.html
 /doc/
 /Meta/
 vignettes/*.R
+vignettes/figures
+pkgdown
 _pkgdown.yml
