@@ -155,7 +155,7 @@ H2 <- EstimateHerit(DataDir = DataDir, ResultDir = ResultDir, finput = finput, s
 H2
 ```
 
-## <a id = "Running EstimateHerit() with model = 'LDSC'"> </a> Running EstimateHerit() genomewide with model = "LDSC" 
+## <a id = "Running EstimateHerit() with model = 'LDSC'"> </a> Running EstimateHerit() genome-wide with model = "LDSC" 
 ```{r}
 data("Summary_Stat_Ex1", package = "GXwasR")
 model <- "LDSC"
@@ -255,4 +255,50 @@ grmfile_name = "GXwasR"
 GC <- GeneticCorrBT(DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = byCHR,
                     REMLalgo = 0, nitr = nitr, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL, computeGRM = computeGRM, grmfile_name = grmfile_name, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,cripticut = 0.025, minMAF = NULL, maxMAF = NULL,excludeResidual = TRUE, ncores = ncores)
 GC
+```
+
+Note: When computeGRM = FALSE, the function assumes that all required GRM files already exist in ResultDir with the expected naming convention (e.g., Chr1_GXwasR.grm.*). If these files are not present, the analysis will fail because GCTA will be unable to locate the input GRM files.
+
+# Citing `GXwasR`
+
+We hope that `r BiocStyle::Biocpkg("GXwasR")` will be useful for your research. Please use the following information to cite the package and the overall approach. Thank you!
+
+```{r "citation"}
+## Citation info
+citation("GXwasR")
+```
+
+# Reproducibility
+
+The `r BiocStyle::Biocpkg("GXwasR")` package `r Citep(bib[["GXwasR"]])` was made possible thanks to:
+
+* R `r Citep(bib[["R"]])`
+* `r BiocStyle::Biocpkg("BiocStyle")` `r Citep(bib[["BiocStyle"]])`
+* `r BiocStyle::CRANpkg("knitr")` `r Citep(bib[["knitr"]])`
+* `r BiocStyle::CRANpkg("RefManageR")` `r Citep(bib[["RefManageR"]])`
+* `r BiocStyle::CRANpkg("rmarkdown")` `r Citep(bib[["rmarkdown"]])`
+* `r BiocStyle::CRANpkg("sessioninfo")` `r Citep(bib[["sessioninfo"]])`
+* `r BiocStyle::CRANpkg("testthat")` `r Citep(bib[["testthat"]])`
+
+This package was developed using `r BiocStyle::Biocpkg("biocthis")`.
+
+`R` session information.
+
+```{r reproduce3, echo=FALSE}
+## Session info
+library("sessioninfo")
+options(width = 120)
+session_info()
+```
+
+# Bibliography
+
+This vignette was generated using `r BiocStyle::Biocpkg("BiocStyle")` `r Citep(bib[["BiocStyle"]])`
+with `r BiocStyle::CRANpkg("knitr")` `r Citep(bib[["knitr"]])` and `r BiocStyle::CRANpkg("rmarkdown")` `r Citep(bib[["rmarkdown"]])` running behind the scenes.
+
+Citations made with `r BiocStyle::CRANpkg("RefManageR")` `r Citep(bib[["RefManageR"]])`.
+
+```{r vignetteBiblio, results = "asis", echo = FALSE, warning = FALSE, message = FALSE}
+## Print bibliography
+PrintBibliography(bib, .opts = list(hyperlink = "to.doc", style = "html"))
 ```
