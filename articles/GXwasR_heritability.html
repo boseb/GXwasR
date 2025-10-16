@@ -584,14 +584,14 @@ EstimateHerit() with model = “GREML”<a class="anchor" aria-label="anchor" hr
 <span><span class="co">#&gt; Processing chromosome 9</span></span>
 <span><span class="co">#&gt; Processing chromosome 10</span></span>
 <span><span class="co">#&gt; Processing chromosome 23</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/xGXwasR.grm.bin]</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/xGXwasR.grm.N.bin]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/xGXwasR.grm.bin]</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/xGXwasR.grm.N.bin]</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 24</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plots are saved in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ with name Heritability_Plots.jpeg</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> All GRM related files are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plots are saved in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4 with name Heritability_Plots.jpeg</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> All GRM related files are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4</span></span>
 <span></span>
 <span><span class="co">#Heritability</span></span>
 <span><span class="va">H2</span></span></code></pre></div>
@@ -1245,7 +1245,7 @@ to check that folder.</p>
 <span><span class="co">#&gt; Processing chromosome 10</span></span>
 <span><span class="co">#&gt; Processing chromosome 23</span></span>
 <span><span class="co">#&gt; Processing chromosome 24</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> All GRM related files are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> All GRM related files are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4</span></span>
 <span></span>
 <span><span class="co">#Heritability</span></span>
 <span><span class="va">H2</span></span></code></pre></div>
@@ -1888,13 +1888,13 @@ default NULL.</p>
 <code class="sourceCode R"><span></span>
 <span><span class="va">H2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/EstimateHerit.html">EstimateHerit</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, summarystat <span class="op">=</span> <span class="cn">NULL</span>, ncores <span class="op">=</span> <span class="fl">5</span>, model <span class="op">=</span> <span class="va">model</span>, byCHR <span class="op">=</span> <span class="cn">FALSE</span>, r2_LD <span class="op">=</span> <span class="fl">0</span>, LDSC_blocks <span class="op">=</span> <span class="fl">20</span>,REMLalgo <span class="op">=</span> <span class="fl">0</span>, nitr <span class="op">=</span> <span class="va">nitr</span>, cat_covarfile <span class="op">=</span> <span class="cn">NULL</span>, quant_covarfile <span class="op">=</span> <span class="cn">NULL</span>,prevalence <span class="op">=</span> <span class="fl">0.01</span>, partGRM <span class="op">=</span> <span class="cn">FALSE</span>, autosome <span class="op">=</span> <span class="cn">TRUE</span>, Xsome <span class="op">=</span> <span class="cn">TRUE</span>, nGRM <span class="op">=</span> <span class="fl">3</span>, computeGRM <span class="op">=</span> <span class="cn">TRUE</span>, grmfile_name <span class="op">=</span> <span class="cn">NULL</span>, cripticut <span class="op">=</span> <span class="fl">0.025</span>, minMAF <span class="op">=</span> <span class="cn">NULL</span>, maxMAF <span class="op">=</span> <span class="cn">NULL</span>,hg <span class="op">=</span> <span class="st">"hg19"</span>,PlotIndepSNP <span class="op">=</span> <span class="cn">TRUE</span>, IndepSNP_window_size <span class="op">=</span> <span class="fl">50</span>,IndepSNP_step_size <span class="op">=</span> <span class="fl">5</span>,IndepSNP_r2_threshold <span class="op">=</span> <span class="fl">0.02</span>,highLD_regions <span class="op">=</span> <span class="va">highLD_hg19</span>, plotjpeg <span class="op">=</span> <span class="cn">FALSE</span>, plotname <span class="op">=</span> <span class="st">"Heritability_Plots"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Input genotype files are present in specified directory.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/GXwasR.grm.bin]</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/GXwasR.grm.N.bin]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/GXwasR.grm.bin]</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/GXwasR.grm.N.bin]</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/xGXwasR.grm.bin]</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/xGXwasR.grm.N.bin]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/xGXwasR.grm.bin]</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/xGXwasR.grm.N.bin]</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -1906,15 +1906,15 @@ default NULL.</p>
 <span><span class="co">#&gt;   - set different options</span></span>
 <span><span class="co">#&gt;   - verify SNP partitioning or quality of the data</span></span>
 <span><span class="co">#&gt; Log output from 'Reading IDs':</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Reading IDs of the GRM from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/GXwasR.grm.id].</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 276 IDs are read from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/GXwasR.grm.id].</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Reading the GRM from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/GXwasR.grm.bin].</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GRM for 276 individuals are included from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/GXwasR.grm.bin].</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Reading IDs of the GRM from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/GXwasR.grm.id].</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 276 IDs are read from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/GXwasR.grm.id].</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Reading the GRM from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/GXwasR.grm.bin].</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GRM for 276 individuals are included from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/GXwasR.grm.bin].</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Reading the GRM from the 2th file ...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Reading IDs of the GRM from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/xGXwasR.grm.id].</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 276 IDs are read from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/xGXwasR.grm.id].</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Reading the GRM from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/xGXwasR.grm.bin].</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GRM for 276 individuals are included from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/xGXwasR.grm.bin].</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Reading IDs of the GRM from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/xGXwasR.grm.id].</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 276 IDs are read from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/xGXwasR.grm.id].</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Reading the GRM from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/xGXwasR.grm.bin].</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GRM for 276 individuals are included from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/xGXwasR.grm.bin].</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 276 individuals are in common in these files.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Performing  REML analysis ... (Note: may take hours depending on sample size).</span></span>
@@ -2027,7 +2027,7 @@ default NULL.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> You can specify the option --reml-maxit to allow for more iterations.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> An error occurs, please check the options or data</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> All GRM related files are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> All GRM related files are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4</span></span>
 <span></span>
 <span><span class="co">#Heritability</span></span>
 <span><span class="va">H2</span></span></code></pre></div>
@@ -2060,7 +2060,7 @@ utilizing the pre-computed GRM files in ResultDir<a class="anchor" aria-label="a
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Skipping GRM computation.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> computeGRM is set to: FALSE</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> computeGRM is FALSE, checking grmfile_name</span></span>
-<span><span class="co">#&gt; Warning: path[1]="/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/GXwasR": No such file or directory</span></span>
+<span><span class="co">#&gt; Warning: path[1]="/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/GXwasR": No such file or directory</span></span>
 <span></span>
 <span><span class="co">#Heritability</span></span>
 <span><span class="va">H2</span></span>
@@ -2399,13 +2399,13 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="va">excludeResidual</span> <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="va">GC</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GeneticCorrBT.html">GeneticCorrBT</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, byCHR <span class="op">=</span> <span class="va">byCHR</span>,</span>
 <span>                    REMLalgo <span class="op">=</span> <span class="fl">0</span>, nitr <span class="op">=</span> <span class="va">nitr</span>, phenofile <span class="op">=</span> <span class="va">phenofile</span>, cat_covarfile <span class="op">=</span> <span class="cn">NULL</span>, quant_covarfile <span class="op">=</span> <span class="cn">NULL</span>, computeGRM <span class="op">=</span> <span class="cn">TRUE</span>, grmfile_name <span class="op">=</span> <span class="cn">NULL</span>, partGRM <span class="op">=</span> <span class="cn">FALSE</span>, autosome <span class="op">=</span> <span class="cn">TRUE</span>, Xsome <span class="op">=</span> <span class="cn">TRUE</span>, nGRM <span class="op">=</span> <span class="fl">3</span>,cripticut <span class="op">=</span> <span class="fl">0.025</span>, minMAF <span class="op">=</span> <span class="cn">NULL</span>, maxMAF <span class="op">=</span> <span class="cn">NULL</span>,excludeResidual <span class="op">=</span> <span class="cn">TRUE</span>, ncores <span class="op">=</span> <span class="va">ncores</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/GXwasR.grm.bin]</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/GXwasR.grm.N.bin]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/GXwasR.grm.bin]</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/GXwasR.grm.N.bin]</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/xGXwasR.grm.bin]</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/xGXwasR.grm.N.bin]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/xGXwasR.grm.bin]</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/xGXwasR.grm.N.bin]</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -2666,8 +2666,8 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 23</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/xGXwasR.grm.bin]</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/xGXwasR.grm.N.bin]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/xGXwasR.grm.bin]</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/xGXwasR.grm.N.bin]</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -3069,7 +3069,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="va">GC</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GeneticCorrBT.html">GeneticCorrBT</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, byCHR <span class="op">=</span> <span class="va">byCHR</span>,</span>
 <span>                    REMLalgo <span class="op">=</span> <span class="fl">0</span>, nitr <span class="op">=</span> <span class="va">nitr</span>, phenofile <span class="op">=</span> <span class="va">phenofile</span>, cat_covarfile <span class="op">=</span> <span class="cn">NULL</span>, quant_covarfile <span class="op">=</span> <span class="cn">NULL</span>, computeGRM <span class="op">=</span> <span class="va">computeGRM</span>, grmfile_name <span class="op">=</span> <span class="va">grmfile_name</span>, partGRM <span class="op">=</span> <span class="cn">FALSE</span>, autosome <span class="op">=</span> <span class="cn">TRUE</span>, Xsome <span class="op">=</span> <span class="cn">TRUE</span>, nGRM <span class="op">=</span> <span class="fl">3</span>,cripticut <span class="op">=</span> <span class="fl">0.025</span>, minMAF <span class="op">=</span> <span class="cn">NULL</span>, maxMAF <span class="op">=</span> <span class="cn">NULL</span>,excludeResidual <span class="op">=</span> <span class="cn">TRUE</span>, ncores <span class="op">=</span> <span class="va">ncores</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Processing chromosome 1</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/Chr1_GXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/Chr1_GXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
@@ -3079,7 +3079,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 2</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/Chr2_GXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/Chr2_GXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
@@ -3089,7 +3089,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 3</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/Chr3_GXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/Chr3_GXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
@@ -3099,7 +3099,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 4</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/Chr4_GXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/Chr4_GXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
@@ -3109,7 +3109,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 5</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/Chr5_GXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/Chr5_GXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
@@ -3119,7 +3119,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 6</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/Chr6_GXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/Chr6_GXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
@@ -3129,7 +3129,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 7</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/Chr7_GXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/Chr7_GXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
@@ -3139,7 +3139,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 8</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/Chr8_GXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/Chr8_GXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
@@ -3149,7 +3149,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 9</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/Chr9_GXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/Chr9_GXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
@@ -3159,7 +3159,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 10</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/Chr10_GXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/Chr10_GXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
@@ -3169,7 +3169,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 23</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/xGXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/xGXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
@@ -3179,7 +3179,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 24</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpWRcuyJ/Chr24_GXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpQr1lD4/Chr24_GXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
