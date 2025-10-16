@@ -339,7 +339,7 @@ threshold.</p>
 <span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/QCsample.html">QCsample</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>,ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>,foutput <span class="op">=</span> <span class="va">foutput</span>, imiss <span class="op">=</span> <span class="va">imiss</span>,het <span class="op">=</span> <span class="va">het</span>, IBD <span class="op">=</span> <span class="cn">NULL</span>, filterSample <span class="op">=</span> <span class="va">filterSample</span>, ambi_out <span class="op">=</span> <span class="va">ambi_out</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Missingness and heterogygosity thresholds are NULL.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> There will be no sample to be filtered for IBD with 'IBD' threshold.</span></span>
-<span><span class="co">#&gt; Warning: cannot open file '/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpDWLqZw/PreimputeEX_QC2.fam': No such file or directory</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: cannot open file '/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpAgOfTC/PreimputeEX_QC2.fam': No such file or directory</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="step-4-apply-sex-check">Step 4: Apply sex check<a class="anchor" aria-label="anchor" href="#step-4-apply-sex-check"></a>
@@ -498,7 +498,7 @@ is more than 0.8; a female call is made if F is less than 0.2.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> In cases,  1 variant removed due to Hardy-Weinberg exact test.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> In controls,  19 variants removed due to Hardy-Weinberg exact test.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Merging is done using the common SNPs between the input genotype files.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpDWLqZw prefixed as filtered_temp2</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpAgOfTC prefixed as filtered_temp2</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> There are no monomorphic SNPs.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No SNP with differential missingness between cases and controls.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files prefixed as ,PreimputeEX_QC3, with passed SNPs are saved in ResultDir.</span></span>
@@ -558,7 +558,7 @@ is more than 0.8; a female call is made if F is less than 0.2.</p>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No. of samples marked to be filtered out for IDB after missingness and heterozygosity filter: 2</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No. of samples in input PLINK files: 276</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No. of samples in output PLINK files: 274</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files, PreimputeEX_QC4 with final samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpDWLqZw.</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files, PreimputeEX_QC4 with final samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpAgOfTC.</span></span></code></pre></div>
 <p>Copying the plink files from ResultDir to DataDir.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>,<span class="st">"/"</span><span class="op">)</span>,pattern <span class="op">=</span> <span class="st">"PreimputeEX_QC4"</span><span class="op">)</span></span>
@@ -756,7 +756,7 @@ after sample filtering.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> In cases,  0 variants removed due to Hardy-Weinberg exact test.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> In controls,  0 variants removed due to Hardy-Weinberg exact test.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Merging is done using the common SNPs between the input genotype files.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpDWLqZw prefixed as filtered_temp2</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpAgOfTC prefixed as filtered_temp2</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> There are no monomorphic SNPs.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No SNP with differential missingness between cases and controls.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files prefixed as ,Preimpute_Final, with passed SNPs are saved in ResultDir.</span></span>
