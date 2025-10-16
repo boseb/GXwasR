@@ -114,6 +114,7 @@ LD
 LDPrune
 LDSC
 LH
+LK
 LWK
 Leone
 Lifecycle
@@ -216,6 +217,7 @@ Vp
 VtoP
 Webuye
 Wickham
+Winham
 XCGA
 XTR
 XTRs
@@ -242,7 +244,6 @@ bspline
 byCHR
 bz
 chomosome
-choromosome
 chr
 chrX
 chrom
@@ -258,7 +259,6 @@ diffmissFilter
 discoverable
 doi
 dplyr
-effectsize
 eigen
 et
 europeanRef
@@ -294,6 +294,7 @@ kilobase
 knitr
 kuonen
 lamh
+ldclump
 lim
 llfun
 mata
