@@ -250,7 +250,7 @@ Tutorial for performing post-imputation QC followed by sex-aware association tes
 * Tutorial for running GWAS, XWAS and Sex-differential Tests using GXwasR: [https://boseb.github.io/GXwasR/articles/gwas_models.html](https://boseb.github.io/GXwasR/articles/gwas_models.html)
 * Tutorial for computing Polygenic Score using GXwasR: [https://boseb.github.io/GXwasR/articles/GXwasR_PGS.html](https://boseb.github.io/GXwasR/articles/GXwasR_PGS.html)
 * Tutorial for ancestry estimation: [https://boseb.github.io/GXwasR/articles/decoding_ancestry.html](https://boseb.github.io/GXwasR/articles/decoding_ancestry.html)
-* Tutorial for heritability estimation: [https://boseb.github.io/GXwasR/articles/GXwasR_HeritabilityGeneticCorr.html](https://boseb.github.io/GXwasR/articles/GXwasR_HeritabilityGeneticCorr.html)
+* Tutorial for heritability estimation: [https://boseb.github.io/GXwasR/articles/GXwasR_heritability.html](https://boseb.github.io/GXwasR/articles/GXwasR_heritability.html)
 * Tutorial for meta analysis using GXwasR: [https://boseb.github.io/GXwasR/articles/meta_analysis.html](https://boseb.github.io/GXwasR/articles/meta_analysis.html)
 * Tutorial for genetic correlation using GWAS Summary Statistics using GXwasR: [https://boseb.github.io/GXwasR/articles/genetic_correlation_sumstat.html](https://boseb.github.io/GXwasR/articles/genetic_correlation_sumstat.html)
 
