@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# GXwasR <img src="man/figures/logo.svg" align="right" height="139" alt="" />
+# GXwasR <img src="man/figures/logo.svg" align="right" height="139" alt="" style="float:right; height:139px;"/>
 
 A tool for conducting sex-aware quality control, association analysis,
 and testing various models of sex-dependent genetic effects in complex
@@ -230,14 +230,14 @@ ResultGXwas <- GXwas(
 #> • Stratified test is running for males
 #> ℹ If you want parallel computation, please provide non-zero value for argument ncores.
 #> ℹ Plots are initiated.
-#> ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp3nGQ23/Stratified_GWAS.png
+#> ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmphpVrBN/Stratified_GWAS.png
 #> This message is displayed once every 8 hours.
 ```
 
 <img src="man/figures/README-example-1.png" width="100%" />
 
     #> ℹ Saving plot to
-    #> /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp3nGQ23/Stratified_XWAS.png
+    #> /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmphpVrBN/Stratified_XWAS.png
 
 <img src="man/figures/README-example-2.png" width="100%" /><img src="man/figures/README-example-3.png" width="100%" /><img src="man/figures/README-example-4.png" width="100%" /><img src="man/figures/README-example-5.png" width="100%" /><img src="man/figures/README-example-6.png" width="100%" />
 
@@ -245,7 +245,7 @@ ResultGXwas <- GXwas(
     #> • CombinedWAS
     #> • MaleWAS
     #> • FemaleWAS
-    #> ℹ You can find them in the directory: /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp3nGQ23
+    #> ℹ You can find them in the directory: /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmphpVrBN
     ResultGXwas
     #> $CombinedWAS
     #> Key: <SNP>

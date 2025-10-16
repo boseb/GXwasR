@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# GXwasR <img src="man/figures/logo.svg" align="right" height="139" alt="" />
+# GXwasR <img src="man/figures/logo.svg" align="right" height="139" alt="" style="float:right; height:139px;"/>
 
 A tool for conducting sex-aware quality control, association analysis, and testing various models of sex-dependent genetic effects in complex traits.
 

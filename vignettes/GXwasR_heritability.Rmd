@@ -1,5 +1,5 @@
 ---
-title: "Tutorial for heritability estimate and computing genetic correlation in GXwasR R package."
+title: "Heritability Estimate and Computing Genetic Correlation with GXwasR"
 author: 
   - name: "Banabithi Bose"
     affiliation:
