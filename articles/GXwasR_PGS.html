@@ -784,7 +784,7 @@ both datasets<a class="anchor" aria-label="anchor" href="#filtering-discovery-da
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"NewtargetData"</span></span>
 <span><span class="fu"><a href="../reference/FilterSNP.html">FilterSNP</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput</span>, <span class="va">foutput</span>, <span class="va">SNPvec</span>, extract <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> 991 SNPs are extracted</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with extracted SNPs are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmpqe9opd prefixed as NewtargetData</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with extracted SNPs are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpYTvpIC prefixed as NewtargetData</span></span>
 <span><span class="co">#&gt; NULL</span></span></code></pre></div>
 <p>Now, discovery and target datasets are ready for computing
 sex-combined and sex-stratified PGS.</p>
@@ -1160,13 +1160,13 @@ datasets.</strong></p>
 <span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="st">"males"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetMFPlink.html">GetMFPlink</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, sex <span class="op">=</span> <span class="va">sex</span>, xplink <span class="op">=</span> <span class="cn">FALSE</span>, autoplink <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files, prefixed as maletarget, are in</span></span>
-<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmpqe9opd</span></span>
+<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpYTvpIC</span></span>
 <span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"femaletarget"</span></span>
 <span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="st">"females"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetMFPlink.html">GetMFPlink</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, sex <span class="op">=</span> <span class="va">sex</span>, xplink <span class="op">=</span> <span class="cn">FALSE</span>, autoplink <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files, prefixed as femaletarget, are in</span></span>
-<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmpqe9opd</span></span></code></pre></div>
+<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpYTvpIC</span></span></code></pre></div>
 <p><strong>(C) Perform LD clumping separately in both discovery
 data.</strong></p>
 <p><strong>(D) Compute PGS at a variety of p-value thresholds, using

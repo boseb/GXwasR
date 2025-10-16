@@ -612,15 +612,653 @@ EstimateHerit() with model = “GREML”<a class="anchor" aria-label="anchor" hr
 <span><span class="va">H2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/EstimateHerit.html">EstimateHerit</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, summarystat <span class="op">=</span> <span class="cn">NULL</span>, ncores <span class="op">=</span> <span class="fl">5</span>, model <span class="op">=</span> <span class="va">model</span>, byCHR <span class="op">=</span> <span class="cn">TRUE</span>, r2_LD <span class="op">=</span> <span class="fl">0</span>, LDSC_blocks <span class="op">=</span> <span class="fl">20</span>,REMLalgo <span class="op">=</span> <span class="fl">0</span>, nitr <span class="op">=</span> <span class="va">nitr</span>, cat_covarfile <span class="op">=</span> <span class="cn">NULL</span>, quant_covarfile <span class="op">=</span> <span class="cn">NULL</span>,prevalence <span class="op">=</span> <span class="fl">0.01</span>, partGRM <span class="op">=</span> <span class="cn">FALSE</span>, autosome <span class="op">=</span> <span class="cn">TRUE</span>, Xsome <span class="op">=</span> <span class="cn">TRUE</span>, nGRM <span class="op">=</span> <span class="fl">3</span>, computeGRM <span class="op">=</span> <span class="cn">TRUE</span>, grmfile_name <span class="op">=</span> <span class="cn">NULL</span>, cripticut <span class="op">=</span> <span class="fl">0.025</span>, minMAF <span class="op">=</span> <span class="cn">NULL</span>, maxMAF <span class="op">=</span> <span class="cn">NULL</span>,hg <span class="op">=</span> <span class="st">"hg19"</span>,PlotIndepSNP <span class="op">=</span> <span class="cn">TRUE</span>, IndepSNP_window_size <span class="op">=</span> <span class="fl">50</span>,IndepSNP_step_size <span class="op">=</span> <span class="fl">5</span>,IndepSNP_r2_threshold <span class="op">=</span> <span class="fl">0.02</span>,highLD_regions <span class="op">=</span> <span class="va">highLD_hg19</span>, plotjpeg <span class="op">=</span> <span class="cn">TRUE</span>, plotname <span class="op">=</span> <span class="st">"Heritability_Plots"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Input genotype files are present in specified directory.</span></span>
 <span><span class="co">#&gt; Using PLINK v1.9.0-b.7.7 64-bit (22 Oct 2024)</span></span>
-<span><span class="co">#&gt; An error occurred: Environment variable 'GENEINFO_HG19' is not set or points to a missing file.</span></span>
-<span><span class="co">#&gt; Please set it using Sys.setenv(GENEINFO_HG19 = '/path/to/HumanGenomeXXinfo.txt')</span></span>
-<span><span class="co">#&gt; You can download the file from:</span></span>
-<span><span class="co">#&gt; - hg19: https://figshare.com/ndownloader/files/42118098</span></span>
-<span><span class="co">#&gt; - hg38: https://figshare.com/ndownloader/files/42118242</span></span>
+<span><span class="co">#&gt; Processing chromosome 1</span></span>
+<span><span class="co">#&gt; Using GCTA version v1.94.4 Mac</span></span>
+<span><span class="co">#&gt; Processing chromosome 2</span></span>
+<span><span class="co">#&gt; Processing chromosome 3</span></span>
+<span><span class="co">#&gt; Processing chromosome 4</span></span>
+<span><span class="co">#&gt; Processing chromosome 5</span></span>
+<span><span class="co">#&gt; Processing chromosome 6</span></span>
+<span><span class="co">#&gt; Processing chromosome 7</span></span>
+<span><span class="co">#&gt; Processing chromosome 8</span></span>
+<span><span class="co">#&gt; Processing chromosome 9</span></span>
+<span><span class="co">#&gt; Processing chromosome 10</span></span>
+<span><span class="co">#&gt; Processing chromosome 23</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/xGXwasR.grm.bin]</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/xGXwasR.grm.N.bin]</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Processing chromosome 24</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plots are saved in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x with name Heritability_Plots.jpeg</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> All GRM related files are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x</span></span>
 <span></span>
 <span><span class="co">#Heritability</span></span>
-<span><span class="va">H2</span></span>
-<span><span class="co">#&gt; NULL</span></span></code></pre></div>
+<span><span class="va">H2</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="12%">
+<col width="16%">
+<col width="13%">
+<col width="16%">
+<col width="10%">
+<col width="10%">
+<col width="9%">
+<col width="9%">
+</colgroup>
+<thead><tr class="header">
+<th align="right">Chromosome</th>
+<th align="right">SNP_proportion</th>
+<th align="right">No.of.genes</th>
+<th align="right">No.of.proteins</th>
+<th align="right">Size_mb</th>
+<th align="left">Source</th>
+<th align="right">Variance</th>
+<th align="right">SE</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">0.0277453</td>
+<td align="right">2177</td>
+<td align="right">1936</td>
+<td align="right">249.25062</td>
+<td align="left">V(G)</td>
+<td align="right">0.000000</td>
+<td align="right">0.054312</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="right">0.0277453</td>
+<td align="right">2177</td>
+<td align="right">1936</td>
+<td align="right">249.25062</td>
+<td align="left">V(e)</td>
+<td align="right">0.239076</td>
+<td align="right">0.058127</td>
+</tr>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">0.0277453</td>
+<td align="right">2177</td>
+<td align="right">1936</td>
+<td align="right">249.25062</td>
+<td align="left">Vp</td>
+<td align="right">0.239076</td>
+<td align="right">0.020390</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="right">0.0277453</td>
+<td align="right">2177</td>
+<td align="right">1936</td>
+<td align="right">249.25062</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.000001</td>
+<td align="right">0.227173</td>
+</tr>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">0.0277453</td>
+<td align="right">2177</td>
+<td align="right">1936</td>
+<td align="right">249.25062</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.000001</td>
+<td align="right">0.131597</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="right">0.0275568</td>
+<td align="right">1377</td>
+<td align="right">1188</td>
+<td align="right">243.19937</td>
+<td align="left">V(G)</td>
+<td align="right">0.000000</td>
+<td align="right">0.050757</td>
+</tr>
+<tr class="odd">
+<td align="right">2</td>
+<td align="right">0.0275568</td>
+<td align="right">1377</td>
+<td align="right">1188</td>
+<td align="right">243.19937</td>
+<td align="left">V(e)</td>
+<td align="right">0.239068</td>
+<td align="right">0.054764</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="right">0.0275568</td>
+<td align="right">1377</td>
+<td align="right">1188</td>
+<td align="right">243.19937</td>
+<td align="left">Vp</td>
+<td align="right">0.239068</td>
+<td align="right">0.020389</td>
+</tr>
+<tr class="odd">
+<td align="right">2</td>
+<td align="right">0.0275568</td>
+<td align="right">1377</td>
+<td align="right">1188</td>
+<td align="right">243.19937</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.000001</td>
+<td align="right">0.212310</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="right">0.0275568</td>
+<td align="right">1377</td>
+<td align="right">1188</td>
+<td align="right">243.19937</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.000001</td>
+<td align="right">0.122987</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="right">0.0237494</td>
+<td align="right">1205</td>
+<td align="right">1029</td>
+<td align="right">198.02243</td>
+<td align="left">V(G)</td>
+<td align="right">0.000000</td>
+<td align="right">0.049616</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="right">0.0237494</td>
+<td align="right">1205</td>
+<td align="right">1029</td>
+<td align="right">198.02243</td>
+<td align="left">V(e)</td>
+<td align="right">0.239070</td>
+<td align="right">0.053909</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="right">0.0237494</td>
+<td align="right">1205</td>
+<td align="right">1029</td>
+<td align="right">198.02243</td>
+<td align="left">Vp</td>
+<td align="right">0.239070</td>
+<td align="right">0.020391</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="right">0.0237494</td>
+<td align="right">1205</td>
+<td align="right">1029</td>
+<td align="right">198.02243</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.000001</td>
+<td align="right">0.207539</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="right">0.0237494</td>
+<td align="right">1205</td>
+<td align="right">1029</td>
+<td align="right">198.02243</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.000001</td>
+<td align="right">0.120224</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="right">0.0235986</td>
+<td align="right">824</td>
+<td align="right">720</td>
+<td align="right">191.15428</td>
+<td align="left">V(G)</td>
+<td align="right">0.000000</td>
+<td align="right">0.050377</td>
+</tr>
+<tr class="odd">
+<td align="right">4</td>
+<td align="right">0.0235986</td>
+<td align="right">824</td>
+<td align="right">720</td>
+<td align="right">191.15428</td>
+<td align="left">V(e)</td>
+<td align="right">0.238750</td>
+<td align="right">0.053826</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="right">0.0235986</td>
+<td align="right">824</td>
+<td align="right">720</td>
+<td align="right">191.15428</td>
+<td align="left">Vp</td>
+<td align="right">0.238750</td>
+<td align="right">0.020355</td>
+</tr>
+<tr class="odd">
+<td align="right">4</td>
+<td align="right">0.0235986</td>
+<td align="right">824</td>
+<td align="right">720</td>
+<td align="right">191.15428</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.000001</td>
+<td align="right">0.211004</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="right">0.0235986</td>
+<td align="right">824</td>
+<td align="right">720</td>
+<td align="right">191.15428</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.000001</td>
+<td align="right">0.122231</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="right">0.0217137</td>
+<td align="right">958</td>
+<td align="right">839</td>
+<td align="right">180.91526</td>
+<td align="left">V(G)</td>
+<td align="right">0.000000</td>
+<td align="right">0.047760</td>
+</tr>
+<tr class="even">
+<td align="right">5</td>
+<td align="right">0.0217137</td>
+<td align="right">958</td>
+<td align="right">839</td>
+<td align="right">180.91526</td>
+<td align="left">V(e)</td>
+<td align="right">0.238982</td>
+<td align="right">0.051750</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="right">0.0217137</td>
+<td align="right">958</td>
+<td align="right">839</td>
+<td align="right">180.91526</td>
+<td align="left">Vp</td>
+<td align="right">0.238982</td>
+<td align="right">0.020378</td>
+</tr>
+<tr class="even">
+<td align="right">5</td>
+<td align="right">0.0217137</td>
+<td align="right">958</td>
+<td align="right">839</td>
+<td align="right">180.91526</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.000001</td>
+<td align="right">0.199849</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="right">0.0217137</td>
+<td align="right">958</td>
+<td align="right">839</td>
+<td align="right">180.91526</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.000001</td>
+<td align="right">0.115769</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="right">0.0200550</td>
+<td align="right">922</td>
+<td align="right">826</td>
+<td align="right">171.11507</td>
+<td align="left">V(G)</td>
+<td align="right">0.000000</td>
+<td align="right">0.044094</td>
+</tr>
+<tr class="odd">
+<td align="right">6</td>
+<td align="right">0.0200550</td>
+<td align="right">922</td>
+<td align="right">826</td>
+<td align="right">171.11507</td>
+<td align="left">V(e)</td>
+<td align="right">0.237174</td>
+<td align="right">0.047108</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="right">0.0200550</td>
+<td align="right">922</td>
+<td align="right">826</td>
+<td align="right">171.11507</td>
+<td align="left">Vp</td>
+<td align="right">0.237175</td>
+<td align="right">0.020203</td>
+</tr>
+<tr class="odd">
+<td align="right">6</td>
+<td align="right">0.0200550</td>
+<td align="right">922</td>
+<td align="right">826</td>
+<td align="right">171.11507</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.000001</td>
+<td align="right">0.185916</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="right">0.0200550</td>
+<td align="right">922</td>
+<td align="right">826</td>
+<td align="right">171.11507</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.000001</td>
+<td align="right">0.107697</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="right">0.0206959</td>
+<td align="right">997</td>
+<td align="right">855</td>
+<td align="right">159.13866</td>
+<td align="left">V(G)</td>
+<td align="right">0.000000</td>
+<td align="right">0.046032</td>
+</tr>
+<tr class="even">
+<td align="right">7</td>
+<td align="right">0.0206959</td>
+<td align="right">997</td>
+<td align="right">855</td>
+<td align="right">159.13866</td>
+<td align="left">V(e)</td>
+<td align="right">0.238933</td>
+<td align="right">0.050098</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="right">0.0206959</td>
+<td align="right">997</td>
+<td align="right">855</td>
+<td align="right">159.13866</td>
+<td align="left">Vp</td>
+<td align="right">0.238934</td>
+<td align="right">0.020373</td>
+</tr>
+<tr class="even">
+<td align="right">7</td>
+<td align="right">0.0206959</td>
+<td align="right">997</td>
+<td align="right">855</td>
+<td align="right">159.13866</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.000001</td>
+<td align="right">0.192657</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="right">0.0206959</td>
+<td align="right">997</td>
+<td align="right">855</td>
+<td align="right">159.13866</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.000001</td>
+<td align="right">0.111602</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="right">0.0186225</td>
+<td align="right">761</td>
+<td align="right">642</td>
+<td align="right">146.36402</td>
+<td align="left">V(G)</td>
+<td align="right">0.000000</td>
+<td align="right">0.045378</td>
+</tr>
+<tr class="odd">
+<td align="right">8</td>
+<td align="right">0.0186225</td>
+<td align="right">761</td>
+<td align="right">642</td>
+<td align="right">146.36402</td>
+<td align="left">V(e)</td>
+<td align="right">0.232560</td>
+<td align="right">0.046633</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="right">0.0186225</td>
+<td align="right">761</td>
+<td align="right">642</td>
+<td align="right">146.36402</td>
+<td align="left">Vp</td>
+<td align="right">0.232560</td>
+<td align="right">0.019797</td>
+</tr>
+<tr class="odd">
+<td align="right">8</td>
+<td align="right">0.0186225</td>
+<td align="right">761</td>
+<td align="right">642</td>
+<td align="right">146.36402</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.000001</td>
+<td align="right">0.195125</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="right">0.0186225</td>
+<td align="right">761</td>
+<td align="right">642</td>
+<td align="right">146.36402</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.000001</td>
+<td align="right">0.113032</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="right">0.0164361</td>
+<td align="right">861</td>
+<td align="right">732</td>
+<td align="right">141.21343</td>
+<td align="left">V(G)</td>
+<td align="right">0.000000</td>
+<td align="right">0.037296</td>
+</tr>
+<tr class="even">
+<td align="right">9</td>
+<td align="right">0.0164361</td>
+<td align="right">861</td>
+<td align="right">732</td>
+<td align="right">141.21343</td>
+<td align="left">V(e)</td>
+<td align="right">0.238767</td>
+<td align="right">0.042010</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="right">0.0164361</td>
+<td align="right">861</td>
+<td align="right">732</td>
+<td align="right">141.21343</td>
+<td align="left">Vp</td>
+<td align="right">0.238767</td>
+<td align="right">0.020357</td>
+</tr>
+<tr class="even">
+<td align="right">9</td>
+<td align="right">0.0164361</td>
+<td align="right">861</td>
+<td align="right">732</td>
+<td align="right">141.21343</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.000001</td>
+<td align="right">0.156201</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="right">0.0164361</td>
+<td align="right">861</td>
+<td align="right">732</td>
+<td align="right">141.21343</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.000001</td>
+<td align="right">0.090484</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="right">0.0175293</td>
+<td align="right">820</td>
+<td align="right">696</td>
+<td align="right">135.53475</td>
+<td align="left">V(G)</td>
+<td align="right">0.000000</td>
+<td align="right">0.043767</td>
+</tr>
+<tr class="odd">
+<td align="right">10</td>
+<td align="right">0.0175293</td>
+<td align="right">820</td>
+<td align="right">696</td>
+<td align="right">135.53475</td>
+<td align="left">V(e)</td>
+<td align="right">0.234920</td>
+<td align="right">0.045847</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="right">0.0175293</td>
+<td align="right">820</td>
+<td align="right">696</td>
+<td align="right">135.53475</td>
+<td align="left">Vp</td>
+<td align="right">0.234920</td>
+<td align="right">0.020010</td>
+</tr>
+<tr class="odd">
+<td align="right">10</td>
+<td align="right">0.0175293</td>
+<td align="right">820</td>
+<td align="right">696</td>
+<td align="right">135.53475</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.000001</td>
+<td align="right">0.186305</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="right">0.0175293</td>
+<td align="right">820</td>
+<td align="right">696</td>
+<td align="right">135.53475</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.000001</td>
+<td align="right">0.107923</td>
+</tr>
+<tr class="odd">
+<td align="right">23</td>
+<td align="right">0.0057677</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">155.27056</td>
+<td align="left">V(G)</td>
+<td align="right">0.161447</td>
+<td align="right">0.035905</td>
+</tr>
+<tr class="even">
+<td align="right">23</td>
+<td align="right">0.0057677</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">155.27056</td>
+<td align="left">V(e)</td>
+<td align="right">0.074652</td>
+<td align="right">0.025725</td>
+</tr>
+<tr class="odd">
+<td align="right">23</td>
+<td align="right">0.0057677</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">155.27056</td>
+<td align="left">Vp</td>
+<td align="right">0.236099</td>
+<td align="right">0.021754</td>
+</tr>
+<tr class="even">
+<td align="right">23</td>
+<td align="right">0.0057677</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">155.27056</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.683811</td>
+<td align="right">0.116600</td>
+</tr>
+<tr class="odd">
+<td align="right">23</td>
+<td align="right">0.0057677</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">155.27056</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.396119</td>
+<td align="right">0.067544</td>
+</tr>
+<tr class="even">
+<td align="right">24</td>
+<td align="right">0.0001131</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">59.37357</td>
+<td align="left">V(G)</td>
+<td align="right">0.000000</td>
+<td align="right">0.043767</td>
+</tr>
+<tr class="odd">
+<td align="right">24</td>
+<td align="right">0.0001131</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">59.37357</td>
+<td align="left">V(e)</td>
+<td align="right">0.234920</td>
+<td align="right">0.045847</td>
+</tr>
+<tr class="even">
+<td align="right">24</td>
+<td align="right">0.0001131</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">59.37357</td>
+<td align="left">Vp</td>
+<td align="right">0.234920</td>
+<td align="right">0.020010</td>
+</tr>
+<tr class="odd">
+<td align="right">24</td>
+<td align="right">0.0001131</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">59.37357</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.000001</td>
+<td align="right">0.186305</td>
+</tr>
+<tr class="even">
+<td align="right">24</td>
+<td align="right">0.0001131</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">59.37357</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.000001</td>
+<td align="right">0.107923</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level3">
 <h3 id="running-the-estimateherit-by-providing-chromosome-wise-grm-files-in-resultdir">Running the EstimateHerit() by providing chromosome-wise GRM files
@@ -635,15 +1273,646 @@ to check that folder.</p>
 <code class="sourceCode R"><span></span>
 <span><span class="va">H2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/EstimateHerit.html">EstimateHerit</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, summarystat <span class="op">=</span> <span class="cn">NULL</span>, ncores <span class="op">=</span> <span class="fl">5</span>, model <span class="op">=</span> <span class="va">model</span>, byCHR <span class="op">=</span> <span class="cn">TRUE</span>, r2_LD <span class="op">=</span> <span class="fl">0</span>, LDSC_blocks <span class="op">=</span> <span class="fl">20</span>,REMLalgo <span class="op">=</span> <span class="fl">0</span>, nitr <span class="op">=</span> <span class="va">nitr</span>, cat_covarfile <span class="op">=</span> <span class="cn">NULL</span>, quant_covarfile <span class="op">=</span> <span class="cn">NULL</span>,prevalence <span class="op">=</span> <span class="fl">0.01</span>, partGRM <span class="op">=</span> <span class="cn">FALSE</span>, autosome <span class="op">=</span> <span class="cn">TRUE</span>, Xsome <span class="op">=</span> <span class="cn">TRUE</span>, nGRM <span class="op">=</span> <span class="fl">3</span>, computeGRM <span class="op">=</span> <span class="cn">FALSE</span>, grmfile_name <span class="op">=</span> <span class="st">"GXwasR"</span>, cripticut <span class="op">=</span> <span class="fl">0.025</span>, minMAF <span class="op">=</span> <span class="cn">NULL</span>, maxMAF <span class="op">=</span> <span class="cn">NULL</span>,hg <span class="op">=</span> <span class="st">"hg19"</span>,PlotIndepSNP <span class="op">=</span> <span class="cn">TRUE</span>, IndepSNP_window_size <span class="op">=</span> <span class="fl">50</span>,IndepSNP_step_size <span class="op">=</span> <span class="fl">5</span>,IndepSNP_r2_threshold <span class="op">=</span> <span class="fl">0.02</span>,highLD_regions <span class="op">=</span> <span class="va">highLD_hg19</span>, plotjpeg <span class="op">=</span> <span class="cn">FALSE</span>, plotname <span class="op">=</span> <span class="st">"Heritability_Plots"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Input genotype files are present in specified directory.</span></span>
-<span><span class="co">#&gt; An error occurred: Environment variable 'GENEINFO_HG19' is not set or points to a missing file.</span></span>
-<span><span class="co">#&gt; Please set it using Sys.setenv(GENEINFO_HG19 = '/path/to/HumanGenomeXXinfo.txt')</span></span>
-<span><span class="co">#&gt; You can download the file from:</span></span>
-<span><span class="co">#&gt; - hg19: https://figshare.com/ndownloader/files/42118098</span></span>
-<span><span class="co">#&gt; - hg38: https://figshare.com/ndownloader/files/42118242</span></span>
+<span><span class="co">#&gt; Processing chromosome 1</span></span>
+<span><span class="co">#&gt; Processing chromosome 2</span></span>
+<span><span class="co">#&gt; Processing chromosome 3</span></span>
+<span><span class="co">#&gt; Processing chromosome 4</span></span>
+<span><span class="co">#&gt; Processing chromosome 5</span></span>
+<span><span class="co">#&gt; Processing chromosome 6</span></span>
+<span><span class="co">#&gt; Processing chromosome 7</span></span>
+<span><span class="co">#&gt; Processing chromosome 8</span></span>
+<span><span class="co">#&gt; Processing chromosome 9</span></span>
+<span><span class="co">#&gt; Processing chromosome 10</span></span>
+<span><span class="co">#&gt; Processing chromosome 23</span></span>
+<span><span class="co">#&gt; Processing chromosome 24</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> All GRM related files are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x</span></span>
 <span></span>
 <span><span class="co">#Heritability</span></span>
-<span><span class="va">H2</span></span>
-<span><span class="co">#&gt; NULL</span></span></code></pre></div>
+<span><span class="va">H2</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="12%">
+<col width="16%">
+<col width="13%">
+<col width="16%">
+<col width="10%">
+<col width="10%">
+<col width="9%">
+<col width="9%">
+</colgroup>
+<thead><tr class="header">
+<th align="right">Chromosome</th>
+<th align="right">SNP_proportion</th>
+<th align="right">No.of.genes</th>
+<th align="right">No.of.proteins</th>
+<th align="right">Size_mb</th>
+<th align="left">Source</th>
+<th align="right">Variance</th>
+<th align="right">SE</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">0.0277453</td>
+<td align="right">2177</td>
+<td align="right">1936</td>
+<td align="right">249.25062</td>
+<td align="left">V(G)</td>
+<td align="right">0.000000</td>
+<td align="right">0.054312</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="right">0.0277453</td>
+<td align="right">2177</td>
+<td align="right">1936</td>
+<td align="right">249.25062</td>
+<td align="left">V(e)</td>
+<td align="right">0.239076</td>
+<td align="right">0.058127</td>
+</tr>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">0.0277453</td>
+<td align="right">2177</td>
+<td align="right">1936</td>
+<td align="right">249.25062</td>
+<td align="left">Vp</td>
+<td align="right">0.239076</td>
+<td align="right">0.020390</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="right">0.0277453</td>
+<td align="right">2177</td>
+<td align="right">1936</td>
+<td align="right">249.25062</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.000001</td>
+<td align="right">0.227173</td>
+</tr>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">0.0277453</td>
+<td align="right">2177</td>
+<td align="right">1936</td>
+<td align="right">249.25062</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.000001</td>
+<td align="right">0.131597</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="right">0.0275568</td>
+<td align="right">1377</td>
+<td align="right">1188</td>
+<td align="right">243.19937</td>
+<td align="left">V(G)</td>
+<td align="right">0.000000</td>
+<td align="right">0.050757</td>
+</tr>
+<tr class="odd">
+<td align="right">2</td>
+<td align="right">0.0275568</td>
+<td align="right">1377</td>
+<td align="right">1188</td>
+<td align="right">243.19937</td>
+<td align="left">V(e)</td>
+<td align="right">0.239068</td>
+<td align="right">0.054764</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="right">0.0275568</td>
+<td align="right">1377</td>
+<td align="right">1188</td>
+<td align="right">243.19937</td>
+<td align="left">Vp</td>
+<td align="right">0.239068</td>
+<td align="right">0.020389</td>
+</tr>
+<tr class="odd">
+<td align="right">2</td>
+<td align="right">0.0275568</td>
+<td align="right">1377</td>
+<td align="right">1188</td>
+<td align="right">243.19937</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.000001</td>
+<td align="right">0.212310</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="right">0.0275568</td>
+<td align="right">1377</td>
+<td align="right">1188</td>
+<td align="right">243.19937</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.000001</td>
+<td align="right">0.122987</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="right">0.0237494</td>
+<td align="right">1205</td>
+<td align="right">1029</td>
+<td align="right">198.02243</td>
+<td align="left">V(G)</td>
+<td align="right">0.000000</td>
+<td align="right">0.049616</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="right">0.0237494</td>
+<td align="right">1205</td>
+<td align="right">1029</td>
+<td align="right">198.02243</td>
+<td align="left">V(e)</td>
+<td align="right">0.239070</td>
+<td align="right">0.053909</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="right">0.0237494</td>
+<td align="right">1205</td>
+<td align="right">1029</td>
+<td align="right">198.02243</td>
+<td align="left">Vp</td>
+<td align="right">0.239070</td>
+<td align="right">0.020391</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="right">0.0237494</td>
+<td align="right">1205</td>
+<td align="right">1029</td>
+<td align="right">198.02243</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.000001</td>
+<td align="right">0.207539</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="right">0.0237494</td>
+<td align="right">1205</td>
+<td align="right">1029</td>
+<td align="right">198.02243</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.000001</td>
+<td align="right">0.120224</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="right">0.0235986</td>
+<td align="right">824</td>
+<td align="right">720</td>
+<td align="right">191.15428</td>
+<td align="left">V(G)</td>
+<td align="right">0.000000</td>
+<td align="right">0.050377</td>
+</tr>
+<tr class="odd">
+<td align="right">4</td>
+<td align="right">0.0235986</td>
+<td align="right">824</td>
+<td align="right">720</td>
+<td align="right">191.15428</td>
+<td align="left">V(e)</td>
+<td align="right">0.238750</td>
+<td align="right">0.053826</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="right">0.0235986</td>
+<td align="right">824</td>
+<td align="right">720</td>
+<td align="right">191.15428</td>
+<td align="left">Vp</td>
+<td align="right">0.238750</td>
+<td align="right">0.020355</td>
+</tr>
+<tr class="odd">
+<td align="right">4</td>
+<td align="right">0.0235986</td>
+<td align="right">824</td>
+<td align="right">720</td>
+<td align="right">191.15428</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.000001</td>
+<td align="right">0.211004</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="right">0.0235986</td>
+<td align="right">824</td>
+<td align="right">720</td>
+<td align="right">191.15428</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.000001</td>
+<td align="right">0.122231</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="right">0.0217137</td>
+<td align="right">958</td>
+<td align="right">839</td>
+<td align="right">180.91526</td>
+<td align="left">V(G)</td>
+<td align="right">0.000000</td>
+<td align="right">0.047760</td>
+</tr>
+<tr class="even">
+<td align="right">5</td>
+<td align="right">0.0217137</td>
+<td align="right">958</td>
+<td align="right">839</td>
+<td align="right">180.91526</td>
+<td align="left">V(e)</td>
+<td align="right">0.238982</td>
+<td align="right">0.051750</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="right">0.0217137</td>
+<td align="right">958</td>
+<td align="right">839</td>
+<td align="right">180.91526</td>
+<td align="left">Vp</td>
+<td align="right">0.238982</td>
+<td align="right">0.020378</td>
+</tr>
+<tr class="even">
+<td align="right">5</td>
+<td align="right">0.0217137</td>
+<td align="right">958</td>
+<td align="right">839</td>
+<td align="right">180.91526</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.000001</td>
+<td align="right">0.199849</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="right">0.0217137</td>
+<td align="right">958</td>
+<td align="right">839</td>
+<td align="right">180.91526</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.000001</td>
+<td align="right">0.115769</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="right">0.0200550</td>
+<td align="right">922</td>
+<td align="right">826</td>
+<td align="right">171.11507</td>
+<td align="left">V(G)</td>
+<td align="right">0.000000</td>
+<td align="right">0.044094</td>
+</tr>
+<tr class="odd">
+<td align="right">6</td>
+<td align="right">0.0200550</td>
+<td align="right">922</td>
+<td align="right">826</td>
+<td align="right">171.11507</td>
+<td align="left">V(e)</td>
+<td align="right">0.237174</td>
+<td align="right">0.047108</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="right">0.0200550</td>
+<td align="right">922</td>
+<td align="right">826</td>
+<td align="right">171.11507</td>
+<td align="left">Vp</td>
+<td align="right">0.237175</td>
+<td align="right">0.020203</td>
+</tr>
+<tr class="odd">
+<td align="right">6</td>
+<td align="right">0.0200550</td>
+<td align="right">922</td>
+<td align="right">826</td>
+<td align="right">171.11507</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.000001</td>
+<td align="right">0.185916</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="right">0.0200550</td>
+<td align="right">922</td>
+<td align="right">826</td>
+<td align="right">171.11507</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.000001</td>
+<td align="right">0.107697</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="right">0.0206959</td>
+<td align="right">997</td>
+<td align="right">855</td>
+<td align="right">159.13866</td>
+<td align="left">V(G)</td>
+<td align="right">0.000000</td>
+<td align="right">0.046032</td>
+</tr>
+<tr class="even">
+<td align="right">7</td>
+<td align="right">0.0206959</td>
+<td align="right">997</td>
+<td align="right">855</td>
+<td align="right">159.13866</td>
+<td align="left">V(e)</td>
+<td align="right">0.238933</td>
+<td align="right">0.050098</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="right">0.0206959</td>
+<td align="right">997</td>
+<td align="right">855</td>
+<td align="right">159.13866</td>
+<td align="left">Vp</td>
+<td align="right">0.238934</td>
+<td align="right">0.020373</td>
+</tr>
+<tr class="even">
+<td align="right">7</td>
+<td align="right">0.0206959</td>
+<td align="right">997</td>
+<td align="right">855</td>
+<td align="right">159.13866</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.000001</td>
+<td align="right">0.192657</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="right">0.0206959</td>
+<td align="right">997</td>
+<td align="right">855</td>
+<td align="right">159.13866</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.000001</td>
+<td align="right">0.111602</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="right">0.0186225</td>
+<td align="right">761</td>
+<td align="right">642</td>
+<td align="right">146.36402</td>
+<td align="left">V(G)</td>
+<td align="right">0.000000</td>
+<td align="right">0.045378</td>
+</tr>
+<tr class="odd">
+<td align="right">8</td>
+<td align="right">0.0186225</td>
+<td align="right">761</td>
+<td align="right">642</td>
+<td align="right">146.36402</td>
+<td align="left">V(e)</td>
+<td align="right">0.232560</td>
+<td align="right">0.046633</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="right">0.0186225</td>
+<td align="right">761</td>
+<td align="right">642</td>
+<td align="right">146.36402</td>
+<td align="left">Vp</td>
+<td align="right">0.232560</td>
+<td align="right">0.019797</td>
+</tr>
+<tr class="odd">
+<td align="right">8</td>
+<td align="right">0.0186225</td>
+<td align="right">761</td>
+<td align="right">642</td>
+<td align="right">146.36402</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.000001</td>
+<td align="right">0.195125</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="right">0.0186225</td>
+<td align="right">761</td>
+<td align="right">642</td>
+<td align="right">146.36402</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.000001</td>
+<td align="right">0.113032</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="right">0.0164361</td>
+<td align="right">861</td>
+<td align="right">732</td>
+<td align="right">141.21343</td>
+<td align="left">V(G)</td>
+<td align="right">0.000000</td>
+<td align="right">0.037296</td>
+</tr>
+<tr class="even">
+<td align="right">9</td>
+<td align="right">0.0164361</td>
+<td align="right">861</td>
+<td align="right">732</td>
+<td align="right">141.21343</td>
+<td align="left">V(e)</td>
+<td align="right">0.238767</td>
+<td align="right">0.042010</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="right">0.0164361</td>
+<td align="right">861</td>
+<td align="right">732</td>
+<td align="right">141.21343</td>
+<td align="left">Vp</td>
+<td align="right">0.238767</td>
+<td align="right">0.020357</td>
+</tr>
+<tr class="even">
+<td align="right">9</td>
+<td align="right">0.0164361</td>
+<td align="right">861</td>
+<td align="right">732</td>
+<td align="right">141.21343</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.000001</td>
+<td align="right">0.156201</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="right">0.0164361</td>
+<td align="right">861</td>
+<td align="right">732</td>
+<td align="right">141.21343</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.000001</td>
+<td align="right">0.090484</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="right">0.0175293</td>
+<td align="right">820</td>
+<td align="right">696</td>
+<td align="right">135.53475</td>
+<td align="left">V(G)</td>
+<td align="right">0.000000</td>
+<td align="right">0.043767</td>
+</tr>
+<tr class="odd">
+<td align="right">10</td>
+<td align="right">0.0175293</td>
+<td align="right">820</td>
+<td align="right">696</td>
+<td align="right">135.53475</td>
+<td align="left">V(e)</td>
+<td align="right">0.234920</td>
+<td align="right">0.045847</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="right">0.0175293</td>
+<td align="right">820</td>
+<td align="right">696</td>
+<td align="right">135.53475</td>
+<td align="left">Vp</td>
+<td align="right">0.234920</td>
+<td align="right">0.020010</td>
+</tr>
+<tr class="odd">
+<td align="right">10</td>
+<td align="right">0.0175293</td>
+<td align="right">820</td>
+<td align="right">696</td>
+<td align="right">135.53475</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.000001</td>
+<td align="right">0.186305</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="right">0.0175293</td>
+<td align="right">820</td>
+<td align="right">696</td>
+<td align="right">135.53475</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.000001</td>
+<td align="right">0.107923</td>
+</tr>
+<tr class="odd">
+<td align="right">23</td>
+<td align="right">0.0057677</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">155.27056</td>
+<td align="left">V(G)</td>
+<td align="right">0.161447</td>
+<td align="right">0.035905</td>
+</tr>
+<tr class="even">
+<td align="right">23</td>
+<td align="right">0.0057677</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">155.27056</td>
+<td align="left">V(e)</td>
+<td align="right">0.074652</td>
+<td align="right">0.025725</td>
+</tr>
+<tr class="odd">
+<td align="right">23</td>
+<td align="right">0.0057677</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">155.27056</td>
+<td align="left">Vp</td>
+<td align="right">0.236099</td>
+<td align="right">0.021754</td>
+</tr>
+<tr class="even">
+<td align="right">23</td>
+<td align="right">0.0057677</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">155.27056</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.683811</td>
+<td align="right">0.116600</td>
+</tr>
+<tr class="odd">
+<td align="right">23</td>
+<td align="right">0.0057677</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">155.27056</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.396119</td>
+<td align="right">0.067544</td>
+</tr>
+<tr class="even">
+<td align="right">24</td>
+<td align="right">0.0001131</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">59.37357</td>
+<td align="left">V(G)</td>
+<td align="right">0.000000</td>
+<td align="right">0.043767</td>
+</tr>
+<tr class="odd">
+<td align="right">24</td>
+<td align="right">0.0001131</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">59.37357</td>
+<td align="left">V(e)</td>
+<td align="right">0.234920</td>
+<td align="right">0.045847</td>
+</tr>
+<tr class="even">
+<td align="right">24</td>
+<td align="right">0.0001131</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">59.37357</td>
+<td align="left">Vp</td>
+<td align="right">0.234920</td>
+<td align="right">0.020010</td>
+</tr>
+<tr class="odd">
+<td align="right">24</td>
+<td align="right">0.0001131</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">59.37357</td>
+<td align="left">V(G)/Vp</td>
+<td align="right">0.000001</td>
+<td align="right">0.186305</td>
+</tr>
+<tr class="even">
+<td align="right">24</td>
+<td align="right">0.0001131</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">59.37357</td>
+<td align="left">V(G)/Vp_L</td>
+<td align="right">0.000001</td>
+<td align="right">0.107923</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level3">
 <h3 id="running-the-estimateherit-for-genome-wide-heritability-estimate-by-creating-grm-files">Running the EstimateHerit() for genome-wide heritability estimate by
@@ -659,14 +1928,13 @@ default NULL.</p>
 <code class="sourceCode R"><span></span>
 <span><span class="va">H2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/EstimateHerit.html">EstimateHerit</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, summarystat <span class="op">=</span> <span class="cn">NULL</span>, ncores <span class="op">=</span> <span class="fl">5</span>, model <span class="op">=</span> <span class="va">model</span>, byCHR <span class="op">=</span> <span class="cn">FALSE</span>, r2_LD <span class="op">=</span> <span class="fl">0</span>, LDSC_blocks <span class="op">=</span> <span class="fl">20</span>,REMLalgo <span class="op">=</span> <span class="fl">0</span>, nitr <span class="op">=</span> <span class="va">nitr</span>, cat_covarfile <span class="op">=</span> <span class="cn">NULL</span>, quant_covarfile <span class="op">=</span> <span class="cn">NULL</span>,prevalence <span class="op">=</span> <span class="fl">0.01</span>, partGRM <span class="op">=</span> <span class="cn">FALSE</span>, autosome <span class="op">=</span> <span class="cn">TRUE</span>, Xsome <span class="op">=</span> <span class="cn">TRUE</span>, nGRM <span class="op">=</span> <span class="fl">3</span>, computeGRM <span class="op">=</span> <span class="cn">TRUE</span>, grmfile_name <span class="op">=</span> <span class="cn">NULL</span>, cripticut <span class="op">=</span> <span class="fl">0.025</span>, minMAF <span class="op">=</span> <span class="cn">NULL</span>, maxMAF <span class="op">=</span> <span class="cn">NULL</span>,hg <span class="op">=</span> <span class="st">"hg19"</span>,PlotIndepSNP <span class="op">=</span> <span class="cn">TRUE</span>, IndepSNP_window_size <span class="op">=</span> <span class="fl">50</span>,IndepSNP_step_size <span class="op">=</span> <span class="fl">5</span>,IndepSNP_r2_threshold <span class="op">=</span> <span class="fl">0.02</span>,highLD_regions <span class="op">=</span> <span class="va">highLD_hg19</span>, plotjpeg <span class="op">=</span> <span class="cn">FALSE</span>, plotname <span class="op">=</span> <span class="st">"Heritability_Plots"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Input genotype files are present in specified directory.</span></span>
-<span><span class="co">#&gt; Using GCTA version v1.94.4 Mac</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/GXwasR.grm.bin]</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/GXwasR.grm.N.bin]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/GXwasR.grm.bin]</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/GXwasR.grm.N.bin]</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/xGXwasR.grm.bin]</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/xGXwasR.grm.N.bin]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/xGXwasR.grm.bin]</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/xGXwasR.grm.N.bin]</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -678,15 +1946,15 @@ default NULL.</p>
 <span><span class="co">#&gt;   - set different options</span></span>
 <span><span class="co">#&gt;   - verify SNP partitioning or quality of the data</span></span>
 <span><span class="co">#&gt; Log output from 'Reading IDs':</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Reading IDs of the GRM from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/GXwasR.grm.id].</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 276 IDs are read from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/GXwasR.grm.id].</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Reading the GRM from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/GXwasR.grm.bin].</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GRM for 276 individuals are included from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/GXwasR.grm.bin].</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Reading IDs of the GRM from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/GXwasR.grm.id].</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 276 IDs are read from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/GXwasR.grm.id].</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Reading the GRM from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/GXwasR.grm.bin].</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GRM for 276 individuals are included from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/GXwasR.grm.bin].</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Reading the GRM from the 2th file ...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Reading IDs of the GRM from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/xGXwasR.grm.id].</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 276 IDs are read from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/xGXwasR.grm.id].</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Reading the GRM from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/xGXwasR.grm.bin].</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GRM for 276 individuals are included from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/xGXwasR.grm.bin].</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Reading IDs of the GRM from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/xGXwasR.grm.id].</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 276 IDs are read from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/xGXwasR.grm.id].</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Reading the GRM from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/xGXwasR.grm.bin].</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> GRM for 276 individuals are included from [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/xGXwasR.grm.bin].</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> 276 individuals are in common in these files.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Performing  REML analysis ... (Note: may take hours depending on sample size).</span></span>
@@ -799,7 +2067,7 @@ default NULL.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> You can specify the option --reml-maxit to allow for more iterations.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> An error occurs, please check the options or data</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> All GRM related files are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> All GRM related files are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x</span></span>
 <span></span>
 <span><span class="co">#Heritability</span></span>
 <span><span class="va">H2</span></span></code></pre></div>
@@ -832,7 +2100,7 @@ utilizing the pre-computed GRM files in ResultDir<a class="anchor" aria-label="a
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Skipping GRM computation.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> computeGRM is set to: FALSE</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> computeGRM is FALSE, checking grmfile_name</span></span>
-<span><span class="co">#&gt; Warning: path[1]="/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/GXwasR": No such file or directory</span></span>
+<span><span class="co">#&gt; Warning: path[1]="/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/GXwasR": No such file or directory</span></span>
 <span></span>
 <span><span class="co">#Heritability</span></span>
 <span><span class="va">H2</span></span>
@@ -879,11 +2147,8 @@ EstimateHerit() chromosome-wise with model = “LDSC”<a class="anchor" aria-la
 <span></span>
 <span><span class="va">H2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/EstimateHerit.html">EstimateHerit</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="st">"GXwasR_example"</span>, summarystat <span class="op">=</span> <span class="va">summarystat</span>, <span class="va">ncores</span>, model <span class="op">=</span> <span class="va">model</span>, byCHR <span class="op">=</span> <span class="cn">TRUE</span>, r2_LD <span class="op">=</span> <span class="fl">0</span>, LDSC_blocks <span class="op">=</span> <span class="fl">20</span>,REMLalgo <span class="op">=</span> <span class="fl">0</span>, nitr <span class="op">=</span> <span class="fl">100</span>, cat_covarfile <span class="op">=</span> <span class="cn">NULL</span>, quant_covarfile <span class="op">=</span> <span class="cn">NULL</span>,prevalence <span class="op">=</span> <span class="fl">0.01</span>, partGRM <span class="op">=</span> <span class="cn">FALSE</span>, autosome <span class="op">=</span> <span class="cn">TRUE</span>, Xsome <span class="op">=</span> <span class="cn">TRUE</span>, nGRM <span class="op">=</span> <span class="fl">3</span>,cripticut <span class="op">=</span> <span class="fl">0.025</span>, minMAF <span class="op">=</span> <span class="cn">NULL</span>, maxMAF <span class="op">=</span> <span class="cn">NULL</span>,hg <span class="op">=</span> <span class="st">"hg19"</span>,PlotIndepSNP <span class="op">=</span> <span class="cn">TRUE</span>, IndepSNP_window_size <span class="op">=</span> <span class="fl">50</span>,IndepSNP_step_size <span class="op">=</span> <span class="fl">5</span>,IndepSNP_r2_threshold <span class="op">=</span> <span class="fl">0.02</span>,highLD_regions <span class="op">=</span> <span class="va">highLD_hg19</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> IndepSNPs needed to be supplied else all SNPs are being used.</span></span>
-<span><span class="co">#&gt; An error occurred: Environment variable 'GENEINFO_HG19' is not set or points to a missing file.</span></span>
-<span><span class="co">#&gt; Please set it using Sys.setenv(GENEINFO_HG19 = '/path/to/HumanGenomeXXinfo.txt')</span></span>
-<span><span class="co">#&gt; You can download the file from:</span></span>
-<span><span class="co">#&gt; - hg19: https://figshare.com/ndownloader/files/42118098</span></span>
-<span><span class="co">#&gt; - hg38: https://figshare.com/ndownloader/files/42118242</span></span>
+<span><span class="co">#&gt; Processing chromosome 1</span></span>
+<span><span class="co">#&gt; An error occurred: incorrect number of dimensions</span></span>
 <span></span>
 <span><span class="co"># Chromosome-wise Heritability Estimate</span></span>
 <span><span class="va">H2</span></span>
@@ -1174,13 +2439,13 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="va">excludeResidual</span> <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="va">GC</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GeneticCorrBT.html">GeneticCorrBT</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, byCHR <span class="op">=</span> <span class="va">byCHR</span>,</span>
 <span>                    REMLalgo <span class="op">=</span> <span class="fl">0</span>, nitr <span class="op">=</span> <span class="va">nitr</span>, phenofile <span class="op">=</span> <span class="va">phenofile</span>, cat_covarfile <span class="op">=</span> <span class="cn">NULL</span>, quant_covarfile <span class="op">=</span> <span class="cn">NULL</span>, computeGRM <span class="op">=</span> <span class="cn">TRUE</span>, grmfile_name <span class="op">=</span> <span class="cn">NULL</span>, partGRM <span class="op">=</span> <span class="cn">FALSE</span>, autosome <span class="op">=</span> <span class="cn">TRUE</span>, Xsome <span class="op">=</span> <span class="cn">TRUE</span>, nGRM <span class="op">=</span> <span class="fl">3</span>,cripticut <span class="op">=</span> <span class="fl">0.025</span>, minMAF <span class="op">=</span> <span class="cn">NULL</span>, maxMAF <span class="op">=</span> <span class="cn">NULL</span>,excludeResidual <span class="op">=</span> <span class="cn">TRUE</span>, ncores <span class="op">=</span> <span class="va">ncores</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/GXwasR.grm.bin]</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/GXwasR.grm.N.bin]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/GXwasR.grm.bin]</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/GXwasR.grm.N.bin]</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/xGXwasR.grm.bin]</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/xGXwasR.grm.N.bin]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/xGXwasR.grm.bin]</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/xGXwasR.grm.N.bin]</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -1441,8 +2706,8 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 23</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/xGXwasR.grm.bin]</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/xGXwasR.grm.N.bin]</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GRM has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/xGXwasR.grm.bin]</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of SNPs in each pair of individuals has been saved in the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/xGXwasR.grm.N.bin]</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -1844,7 +3109,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="va">GC</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GeneticCorrBT.html">GeneticCorrBT</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, byCHR <span class="op">=</span> <span class="va">byCHR</span>,</span>
 <span>                    REMLalgo <span class="op">=</span> <span class="fl">0</span>, nitr <span class="op">=</span> <span class="va">nitr</span>, phenofile <span class="op">=</span> <span class="va">phenofile</span>, cat_covarfile <span class="op">=</span> <span class="cn">NULL</span>, quant_covarfile <span class="op">=</span> <span class="cn">NULL</span>, computeGRM <span class="op">=</span> <span class="va">computeGRM</span>, grmfile_name <span class="op">=</span> <span class="va">grmfile_name</span>, partGRM <span class="op">=</span> <span class="cn">FALSE</span>, autosome <span class="op">=</span> <span class="cn">TRUE</span>, Xsome <span class="op">=</span> <span class="cn">TRUE</span>, nGRM <span class="op">=</span> <span class="fl">3</span>,cripticut <span class="op">=</span> <span class="fl">0.025</span>, minMAF <span class="op">=</span> <span class="cn">NULL</span>, maxMAF <span class="op">=</span> <span class="cn">NULL</span>,excludeResidual <span class="op">=</span> <span class="cn">TRUE</span>, ncores <span class="op">=</span> <span class="va">ncores</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Processing chromosome 1</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/Chr1_GXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/Chr1_GXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
@@ -1854,7 +3119,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 2</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/Chr2_GXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/Chr2_GXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
@@ -1864,7 +3129,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 3</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/Chr3_GXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/Chr3_GXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
@@ -1874,7 +3139,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 4</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/Chr4_GXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/Chr4_GXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
@@ -1884,7 +3149,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 5</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/Chr5_GXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/Chr5_GXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
@@ -1894,7 +3159,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 6</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/Chr6_GXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/Chr6_GXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
@@ -1904,7 +3169,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 7</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/Chr7_GXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/Chr7_GXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
@@ -1914,7 +3179,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 8</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/Chr8_GXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/Chr8_GXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
@@ -1924,7 +3189,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 9</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/Chr9_GXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/Chr9_GXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
@@ -1934,7 +3199,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 10</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/Chr10_GXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/Chr10_GXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
@@ -1944,7 +3209,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 23</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/xGXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/xGXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
@@ -1954,7 +3219,7 @@ computing GRM genome-wide<a class="anchor" aria-label="anchor" href="#running-ge
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Processing chromosome 24</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpcDqxXs/Chr24_GXwasR.grm.id] to read.</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Error: cannot open the file [/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpV8m55x/Chr24_GXwasR.grm.id] to read.</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Convergence issue occurred, please:</span></span>
 <span><span class="co">#&gt;   - set byCHR = TRUE</span></span>
 <span><span class="co">#&gt;   - set different options</span></span>
@@ -2179,6 +3444,7 @@ Cheng, Chang, and Iannone, 2025)</li>
 <span><span class="co">#&gt;  jquerylib              0.1.4     <span style="color: #555555;">2021-04-26</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
 <span><span class="co">#&gt;  jsonlite               2.0.0     <span style="color: #555555;">2025-03-27</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
 <span><span class="co">#&gt;  knitr                  1.50      <span style="color: #555555;">2025-03-16</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  labeling               0.4.3     <span style="color: #555555;">2023-08-29</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
 <span><span class="co">#&gt;  lattice                0.22-7    <span style="color: #555555;">2025-04-02</span> <span style="color: #555555;">[3]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
 <span><span class="co">#&gt;  lifecycle              1.0.4     <span style="color: #555555;">2023-11-07</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
 <span><span class="co">#&gt;  lubridate              1.9.4     <span style="color: #555555;">2024-12-08</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
@@ -2189,11 +3455,14 @@ Cheng, Chang, and Iannone, 2025)</li>
 <span><span class="co">#&gt;  MatrixGenerics         1.20.0    <span style="color: #555555;">2025-04-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Bioconduc~</span></span></span>
 <span><span class="co">#&gt;  matrixStats            1.5.0     <span style="color: #555555;">2025-01-07</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
 <span><span class="co">#&gt;  memoise                2.0.1     <span style="color: #555555;">2021-11-26</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
+<span><span class="co">#&gt;  mgcv                   1.9-3     <span style="color: #555555;">2025-04-04</span> <span style="color: #555555;">[3]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  nlme                   3.1-168   <span style="color: #555555;">2025-03-31</span> <span style="color: #555555;">[3]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
 <span><span class="co">#&gt;  pillar                 1.11.1    <span style="color: #555555;">2025-09-17</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
 <span><span class="co">#&gt;  pkgconfig              2.0.3     <span style="color: #555555;">2019-09-22</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
 <span><span class="co">#&gt;  pkgdown                2.1.3     <span style="color: #555555;">2025-05-25</span> <span style="color: #555555;">[2]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
 <span><span class="co">#&gt;  plyr                   1.8.9     <span style="color: #555555;">2023-10-02</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
 <span><span class="co">#&gt;  plyranges              1.28.0    <span style="color: #555555;">2025-04-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Bioconduc~</span></span></span>
+<span><span class="co">#&gt;  polynom                1.4-1     <span style="color: #555555;">2022-04-11</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
 <span><span class="co">#&gt;  poolr                  1.2-0     <span style="color: #555555;">2025-05-07</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
 <span><span class="co">#&gt;  prettyunits            1.2.0     <span style="color: #555555;">2023-09-24</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
 <span><span class="co">#&gt;  printr               * 0.3       <span style="color: #555555;">2023-03-08</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>

@@ -379,7 +379,7 @@ threshold.</p>
 <span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/QCsample.html">QCsample</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>,ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>,foutput <span class="op">=</span> <span class="va">foutput</span>, imiss <span class="op">=</span> <span class="va">imiss</span>,het <span class="op">=</span> <span class="va">het</span>, IBD <span class="op">=</span> <span class="cn">NULL</span>, filterSample <span class="op">=</span> <span class="va">filterSample</span>, ambi_out <span class="op">=</span> <span class="va">ambi_out</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Missingness and heterogygosity thresholds are NULL.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> There will be no sample to be filtered for IBD with 'IBD' threshold.</span></span>
-<span><span class="co">#&gt; Warning: cannot open file '/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpYHZcER/PreimputeEX_QC2.fam': No such file or directory</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: cannot open file '/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpGJGw42/PreimputeEX_QC2.fam': No such file or directory</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="step-4-apply-sex-check">Step 4: Apply sex check<a class="anchor" aria-label="anchor" href="#step-4-apply-sex-check"></a>
@@ -538,7 +538,7 @@ is more than 0.8; a female call is made if F is less than 0.2.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> In cases,  1 variant removed due to Hardy-Weinberg exact test.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> In controls,  19 variants removed due to Hardy-Weinberg exact test.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Merging is done using the common SNPs between the input genotype files.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpYHZcER prefixed as filtered_temp2</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpGJGw42 prefixed as filtered_temp2</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> There are no monomorphic SNPs.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No SNP with differential missingness between cases and controls.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files prefixed as ,PreimputeEX_QC3, with passed SNPs are saved in ResultDir.</span></span>
@@ -598,7 +598,7 @@ is more than 0.8; a female call is made if F is less than 0.2.</p>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No. of samples marked to be filtered out for IDB after missingness and heterozygosity filter: 2</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No. of samples in input PLINK files: 276</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No. of samples in output PLINK files: 274</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files, PreimputeEX_QC4 with final samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpYHZcER.</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files, PreimputeEX_QC4 with final samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpGJGw42.</span></span></code></pre></div>
 <p>Copying the plink files from ResultDir to DataDir.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>,<span class="st">"/"</span><span class="op">)</span>,pattern <span class="op">=</span> <span class="st">"PreimputeEX_QC4"</span><span class="op">)</span></span>
@@ -674,18 +674,97 @@ Ancestry Estimation”.</p>
 <span>    outlier <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>    outlierOf <span class="op">=</span> <span class="st">"EUR"</span>,</span>
 <span>    outlier_threshold <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
-<span><span class="co">#&gt; An error occurred: Environment variable 'HAPMAPIII_NCBI36_DIR' is not set or points to an invalid directory.</span></span>
-<span><span class="co">#&gt; Set it using Sys.setenv(HAPMAPIII_NCBI36_DIR = '/path/to/your/data')</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> 'HapMapIII_NCBI36' reference data found at /Users/mayerdav/Downloads/HapMapIII_NCBI36.</span></span>
+<span><span class="co">#&gt; No A-T or G-C SNPs found in study data.</span></span>
+<span><span class="co">#&gt; 111854 ambiguous SNPs removed from reference data.</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> LD pruning is recommended for reference dataset. Set referLD = TRUE.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> LD pruning was performed for study dataset.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of overlapping SNPs between study and reference data using rsID: 1032</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> PCA done.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No allele flips between study and reference data.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> 7 samples are outliers of selected reference population.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> 179 samples are NOT outliers of selected reference population.</span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This message is displayed once every 8 hours.</span></span></span>
 <span></span>
 <span><span class="va">Samples_with_predicted_ancestry</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[[</span><span class="st">"Samples_with_predicted_ancestry"</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
 <span><span class="va">outlier</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[[</span><span class="st">"Outlier_samples"</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
-<span><span class="va">outlier</span></span>
-<span><span class="co">#&gt; NULL</span></span>
-<span></span>
-<span><span class="va">Samples_with_predicted_ancestry</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,<span class="op">]</span></span>
-<span><span class="co">#&gt; NULL</span></span></code></pre></div>
+<span><span class="va">outlier</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">FID</th>
+<th align="left">IID</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00280</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00315</td>
+</tr>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00321</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00350</td>
+</tr>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00369</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00377</td>
+</tr>
+<tr class="odd">
+<td align="left">EUR_FIN</td>
+<td align="left">HG00383</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">Samples_with_predicted_ancestry</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,<span class="op">]</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">FID</th>
+<th align="left">IID</th>
+<th align="left">Predicted Ancestry</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">EUR_GBR</td>
+<td align="left">HG00096</td>
+<td align="left">EUR</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_GBR</td>
+<td align="left">HG00097</td>
+<td align="left">EUR</td>
+</tr>
+<tr class="odd">
+<td align="left">EUR_GBR</td>
+<td align="left">HG00099</td>
+<td align="left">EUR</td>
+</tr>
+<tr class="even">
+<td align="left">EUR_GBR</td>
+<td align="left">HG00100</td>
+<td align="left">EUR</td>
+</tr>
+<tr class="odd">
+<td align="left">EUR_GBR</td>
+<td align="left">HG00101</td>
+<td align="left">EUR</td>
+</tr>
+</tbody>
+</table>
 <p>There was no outlier samples.</p>
 </div>
 <div class="section level3">
@@ -693,7 +772,7 @@ Ancestry Estimation”.</p>
 </h3>
 <p>To make sure all the filtering thresholds for SNPs are maintained
 after sample filtering.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/boseb/GXwasR/" class="external-link">GXwasR</a></span><span class="op">)</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"PreimputeEX_QC4"</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"Preimpute_Final"</span></span>
@@ -717,7 +796,7 @@ after sample filtering.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> In cases,  0 variants removed due to Hardy-Weinberg exact test.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> In controls,  0 variants removed due to Hardy-Weinberg exact test.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Merging is done using the common SNPs between the input genotype files.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpYHZcER prefixed as filtered_temp2</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpGJGw42 prefixed as filtered_temp2</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> There are no monomorphic SNPs.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No SNP with differential missingness between cases and controls.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files prefixed as ,Preimpute_Final, with passed SNPs are saved in ResultDir.</span></span>
@@ -727,7 +806,7 @@ after sample filtering.</p>
 <div class="section level3">
 <h3 id="final-summary-of-final-qc-ed-dataset-">Final Summary of final Qc-ed dataset.<a class="anchor" aria-label="anchor" href="#final-summary-of-final-qc-ed-dataset-"></a>
 </h3>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlinkSummary.html">PlinkSummary</a></span><span class="op">(</span><span class="va">ResultDir</span>,<span class="va">ResultDir</span>,<span class="va">foutput</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Dataset: Preimpute_Final</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Number of missing phenotypes: 0</span></span>
@@ -760,7 +839,7 @@ after sample filtering.</p>
 </h3>
 <p>If you are using GXwasR package and/or following this pipeline in
 your study, please cite it as:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"GXwasR"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; To cite package 'GXwasR' in publications use:</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -961,6 +1040,7 @@ Cheng, Chang, and Iannone, 2025)</li>
 <span><span class="co">#&gt;  UCSC.utils             1.4.0     <span style="color: #555555;">2025-04-15</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Bioconduc~</span></span></span>
 <span><span class="co">#&gt;  vctrs                  0.6.5     <span style="color: #555555;">2023-12-01</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
 <span><span class="co">#&gt;  vroom                  1.6.6     <span style="color: #555555;">2025-09-19</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
+<span><span class="co">#&gt;  withr                  3.0.2     <span style="color: #555555;">2024-10-28</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.0)</span></span></span>
 <span><span class="co">#&gt;  xfun                   0.53      <span style="color: #555555;">2025-08-19</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
 <span><span class="co">#&gt;  XML                    3.99-0.19 <span style="color: #555555;">2025-08-22</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
 <span><span class="co">#&gt;  xml2                   1.4.0     <span style="color: #555555;">2025-08-20</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.5.1)</span></span></span>
