@@ -508,13 +508,13 @@ genotypes.<a class="anchor" aria-label="anchor" href="#step-8-prepare-separate-m
 <span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="st">"females"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetMFPlink.html">GetMFPlink</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, sex <span class="op">=</span> <span class="va">sex</span>, xplink <span class="op">=</span> <span class="cn">FALSE</span>, autoplink <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files, prefixed as PostimputeEX_QC4_Female, are in</span></span>
-<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpentSob</span></span>
+<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp21TWjU</span></span>
 <span><span class="co">## Making male plink files</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_QC4_Male"</span></span>
 <span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="st">"males"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetMFPlink.html">GetMFPlink</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, sex <span class="op">=</span> <span class="va">sex</span>, xplink <span class="op">=</span> <span class="cn">FALSE</span>, autoplink <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files, prefixed as PostimputeEX_QC4_Male, are in</span></span>
-<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpentSob</span></span></code></pre></div>
+<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp21TWjU</span></span></code></pre></div>
 <p>Removing the previous QC-ed file from DataDir and copying the new
 QC-ed file to DataDir.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
@@ -526,7 +526,7 @@ QC-ed file to DataDir.</p>
 <span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="st">"/"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"PostimputeEX_QC2"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.remove</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="st">"/"</span>, <span class="va">ftemp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in file.remove(paste0(DataDir, "/", ftemp)): cannot remove file</span></span>
-<span><span class="co">#&gt; '/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpentSob/GXwasR_data_file128113381a072/',</span></span>
+<span><span class="co">#&gt; '/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp21TWjU/GXwasR_data_file13c3e3d9cbee0/',</span></span>
 <span><span class="co">#&gt; reason 'Directory not empty'</span></span>
 <span></span>
 <span><span class="co">## Copying new plink files to DataDir</span></span>
@@ -564,7 +564,7 @@ and females for analyses of common variants.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> In cases, </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> In controls, </span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Merging is done using the common SNPs between the input genotype files.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpentSob prefixed as filtered_temp2</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp21TWjU prefixed as filtered_temp2</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> There are no monomorphic SNPs.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Filtering for differential missingness between cases and controls is turned off.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No SNP with differential missingness between cases and controls.</span></span>
@@ -583,7 +583,7 @@ and females for analyses of common variants.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> In cases, </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> In controls, </span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Merging is done using the common SNPs between the input genotype files.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpentSob prefixed as filtered_temp2</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp21TWjU prefixed as filtered_temp2</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> There are no monomorphic SNPs.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Filtering for differential missingness between cases and controls is turned off.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No SNP with differential missingness between cases and controls.</span></span>
@@ -612,7 +612,7 @@ SNPs:<a class="anchor" aria-label="anchor" href="#step-10-combine-sex-specific-a
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_Auto"</span></span>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MergeRegion.html">MergeRegion</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput1</span>, <span class="va">finput2</span>, <span class="va">foutput</span>, use_common_snps <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Merging is done using the common SNPs between the input genotype files.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpentSob prefixed as PostimputeEX_Auto</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp21TWjU prefixed as PostimputeEX_Auto</span></span></code></pre></div>
 <p>Removing the previous QC-ed file from DataDir and copying the new
 QC-ed file to DataDir.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
@@ -644,13 +644,13 @@ from ResultDir to DataDir and will run the sex-specific QC steps.</p>
 <span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="st">"females"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetMFPlink.html">GetMFPlink</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, sex <span class="op">=</span> <span class="va">sex</span>, xplink <span class="op">=</span> <span class="cn">FALSE</span>, autoplink <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files, prefixed as PostimputeEX_QC3_XFemale, are in</span></span>
-<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpentSob</span></span>
+<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp21TWjU</span></span>
 <span><span class="co">## Making male-specific plink files X chromosome</span></span>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_QC3_XMale"</span></span>
 <span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="st">"males"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetMFPlink.html">GetMFPlink</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, sex <span class="op">=</span> <span class="va">sex</span>, xplink <span class="op">=</span> <span class="cn">FALSE</span>, autoplink <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files, prefixed as PostimputeEX_QC3_XMale, are in</span></span>
-<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpentSob</span></span>
+<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp21TWjU</span></span>
 <span><span class="co">## Copying sex-specific plink files</span></span>
 <span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"PostimputeEX_QC3_X"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span>, <span class="va">ftemp</span><span class="op">)</span>, <span class="va">DataDir</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -686,7 +686,7 @@ analyses of common variants.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> In cases, </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> In controls, </span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Merging is done using the common SNPs between the input genotype files.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpentSob prefixed as filtered_temp2</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp21TWjU prefixed as filtered_temp2</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No SNP with differential missingness between cases and controls.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files prefixed as ,PostimputeEX_QC4_XFemale, with passed SNPs are saved in ResultDir.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Input file has 983 SNPs.</span></span>
@@ -703,7 +703,7 @@ analyses of common variants.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> In cases, </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> In controls, </span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Merging is done using the common SNPs between the input genotype files.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpentSob prefixed as filtered_temp2</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp21TWjU prefixed as filtered_temp2</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No SNP with differential missingness between cases and controls.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files prefixed as ,PostimputeEX_QC4_XMale, with passed SNPs are saved in ResultDir.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Input file has 983 SNPs.</span></span>
@@ -732,7 +732,7 @@ common SNPs<a class="anchor" aria-label="anchor" href="#step-13-combine-sex-spec
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_QC5_Xchr"</span></span>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MergeRegion.html">MergeRegion</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput1</span>, <span class="va">finput2</span>, <span class="va">foutput</span>, use_common_snps <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Merging is done using the common SNPs between the input genotype files.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpentSob prefixed as PostimputeEX_QC5_Xchr</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp21TWjU prefixed as PostimputeEX_QC5_Xchr</span></span></code></pre></div>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Copying merged plink files to DataDir</span></span>
 <span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"PostimputeEX_QC5_Xchr"</span><span class="op">)</span></span>
@@ -752,11 +752,11 @@ and remove these regions from analysis for all samples.</p>
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeEX_Xchr"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Xhwe.html">Xhwe</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, filterSNP <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files, prefixed as female, are in</span></span>
-<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpentSob</span></span>
+<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp21TWjU</span></span>
 <span><span class="co">#&gt; This test is running on a case-control dataset with female samples.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> Failed SNPs are excluded from the output PLINK files prefixed as</span></span>
 <span><span class="co">#&gt; PostimputeEX_Xchr is in</span></span>
-<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpentSob</span></span></code></pre></div>
+<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp21TWjU</span></span></code></pre></div>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## No. of the SNPs failed the test.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="co"># 2 SNPs in X chr in females failed HWE test.</span></span>
@@ -798,7 +798,7 @@ the failed SNPs if any.</p>
 <span><span class="va">use_common_snps</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MergeRegion.html">MergeRegion</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput1</span>, <span class="va">finput2</span>, <span class="va">foutput</span>, use_common_snps <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Merging is done with all the SNPs i.e., union of the SNPs.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpentSob prefixed as PostimputeQC</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp21TWjU prefixed as PostimputeQC</span></span></code></pre></div>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Removing the previous QC-ed file from DataDir and copying the new QC-ed file to DataDir.</span></span>
 <span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="st">"/"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"PostimputeEX"</span><span class="op">)</span></span>
@@ -818,7 +818,7 @@ sample level QC<a class="anchor" aria-label="anchor" href="#step-17-preparing-se
 <span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="st">"females"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetMFPlink.html">GetMFPlink</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, sex <span class="op">=</span> <span class="va">sex</span>, xplink <span class="op">=</span> <span class="cn">FALSE</span>, autoplink <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files, prefixed as Postimpute_Female, are in</span></span>
-<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpentSob</span></span>
+<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp21TWjU</span></span>
 <span></span>
 <span><span class="co">## Making male-specific plink files</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeQC"</span></span>
@@ -826,7 +826,7 @@ sample level QC<a class="anchor" aria-label="anchor" href="#step-17-preparing-se
 <span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="st">"males"</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetMFPlink.html">GetMFPlink</a></span><span class="op">(</span>DataDir <span class="op">=</span> <span class="va">DataDir</span>, ResultDir <span class="op">=</span> <span class="va">ResultDir</span>, finput <span class="op">=</span> <span class="va">finput</span>, foutput <span class="op">=</span> <span class="va">foutput</span>, sex <span class="op">=</span> <span class="va">sex</span>, xplink <span class="op">=</span> <span class="cn">FALSE</span>, autoplink <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files, prefixed as Postimpute_Male, are in</span></span>
-<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpentSob</span></span></code></pre></div>
+<span><span class="co">#&gt; /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp21TWjU</span></span></code></pre></div>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Copying sex-specific plink files to DataDir</span></span>
 <span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"Postimpute_Female"</span><span class="op">)</span></span>
@@ -861,7 +861,7 @@ statistic &gt; 0.20 and IBD statistics pihat &gt; 0.2.</p>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No sample is filtered out for IDB after missingness and heterozygosity filter.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No. of samples in input PLINK files: 151</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No. of samples in output PLINK files: 149</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files, Postimpute_Female1 with final samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpentSob.</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files, Postimpute_Female1 with final samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp21TWjU.</span></span></code></pre></div>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Running the function male-specific QC</span></span>
 <span><span class="va">finput</span> <span class="op">&lt;-</span> <span class="st">"Postimpute_Male"</span></span>
@@ -879,7 +879,7 @@ statistic &gt; 0.20 and IBD statistics pihat &gt; 0.2.</p>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No sample is filtered out for IDB after missingness and heterozygosity filter.</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No. of samples in input PLINK files: 125</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">ℹ</span> No. of samples in output PLINK files: 125</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files, Postimpute_Male1 with final samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpentSob.</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Output PLINK files, Postimpute_Male1 with final samples are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp21TWjU.</span></span></code></pre></div>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Copying filtered plink files to DataDir</span></span>
 <span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ResultDir</span>, <span class="st">"/"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"Postimpute_"</span><span class="op">)</span></span>
@@ -898,7 +898,7 @@ datasets<a class="anchor" aria-label="anchor" href="#step-19-combine-male-and-fe
 <span><span class="va">foutput</span> <span class="op">&lt;-</span> <span class="st">"PostimputeFinal"</span></span>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MergeRegion.html">MergeRegion</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="va">ResultDir</span>, <span class="va">finput1</span>, <span class="va">finput2</span>, <span class="va">foutput</span>, use_common_snps <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Merging is done using the common SNPs between the input genotype files.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmpentSob prefixed as PostimputeFinal</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plink files with merged regions are in /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//Rtmp21TWjU prefixed as PostimputeFinal</span></span></code></pre></div>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Removing the not needed files from DataDir.</span></span>
 <span><span class="va">ftemp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">DataDir</span>, <span class="st">"/"</span><span class="op">)</span>, pattern <span class="op">=</span> <span class="st">"Postimpute_"</span><span class="op">)</span></span>
