@@ -189,7 +189,7 @@ problematic_sex <- problematic_sex[,1:2]
 Number of samples with problematic sex assignment: `r nrow(problematic_sex)`
 
 ```{r}
-write.table(problematic_sex,file = paste0(DataDir,"/problematic_sex_samples"),quote = F, row.names = F,col.names = F)
+write.table(problematic_sex,file = paste0(DataDir,"/problematic_sex_samples"),quote = FALSE, row.names = FALSE,col.names = FALSE)
 SexCheckResult[1:5,]
 ```
 
