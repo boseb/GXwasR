@@ -68,7 +68,7 @@ to provide \code{precomputedLD} argument. See below.}
 \item \code{n_eff} (i.e., effective sample size)
 }
 
-For case-control study, effective sample size should be \eqn{4 / (1/<# of cases> + 1/<# of controls>)}. The default is \code{NULL}.}
+For case-control study, effective sample size should be \eqn{4 / (1/<qty of cases> + 1/<qty of controls>)}. The default is \code{NULL}.}
 
 \item{ncores}{Integer value, specifying the number of cores to be used for running LDSC model. The default is 2.}
 
