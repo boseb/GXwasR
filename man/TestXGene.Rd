@@ -173,7 +173,7 @@ Phase 3 reference genotype data. Users also have options to define the regional 
 to their investigation.
 
 This function computes gene-wise SNP-SNP correlation matrices and can perform nine different gene-based tests, such as, “BT" (burden test),
-"SKAT" (sequence kernel association test), "SKATO" (combination of BT and SKAT), "sumchi" (sum of χ2-statistics), "ACAT" (aggregated
+"SKAT" (sequence kernel association test), "SKATO" (combination of BT and SKAT), "sumchi" (sum of \eqn{\chi^2}-statistics), "ACAT" (aggregated
 Cauchy association test for combining P values), "PCA"(principal component approach), "FLM"( functional multiple linear regression model),
 "simpleM" (Bonferroni correction test), "minp" (minimum P-value) leveraging PLINK1.9 \insertCite{Purcell2007}{GXwasR} and sumFREGAT
 \insertCite{Svishcheva2019,Belonogova2022}{GXwasR} tools.

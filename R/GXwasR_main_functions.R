@@ -360,7 +360,7 @@ AncestryCheck <- function(DataDir,
 #' to their investigation.
 #'
 #' This function computes gene-wise SNP-SNP correlation matrices and can perform nine different gene-based tests, such as, “BT" (burden test),
-#' "SKAT" (sequence kernel association test), "SKATO" (combination of BT and SKAT), "sumchi" (sum of χ2-statistics), "ACAT" (aggregated
+#' "SKAT" (sequence kernel association test), "SKATO" (combination of BT and SKAT), "sumchi" (sum of \eqn{\chi^2}-statistics), "ACAT" (aggregated
 #' Cauchy association test for combining P values), "PCA"(principal component approach), "FLM"( functional multiple linear regression model),
 #' "simpleM" (Bonferroni correction test), "minp" (minimum P-value) leveraging PLINK1.9 \insertCite{Purcell2007}{GXwasR} and sumFREGAT
 #' \insertCite{Svishcheva2019,Belonogova2022}{GXwasR} tools.
@@ -4419,7 +4419,7 @@ ClumpLD <- function(
 #'
 #' @description
 #' This function tests the null hypothesis that a measured statistics (example: genetic correlation,
-#' rg for a trait) < 1 using a 1-tailed test compared with a normal distribution (z = (1 − measure statistics)/Standard error).
+#' rg for a trait) < 1 using a 1-tailed test compared with a normal distribution (z = (1 - measure statistics)/Standard error).
 #' For multiple tests, users are encouraged to apply a Bonferroni multiple-testing correction.
 #'
 #' @param inputdata
@@ -4499,12 +4499,12 @@ DiffZeroOne <- function(inputdata, diffzero = TRUE, diffone = TRUE) {
 #'
 #' @description
 #' This function calculates the difference in any kind of measured entities,(example: including SNP heritability estimate,
-#' genetic correlation, and GWAS β values) between sexes using a Z-score and its associated p-value statistic.
+#' genetic correlation, and GWAS \eqn{\beta} values) between sexes using a Z-score and its associated p-value statistic.
 #' When STAT/SE is normally distributed and the test statistics are independent in sex, the test is well calibrated. If
 #' the statistics are positively correlated, this test is conservative (1).
 #'
 #' We could define SNPs with SDEs as those variants at the extreme ends of the distribution with an absolute value of the
-#' Z-score greater than 3(|Z-score| > 3), which is roughly equivalent to p <10−3, and represents 0.3% of all tested SNPs.
+#' Z-score greater than 3(|Z-score| > 3), which is roughly equivalent to p <10-3, and represents 0.3% of all tested SNPs.
 #' The input dataframes should only include X-chromosome in order to obtain results for sex differences based solely on
 #' X-linked loci.
 #'
