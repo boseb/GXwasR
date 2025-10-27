@@ -3589,17 +3589,17 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #' @param combtest
 #' Character vector specifying method for combining p-values after stratified GWAS/XWAS models.
 #' Choices are “stouffer.method”, "fisher.method" and "fisher.method.perm". For fisher.method the function for combining
-#' p-values uses a statistic, \eqn{S = -2 ∑^k /log p}, which follows a \eqn{χ^2} distribution with 2k degrees of freedom \insertCite{Fisher1925}{GXwasR}.
+#' p-values uses a statistic, \eqn{S = -2 \sum_{i=1}^{k} \log(p_i)}, which follows a \eqn{\chi^2} distribution with 2k degrees of freedom \insertCite{Fisher1925}{GXwasR}.
 #'
-#' For fisher.method.perm, using p-values from stratified tests, the summary statistic for combining p-values is \eqn{S = -2 ∑ /log p}.
+#' For fisher.method.perm, using p-values from stratified tests, the summary statistic for combining p-values is \eqn{S = -2 \sum_{i=1}^{k} \log(p_i)}.
 #' A p-value for this statistic can be derived by randomly generating summary statistics \insertCite{Rhodes2002}{GXwasR}. Therefore, a p-value is randomly
 #' sampled from each contributing study, and a random statistic is calculated. The fraction of random statistics greater or
 #' equal to S then gives the final p-value.
 #'
 #' For stouffer.method ,the function applies Stouffer’s method \insertCite{Stouffer1949}{GXwasR} to the p-values assuming that the p-values to be combined are
 #' independent. Letting p1, p2, . . . , pk denote the individual (one- or two-sided) p-values of the k hypothesis tests to be
-#' combined, the test statistic is then computed with \eqn{$z = ∑^k_{1}frac{z_{i}}{sqrt(k)}$} where \eqn{$z_{i}$ = Φ−1 (1 – $p_{i}$)} and
-#' \eqn{Φ −1 (·)} denotes the inverse of the cumulative distribution function of a standard normal distribution. Under the joint null
+#' combined, the test statistic is then computed as \eqn{z = \frac{\sum_{i=1}^{k} z_i}{\sqrt{k}}}, where \eqn{z_i = \Phi^{-1}(1 - p_i)} and
+#' \eqn{\Phi^{-1}(\cdot)} denotes the inverse of the cumulative distribution function of a standard normal distribution. Under the joint null
 #' hypothesis, the test statistic follows a standard normal distribution which is used to compute the combined p-value. This
 #' functionality is taken from the R package poolr \insertCite{Cinar2022}{GXwasR}.
 #'
