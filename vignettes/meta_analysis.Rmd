@@ -168,7 +168,7 @@ knitr::kable(x1[1:10, ], caption = "Top ten problematic SNPs.")
 ## Manhattan Plots and QQ plots:
 
 ```{r, meta-manhattan_plot, echo=FALSE, fig.caption = "Manhattan Plot"}
-manhattanPlot <- file.path(ResultDir, 'Meta_Analysis.plot.jpeg')
+manhattanPlot <- file.path(ResultDir, "Meta_Analysis.plot.jpeg")
 outdir <- "figures"
 dir.create(outdir, showWarnings = FALSE)
 outfile <- file.path(outdir, "Meta_Analysis.plot.jpeg")
