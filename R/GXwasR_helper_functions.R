@@ -935,13 +935,12 @@ applySNPmissCCFilter <- function(ResultDir, SNPmissCC, diffmissFilter, foutput) 
 
 ## Function 36
 #' @importFrom ggplot2 element_rect expansion
-gmirror <- function(
-        top, bottom, tline, bline, chroms = c(seq_len(22), "X", "Y"), log10 = TRUE,
-        yaxis, opacity = 1, annotate_snp, annotate_p, toptitle = NULL,
-        bottomtitle = NULL, highlight_snp, highlight_p, highlighter = "red",
-        chrcolor1 = "#AAAAAA", chrcolor2 = "#4D4D4D", freey = FALSE,
-        background = "variegated", chrblocks = FALSE, file = "gmirror",
-        type = "png", hgt = 7, hgtratio = 0.5, wi = 12, res = 300) {
+gmirror <- function(top, bottom, tline, bline, chroms = c(seq_len(22), "X", "Y"), log10 = TRUE,
+    yaxis, opacity = 1, annotate_snp, annotate_p, toptitle = NULL,
+    bottomtitle = NULL, highlight_snp, highlight_p, highlighter = "red",
+    chrcolor1 = "#AAAAAA", chrcolor2 = "#4D4D4D", freey = FALSE,
+    background = "variegated", chrblocks = FALSE, file = "gmirror",
+    type = "png", hgt = 7, hgtratio = 0.5, wi = 12, res = 300) {
     # Sort data
     topn <- names(top)
     bottomn <- names(bottom)
@@ -1430,9 +1429,11 @@ FMsub <- function(ResultDir, plot.jpeg, plotname, snp_pval, annotateTopSnp, sugg
 
 ## Function 46
 ## Added in 3.0
-paraGwas <- function(chunks, chunk, ResultDir, DataDir, finput, trait, modelv, regress, standard_b, noxsexv, sexv,
-    interactionv, parameterv, Inphenocovv, covar, covarv,
-    snpfile) {
+paraGwas <- function(
+      chunks, chunk, ResultDir, DataDir, finput, trait, modelv, regress, standard_b, noxsexv, sexv,
+      interactionv, parameterv, Inphenocovv, covar, covarv,
+      snpfile
+) {
     ## Chunkfile create
     rlang::inform(rlang::format_error_bullets(paste0("Chunk index processing: ", chunks)))
     if (nrow(snpfile) >= (chunks + chunk)) {
@@ -1492,9 +1493,8 @@ paraGwas <- function(chunks, chunk, ResultDir, DataDir, finput, trait, modelv, r
 
 ## Function 47
 ## Updated in 3.0
-FMmain <- function(
-        DataDir, ResultDir, finput, trait, standard_beta, xmodel,
-        sex, xsex, covarfile, interaction, covartest, Inphenocov, plot.jpeg, plotname, snp_pval, annotateTopSnp, suggestiveline, genomewideline, ncores) {
+FMmain <- function(DataDir, ResultDir, finput, trait, standard_beta, xmodel,
+    sex, xsex, covarfile, interaction, covartest, Inphenocov, plot.jpeg, plotname, snp_pval, annotateTopSnp, suggestiveline, genomewideline, ncores) {
     if (xmodel[1] == "FMcombx01" | xmodel[1] == "FMstratified") {
         modelv <- 1
     } else if (xmodel[1] == "FMcombx02") {
@@ -1662,16 +1662,15 @@ fisher.sum <- function(p, zero.sub = 0.00001, na.rm = FALSE) {
 ## Function 49
 # Copied from ex-CRAN package MADAM and exported. The man pages are copied from the original package.
 fisher.method <-
-    function(
-        pvals,
-        method = c("fisher"),
-        p.corr = c(
-            "bonferroni", "BH",
-            "none"
-        ),
-        zero.sub = 0.00001,
-        na.rm = FALSE,
-        mc.cores = NULL) {
+    function(pvals,
+    method = c("fisher"),
+    p.corr = c(
+        "bonferroni", "BH",
+        "none"
+    ),
+    zero.sub = 0.00001,
+    na.rm = FALSE,
+    mc.cores = NULL) {
         stopifnot(method %in% c("fisher"))
         stopifnot(p.corr %in% c("none", "bonferroni", "BH"))
         stopifnot(all(pvals >= 0, na.rm = TRUE) &
@@ -1715,13 +1714,12 @@ fisher.method <-
 ## Function 50
 # Copied from ex-CRAN package MADAM and exported. The man pages are copied from the original package.
 fisher.method.perm <-
-    function(
-        pvals,
-        p.corr = c("bonferroni", "BH", "none"),
-        zero.sub = 0.00001,
-        B = 10000,
-        mc.cores = NULL,
-        blinker = 1000) {
+    function(pvals,
+    p.corr = c("bonferroni", "BH", "none"),
+    zero.sub = 0.00001,
+    B = 10000,
+    mc.cores = NULL,
+    blinker = 1000) {
         stopifnot(is.na(blinker) || blinker > 0)
         stopifnot(p.corr %in% c("none", "bonferroni", "BH"))
         stopifnot(all(pvals >= 0, na.rm = TRUE) &
@@ -1781,16 +1779,15 @@ fisher.method.perm <-
 
 ## Function 51
 stouffer.method <-
-    function(
-        pvals,
-        method = c("stouffer"),
-        p.corr = c(
-            "bonferroni", "BH",
-            "none"
-        ),
-        zero.sub = 0.00001,
-        na.rm = FALSE,
-        mc.cores = NULL) {
+    function(pvals,
+    method = c("stouffer"),
+    p.corr = c(
+        "bonferroni", "BH",
+        "none"
+    ),
+    zero.sub = 0.00001,
+    na.rm = FALSE,
+    mc.cores = NULL) {
         stopifnot(method %in% c("stouffer"))
         stopifnot(p.corr %in% c("none", "bonferroni", "BH"))
         stopifnot(all(pvals >= 0, na.rm = TRUE) &
@@ -1839,16 +1836,15 @@ paraStouffer <- function(chunks, chunk, pvals, MF.p.corr, MF.zero.sub, MF.na.rm)
         pval_chunk <- pvals[chunks:nrow(pvals), ]
     }
     stouffer.method <-
-        function(
-        pvals,
-        method = c("stouffer"),
-        p.corr = c(
-            "bonferroni", "BH",
-            "none"
-        ),
-        zero.sub = 0.00001,
-        na.rm = FALSE,
-        mc.cores = NULL) {
+        function(pvals,
+    method = c("stouffer"),
+    p.corr = c(
+        "bonferroni", "BH",
+        "none"
+    ),
+    zero.sub = 0.00001,
+    na.rm = FALSE,
+    mc.cores = NULL) {
             stopifnot(method %in% c("stouffer"))
             stopifnot(p.corr %in% c("none", "bonferroni", "BH"))
             stopifnot(all(pvals >= 0, na.rm = TRUE) &
@@ -2194,19 +2190,18 @@ createPlots <- function(ResultDir, plotname, FemaleWAS, MaleWAS, gwas.t2, gwas.b
 
 ## Function 56
 ###### Updated in 3.0
-FMcomb_sub <- function(
-        ResultDir, combtest, MF.p.corr,
-        MF.zero.sub,
-        MF.na.rm,
-        MF.mc.cores,
-        B,
-        plot.jpeg,
-        plotname,
-        snp_pval,
-        annotateTopSnp,
-        suggestiveline,
-        genomewideline,
-        ncores) {
+FMcomb_sub <- function(ResultDir, combtest, MF.p.corr,
+    MF.zero.sub,
+    MF.na.rm,
+    MF.mc.cores,
+    B,
+    plot.jpeg,
+    plotname,
+    snp_pval,
+    annotateTopSnp,
+    suggestiveline,
+    genomewideline,
+    ncores) {
     load(normalizePath(file.path(ResultDir, "MaleWAS.Rda"), mustWork = FALSE))
     MaleWAS <- data.table::as.data.table(MaleWAS)
     gc(reset = TRUE)
@@ -2342,29 +2337,28 @@ FMcomb_sub <- function(
 
 ## Function 57
 ## Updated in 3.0
-FMcomb <- function(
-        DataDir,
-        ResultDir,
-        trait,
-        standard_beta,
-        xmodel,
-        covarfile,
-        covartest,
-        interaction,
-        Inphenocov,
-        combtest,
-        B,
-        MF.p.corr,
-        MF.zero.sub,
-        MF.na.rm,
-        MF.mc.cores,
-        plot.jpeg,
-        plotname,
-        snp_pval,
-        annotateTopSnp,
-        suggestiveline,
-        genomewideline,
-        ncores) {
+FMcomb <- function(DataDir,
+    ResultDir,
+    trait,
+    standard_beta,
+    xmodel,
+    covarfile,
+    covartest,
+    interaction,
+    Inphenocov,
+    combtest,
+    B,
+    MF.p.corr,
+    MF.zero.sub,
+    MF.na.rm,
+    MF.mc.cores,
+    plot.jpeg,
+    plotname,
+    snp_pval,
+    annotateTopSnp,
+    suggestiveline,
+    genomewideline,
+    ncores) {
     gc(reset = TRUE)
     # Here DataDir becomes ResultDir, need to put the covarfile always in ResultDir by copying
     if (!is.null(covarfile)) {
@@ -2420,9 +2414,8 @@ FMcomb <- function(
 
 ## Function 58
 ## Added in 3.0
-paraGwasAuto <- function(
-        chunks, chunk, ResultDir, finput, regress, sexv, noxsexv, interactionv, standard_b, parameterv, Inphenocovv, covar, covarv,
-        snpfile) {
+paraGwasAuto <- function(chunks, chunk, ResultDir, finput, regress, sexv, noxsexv, interactionv, standard_b, parameterv, Inphenocovv, covar, covarv,
+    snpfile) {
     ## Chunkfile create
     if (nrow(snpfile) >= (chunks + chunk)) {
         snp_names <- snpfile$V2[chunks:(chunks + chunk)]
@@ -2935,11 +2928,10 @@ removePatternFiles <- function(ResultDir, patterns) {
 
 ## Function 68
 ## Updated in 3.0
-XCMAFun <- function(
-        DataDir, ResultDir, finput, standard_beta,
-        covarfile, sex, covartest, interaction, Inphenocov, plot.jpeg, plotname, snp_pval,
-        annotateTopSnp, suggestiveline = suggestiveline, genomewideline = genomewideline,
-        ncores = ncores) {
+XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
+    covarfile, sex, covartest, interaction, Inphenocov, plot.jpeg, plotname, snp_pval,
+    annotateTopSnp, suggestiveline = suggestiveline, genomewideline = genomewideline,
+    ncores = ncores) {
     # Prepare data and get necessary files
     file_path <- normalizePath(file.path(ResultDir, "sink_file.txt"), mustWork = FALSE)
 
@@ -3266,9 +3258,11 @@ executeGCTA <- function(ResultDir, args) {
 }
 
 ## Function 73
-ComputeGRMauto <- function(DataDir, ResultDir, finput, partGRM, nGRM, cripticut,
-    minMAF = NULL, maxMAF = NULL,
-    ByCHR = FALSE, CHRnum = NULL, ncores = ncores) {
+ComputeGRMauto <- function(
+      DataDir, ResultDir, finput, partGRM, nGRM, cripticut,
+      minMAF = NULL, maxMAF = NULL,
+      ByCHR = FALSE, CHRnum = NULL, ncores = ncores
+) {
     autosome <- if (!ByCHR) "--autosome" else NULL
     chr <- if (ByCHR) "--chr" else NULL
 
@@ -3454,11 +3448,9 @@ ComputeGRMX <- function(DataDir, ResultDir, finput, partGRM, nGRM, minMAF = NULL
 }
 
 
-
 ## Function 75
-ComputeREMLone <- function(
-        DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile = NULL, cat_covarfile = NULL, quant_covarfile = NULL,
-        prevalence = 0.01, chr, grmfile, ncores) {
+ComputeREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile = NULL, cat_covarfile = NULL, quant_covarfile = NULL,
+    prevalence = 0.01, chr, grmfile, ncores) {
     if (is.null(phenofile)) {
         pheno <- NULL
         phenofile <- NULL
@@ -3555,9 +3547,8 @@ ComputeREMLone <- function(
 }
 
 ## Function 76
-ComputeREMLmulti <- function(
-        DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile = NULL, GE = FALSE, cat_covarfile = NULL, quant_covarfile = NULL,
-        prevalence = 0.01, grmfile = "multi_GRMs.txt", computeGRM = FALSE, grmfile_name = NULL, ncores = 2) {
+ComputeREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile = NULL, GE = FALSE, cat_covarfile = NULL, quant_covarfile = NULL,
+    prevalence = 0.01, grmfile = "multi_GRMs.txt", computeGRM = FALSE, grmfile_name = NULL, ncores = 2) {
     rlang::inform(rlang::format_error_bullets(c("i" = paste("computeGRM is set to:", computeGRM))))
 
     if (is.null(phenofile)) {
@@ -3715,9 +3706,8 @@ GettingGene <- function(gene_file, gene_range, SNP_bimfile, finput) {
 }
 
 ## Function 79
-ChrwiseLDprun <- function(
-        DataDir, ResultDir, finput, chromosome, highLD_regions, IndepSNP_window_size,
-        IndepSNP_step_size, IndepSNP_r2_threshold) {
+ChrwiseLDprun <- function(DataDir, ResultDir, finput, chromosome, highLD_regions, IndepSNP_window_size,
+    IndepSNP_step_size, IndepSNP_r2_threshold) {
     if (is.null(highLD_regions)) {
         highLD_regions <- NULL
         excludev <- NULL
@@ -4288,14 +4278,14 @@ getCI <- function(mn1, se1, method) {
 topForestplot <- function(i, MR2, Sbeta) {
     # Extract the SNP row
     SNPs <- MR2$SNP[i]
-    Fixed_Effect    <- MR2[i, c("BETA",      "CIfixedLL",   "CIfixedUL")]
-    Random_Effect   <- MR2[i, c("BETA.R.",   "CIrandomLL",  "CIrandomUL")]
-    Weighted_Effect <- MR2[i, c("WEIGHTED_Z","CIweightedLL","CIweightedUL")]
-    
+    Fixed_Effect <- MR2[i, c("BETA", "CIfixedLL", "CIfixedUL")]
+    Random_Effect <- MR2[i, c("BETA.R.", "CIrandomLL", "CIrandomUL")]
+    Weighted_Effect <- MR2[i, c("WEIGHTED_Z", "CIweightedLL", "CIweightedUL")]
+
     # Collect per-study estimates
     Study_EFFect <- Sbeta[Sbeta$SNP == SNPs, , drop = FALSE]
-    Study_EFFect <- Study_EFFect[, -1]  # drop SNP column
-    
+    Study_EFFect <- Study_EFFect[, -1] # drop SNP column
+
     # Combine all rows
     D1 <- rbind(
         Study_EFFect,
@@ -4304,25 +4294,25 @@ topForestplot <- function(i, MR2, Sbeta) {
         Weighted_Effect,
         use.names = FALSE
     )
-    
+
     # Add labels + reorder
-    D1$V2    <- row.names(D1)
+    D1$V2 <- row.names(D1)
     D1$index <- as.integer(D1$V2)
     D1$study <- paste0("S", D1$index)
-    D1       <- D1[, c(6, 5, seq_len(3))]
+    D1 <- D1[, c(6, 5, seq_len(3))]
     colnames(D1) <- c("study", "index", "effect", "lower", "upper")
-    
+
     # Relabel last three rows
-    D1[nrow(D1),   "study"] <- "W"
-    D1[nrow(D1)-1, "study"] <- "R"
-    D1[nrow(D1)-2, "study"] <- "F"
-    
+    D1[nrow(D1), "study"] <- "W"
+    D1[nrow(D1) - 1, "study"] <- "R"
+    D1[nrow(D1) - 2, "study"] <- "F"
+
     # For ordering: keep studies at bottom, meta rows at top
     D1$study <- factor(D1$study, levels = rev(D1$study))
-    
+
     # Add aesthetics for color and size
     D1$group <- ifelse(D1$study %in% c("F", "R", "W"), "meta", "study")
-    
+
     # ---- build ggplot ----
     p <- ggplot(D1, aes(x = .data$effect, y = .data$study)) +
         geom_vline(xintercept = 0, linetype = 2, color = "grey50") +
@@ -4338,7 +4328,7 @@ topForestplot <- function(i, MR2, Sbeta) {
         geom_point(aes(shape = .data$group, color = .data$group, size = .data$group)) +
         scale_color_manual(values = c(study = "black", meta = "blue")) +
         scale_shape_manual(values = c(study = 19, meta = 18)) +
-        scale_size_manual(values  = c(study = 2, meta = 3.5)) +
+        scale_size_manual(values = c(study = 2, meta = 3.5)) +
         labs(
             title = SNPs,
             x = "Effect size (beta, 95% CI)",
@@ -4350,7 +4340,7 @@ topForestplot <- function(i, MR2, Sbeta) {
             legend.position = "none",
             plot.title = element_text(hjust = 0.5)
         )
-    
+
     return(p)
 }
 
@@ -4511,22 +4501,23 @@ metaFun <- function(DataDir, ResultDir, SummData, CHR, chromosome, nomap, UseA1v
 ## Function 94
 # Added in 3.0
 generatePlots <- function(MRfiltered, Sbeta, ResultDir, plotname,
-                          useSNPposition, pval_threshold_manplot,
-                          chosen_snps_file) {
+    useSNPposition, pval_threshold_manplot,
+    chosen_snps_file) {
     # Determine the number of SNPs to plot
     numSNPs <- min(length(unique(MRfiltered$SNP)), 10)
     if (length(unique(MRfiltered$SNP)) > 10) {
         rlang::inform(rlang::format_error_bullets(c(
-            "i" = "Maximum 10 Forest plots of 10 chosen SNPs will be returned. 
+            "i" = "Maximum 10 Forest plots of 10 chosen SNPs will be returned.
                    For all other Forest plots, please check ResultDir."
         )))
     }
 
     # Generate forest plots and collect them
     plots <- lapply(seq_len(numSNPs),
-                    topForestplot,
-                    MR2 = MRfiltered,
-                    Sbeta = Sbeta)
+        topForestplot,
+        MR2 = MRfiltered,
+        Sbeta = Sbeta
+    )
 
     # Add a label about what kind of plots these are
     attr(plots, "description") <- if (is.null(chosen_snps_file)) {
@@ -4539,8 +4530,10 @@ generatePlots <- function(MRfiltered, Sbeta, ResultDir, plotname,
 }
 
 ## Function 95
-ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile, cat_covarfile = NULL,
-    quant_covarfile = NULL, grmfile = "GXwasR", excludeResidual = c("FALSE", "TRUE"), chr, ncores = 2) {
+ComputeBivarREMLone <- function(
+      DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile, cat_covarfile = NULL,
+      quant_covarfile = NULL, grmfile = "GXwasR", excludeResidual = c("FALSE", "TRUE"), chr, ncores = 2
+) {
     if (excludeResidual == "FALSE") {
         ExResi <- NULL
     } else {
@@ -4633,9 +4626,8 @@ ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr 
 }
 
 ## Function 96
-ComputeBivarREMLmulti <- function(
-        DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile, cat_covarfile = NULL,
-        quant_covarfile = NULL, grmfile = "multi_GRMs.txt", excludeResidual = c("FALSE", "TRUE"), computeGRM = FALSE, grmfile_name = NULL, ncores = 2) {
+ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile, cat_covarfile = NULL,
+    quant_covarfile = NULL, grmfile = "multi_GRMs.txt", excludeResidual = c("FALSE", "TRUE"), computeGRM = FALSE, grmfile_name = NULL, ncores = 2) {
     rlang::inform(rlang::format_error_bullets(c("i" = paste("computeGRM is set to:", computeGRM))))
 
     if (excludeResidual == "FALSE") {
@@ -5330,10 +5322,9 @@ processLDreferenceData <- function(ResultDir, highLD_regions, referLD, referLD_w
 }
 
 ## Function 103
-filterATGCSNPs <- function(
-        study_bim_path, study_bed_path, study_fam_path,
-        ref_bim_path, ref_bed_path, ref_fam_path,
-        ResultDir) {
+filterATGCSNPs <- function(study_bim_path, study_bed_path, study_fam_path,
+    ref_bim_path, ref_bed_path, ref_fam_path,
+    ResultDir) {
     # Helper to identify ambiguous SNPs (A-T / G-C)
     getAmbiguousSNPs <- function(bim_file) {
         bimData <- vroom::vroom(
@@ -5926,7 +5917,6 @@ runSKAT <- function(score.file, gene.file, genes, cor.path, gene_approximation, 
 # in SKAT0 or SKAT. All P values larger than skato_p_threshold will be processed via burden test. The default is 0.8
 
 
-
 ## Function 119
 ## Added in 3.0
 runSKATO <- function(score.file, gene.file, genes, cor.path, anno.type, gene_approximation, beta.par, weights.function, kernel_p_method, acc_devies, lim_devies, rho, skato_p_threshold) {
@@ -6163,18 +6153,17 @@ validateInputForQCsnp <- function(DataDir, ResultDir = tempdir(), finput, foutpu
 
 ## Function 129
 ## Added in 3.0
-validateInputForEstimateHerit <- function(
-        DataDir = NULL, ResultDir = tempdir(), finput = NULL,
-        summarystat = NULL, ncores = parallel::detectCores(),
-        model = c("LDSC", "GREML"), byCHR = FALSE, r2_LD = 0,
-        LDSC_blocks = 20, REMLalgo = c(0, 1, 2), nitr = 100,
-        cat_covarfile = NULL, quant_covarfile = NULL,
-        prevalence = 0.01, partGRM = FALSE, autosome = TRUE,
-        Xsome = TRUE, nGRM = 3, cripticut = 0.025,
-        minMAF = NULL, maxMAF = NULL, hg = c("hg19", "hg38"),
-        PlotIndepSNP = c(TRUE, FALSE), IndepSNP_window_size = 50,
-        IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02,
-        highLD_regions = NULL) {
+validateInputForEstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL,
+    summarystat = NULL, ncores = parallel::detectCores(),
+    model = c("LDSC", "GREML"), byCHR = FALSE, r2_LD = 0,
+    LDSC_blocks = 20, REMLalgo = c(0, 1, 2), nitr = 100,
+    cat_covarfile = NULL, quant_covarfile = NULL,
+    prevalence = 0.01, partGRM = FALSE, autosome = TRUE,
+    Xsome = TRUE, nGRM = 3, cripticut = 0.025,
+    minMAF = NULL, maxMAF = NULL, hg = c("hg19", "hg38"),
+    PlotIndepSNP = c(TRUE, FALSE), IndepSNP_window_size = 50,
+    IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02,
+    highLD_regions = NULL) {
     # Validate directories
     if (!is.null(DataDir) && !dir.exists(DataDir)) {
         stop("Error in DataDir: Directory does not exist.")
@@ -6182,7 +6171,6 @@ validateInputForEstimateHerit <- function(
     if (!is.null(ResultDir) && !dir.exists(ResultDir)) {
         stop("Error in ResultDir: Directory does not exist.")
     }
-
 
 
     # Validate summarystat if not NULL
@@ -7532,9 +7520,8 @@ read_plink_clumped_clean <- function(resultDir, filename) {
 ## Helper function from HDL R package ##
 #' @importFrom dplyr n
 HDL.rg <-
-    function(
-        gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min(gwas1.df$N, gwas2.df$N), output.file = "", eigen.cut = "automatic",
-        jackknife.df = FALSE, intercept.output = FALSE, fill.missing.N = NULL, lim = exp(-18)) {
+    function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min(gwas1.df$N, gwas2.df$N), output.file = "", eigen.cut = "automatic",
+    jackknife.df = FALSE, intercept.output = FALSE, fill.missing.N = NULL, lim = exp(-18)) {
         ## Initialize vars used later
         snps.list.imputed.vector <- NULL
         nsnps.list.imputed <- NULL
@@ -8286,7 +8273,6 @@ HDL.rg <-
     }
 
 
-
 .Random.seed <-
     c(
         403L, 624L, 481462074L, -1827783821L, -1227001320L, 540513593L,
@@ -8419,9 +8405,8 @@ HDL.rg <-
 
 #' @importFrom foreach %dopar%
 #' @importFrom dplyr row_number
-HDL.rg.parallel <- function(
-        gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min(gwas1.df$N, gwas2.df$N), output.file = "", numCores = 2,
-        eigen.cut = "automatic", jackknife.df = FALSE, intercept.output = FALSE, fill.missing.N = NULL, lim = exp(-18)) {
+HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min(gwas1.df$N, gwas2.df$N), output.file = "", numCores = 2,
+    eigen.cut = "automatic", jackknife.df = FALSE, intercept.output = FALSE, fill.missing.N = NULL, lim = exp(-18)) {
     ## Initialize vars used later
     snps.list.imputed.vector <- NULL
     nsnps.list.imputed <- NULL
@@ -9189,9 +9174,8 @@ HDL.rg.parallel <- function(
     return(list(rg = rg, rg.se = rg.se, P = P, estimates.df = estimates.df, eigen.use = eigen.use))
 }
 
-llfun.gcov.part.2 <- function(
-        param, h11, h22, rho12, M, N1, N2, N0, Nref,
-        lam0, lam1, lam2, bstar1, bstar2, lim = exp(-10)) {
+llfun.gcov.part.2 <- function(param, h11, h22, rho12, M, N1, N2, N0, Nref,
+    lam0, lam1, lam2, bstar1, bstar2, lim = exp(-10)) {
     h12 <- param[1]
     int <- param[2]
     ## sample fractions

@@ -145,13 +145,13 @@ hweCase <- NULL
 hweControl <- NULL
 monomorphicSNPs <- FALSE
 ld_prunning <- FALSE
-x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput,foutput = foutput, geno = geno, maf = maf,hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, dmissX = dmissX, dmissAutoY = dmissAutoY, diffmissFilter = diffmissFilter)
+x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, dmissX = dmissX, dmissAutoY = dmissAutoY, diffmissFilter = diffmissFilter)
 ```
 
 Copying the plink files from ResultDir to DataDir.
 ```{r}
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PreimputeEX_QC1")
-file.copy(paste0(ResultDir,"/",ftemp),DataDir)
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PreimputeEX_QC1")
+file.copy(paste0(ResultDir, "/", ftemp), DataDir)
 PlinkSummary(DataDir, ResultDir, finput = "PreimputeEX_QC1")
 ```
 
@@ -161,18 +161,18 @@ It excludes individuals who have missing genotype data for more than 20% of the 
 # Running
 finput <- "PreimputeEX_QC1"
 foutput <- "PreimputeEX_QC2"
-imiss = 0.2
-het = NULL
-IBD = NULL
+imiss <- 0.2
+het <- NULL
+IBD <- NULL
 filterSample <- TRUE
 ambi_out <- TRUE
-x = QCsample(DataDir = DataDir,ResultDir = ResultDir, finput = finput,foutput = foutput, imiss = imiss,het = het, IBD = NULL, filterSample = filterSample, ambi_out = ambi_out)
+x <- QCsample(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, imiss = imiss, het = het, IBD = NULL, filterSample = filterSample, ambi_out = ambi_out)
 ```
 
 ## Step 4: Apply sex check
 ```{r}
 finput <- "PreimputeEX_QC1" # Using the same input file
-LD = TRUE
+LD <- TRUE
 LD_window_size <- 50
 LD_step_size <- 5
 LD_r2_threshold <- 0.02
@@ -181,16 +181,16 @@ mmin_F <- 0.7
 # We will not infer sex
 infer_sex <- FALSE
 compute_freq <- FALSE
-SexCheckResult <-SexCheck(DataDir=DataDir,ResultDir = ResultDir, finput=finput, infer_sex = infer_sex,compute_freq =compute_freq,LD_window_size=LD_window_size,LD_step_size=LD_step_size,LD_r2_threshold=0.02,fmax_F = fmax_F,mmin_F=mmin_F)
-problematic_sex <- SexCheckResult[SexCheckResult$STATUS != "OK",]
-problematic_sex <- problematic_sex[,1:2]
+SexCheckResult <- SexCheck(DataDir = DataDir, ResultDir = ResultDir, finput = finput, infer_sex = infer_sex, compute_freq = compute_freq, LD_window_size = LD_window_size, LD_step_size = LD_step_size, LD_r2_threshold = 0.02, fmax_F = fmax_F, mmin_F = mmin_F)
+problematic_sex <- SexCheckResult[SexCheckResult$STATUS != "OK", ]
+problematic_sex <- problematic_sex[, 1:2]
 ```
 
 Number of samples with problematic sex assignment: `r nrow(problematic_sex)`
 
 ```{r}
-write.table(problematic_sex,file = paste0(DataDir,"/problematic_sex_samples"),quote = F, row.names = F,col.names = F)
-SexCheckResult[1:5,]
+write.table(problematic_sex, file = paste0(DataDir, "/problematic_sex_samples"), quote = FALSE, row.names = FALSE, col.names = FALSE)
+SexCheckResult[1:5, ]
 ```
 
 Note, there is no filtering of the samples based on sex prediction.
@@ -210,20 +210,19 @@ Users have the ability to impute the sex for their dataset.
 We prefer to keep only chromosome 1 to 23. 
 
 ```{r}
-test1 <- read.table(paste0(DataDir,"/",finput,".bim"))
+test1 <- read.table(paste0(DataDir, "/", finput, ".bim"))
 unique(test1$V1)
 ```
 ```{r}
 foutput <- "PreimputeEX_QC2"
-x <- FilterRegion(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, CHRX = FALSE, CHRY = FALSE, filterPAR = FALSE, filterXTR = FALSE, filterAmpliconic = FALSE, regionfile = FALSE, filterCHR = c(24, 25, 26),Hg = "38", exclude = TRUE)
-
+x <- FilterRegion(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, CHRX = FALSE, CHRY = FALSE, filterPAR = FALSE, filterXTR = FALSE, filterAmpliconic = FALSE, regionfile = FALSE, filterCHR = c(24, 25, 26), Hg = "38", exclude = TRUE)
 ```
 
 Copying the plink files from ResultDir to DataDir.
 
 ```{r}
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PreimputeEX_QC2")
-file.copy(paste0(ResultDir,"/",ftemp),DataDir)
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PreimputeEX_QC2")
+file.copy(paste0(ResultDir, "/", ftemp), DataDir)
 PlinkSummary(DataDir, ResultDir, finput = "PreimputeEX_QC2")
 ```
 
@@ -242,16 +241,16 @@ dmissX <- TRUE
 dmissAutoY <- TRUE
 monomorphicSNPs <- TRUE
 ld_prunning <- FALSE
-hwe = NULL
+hwe <- NULL
 hweCase <- 1e-10
 hweControl <- 1e-06
-x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput,foutput = foutput, geno = geno, maf = maf,hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, dmissX = dmissX, dmissAutoY = dmissAutoY, diffmissFilter = diffmissFilter)
+x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, dmissX = dmissX, dmissAutoY = dmissAutoY, diffmissFilter = diffmissFilter)
 ```
 Copying the plink files from ResultDir to DataDir.
 
 ```{r}
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PreimputeEX_QC3")
-file.copy(paste0(ResultDir,"/",ftemp),DataDir)
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PreimputeEX_QC3")
+file.copy(paste0(ResultDir, "/", ftemp), DataDir)
 PlinkSummary(DataDir, ResultDir, finput = "PreimputeEX_QC3")
 ```
 
@@ -261,19 +260,19 @@ Here we are using stringent thresholds for sample filter.
 ```{r preimpute-QCSample}
 finput <- "PreimputeEX_QC3"
 foutput <- "PreimputeEX_QC4"
-imiss = 0.02
-het = 3
-IBD = 0.2
-IBDmatrix = FALSE
-small_sample_mod = TRUE
-filterSample = TRUE
-ambi_out = TRUE
-x = QCsample(DataDir = DataDir,ResultDir = ResultDir, finput = finput,foutput = foutput, imiss = imiss,het = het, IBD = IBD, IBDmatrix = IBDmatrix, filterSample = filterSample, ambi_out = ambi_out)
+imiss <- 0.02
+het <- 3
+IBD <- 0.2
+IBDmatrix <- FALSE
+small_sample_mod <- TRUE
+filterSample <- TRUE
+ambi_out <- TRUE
+x <- QCsample(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, imiss = imiss, het = het, IBD = IBD, IBDmatrix = IBDmatrix, filterSample = filterSample, ambi_out = ambi_out)
 ```
 Copying the plink files from ResultDir to DataDir.
 ```{r}
-ftemp <- list.files(paste0(ResultDir,"/"),pattern = "PreimputeEX_QC4")
-file.copy(paste0(ResultDir,"/",ftemp),DataDir)
+ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PreimputeEX_QC4")
+file.copy(paste0(ResultDir, "/", ftemp), DataDir)
 PlinkSummary(DataDir, ResultDir, finput = "PreimputeEX_QC4")
 ```
 
@@ -288,19 +287,20 @@ finput <- "PreimputeEX_QC4"
 reference <- "HapMapIII_NCBI36"
 highLD_regions <- highLD_hg19
 study_pop <- example_data_study_sample_ancestry
-studyLD_window_size = 50
-studyLD_step_size = 5
-studyLD_r2_threshold = 0.02
-filterSNP = TRUE
-studyLD = TRUE
-referLD = TRUE
-referLD_window_size = 50
-referLD_step_size = 5
-referLD_r2_threshold = 0.02
-outlier = TRUE
-outlier_threshold = 3
-outlierOf = "EUR"
-x <- AncestryCheck(DataDir = DataDir,
+studyLD_window_size <- 50
+studyLD_step_size <- 5
+studyLD_r2_threshold <- 0.02
+filterSNP <- TRUE
+studyLD <- TRUE
+referLD <- TRUE
+referLD_window_size <- 50
+referLD_step_size <- 5
+referLD_r2_threshold <- 0.02
+outlier <- TRUE
+outlier_threshold <- 3
+outlierOf <- "EUR"
+x <- AncestryCheck(
+    DataDir = DataDir,
     ResultDir = ResultDir,
     finput = finput,
     reference = reference,
@@ -317,7 +317,8 @@ x <- AncestryCheck(DataDir = DataDir,
     study_pop = study_pop,
     outlier = TRUE,
     outlierOf = "EUR",
-    outlier_threshold = 3)
+    outlier_threshold = 3
+)
 
 Samples_with_predicted_ancestry <- x[["Samples_with_predicted_ancestry"]]
 
@@ -325,7 +326,7 @@ outlier <- x[["Outlier_samples"]]
 
 outlier
 
-Samples_with_predicted_ancestry[1:5,]
+Samples_with_predicted_ancestry[1:5, ]
 ```
 
 There was no outlier samples.
@@ -345,14 +346,14 @@ dmissX <- TRUE
 dmissAutoY <- TRUE
 monomorphicSNPs <- TRUE
 ld_prunning <- FALSE
- hwe = NULL
+hwe <- NULL
 hweCase <- 1e-10
 hweControl <- 1e-06
-x <- QCsnp(DataDir = ResultDir, ResultDir = ResultDir, finput = finput,foutput = foutput, geno = geno, maf = maf,hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, dmissX = dmissX, dmissAutoY = dmissAutoY, diffmissFilter = diffmissFilter)
+x <- QCsnp(DataDir = ResultDir, ResultDir = ResultDir, finput = finput, foutput = foutput, geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, dmissX = dmissX, dmissAutoY = dmissAutoY, diffmissFilter = diffmissFilter)
 ```
 ## Final Summary of final Qc-ed dataset.
 ```{r}
-PlinkSummary(ResultDir,ResultDir,foutput)
+PlinkSummary(ResultDir, ResultDir, foutput)
 ```
 ## Citation
 If you are using GXwasR package and/or following this pipeline in your study, please cite it as:

@@ -47,10 +47,10 @@ Other columns may present.}
 Other columns may present.}
 
 \item{combtest}{Character vector specifying method for combining p-values for stratified GWAS models. Choices are “stouffer.method”,
-"fisher.method" and "fisher.method.perm". For fisher.method the function for combining p-values uses a statistic,
-\eqn{S = -2 ∑^k /log p}, which follows a \eqn{χ^2} distribution with 2k degrees of freedom \insertCite{Fisher1925}{GXwasR}.
+"fisher.method" and "fisher.method.perm". For fisher.method, the function for combining p-values uses a statistic,
+\eqn{S = -2 \sum_{i=1}^{k} \log(p_i)}, which follows a \eqn{\chi^2} distribution with 2k degrees of freedom \insertCite{Fisher1925}{GXwasR}.
 For fisher.method.perm, using p-values from stratified tests, the summary statistic for combining p-values
-is \eqn{S = -2 ∑ /log p}. A p-value for this statistic can be derived by randomly generating summary statistics \insertCite{Rhodes2002}{GXwasR}.
+is \eqn{S = -2 \sum_{i=1}^{k} \log(p_i)}. A p-value for this statistic can be derived by randomly generating summary statistics \insertCite{Rhodes2002}{GXwasR}.
 Therefore, a p-value is randomly sampled from each contributing study, and a random statistic is calculated. The
 fraction of random statistics greater or equal to S then gives the final p-value.}
 
