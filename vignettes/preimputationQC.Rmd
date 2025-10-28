@@ -145,7 +145,7 @@ hweCase <- NULL
 hweControl <- NULL
 monomorphicSNPs <- FALSE
 ld_prunning <- FALSE
-x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput,foutput = foutput, geno = geno, maf = maf,hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, dmissX = dmissX, dmissAutoY = dmissAutoY, diffmissFilter = diffmissFilter)
+x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, dmissX = dmissX, dmissAutoY = dmissAutoY, diffmissFilter = diffmissFilter)
 ```
 
 Copying the plink files from ResultDir to DataDir.
@@ -167,7 +167,7 @@ het <- NULL
 IBD <- NULL
 filterSample <- TRUE
 ambi_out <- TRUE
-x = QCsample(DataDir = DataDir,ResultDir = ResultDir, finput = finput,foutput = foutput, imiss = imiss,het = het, IBD = NULL, filterSample = filterSample, ambi_out = ambi_out)
+x <- QCsample(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, imiss = imiss, het = het, IBD = NULL, filterSample = filterSample, ambi_out = ambi_out)
 ```
 
 ## Step 4: Apply sex check
@@ -182,9 +182,9 @@ mmin_F <- 0.7
 # We will not infer sex
 infer_sex <- FALSE
 compute_freq <- FALSE
-SexCheckResult <-SexCheck(DataDir=DataDir,ResultDir = ResultDir, finput=finput, infer_sex = infer_sex,compute_freq =compute_freq,LD_window_size=LD_window_size,LD_step_size=LD_step_size,LD_r2_threshold=0.02,fmax_F = fmax_F,mmin_F=mmin_F)
-problematic_sex <- SexCheckResult[SexCheckResult$STATUS != "OK",]
-problematic_sex <- problematic_sex[,1:2]
+SexCheckResult <- SexCheck(DataDir = DataDir, ResultDir = ResultDir, finput = finput, infer_sex = infer_sex, compute_freq = compute_freq, LD_window_size = LD_window_size, LD_step_size = LD_step_size, LD_r2_threshold = 0.02, fmax_F = fmax_F, mmin_F = mmin_F)
+problematic_sex <- SexCheckResult[SexCheckResult$STATUS != "OK", ]
+problematic_sex <- problematic_sex[, 1:2]
 ```
 
 Number of samples with problematic sex assignment: `r nrow(problematic_sex)`
@@ -216,8 +216,7 @@ unique(test1$V1)
 ```
 ```{r}
 foutput <- "PreimputeEX_QC2"
-x <- FilterRegion(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, CHRX = FALSE, CHRY = FALSE, filterPAR = FALSE, filterXTR = FALSE, filterAmpliconic = FALSE, regionfile = FALSE, filterCHR = c(24, 25, 26),Hg = "38", exclude = TRUE)
-
+x <- FilterRegion(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, CHRX = FALSE, CHRY = FALSE, filterPAR = FALSE, filterXTR = FALSE, filterAmpliconic = FALSE, regionfile = FALSE, filterCHR = c(24, 25, 26), Hg = "38", exclude = TRUE)
 ```
 
 Copying the plink files from ResultDir to DataDir.
@@ -245,7 +244,7 @@ ld_prunning <- FALSE
 hwe <- NULL
 hweCase <- 1e-10
 hweControl <- 1e-06
-x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput,foutput = foutput, geno = geno, maf = maf,hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, dmissX = dmissX, dmissAutoY = dmissAutoY, diffmissFilter = diffmissFilter)
+x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, dmissX = dmissX, dmissAutoY = dmissAutoY, diffmissFilter = diffmissFilter)
 ```
 
 Copying the plink files from ResultDir to DataDir.
@@ -270,7 +269,7 @@ IBDmatrix <- FALSE
 small_sample_mod <- TRUE
 filterSample <- TRUE
 ambi_out <- TRUE
-x = QCsample(DataDir = DataDir,ResultDir = ResultDir, finput = finput,foutput = foutput, imiss = imiss,het = het, IBD = IBD, IBDmatrix = IBDmatrix, filterSample = filterSample, ambi_out = ambi_out)
+x <- QCsample(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, imiss = imiss, het = het, IBD = IBD, IBDmatrix = IBDmatrix, filterSample = filterSample, ambi_out = ambi_out)
 ```
 
 Copying the plink files from ResultDir to DataDir.
@@ -292,7 +291,7 @@ finput <- "PreimputeEX_QC4"
 reference <- "HapMapIII_NCBI36"
 highLD_regions <- highLD_hg19
 study_pop <- example_data_study_sample_ancestry
-studyLD_window_size <-0 50
+studyLD_window_size <- 50
 studyLD_step_size <- 5
 studyLD_r2_threshold <- 0.02
 filterSNP <- TRUE
@@ -304,7 +303,8 @@ referLD_r2_threshold <- 0.02
 outlier <- TRUE
 outlier_threshold <- 3
 outlierOf <- "EUR"
-x <- AncestryCheck(DataDir = DataDir,
+x <- AncestryCheck(
+    DataDir = DataDir,
     ResultDir = ResultDir,
     finput = finput,
     reference = reference,
@@ -321,7 +321,8 @@ x <- AncestryCheck(DataDir = DataDir,
     study_pop = study_pop,
     outlier = TRUE,
     outlierOf = "EUR",
-    outlier_threshold = 3)
+    outlier_threshold = 3
+)
 
 Samples_with_predicted_ancestry <- x[["Samples_with_predicted_ancestry"]]
 
@@ -329,7 +330,7 @@ outlier <- x[["Outlier_samples"]]
 
 outlier
 
-Samples_with_predicted_ancestry[1:5,]
+Samples_with_predicted_ancestry[1:5, ]
 ```
 
 There was no outlier samples.
@@ -353,13 +354,13 @@ ld_prunning <- FALSE
 hwe <- NULL
 hweCase <- 1e-10
 hweControl <- 1e-06
-x <- QCsnp(DataDir = ResultDir, ResultDir = ResultDir, finput = finput,foutput = foutput, geno = geno, maf = maf,hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, dmissX = dmissX, dmissAutoY = dmissAutoY, diffmissFilter = diffmissFilter)
+x <- QCsnp(DataDir = ResultDir, ResultDir = ResultDir, finput = finput, foutput = foutput, geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, dmissX = dmissX, dmissAutoY = dmissAutoY, diffmissFilter = diffmissFilter)
 ```
 
 ## Final Summary of final Qc-ed dataset.
 
 ```{r}
-PlinkSummary(ResultDir,ResultDir,foutput)
+PlinkSummary(ResultDir, ResultDir, foutput)
 ```
 
 ## Citation

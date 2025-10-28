@@ -28,7 +28,7 @@ MetaGWAS(
 (i.e., SNP identifier), ‘BETA’ (i.e., effect-size or logarithm of odds ratio), ‘SE’ (i.e., standard error of BETA),
 ‘P’ (i.e., p-values), 'NMISS' (i.e., effective sample size), 'L95' (i.e., lower limit of 95\% confidence interval) and
 'U95' (i.e., upper limit of 95\% confidence interval) are in mandatory column headers. These files needed to be in DataDir.
-If the numbers of cases and controls are unequal, effective sample size should be \eqn{4 / (1/<# of cases> + 1/<# of controls>)}.
+If the numbers of cases and controls are unequal, effective sample size should be \eqn{4 / (1/<qty of cases> + 1/<qty of controls>)}.
 A smaller "effective" sample size may be used for samples that include related individuals, however simulations indicate
 that small changes in the effective sample size have relatively little effect on the final p-value
 \insertCite{Willer2010}{GXwasR}. Columns, such as, \code{CHR} (Chromosome code), \code{BP} (Basepair position), \code{A1} (First allele code),

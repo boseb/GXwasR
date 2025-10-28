@@ -67,37 +67,37 @@ help(EstimateHerit, package = GXwasR)
 # Running
 data("highLD_hg19", package = "GXwasR")
 DataDir <- GXwasR:::GXwasR_data()
-ResultDir = tempdir()
+ResultDir <- tempdir()
 finput <- "GXwasR_example"
-ncores = 3
-model = "GREML"
-byCHR = FALSE
-r2_LD = 0
-LDSC_blocks = 20
-REMLalgo = 0
-nitr = 100
-cat_covarfile = NULL
-quant_covarfile = NULL
-prevalence = 0.01
-partGRM = FALSE
-autosome = TRUE
-Xsome = TRUE
-nGRM = 3
-cripticut = 0.025
-minMAF = NULL
-maxMAF = NULL
-hg = "hg19"
-byCHR = TRUE
-PlotIndepSNP = TRUE
-IndepSNP_window_size = 50
-IndepSNP_step_size = 5
-IndepSNP_r2_threshold = 0.02
+ncores <- 3
+model <- "GREML"
+byCHR <- FALSE
+r2_LD <- 0
+LDSC_blocks <- 20
+REMLalgo <- 0
+nitr <- 100
+cat_covarfile <- NULL
+quant_covarfile <- NULL
+prevalence <- 0.01
+partGRM <- FALSE
+autosome <- TRUE
+Xsome <- TRUE
+nGRM <- 3
+cripticut <- 0.025
+minMAF <- NULL
+maxMAF <- NULL
+hg <- "hg19"
+byCHR <- TRUE
+PlotIndepSNP <- TRUE
+IndepSNP_window_size <- 50
+IndepSNP_step_size <- 5
+IndepSNP_r2_threshold <- 0.02
 
 # For saving the plot in .jpeg file, make plotjpeg = TRUE.
 
-H2 <- EstimateHerit(DataDir = DataDir, ResultDir = ResultDir, finput = finput, summarystat = NULL, ncores = 5, model = model, byCHR = TRUE, r2_LD = 0, LDSC_blocks = 20,REMLalgo = 0, nitr = nitr, cat_covarfile = NULL, quant_covarfile = NULL,prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3, computeGRM = TRUE, grmfile_name = NULL, cripticut = 0.025, minMAF = NULL, maxMAF = NULL,hg = "hg19",PlotIndepSNP = TRUE, IndepSNP_window_size = 50,IndepSNP_step_size = 5,IndepSNP_r2_threshold = 0.02,highLD_regions = highLD_hg19, plotjpeg = TRUE, plotname = "Heritability_Plots")
+H2 <- EstimateHerit(DataDir = DataDir, ResultDir = ResultDir, finput = finput, summarystat = NULL, ncores = 5, model = model, byCHR = TRUE, r2_LD = 0, LDSC_blocks = 20, REMLalgo = 0, nitr = nitr, cat_covarfile = NULL, quant_covarfile = NULL, prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3, computeGRM = TRUE, grmfile_name = NULL, cripticut = 0.025, minMAF = NULL, maxMAF = NULL, hg = "hg19", PlotIndepSNP = TRUE, IndepSNP_window_size = 50, IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02, highLD_regions = highLD_hg19, plotjpeg = TRUE, plotname = "Heritability_Plots")
 
-#Heritability
+# Heritability
 H2
 ```
 
@@ -110,10 +110,9 @@ Set:
 
 
 ```{r}
+H2 <- EstimateHerit(DataDir = DataDir, ResultDir = ResultDir, finput = finput, summarystat = NULL, ncores = 5, model = model, byCHR = TRUE, r2_LD = 0, LDSC_blocks = 20, REMLalgo = 0, nitr = nitr, cat_covarfile = NULL, quant_covarfile = NULL, prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3, computeGRM = FALSE, grmfile_name = "GXwasR", cripticut = 0.025, minMAF = NULL, maxMAF = NULL, hg = "hg19", PlotIndepSNP = TRUE, IndepSNP_window_size = 50, IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02, highLD_regions = highLD_hg19, plotjpeg = FALSE, plotname = "Heritability_Plots")
 
-H2 <- EstimateHerit(DataDir = DataDir, ResultDir = ResultDir, finput = finput, summarystat = NULL, ncores = 5, model = model, byCHR = TRUE, r2_LD = 0, LDSC_blocks = 20,REMLalgo = 0, nitr = nitr, cat_covarfile = NULL, quant_covarfile = NULL,prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3, computeGRM = FALSE, grmfile_name = "GXwasR", cripticut = 0.025, minMAF = NULL, maxMAF = NULL,hg = "hg19",PlotIndepSNP = TRUE, IndepSNP_window_size = 50,IndepSNP_step_size = 5,IndepSNP_r2_threshold = 0.02,highLD_regions = highLD_hg19, plotjpeg = FALSE, plotname = "Heritability_Plots")
-
-#Heritability
+# Heritability
 H2
 ```
 
@@ -129,10 +128,9 @@ grmfile_name = NULL.......if computeGRM = TRUE the grmfile_name is by default NU
 In genome-wide case, there no plot will be generated.
 
 ```{r}
+H2 <- EstimateHerit(DataDir = DataDir, ResultDir = ResultDir, finput = finput, summarystat = NULL, ncores = 5, model = model, byCHR = FALSE, r2_LD = 0, LDSC_blocks = 20, REMLalgo = 0, nitr = nitr, cat_covarfile = NULL, quant_covarfile = NULL, prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3, computeGRM = TRUE, grmfile_name = NULL, cripticut = 0.025, minMAF = NULL, maxMAF = NULL, hg = "hg19", PlotIndepSNP = TRUE, IndepSNP_window_size = 50, IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02, highLD_regions = highLD_hg19, plotjpeg = FALSE, plotname = "Heritability_Plots")
 
-H2 <- EstimateHerit(DataDir = DataDir, ResultDir = ResultDir, finput = finput, summarystat = NULL, ncores = 5, model = model, byCHR = FALSE, r2_LD = 0, LDSC_blocks = 20,REMLalgo = 0, nitr = nitr, cat_covarfile = NULL, quant_covarfile = NULL,prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3, computeGRM = TRUE, grmfile_name = NULL, cripticut = 0.025, minMAF = NULL, maxMAF = NULL,hg = "hg19",PlotIndepSNP = TRUE, IndepSNP_window_size = 50,IndepSNP_step_size = 5,IndepSNP_r2_threshold = 0.02,highLD_regions = highLD_hg19, plotjpeg = FALSE, plotname = "Heritability_Plots")
-
-#Heritability
+# Heritability
 H2
 ```
 
@@ -148,10 +146,9 @@ grmfile_name = "GXwasR"
 In genome-wide case, there no plot will be generated.
 
 ```{r}
+H2 <- EstimateHerit(DataDir = DataDir, ResultDir = ResultDir, finput = finput, summarystat = NULL, ncores = 5, model = model, byCHR = FALSE, r2_LD = 0, LDSC_blocks = 20, REMLalgo = 0, nitr = nitr, cat_covarfile = NULL, quant_covarfile = NULL, prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3, computeGRM = FALSE, grmfile_name = "GXwasR", cripticut = 0.025, minMAF = NULL, maxMAF = NULL, hg = "hg19", PlotIndepSNP = TRUE, IndepSNP_window_size = 50, IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02, highLD_regions = highLD_hg19, plotjpeg = FALSE, plotname = "Heritability_Plots")
 
-H2 <- EstimateHerit(DataDir = DataDir, ResultDir = ResultDir, finput = finput, summarystat = NULL, ncores = 5, model = model, byCHR = FALSE, r2_LD = 0, LDSC_blocks = 20,REMLalgo = 0, nitr = nitr, cat_covarfile = NULL, quant_covarfile = NULL,prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3, computeGRM = FALSE, grmfile_name = "GXwasR", cripticut = 0.025, minMAF = NULL, maxMAF = NULL,hg = "hg19",PlotIndepSNP = TRUE, IndepSNP_window_size = 50,IndepSNP_step_size = 5,IndepSNP_r2_threshold = 0.02,highLD_regions = highLD_hg19, plotjpeg = FALSE, plotname = "Heritability_Plots")
-
-#Heritability
+# Heritability
 H2
 ```
 
@@ -161,15 +158,15 @@ data("Summary_Stat_Ex1", package = "GXwasR")
 model <- "LDSC"
 data("GXwasRData")
 DataDir <- GXwasR:::GXwasR_data()
-ResultDir = tempdir()
+ResultDir <- tempdir()
 finput <- "GXwasR_example"
-test.sumstats <- na.omit(Summary_Stat_Ex1[Summary_Stat_Ex1$TEST=="ADD",c(1:4,6:8)])
-colnames(test.sumstats) <- c("chr","rsid","pos","a1","n_eff","beta","beta_se")
-summarystat = test.sumstats
-highLD_regions = highLD_hg19
+test.sumstats <- na.omit(Summary_Stat_Ex1[Summary_Stat_Ex1$TEST == "ADD", c(1:4, 6:8)])
+colnames(test.sumstats) <- c("chr", "rsid", "pos", "a1", "n_eff", "beta", "beta_se")
+summarystat <- test.sumstats
+highLD_regions <- highLD_hg19
 
-H2 <- EstimateHerit(DataDir = DataDir, ResultDir = ResultDir, finput = "GXwasR_example", summarystat = summarystat, ncores, model = model, byCHR = FALSE, r2_LD = 0, LDSC_blocks = 20,REMLalgo = 0, nitr = 100, cat_covarfile = NULL, quant_covarfile = NULL,prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,cripticut = 0.025, minMAF = NULL, maxMAF = NULL,hg = "hg19",PlotIndepSNP = TRUE, IndepSNP_window_size = 50,IndepSNP_step_size = 5,IndepSNP_r2_threshold = 0.02,highLD_regions = highLD_hg19)
-#Heritability
+H2 <- EstimateHerit(DataDir = DataDir, ResultDir = ResultDir, finput = "GXwasR_example", summarystat = summarystat, ncores, model = model, byCHR = FALSE, r2_LD = 0, LDSC_blocks = 20, REMLalgo = 0, nitr = 100, cat_covarfile = NULL, quant_covarfile = NULL, prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3, cripticut = 0.025, minMAF = NULL, maxMAF = NULL, hg = "hg19", PlotIndepSNP = TRUE, IndepSNP_window_size = 50, IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02, highLD_regions = highLD_hg19)
+# Heritability
 H2
 ```
 
@@ -177,14 +174,14 @@ H2
 ```{r}
 model <- "LDSC"
 DataDir <- GXwasR:::GXwasR_data()
-ResultDir = tempdir()
+ResultDir <- tempdir()
 finput <- "GXwasR_example"
-test.sumstats <- na.omit(Summary_Stat_Ex1[Summary_Stat_Ex1$TEST=="ADD",c(1:4,6:8)])
-colnames(test.sumstats) <- c("chr","rsid","pos","a1","n_eff","beta","beta_se")
-summarystat = test.sumstats
-highLD_regions = highLD_hg19
+test.sumstats <- na.omit(Summary_Stat_Ex1[Summary_Stat_Ex1$TEST == "ADD", c(1:4, 6:8)])
+colnames(test.sumstats) <- c("chr", "rsid", "pos", "a1", "n_eff", "beta", "beta_se")
+summarystat <- test.sumstats
+highLD_regions <- highLD_hg19
 
-H2 <- EstimateHerit(DataDir = DataDir, ResultDir = ResultDir, finput = "GXwasR_example", summarystat = summarystat, ncores, model = model, byCHR = TRUE, r2_LD = 0, LDSC_blocks = 20,REMLalgo = 0, nitr = 100, cat_covarfile = NULL, quant_covarfile = NULL,prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,cripticut = 0.025, minMAF = NULL, maxMAF = NULL,hg = "hg19",PlotIndepSNP = TRUE, IndepSNP_window_size = 50,IndepSNP_step_size = 5,IndepSNP_r2_threshold = 0.02,highLD_regions = highLD_hg19)
+H2 <- EstimateHerit(DataDir = DataDir, ResultDir = ResultDir, finput = "GXwasR_example", summarystat = summarystat, ncores, model = model, byCHR = TRUE, r2_LD = 0, LDSC_blocks = 20, REMLalgo = 0, nitr = 100, cat_covarfile = NULL, quant_covarfile = NULL, prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3, cripticut = 0.025, minMAF = NULL, maxMAF = NULL, hg = "hg19", PlotIndepSNP = TRUE, IndepSNP_window_size = 50, IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02, highLD_regions = highLD_hg19)
 
 # Chromosome-wise Heritability Estimate
 H2
@@ -196,64 +193,70 @@ help(GeneticCorrBT, package = GXwasR)
 ```
 ## <a id = "Running GeneticCorrBT()"> </a> Running GeneticCorrBT() by computing GRM genome-wide
 ```{r}
-
 # Running
 DataDir <- GXwasR:::GXwasR_data()
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
-byCHR = FALSE
-REMLalgo = 0
+byCHR <- FALSE
+REMLalgo <- 0
 nitr <- 3
 ncores <- 3
 data("Example_phenofile", package = "GXwasR")
-phenofile <- Example_phenofile #Cannot be NULL, the interested phenotype column should be labeled as
+phenofile <- Example_phenofile # Cannot be NULL, the interested phenotype column should be labeled as
 cat_covarfile <- NULL
 quant_covarfile <- NULL
-partGRM <- FALSE #Partition the GRM into m parts (by row),
-autosome = TRUE
+partGRM <- FALSE # Partition the GRM into m parts (by row),
+autosome <- TRUE
 Xsome <- TRUE
-cripticut = 0.025
+cripticut <- 0.025
 minMAF <- 0.01 # if MAF filter apply
 maxMAF <- 0.04
-excludeResidual = TRUE
-GC <- GeneticCorrBT(DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = byCHR,
-                    REMLalgo = 0, nitr = nitr, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL, computeGRM = TRUE, grmfile_name = NULL, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,cripticut = 0.025, minMAF = NULL, maxMAF = NULL,excludeResidual = TRUE, ncores = ncores)
-##Genetic correlation from the last iteration. In this example there was no rg value since the program stopped after nitr-1 = 2 iteration due to convergence issue.
+excludeResidual <- TRUE
+GC <- GeneticCorrBT(
+    DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = byCHR,
+    REMLalgo = 0, nitr = nitr, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL, computeGRM = TRUE, grmfile_name = NULL, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3, cripticut = 0.025, minMAF = NULL, maxMAF = NULL, excludeResidual = TRUE, ncores = ncores
+)
+## Genetic correlation from the last iteration. In this example there was no rg value since the program stopped after nitr-1 = 2 iteration due to convergence issue.
 GC
 ```
 
 ## Running GeneticCorrBT() using precomputed genome-wide GRM 
 ```{r}
+byCHR <- FALSE
+computeGRM <- FALSE
+grmfile_name <- "GXwasR"
 
-byCHR = FALSE
-computeGRM = FALSE
-grmfile_name = "GXwasR"
-
-GC <- GeneticCorrBT(DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = byCHR,
-                    REMLalgo = 0, nitr = nitr, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL, computeGRM = FALSE, grmfile_name = grmfile_name, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,cripticut = 0.025, minMAF = NULL, maxMAF = NULL,excludeResidual = TRUE, ncores = ncores)
-##Genetic correlation from the last iteration. In this example there was no rg value since the program stopped after nitr-1 = 2 iteration due to convergence issue.
+GC <- GeneticCorrBT(
+    DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = byCHR,
+    REMLalgo = 0, nitr = nitr, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL, computeGRM = FALSE, grmfile_name = grmfile_name, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3, cripticut = 0.025, minMAF = NULL, maxMAF = NULL, excludeResidual = TRUE, ncores = ncores
+)
+## Genetic correlation from the last iteration. In this example there was no rg value since the program stopped after nitr-1 = 2 iteration due to convergence issue.
 GC
 ```
 
 ## Running GeneticCorrBT() by computing GRM chromosome-wise
 ```{r}
-byCHR = TRUE
-computeGRM = TRUE
-grmfile_name = NULL
+byCHR <- TRUE
+computeGRM <- TRUE
+grmfile_name <- NULL
 
-GC <- GeneticCorrBT(DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = byCHR,
-                    REMLalgo = 0, nitr = nitr, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL, computeGRM = computeGRM, grmfile_name = grmfile_name, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,cripticut = 0.025, minMAF = NULL, maxMAF = NULL,excludeResidual = TRUE, ncores = ncores)
+GC <- GeneticCorrBT(
+    DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = byCHR,
+    REMLalgo = 0, nitr = nitr, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL, computeGRM = computeGRM, grmfile_name = grmfile_name, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3, cripticut = 0.025, minMAF = NULL, maxMAF = NULL, excludeResidual = TRUE, ncores = ncores
+)
 GC
 ```
 
 ## Running GeneticCorrBT() using chromosome-wide pre-computed GRM
 ```{r}
-byCHR = TRUE
-computeGRM = FALSE
-grmfile_name = "GXwasR"
+byCHR <- TRUE
+computeGRM <- FALSE
+grmfile_name <- "GXwasR"
 
-GC <- GeneticCorrBT(DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = byCHR,
-                    REMLalgo = 0, nitr = nitr, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL, computeGRM = computeGRM, grmfile_name = grmfile_name, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,cripticut = 0.025, minMAF = NULL, maxMAF = NULL,excludeResidual = TRUE, ncores = ncores)
+GC <- GeneticCorrBT(
+    DataDir = DataDir, ResultDir = ResultDir, finput = finput, byCHR = byCHR,
+    REMLalgo = 0, nitr = nitr, phenofile = phenofile, cat_covarfile = NULL, quant_covarfile = NULL, computeGRM = computeGRM, grmfile_name = grmfile_name, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3, cripticut = 0.025, minMAF = NULL, maxMAF = NULL, excludeResidual = TRUE, ncores = ncores
+)
 GC
 ```
 

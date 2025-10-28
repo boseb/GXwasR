@@ -122,24 +122,26 @@
 #'     study_pop = study_pop, studyLD = studyLD, referLD = referLD,
 #'     outlierOf = "EUR", outlier = outlier, outlier_threshold = outlier_threshold
 #' )
-AncestryCheck <- function(DataDir,
-    ResultDir = tempdir(),
-    finput,
-    reference = c("HapMapIII_NCBI36", "ThousandGenome"),
-    filterSNP = TRUE,
-    studyLD = TRUE,
-    studyLD_window_size = 50,
-    studyLD_step_size = 5,
-    studyLD_r2_threshold = 0.02,
-    referLD = FALSE,
-    referLD_window_size = 50,
-    referLD_step_size = 5,
-    referLD_r2_threshold = 0.02,
-    highLD_regions,
-    study_pop,
-    outlier = FALSE,
-    outlierOf = "EUR",
-    outlier_threshold = 3) {
+AncestryCheck <- function(
+      DataDir,
+      ResultDir = tempdir(),
+      finput,
+      reference = c("HapMapIII_NCBI36", "ThousandGenome"),
+      filterSNP = TRUE,
+      studyLD = TRUE,
+      studyLD_window_size = 50,
+      studyLD_step_size = 5,
+      studyLD_r2_threshold = 0.02,
+      referLD = FALSE,
+      referLD_window_size = 50,
+      referLD_step_size = 5,
+      referLD_r2_threshold = 0.02,
+      highLD_regions,
+      study_pop,
+      outlier = FALSE,
+      outlierOf = "EUR",
+      outlier_threshold = 3
+) {
     tryCatch(
         {
             # Validate inputs
@@ -360,7 +362,7 @@ AncestryCheck <- function(DataDir,
 #' to their investigation.
 #'
 #' This function computes gene-wise SNP-SNP correlation matrices and can perform nine different gene-based tests, such as, “BT" (burden test),
-#' "SKAT" (sequence kernel association test), "SKATO" (combination of BT and SKAT), "sumchi" (sum of χ2-statistics), "ACAT" (aggregated
+#' "SKAT" (sequence kernel association test), "SKATO" (combination of BT and SKAT), "sumchi" (sum of \eqn{\chi^2}-statistics), "ACAT" (aggregated
 #' Cauchy association test for combining P values), "PCA"(principal component approach), "FLM"( functional multiple linear regression model),
 #' "simpleM" (Bonferroni correction test), "minp" (minimum P-value) leveraging PLINK1.9 \insertCite{Purcell2007}{GXwasR} and sumFREGAT
 #' \insertCite{Svishcheva2019,Belonogova2022}{GXwasR} tools.
@@ -576,46 +578,48 @@ AncestryCheck <- function(DataDir,
 #'         omit_linear_variant
 #'     )
 #' }
-TestXGene <- function(DataDir,
-    ResultDir = tempdir(),
-    finput,
-    sumstat,
-    gene_file,
-    gene_range = 500000,
-    score_file,
-    ref_data = NULL,
-    max_gene = NULL,
-    sample_size = NULL,
-    genebasedTest = c(
-        "SKAT",
-        "SKATO",
-        "sumchi",
-        "ACAT",
-        "BT",
-        "PCA",
-        "FLM",
-        "simpleM",
-        "minp"
-    ),
-    gene_approximation = TRUE,
-    beta_par,
-    weights_function,
-    geno_variance_weights,
-    kernel_p_method = "kuonen",
-    acc_devies = 1e-8,
-    lim_devies = 1e+6,
-    rho = TRUE,
-    skato_p_threshold = 0.8,
-    anno_type = "",
-    mac_threshold,
-    reference_matrix_used,
-    regularize_fun,
-    pca_var_fraction = 0.85,
-    flm_basis_function = "fourier",
-    flm_num_basis = 25,
-    flm_poly_order = 4,
-    flip_genotypes = FALSE,
-    omit_linear_variant = FALSE) {
+TestXGene <- function(
+      DataDir,
+      ResultDir = tempdir(),
+      finput,
+      sumstat,
+      gene_file,
+      gene_range = 500000,
+      score_file,
+      ref_data = NULL,
+      max_gene = NULL,
+      sample_size = NULL,
+      genebasedTest = c(
+          "SKAT",
+          "SKATO",
+          "sumchi",
+          "ACAT",
+          "BT",
+          "PCA",
+          "FLM",
+          "simpleM",
+          "minp"
+      ),
+      gene_approximation = TRUE,
+      beta_par,
+      weights_function,
+      geno_variance_weights,
+      kernel_p_method = "kuonen",
+      acc_devies = 1e-8,
+      lim_devies = 1e+6,
+      rho = TRUE,
+      skato_p_threshold = 0.8,
+      anno_type = "",
+      mac_threshold,
+      reference_matrix_used,
+      regularize_fun,
+      pca_var_fraction = 0.85,
+      flm_basis_function = "fourier",
+      flm_num_basis = 25,
+      flm_poly_order = 4,
+      flip_genotypes = FALSE,
+      omit_linear_variant = FALSE
+) {
     tryCatch(
         withCallingHandlers(
             {
@@ -1017,27 +1021,26 @@ SexDiff <- function(Mfile, Ffile) {
 #'     caldiffmiss = caldiffmiss
 #' )
 QCsnp <-
-    function(
-        DataDir,
-        ResultDir = tempdir(),
-        finput,
-        foutput = "FALSE",
-        casecontrol = TRUE,
-        hweCase = NULL,
-        hweControl = NULL,
-        hwe = NULL,
-        maf = 0.05,
-        geno = 0.1,
-        monomorphicSNPs = FALSE,
-        caldiffmiss = FALSE,
-        diffmissFilter = FALSE,
-        dmissX = FALSE,
-        dmissAutoY = FALSE,
-        highLD_regions = NULL,
-        ld_prunning = FALSE,
-        window_size = 50,
-        step_size = 5,
-        r2_threshold = 0.02) {
+    function(DataDir,
+    ResultDir = tempdir(),
+    finput,
+    foutput = "FALSE",
+    casecontrol = TRUE,
+    hweCase = NULL,
+    hweControl = NULL,
+    hwe = NULL,
+    maf = 0.05,
+    geno = 0.1,
+    monomorphicSNPs = FALSE,
+    caldiffmiss = FALSE,
+    diffmissFilter = FALSE,
+    dmissX = FALSE,
+    dmissAutoY = FALSE,
+    highLD_regions = NULL,
+    ld_prunning = FALSE,
+    window_size = 50,
+    step_size = 5,
+    r2_threshold = 0.02) {
         if (!validateInputForQCsnp(DataDir, ResultDir, finput, foutput, casecontrol, hweCase, hweControl, hwe, maf, geno, monomorphicSNPs, caldiffmiss, diffmissFilter, dmissX, dmissAutoY, highLD_regions, ld_prunning, window_size, step_size, r2_threshold)) {
             return(NULL)
         }
@@ -1196,7 +1199,7 @@ QCsnp <-
 #' * `P` (i.e., p-values)
 #' * `n_eff` (i.e., effective sample size)
 #'
-#' For case-control study, effective sample size should be \eqn{4 / (1/<# of cases> + 1/<# of controls>)}. The default is `NULL`.
+#' For case-control study, effective sample size should be \eqn{4 / (1/<qty of cases> + 1/<qty of controls>)}. The default is `NULL`.
 #'
 #' @param ncores
 #' Integer value, specifying the number of cores to be used for running LDSC model. The default is 2.
@@ -1365,17 +1368,16 @@ QCsnp <-
 #'     IndepSNP_window_size = 50, IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02,
 #'     highLD_regions = highLD_hg19
 #' )
-EstimateHerit <- function(
-        DataDir = NULL, ResultDir = tempdir(), finput = NULL, precomputedLD = NULL,
-        indepSNPs = NULL, summarystat = NULL, ncores = 2, model = c("LDSC", "GREML"),
-        computeGRM = TRUE, grmfile_name = NULL, byCHR = FALSE,
-        r2_LD = 0, LDSC_blocks = 20, intercept = NULL, chi2_thr1 = 30,
-        chi2_thr2 = Inf, REMLalgo = c(0, 1, 2), nitr = 100, cat_covarfile = NULL,
-        quant_covarfile = NULL, prevalence = NULL, partGRM = FALSE, autosome = TRUE,
-        Xsome = TRUE, nGRM = 3, cripticut = 0.025, minMAF = NULL, maxMAF = NULL,
-        hg = c("hg19", "hg38"), PlotIndepSNP = TRUE, IndepSNP_window_size = 50,
-        IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02, highLD_regions = NULL,
-        plotjpeg = TRUE, plotname = "Heritability_Plots") {
+EstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL, precomputedLD = NULL,
+    indepSNPs = NULL, summarystat = NULL, ncores = 2, model = c("LDSC", "GREML"),
+    computeGRM = TRUE, grmfile_name = NULL, byCHR = FALSE,
+    r2_LD = 0, LDSC_blocks = 20, intercept = NULL, chi2_thr1 = 30,
+    chi2_thr2 = Inf, REMLalgo = c(0, 1, 2), nitr = 100, cat_covarfile = NULL,
+    quant_covarfile = NULL, prevalence = NULL, partGRM = FALSE, autosome = TRUE,
+    Xsome = TRUE, nGRM = 3, cripticut = 0.025, minMAF = NULL, maxMAF = NULL,
+    hg = c("hg19", "hg38"), PlotIndepSNP = TRUE, IndepSNP_window_size = 50,
+    IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02, highLD_regions = NULL,
+    plotjpeg = TRUE, plotname = "Heritability_Plots") {
     # Validate inputs
     if (!validateInputForEstimateHerit(DataDir, ResultDir, finput, summarystat, ncores, model, byCHR, r2_LD, LDSC_blocks, REMLalgo, nitr, cat_covarfile, quant_covarfile, prevalence, partGRM, autosome, Xsome, nGRM, cripticut, minMAF, maxMAF, hg, PlotIndepSNP, IndepSNP_window_size, IndepSNP_step_size, IndepSNP_r2_threshold, highLD_regions)) {
         return(NULL)
@@ -1431,7 +1433,6 @@ EstimateHerit <- function(
         }
     )
 }
-
 
 
 #' ComputeGeneticPC: Computing principal components from genetic relationship matrix
@@ -1506,9 +1507,11 @@ EstimateHerit <- function(
 #'     DataDir = DataDir, ResultDir = ResultDir,
 #'     finput = finput, highLD_regions = highLD_hg19, countPC = 20
 #' )
-ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 10, plotPC = TRUE,
-    highLD_regions = NULL, ld_prunning = TRUE,
-    window_size = 50, step_size = 5, r2_threshold = 0.02) {
+ComputeGeneticPC <- function(
+      DataDir, ResultDir = tempdir(), finput, countPC = 10, plotPC = TRUE,
+      highLD_regions = NULL, ld_prunning = TRUE,
+      window_size = 50, step_size = 5, r2_threshold = 0.02
+) {
     # Validate inputs
     if (!validateInputForComputeGeneticPC(DataDir, ResultDir, finput, countPC, plotPC, highLD_regions, ld_prunning, window_size, step_size, r2_threshold)) {
         stop("Please verify all inputs.")
@@ -1668,11 +1671,11 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 #'
 #' @author Banabithi Bose
 #'
-#' @description This function calculates the polygenic risk score, which summarizes the estimated effect of many genetic variants on an 
-#' individual’s phenotype. It is calculated  as the sum of the allele counts (genotypes), each weighted by their estimated phenotypic 
-#' effect sizes from genome-wide association studies. It uses C+T filtering techniques. Users can perform the clumping procedure 
-#' chromosome-wise or genome-wide. Also, the function offers the choice of including genetic principal components and other covariates. 
-#' Using this function, users have freedom to experiment with various clumping and thresholding arrangements to test a wide range of 
+#' @description This function calculates the polygenic risk score, which summarizes the estimated effect of many genetic variants on an
+#' individual’s phenotype. It is calculated  as the sum of the allele counts (genotypes), each weighted by their estimated phenotypic
+#' effect sizes from genome-wide association studies. It uses C+T filtering techniques. Users can perform the clumping procedure
+#' chromosome-wise or genome-wide. Also, the function offers the choice of including genetic principal components and other covariates.
+#' Using this function, users have freedom to experiment with various clumping and thresholding arrangements to test a wide range of
 #' various parameter values.
 #'
 #' @param DataDir
@@ -1682,9 +1685,9 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 #' A character string specifying file path where all output files will be stored. The default is tempdir().
 #'
 #' @param finput
-#' Character string, specifying the prefix of the input PLINK binary files containing the genotype data i.e., the target data based on 
-#' which the clumping procedure will be performed. This file needs to be in DataDir. If the sample size of the target dataset is small  
-#' (e.g., N < 500 individuals) then users can utilize the 1000 Genomes Project samples, ensuring the use of the population that most 
+#' Character string, specifying the prefix of the input PLINK binary files containing the genotype data i.e., the target data based on
+#' which the clumping procedure will be performed. This file needs to be in DataDir. If the sample size of the target dataset is small
+#' (e.g., N < 500 individuals) then users can utilize the 1000 Genomes Project samples, ensuring the use of the population that most
 #' closely represents the target sample.
 #'
 #' @param summarystat
@@ -1701,13 +1704,13 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 #' Special Notes: The first three columns needed to be `SNP`, `A1` and `BETA` or `OR`.
 #'
 #' @param phenofile
-#' A character string, specifying the name of the mandatory phenotype file. This is a plain text file with no header line; columns are: 
-#' family ID, individual ID, and phenotype.  For a binary trait, the phenotypic value should be coded as 0 or 1, then it will be recognized 
-#' as a case-control study (0 for controls and 1 for cases). The missing value should be represented by "-9" or "NA". The desired phenotype 
+#' A character string, specifying the name of the mandatory phenotype file. This is a plain text file with no header line; columns are:
+#' family ID, individual ID, and phenotype.  For a binary trait, the phenotypic value should be coded as 0 or 1, then it will be recognized
+#' as a case-control study (0 for controls and 1 for cases). The missing value should be represented by "-9" or "NA". The desired phenotype
 #' column should be labeled as "Pheno1". This file needs to be in 'DataDir'.
 #'
 #' @param covarfile
-#' A character string, specifying the name of the covariate file which is a plain .text file with no header line; columns are family ID, 
+#' A character string, specifying the name of the covariate file which is a plain .text file with no header line; columns are family ID,
 #' individual ID, and the covariates. The default is 'NULL'. This file needs to be in 'DataDir'.
 #'
 #' @param pheno_type
@@ -1720,7 +1723,7 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 #' Boolean value, `TRUE` or `FALSE`, specifying whether to perform clumping or not.
 #'
 #' @param LDreference
-#' A character string, specifying the prefix of the PLINK files of the genetic similarity reference panel, (ideally the same that was used 
+#' A character string, specifying the prefix of the PLINK files of the genetic similarity reference panel, (ideally the same that was used
 #' to impute the target dataset). These files should be in 'DataDir'.
 #'
 #' @param clump_p1
@@ -1760,10 +1763,10 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 #' Character string, specifying the .txt file name with known genomic regions with high LD. The default is `NULL`.
 #'
 #' @return
-#' A list object containing a dataframe, a numeric value, a GeneticPC plot (if requested), and a PGS plot. The dataframe, PGS, contains four 
-#' mandatory columns: IID (i.e., Individual ID), FID (i.e., Family ID), Pheno1 (i.e., the trait for PGS) and Score (i.e., the best PGS). Other 
-#' columns of covariates could be there. The numeric value, BestP contains the threshold of the best p-value for the best PGS model fit. Also, 
-#' the function produces several plots, including p-value thresholds vs PGS model fit and PGS distribution among male and females. For 
+#' A list object containing a dataframe, a numeric value, a GeneticPC plot (if requested), and a PGS plot. The dataframe, PGS, contains four
+#' mandatory columns: IID (i.e., Individual ID), FID (i.e., Family ID), Pheno1 (i.e., the trait for PGS) and Score (i.e., the best PGS). Other
+#' columns of covariates could be there. The numeric value, BestP contains the threshold of the best p-value for the best PGS model fit. Also,
+#' the function produces several plots, including p-value thresholds vs PGS model fit and PGS distribution among male and females. For
 #' case-control data, it also plots the PGS distribution among cases and controls, and plots ROC curves.
 #'
 #' Also, the function produces several plots such as p-value thresholds vs PGS model fit and PGS distribution among male and females.
@@ -1817,10 +1820,12 @@ ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 1
 #' ## The best threshold
 #' BestPvalue <- PGSresult$BestP$Threshold
 #' BestPvalue
-ComputePGS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phenofile, covarfile = NULL,
-    effectsize = c("BETA", "OR"), ldclump = FALSE, LDreference, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE,
-    pthreshold = c(0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5), highLD_regions, ld_prunning = FALSE,
-    window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary") {
+ComputePGS <- function(
+      DataDir, ResultDir = tempdir(), finput, summarystat, phenofile, covarfile = NULL,
+      effectsize = c("BETA", "OR"), ldclump = FALSE, LDreference, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE,
+      pthreshold = c(0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5), highLD_regions, ld_prunning = FALSE,
+      window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary"
+) {
     # Validate inputs
     if (!validateInputForComputePGS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize, ldclump, LDreference, clump_p1, clump_p2, clump_r2, clump_kb, byCHR, pthreshold, highLD_regions, ld_prunning, window_size, step_size, r2_threshold, nPC, pheno_type)) {
         stop("Please validate all inputs")
@@ -2119,9 +2124,8 @@ MergeRegion <- function(DataDir, ResultDir, finput1, finput2, foutput, use_commo
 #' Famfile <- NULL
 #' PVbyCHR <- FALSE
 #' plinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)
-plinkVCF <- function(
-        DataDir, ResultDir = tempdir(), finput, foutput,
-        VtoP = FALSE, PtoV = TRUE, Famfile = NULL, PVbyCHR = TRUE) {
+plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput,
+    VtoP = FALSE, PtoV = TRUE, Famfile = NULL, PVbyCHR = TRUE) {
     # Validate Inputs
     if (!validateInputForPlinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)) {
         return(NULL)
@@ -2303,18 +2307,17 @@ plinkVCF <- function(
 #' # Checking if there is any wrong sex assignment
 #' problematic_sex <- x[x$STATUS != "OK", ]
 SexCheck <-
-    function(
-        DataDir,
-        ResultDir = tempdir(),
-        finput,
-        infer_sex = FALSE,
-        compute_freq = FALSE,
-        LD = TRUE,
-        LD_window_size = 50,
-        LD_step_size = 5,
-        LD_r2_threshold = 0.02,
-        fmax_F = 0.2,
-        mmin_F = 0.8) {
+    function(DataDir,
+    ResultDir = tempdir(),
+    finput,
+    infer_sex = FALSE,
+    compute_freq = FALSE,
+    LD = TRUE,
+    LD_window_size = 50,
+    LD_step_size = 5,
+    LD_r2_threshold = 0.02,
+    fmax_F = 0.2,
+    mmin_F = 0.8) {
         # Validate inputs
         if (!validateInputForSexCheck(DataDir, ResultDir, finput, infer_sex, compute_freq, LD, LD_window_size, LD_step_size, LD_r2_threshold, fmax_F, mmin_F)) {
             return(NULL)
@@ -2459,7 +2462,6 @@ SexCheck <-
     }
 
 
-
 #' FilterPlinkSample: Making PLINK files with desired samples.
 #'
 #' @author Banabithi Bose
@@ -2512,13 +2514,12 @@ SexCheck <-
 #'     finput = finput, foutput = foutput, keep_remove_sample_file = keep_remove_sample_file,
 #'     keep = keep
 #' )
-FilterPlinkSample <- function(
-        DataDir, ResultDir,
-        finput,
-        foutput = NULL,
-        filter_sample = "cases",
-        keep_remove_sample_file = NULL,
-        keep = TRUE) {
+FilterPlinkSample <- function(DataDir, ResultDir,
+    finput,
+    foutput = NULL,
+    filter_sample = "cases",
+    keep_remove_sample_file = NULL,
+    keep = TRUE) {
     # Validate inputs
     if (!validateInputForFilterPlinkSample(DataDir, ResultDir, finput, foutput, filter_sample, keep_remove_sample_file, keep)) {
         return(NULL)
@@ -2640,14 +2641,13 @@ FilterPlinkSample <- function(
 #'     finput = finput, foutput = foutput, sex = sex,
 #'     xplink = FALSE, autoplink = FALSE
 #' )
-GetMFPlink <- function(
-        DataDir,
-        ResultDir = tempdir(),
-        finput,
-        foutput,
-        sex,
-        xplink = FALSE,
-        autoplink = FALSE) {
+GetMFPlink <- function(DataDir,
+    ResultDir = tempdir(),
+    finput,
+    foutput,
+    sex,
+    xplink = FALSE,
+    autoplink = FALSE) {
     if (!checkFiles(DataDir, finput)) {
         stop("Missing required Plink files in the specified DataDir.")
     }
@@ -2722,7 +2722,6 @@ GetMFPlink <- function(
         }
     )
 }
-
 
 
 #' Xhwe: Filter X-chromosome variants for HWE in females.
@@ -2896,7 +2895,6 @@ Xhwe <- function(DataDir, ResultDir = tempdir(), finput, filterSNP = TRUE, foutp
 }
 
 
-
 #' MAFdiffSexControl: Test for significantly different minor allele frequency (MAF) between sexes in control samples
 #'
 #' @author Banabithi Bose
@@ -2940,11 +2938,13 @@ Xhwe <- function(DataDir, ResultDir = tempdir(), finput, filterSNP = TRUE, foutp
 #' finput <- "GXwasR_example"
 #' foutput <- "Test_output"
 #' x <- MAFdiffSexControl(DataDir, ResultDir, finput, filterSNP = TRUE, foutput = foutput)
-MAFdiffSexControl <- function(DataDir,
-    ResultDir = tempdir(),
-    finput,
-    filterSNP = FALSE,
-    foutput = NULL) {
+MAFdiffSexControl <- function(
+      DataDir,
+      ResultDir = tempdir(),
+      finput,
+      filterSNP = FALSE,
+      foutput = NULL
+) {
     if (!validateInputForMAFdiffSexControl(DataDir, ResultDir, finput, filterSNP, foutput)) {
         return(NULL)
     }
@@ -3077,7 +3077,6 @@ MAFdiffSexControl <- function(DataDir,
 }
 
 
-
 #' QCsample: Quality control for samples in the PLINK binary files.
 #'
 #' @author Banabithi Bose
@@ -3178,22 +3177,24 @@ MAFdiffSexControl <- function(DataDir,
 #'     foutput = foutput, imiss = imiss, het = het, IBD = IBD,
 #'     ambi_out = ambi_out
 #' )
-QCsample <- function(DataDir,
-    ResultDir,
-    finput,
-    foutput = NULL,
-    imiss,
-    het,
-    small_sample_mod = FALSE,
-    IBD,
-    IBDmatrix = FALSE,
-    ambi_out = TRUE,
-    legend_text_size = 8,
-    legend_title_size = 7,
-    axis_text_size = 5,
-    axis_title_size = 7,
-    title_size = 9,
-    filterSample = TRUE) {
+QCsample <- function(
+      DataDir,
+      ResultDir,
+      finput,
+      foutput = NULL,
+      imiss,
+      het,
+      small_sample_mod = FALSE,
+      IBD,
+      IBDmatrix = FALSE,
+      ambi_out = TRUE,
+      legend_text_size = 8,
+      legend_title_size = 7,
+      axis_text_size = 5,
+      axis_title_size = 7,
+      title_size = 9,
+      filterSample = TRUE
+) {
     # Validate parameters
     validateInputForQCsample(DataDir, ResultDir, finput, foutput, imiss, het, small_sample_mod, IBD, IBDmatrix, ambi_out, legend_text_size, legend_title_size, axis_text_size, axis_title_size, title_size, filterSample = TRUE)
 
@@ -3400,8 +3401,6 @@ QCsample <- function(DataDir,
 }
 
 
-
-
 #' Miami plot
 #'
 #' @description
@@ -3591,17 +3590,17 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #' @param combtest
 #' Character vector specifying method for combining p-values after stratified GWAS/XWAS models.
 #' Choices are “stouffer.method”, "fisher.method" and "fisher.method.perm". For fisher.method the function for combining
-#' p-values uses a statistic, \eqn{S = -2 ∑^k /log p}, which follows a \eqn{χ^2} distribution with 2k degrees of freedom \insertCite{Fisher1925}{GXwasR}.
+#' p-values uses a statistic, \eqn{S = -2 \sum_{i=1}^{k} \log(p_i)}, which follows a \eqn{\chi^2} distribution with 2k degrees of freedom \insertCite{Fisher1925}{GXwasR}.
 #'
-#' For fisher.method.perm, using p-values from stratified tests, the summary statistic for combining p-values is \eqn{S = -2 ∑ /log p}.
+#' For fisher.method.perm, using p-values from stratified tests, the summary statistic for combining p-values is \eqn{S = -2 \sum_{i=1}^{k} \log(p_i)}.
 #' A p-value for this statistic can be derived by randomly generating summary statistics \insertCite{Rhodes2002}{GXwasR}. Therefore, a p-value is randomly
 #' sampled from each contributing study, and a random statistic is calculated. The fraction of random statistics greater or
 #' equal to S then gives the final p-value.
 #'
 #' For stouffer.method ,the function applies Stouffer’s method \insertCite{Stouffer1949}{GXwasR} to the p-values assuming that the p-values to be combined are
 #' independent. Letting p1, p2, . . . , pk denote the individual (one- or two-sided) p-values of the k hypothesis tests to be
-#' combined, the test statistic is then computed with \eqn{$z = ∑^k_{1}frac{z_{i}}{sqrt(k)}$} where \eqn{$z_{i}$ = Φ−1 (1 – $p_{i}$)} and
-#' \eqn{Φ −1 (·)} denotes the inverse of the cumulative distribution function of a standard normal distribution. Under the joint null
+#' combined, the test statistic is then computed as \eqn{z = \frac{\sum_{i=1}^{k} z_i}{\sqrt{k}}}, where \eqn{z_i = \Phi^{-1}(1 - p_i)} and
+#' \eqn{\Phi^{-1}(\cdot)} denotes the inverse of the cumulative distribution function of a standard normal distribution. Under the joint null
 #' hypothesis, the test statistic follows a standard normal distribution which is used to compute the combined p-value. This
 #' functionality is taken from the R package poolr \insertCite{Cinar2022}{GXwasR}.
 #'
@@ -3694,13 +3693,12 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #'     snp_pval = snp_pval, plot.jpeg = TRUE, suggestiveline = 5, genomewideline = 7.3,
 #'     MF.mc.cores = 1, ncores = ncores
 #' )
-GXwas <- function(
-        DataDir, ResultDir, finput, trait = c("binary", "quantitative"), standard_beta = TRUE,
-        xmodel = c("FMcombx01", "FMcombx02", "FMstratified", "GWAScxci"), sex = FALSE, xsex = FALSE,
-        covarfile = NULL, interaction = FALSE, covartest = c("ALL"), Inphenocov = c("ALL"), combtest = c("fisher.method", "fisher.method.perm", "stouffer.method"),
-        MF.zero.sub = 0.00001, B = 10000, MF.mc.cores = 1, MF.na.rm = FALSE,
-        MF.p.corr = "none", plot.jpeg = FALSE, plotname = "GXwas.plot", snp_pval = 1e-08,
-        annotateTopSnp = FALSE, suggestiveline = 5, genomewideline = 7.3, ncores = 0) {
+GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"), standard_beta = TRUE,
+    xmodel = c("FMcombx01", "FMcombx02", "FMstratified", "GWAScxci"), sex = FALSE, xsex = FALSE,
+    covarfile = NULL, interaction = FALSE, covartest = c("ALL"), Inphenocov = c("ALL"), combtest = c("fisher.method", "fisher.method.perm", "stouffer.method"),
+    MF.zero.sub = 0.00001, B = 10000, MF.mc.cores = 1, MF.na.rm = FALSE,
+    MF.p.corr = "none", plot.jpeg = FALSE, plotname = "GXwas.plot", snp_pval = 1e-08,
+    annotateTopSnp = FALSE, suggestiveline = 5, genomewideline = 7.3, ncores = 0) {
     # Initialize progress bar
 
     pb <- progress::progress_bar$new(
@@ -3812,7 +3810,7 @@ GXwas <- function(
 #' (i.e., SNP identifier), ‘BETA’ (i.e., effect-size or logarithm of odds ratio), ‘SE’ (i.e., standard error of BETA),
 #' ‘P’ (i.e., p-values), 'NMISS' (i.e., effective sample size), 'L95' (i.e., lower limit of 95% confidence interval) and
 #' 'U95' (i.e., upper limit of 95% confidence interval) are in mandatory column headers. These files needed to be in DataDir.
-#' If the numbers of cases and controls are unequal, effective sample size should be \eqn{4 / (1/<# of cases> + 1/<# of controls>)}.
+#' If the numbers of cases and controls are unequal, effective sample size should be \eqn{4 / (1/<qty of cases> + 1/<qty of controls>)}.
 #' A smaller "effective" sample size may be used for samples that include related individuals, however simulations indicate
 #' that small changes in the effective sample size have relatively little effect on the final p-value
 #' \insertCite{Willer2010}{GXwasR}. Columns, such as, `CHR` (Chromosome code), `BP` (Basepair position), `A1` (First allele code),
@@ -3934,13 +3932,12 @@ GXwas <- function(
 #'     plotname = "Meta_Analysis.plot", pval_filter, top_snp_pval, max_top_snps,
 #'     chosen_snps_file = NULL, byCHR, pval_threshold_manplot
 #' )
-MetaGWAS <- function(
-        DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile = NULL,
-        useSNPposition = TRUE,
-        UseA1 = FALSE, GCse = TRUE,
-        plotname = "Meta_Analysis.plot", pval_filter = "R",
-        top_snp_pval = 1e-08, max_top_snps = 6, chosen_snps_file = NULL,
-        byCHR = FALSE, pval_threshold_manplot = 1e-05) {
+MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile = NULL,
+    useSNPposition = TRUE,
+    UseA1 = FALSE, GCse = TRUE,
+    plotname = "Meta_Analysis.plot", pval_filter = "R",
+    top_snp_pval = 1e-08, max_top_snps = 6, chosen_snps_file = NULL,
+    byCHR = FALSE, pval_threshold_manplot = 1e-05) {
     # Validate input parameters
     validateInputForMetaGWAS(DataDir, ResultDir, SummData, SNPfile, useSNPposition, UseA1, GCse, plotname, pval_filter, top_snp_pval, max_top_snps, chosen_snps_file, byCHR, pval_threshold_manplot)
 
@@ -4028,7 +4025,6 @@ MetaGWAS <- function(
             # Filter and prepare SNPs for forest plots
             top_snp_pval <- adjustPvalThreshold(top_snp_pval, MR, pval_filter)
             MRfiltered <- filterSNPsForForestPlot(MR, top_snp_pval, pval_filter)
-
 
 
             # Update MRfiltered if a specific SNP file is provided
@@ -4138,7 +4134,6 @@ MetaGWAS <- function(
 }
 
 
-
 #' ClumpLD: Clumping SNPs using linkage disequilibrium between SNPs
 #'
 #' @description
@@ -4231,10 +4226,9 @@ MetaGWAS <- function(
 #'     DataDir, finput, SNPdata, ResultDir, clump_p1,
 #'     clump_p2, clump_r2, clump_kb, byCHR
 #' )
-ClumpLD <- function(
-        DataDir, finput, SNPdata, ResultDir = tempdir(),
-        clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE,
-        clump_best = TRUE, clump_index_first = TRUE) {
+ClumpLD <- function(DataDir, finput, SNPdata, ResultDir = tempdir(),
+    clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE,
+    clump_best = TRUE, clump_index_first = TRUE) {
     # Check for an unsupported combination:
     if (clump_best == TRUE && clump_index_first == FALSE) {
         warning("The combination clump_best = TRUE and clump_index_first = FALSE is not recommended. Enforcing clump_index_first = TRUE.")
@@ -4421,7 +4415,7 @@ ClumpLD <- function(
 #'
 #' @description
 #' This function tests the null hypothesis that a measured statistics (example: genetic correlation,
-#' rg for a trait) < 1 using a 1-tailed test compared with a normal distribution (z = (1 − measure statistics)/Standard error).
+#' rg for a trait) < 1 using a 1-tailed test compared with a normal distribution (z = (1 - measure statistics)/Standard error).
 #' For multiple tests, users are encouraged to apply a Bonferroni multiple-testing correction.
 #'
 #' @param inputdata
@@ -4501,12 +4495,12 @@ DiffZeroOne <- function(inputdata, diffzero = TRUE, diffone = TRUE) {
 #'
 #' @description
 #' This function calculates the difference in any kind of measured entities,(example: including SNP heritability estimate,
-#' genetic correlation, and GWAS β values) between sexes using a Z-score and its associated p-value statistic.
+#' genetic correlation, and GWAS \eqn{\beta} values) between sexes using a Z-score and its associated p-value statistic.
 #' When STAT/SE is normally distributed and the test statistics are independent in sex, the test is well calibrated. If
 #' the statistics are positively correlated, this test is conservative (1).
 #'
 #' We could define SNPs with SDEs as those variants at the extreme ends of the distribution with an absolute value of the
-#' Z-score greater than 3(|Z-score| > 3), which is roughly equivalent to p <10−3, and represents 0.3% of all tested SNPs.
+#' Z-score greater than 3(|Z-score| > 3), which is roughly equivalent to p <10-3, and represents 0.3% of all tested SNPs.
 #' The input dataframes should only include X-chromosome in order to obtain results for sex differences based solely on
 #' X-linked loci.
 #'
@@ -4559,7 +4553,6 @@ SexDiffZscore <- function(inputdata) {
         }
     )
 }
-
 
 
 #' GeneticCorrBT: Computing genetic correlation between two traits.
@@ -4693,12 +4686,14 @@ SexDiffZscore <- function(inputdata) {
 #'     partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
 #'     cripticut = 0.025, minMAF = NULL, maxMAF = NULL, excludeResidual = TRUE, ncores = ncores
 #' )
-GeneticCorrBT <- function(DataDir, ResultDir, finput, byCHR = FALSE,
-    REMLalgo = c(0, 1, 2), nitr = 100, phenofile, cat_covarfile = NULL, quant_covarfile = NULL,
-    computeGRM = TRUE, grmfile_name = NULL,
-    partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
-    cripticut = 0.025, minMAF = NULL, maxMAF = NULL,
-    excludeResidual = FALSE, ncores = 2) {
+GeneticCorrBT <- function(
+      DataDir, ResultDir, finput, byCHR = FALSE,
+      REMLalgo = c(0, 1, 2), nitr = 100, phenofile, cat_covarfile = NULL, quant_covarfile = NULL,
+      computeGRM = TRUE, grmfile_name = NULL,
+      partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
+      cripticut = 0.025, minMAF = NULL, maxMAF = NULL,
+      excludeResidual = FALSE, ncores = 2
+) {
     # Validate input parameters
     validateInputForGeneticCorrBT(
         DataDir, ResultDir, finput, byCHR, REMLalgo, nitr, phenofile,
@@ -4866,7 +4861,6 @@ GeneticCorrBT <- function(DataDir, ResultDir, finput, byCHR = FALSE,
 }
 
 
-
 #' SexRegress: Performing linear regression analysis with quantitative response variable.
 #'
 #' @description
@@ -5008,19 +5002,21 @@ SexRegress <- function(fdata, regressor_index, response_index) {
 #'     regionfile = FALSE, filterCHR = NULL, Hg = "38", exclude = TRUE
 #' )
 FilterRegion <-
-    function(DataDir,
-    ResultDir,
-    finput,
-    foutput,
-    CHRX = TRUE,
-    CHRY = FALSE,
-    filterPAR = TRUE,
-    filterXTR = TRUE,
-    filterAmpliconic = TRUE,
-    regionfile = FALSE,
-    filterCHR = NULL,
-    Hg = "19",
-    exclude = TRUE) {
+    function(
+      DataDir,
+      ResultDir,
+      finput,
+      foutput,
+      CHRX = TRUE,
+      CHRY = FALSE,
+      filterPAR = TRUE,
+      filterXTR = TRUE,
+      filterAmpliconic = TRUE,
+      regionfile = FALSE,
+      filterCHR = NULL,
+      Hg = "19",
+      exclude = TRUE
+    ) {
         # Validate parameters
         validateFilterRegionParams(DataDir, ResultDir, finput, foutput, CHRX, CHRY, filterPAR, filterXTR, filterAmpliconic, regionfile, filterCHR, Hg, exclude)
 
@@ -5158,7 +5154,6 @@ FilterRegion <-
             }
         )
     }
-
 
 
 # Updated in 5.0
@@ -5373,10 +5368,10 @@ FilterAllele <- function(DataDir, ResultDir, finput, foutput) {
 #'
 #' @param combtest
 #' Character vector specifying method for combining p-values for stratified GWAS models. Choices are “stouffer.method”,
-#' "fisher.method" and "fisher.method.perm". For fisher.method the function for combining p-values uses a statistic,
-#' \eqn{S = -2 ∑^k /log p}, which follows a \eqn{χ^2} distribution with 2k degrees of freedom \insertCite{Fisher1925}{GXwasR}.
+#' "fisher.method" and "fisher.method.perm". For fisher.method, the function for combining p-values uses a statistic,
+#' \eqn{S = -2 \sum_{i=1}^{k} \log(p_i)}, which follows a \eqn{\chi^2} distribution with 2k degrees of freedom \insertCite{Fisher1925}{GXwasR}.
 #' For fisher.method.perm, using p-values from stratified tests, the summary statistic for combining p-values
-#' is \eqn{S = -2 ∑ /log p}. A p-value for this statistic can be derived by randomly generating summary statistics \insertCite{Rhodes2002}{GXwasR}.
+#' is \eqn{S = -2 \sum_{i=1}^{k} \log(p_i)}. A p-value for this statistic can be derived by randomly generating summary statistics \insertCite{Rhodes2002}{GXwasR}.
 #' Therefore, a p-value is randomly sampled from each contributing study, and a random statistic is calculated. The
 #' fraction of random statistics greater or equal to S then gives the final p-value.
 #'
@@ -5443,22 +5438,21 @@ FilterAllele <- function(DataDir, ResultDir, finput, foutput) {
 #'     suggestiveline = 3, genomewideline = 5.69897, ncores = 1
 #' )
 #'
-PvalComb <- function(
-        SumstatMale, SumstatFemale,
-        combtest,
-        MF.p.corr = "none",
-        MF.zero.sub = 0.00001,
-        MF.na.rm = TRUE,
-        MF.mc.cores = 1,
-        B = 1000,
-        plot.jpeg = TRUE,
-        plotname = "GXwas.plot",
-        PlotDir = tempdir(),
-        snp_pval,
-        annotateTopSnp = FALSE,
-        suggestiveline = 5,
-        genomewideline = 7.3,
-        ncores = 0) {
+PvalComb <- function(SumstatMale, SumstatFemale,
+    combtest,
+    MF.p.corr = "none",
+    MF.zero.sub = 0.00001,
+    MF.na.rm = TRUE,
+    MF.mc.cores = 1,
+    B = 1000,
+    plot.jpeg = TRUE,
+    plotname = "GXwas.plot",
+    PlotDir = tempdir(),
+    snp_pval,
+    annotateTopSnp = FALSE,
+    suggestiveline = 5,
+    genomewideline = 7.3,
+    ncores = 0) {
     # Validate inputs
     validation_result <- validatePvalCombInputs(SumstatMale, SumstatFemale, combtest, MF.p.corr, MF.zero.sub, MF.na.rm, MF.mc.cores, B, plot.jpeg, plotname, snp_pval, annotateTopSnp, suggestiveline, genomewideline, ncores)
     if (!is.null(validation_result)) {
@@ -5558,7 +5552,6 @@ PvalComb <- function(
         }
     )
 }
-
 
 
 #' FilterSNP: Filter out SNPs.
@@ -6011,7 +6004,7 @@ LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, st
 #' The number of cores to be used. The default is 2.
 #'
 #' @details
-#' This function requires access to the \href{https://zenodo.org/records/16923484}{reference LD data} via an 
+#' This function requires access to the \href{https://zenodo.org/records/16923484}{reference LD data} via an
 #' environment variable. You must set one of the following environment variables to the appropriate directory:
 #'
 #' - `UKB_ARRAY_PATH` for the Axiom Array reference (`UKB_array_SVD_eigen90_extraction`)
@@ -6046,16 +6039,18 @@ LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, st
 #'         parallel = TRUE
 #'     )
 #' }
-SumstatGenCorr <- function(ResultDir = tempdir(),
-    referenceLD,
-    sumstat1,
-    sumstat2,
-    Nref = 335265,
-    N0 = min(sumstat1$N),
-    eigen.cut = "automatic",
-    lim = exp(-18),
-    parallel = FALSE,
-    numCores = 2) {
+SumstatGenCorr <- function(
+      ResultDir = tempdir(),
+      referenceLD,
+      sumstat1,
+      sumstat2,
+      Nref = 335265,
+      N0 = min(sumstat1$N),
+      eigen.cut = "automatic",
+      lim = exp(-18),
+      parallel = FALSE,
+      numCores = 2
+) {
     reference_paths <- list(
         UKB_imputed_hapmap2_SVD_eigen99_extraction = Sys.getenv("UKB_IMPUTED_HAPMAP2_PATH", unset = NA),
         UKB_imputed_SVD_eigen99_extraction = Sys.getenv("UKB_IMPUTED_PATH", unset = NA),

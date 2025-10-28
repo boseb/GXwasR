@@ -27,12 +27,12 @@ columns added.
 }
 \description{
 This function calculates the difference in any kind of measured entities,(example: including SNP heritability estimate,
-genetic correlation, and GWAS β values) between sexes using a Z-score and its associated p-value statistic.
+genetic correlation, and GWAS \eqn{\beta} values) between sexes using a Z-score and its associated p-value statistic.
 When STAT/SE is normally distributed and the test statistics are independent in sex, the test is well calibrated. If
 the statistics are positively correlated, this test is conservative (1).
 
 We could define SNPs with SDEs as those variants at the extreme ends of the distribution with an absolute value of the
-Z-score greater than 3(|Z-score| > 3), which is roughly equivalent to p <10−3, and represents 0.3\% of all tested SNPs.
+Z-score greater than 3(|Z-score| > 3), which is roughly equivalent to p <10-3, and represents 0.3\% of all tested SNPs.
 The input dataframes should only include X-chromosome in order to obtain results for sex differences based solely on
 X-linked loci.
 }

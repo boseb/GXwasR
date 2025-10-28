@@ -30,7 +30,7 @@ A dataframe with columns:
 }
 \description{
 This function tests the null hypothesis that a measured statistics (example: genetic correlation,
-rg for a trait) < 1 using a 1-tailed test compared with a normal distribution (z = (1 − measure statistics)/Standard error).
+rg for a trait) < 1 using a 1-tailed test compared with a normal distribution (z = (1 - measure statistics)/Standard error).
 For multiple tests, users are encouraged to apply a Bonferroni multiple-testing correction.
 }
 \examples{
