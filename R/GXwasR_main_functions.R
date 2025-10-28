@@ -3331,7 +3331,7 @@ QCsample <- function(DataDir,
                 excludeSamplesArgs <- c(
                     "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
                     "--make-bed",
-                    "--out", normalizePath(file.path(ResultDir, "foutput"), mustWork = FALSE),
+                    "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
                     "--silent"
                 )
                 executePlink(excludeSamplesArgs)
@@ -3384,7 +3384,9 @@ QCsample <- function(DataDir,
                 Missingness_results = fmi,
                 Heterozygosity_results = fhh,
                 IBD_results = ibd,
-                het_plot = het_plot
+                het_plot = if(!is.null(imiss) && !is.null(het)) {
+                    het_plot }
+                    else { NULL }
             ))
         },
         error = function(e) {
