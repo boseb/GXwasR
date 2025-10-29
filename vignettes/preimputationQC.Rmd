@@ -150,13 +150,14 @@ x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = 
 
 Copying the plink files from ResultDir to DataDir.
 ```{r}
-ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PreimputeEX_QC1")
-file.copy(paste0(ResultDir, "/", ftemp), DataDir)
+ftemp <- list.files(ResultDir, pattern = "PreimputeEX_QC1", full.names = TRUE)
+file.copy(ftemp, DataDir)
 PlinkSummary(DataDir, ResultDir, finput = "PreimputeEX_QC1")
 ```
 
 ## Step 3: Filtering samples with high missing rate threshold.
 It excludes individuals who have missing genotype data for more than 20% of the genetic variants in the dataset.
+
 ```{r}
 # Running
 finput <- "PreimputeEX_QC1"
@@ -189,8 +190,8 @@ problematic_sex <- problematic_sex[, 1:2]
 Number of samples with problematic sex assignment: `r nrow(problematic_sex)`
 
 ```{r}
-write.table(problematic_sex, file = paste0(DataDir, "/problematic_sex_samples"), quote = FALSE, row.names = FALSE, col.names = FALSE)
-SexCheckResult[1:5, ]
+write.table(problematic_sex,file = file.path(DataDir, "problematic_sex_samples"), quote = FALSE, row.names = F, col.names = FALSE)
+SexCheckResult[1:5,]
 ```
 
 Note, there is no filtering of the samples based on sex prediction.
@@ -210,7 +211,7 @@ Users have the ability to impute the sex for their dataset.
 We prefer to keep only chromosome 1 to 23. 
 
 ```{r}
-test1 <- read.table(paste0(DataDir, "/", finput, ".bim"))
+test1 <- read.table(file.path(DataDir,paste0(finput,".bim")))
 unique(test1$V1)
 ```
 ```{r}
@@ -221,15 +222,14 @@ x <- FilterRegion(DataDir = DataDir, ResultDir = ResultDir, finput = finput, fou
 Copying the plink files from ResultDir to DataDir.
 
 ```{r}
-ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PreimputeEX_QC2")
-file.copy(paste0(ResultDir, "/", ftemp), DataDir)
+ftemp <- list.files(ResultDir, pattern = "PreimputeEX_QC2", full.names = TRUE)
+file.copy(ftemp, DataDir)
 PlinkSummary(DataDir, ResultDir, finput = "PreimputeEX_QC2")
 ```
 
 ## Step 6: Second round of SNP filtering.
 
 ```{r}
-library(GXwasR)
 finput <- "PreimputeEX_QC2"
 foutput <- "PreimputeEX_QC3"
 geno <- 0.02
@@ -246,15 +246,17 @@ hweCase <- 1e-10
 hweControl <- 1e-06
 x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, dmissX = dmissX, dmissAutoY = dmissAutoY, diffmissFilter = diffmissFilter)
 ```
+
 Copying the plink files from ResultDir to DataDir.
 
 ```{r}
-ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PreimputeEX_QC3")
-file.copy(paste0(ResultDir, "/", ftemp), DataDir)
+ftemp <- list.files(ResultDir, pattern = "PreimputeEX_QC3", full.names = TRUE)
+file.copy(ftemp, DataDir)
 PlinkSummary(DataDir, ResultDir, finput = "PreimputeEX_QC3")
 ```
 
 ## Step 7: Second round of sample filtering
+
 Here we are using stringent thresholds for sample filter.
 
 ```{r preimpute-QCSample}
@@ -269,10 +271,12 @@ filterSample <- TRUE
 ambi_out <- TRUE
 x <- QCsample(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, imiss = imiss, het = het, IBD = IBD, IBDmatrix = IBDmatrix, filterSample = filterSample, ambi_out = ambi_out)
 ```
+
 Copying the plink files from ResultDir to DataDir.
+
 ```{r}
-ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PreimputeEX_QC4")
-file.copy(paste0(ResultDir, "/", ftemp), DataDir)
+ftemp <- list.files(ResultDir, pattern = "PreimputeEX_QC4", full.names = TRUE)
+file.copy(ftemp, DataDir)
 PlinkSummary(DataDir, ResultDir, finput = "PreimputeEX_QC4")
 ```
 
@@ -332,9 +336,10 @@ Samples_with_predicted_ancestry[1:5, ]
 There was no outlier samples.
 
 ## Step 9: Third round of SNP filtering
+
 To make sure all the filtering thresholds for SNPs are maintained after sample filtering.
+
 ```{r}
-library(GXwasR)
 finput <- "PreimputeEX_QC4"
 foutput <- "Preimpute_Final"
 geno <- 0.02
@@ -351,10 +356,13 @@ hweCase <- 1e-10
 hweControl <- 1e-06
 x <- QCsnp(DataDir = ResultDir, ResultDir = ResultDir, finput = finput, foutput = foutput, geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, dmissX = dmissX, dmissAutoY = dmissAutoY, diffmissFilter = diffmissFilter)
 ```
+
 ## Final Summary of final Qc-ed dataset.
+
 ```{r}
 PlinkSummary(ResultDir, ResultDir, foutput)
 ```
+
 ## Citation
 If you are using GXwasR package and/or following this pipeline in your study, please cite it as:
 ```{r}
