@@ -3177,24 +3177,22 @@ MAFdiffSexControl <- function(
 #'     foutput = foutput, imiss = imiss, het = het, IBD = IBD,
 #'     ambi_out = ambi_out
 #' )
-QCsample <- function(
-      DataDir,
-      ResultDir,
-      finput,
-      foutput = NULL,
-      imiss,
-      het,
-      small_sample_mod = FALSE,
-      IBD,
-      IBDmatrix = FALSE,
-      ambi_out = TRUE,
-      legend_text_size = 8,
-      legend_title_size = 7,
-      axis_text_size = 5,
-      axis_title_size = 7,
-      title_size = 9,
-      filterSample = TRUE
-) {
+QCsample <- function(DataDir,
+    ResultDir,
+    finput,
+    foutput = NULL,
+    imiss,
+    het,
+    small_sample_mod = FALSE,
+    IBD,
+    IBDmatrix = FALSE,
+    ambi_out = TRUE,
+    legend_text_size = 8,
+    legend_title_size = 7,
+    axis_text_size = 5,
+    axis_title_size = 7,
+    title_size = 9,
+    filterSample = TRUE) {
     # Validate parameters
     validateInputForQCsample(DataDir, ResultDir, finput, foutput, imiss, het, small_sample_mod, IBD, IBDmatrix, ambi_out, legend_text_size, legend_title_size, axis_text_size, axis_title_size, title_size, filterSample = TRUE)
 
@@ -3385,9 +3383,11 @@ QCsample <- function(
                 Missingness_results = fmi,
                 Heterozygosity_results = fhh,
                 IBD_results = ibd,
-                het_plot = if(!is.null(imiss) && !is.null(het)) {
-                    het_plot }
-                    else { NULL }
+                het_plot = if (!is.null(imiss) && !is.null(het)) {
+                    het_plot
+                } else {
+                    NULL
+                }
             ))
         },
         error = function(e) {

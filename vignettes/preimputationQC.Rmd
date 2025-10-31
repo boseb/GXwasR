@@ -190,8 +190,8 @@ problematic_sex <- problematic_sex[, 1:2]
 Number of samples with problematic sex assignment: `r nrow(problematic_sex)`
 
 ```{r}
-write.table(problematic_sex,file = file.path(DataDir, "problematic_sex_samples"), quote = FALSE, row.names = F, col.names = FALSE)
-SexCheckResult[1:5,]
+write.table(problematic_sex, file = file.path(DataDir, "problematic_sex_samples"), quote = FALSE, row.names = FALSE, col.names = FALSE)
+SexCheckResult[1:5, ]
 ```
 
 Note, there is no filtering of the samples based on sex prediction.
@@ -211,7 +211,7 @@ Users have the ability to impute the sex for their dataset.
 We prefer to keep only chromosome 1 to 23. 
 
 ```{r}
-test1 <- read.table(file.path(DataDir,paste0(finput,".bim")))
+test1 <- read.table(file.path(DataDir, paste0(finput, ".bim")))
 unique(test1$V1)
 ```
 ```{r}
