@@ -2659,7 +2659,7 @@ ComputeGRMauto <- function(
                     "v" = grep("GRM has been saved", log_lines, value = TRUE),
                     "i" = grep("Number of SNPs in each pair", log_lines, value = TRUE)
                 )))
-                message("\n")
+                rlang::inform("")
             } else {
                 file_extensions <- c("grm.id", "grm.bin", "grm.N.bin")
                 for (ext in file_extensions) {
@@ -2711,7 +2711,7 @@ ComputeGRMauto <- function(
                         "i" = grep("Partitioned GRM has been saved", log_lines, value = TRUE),
                         "i" = grep("Number of SNPs in each pair", log_lines, value = TRUE)
                     )))
-                    message("\n")
+                    rlang::inform("")
                 }
             } else {
                 file_extensions <- c("grm.id", "grm.bin", "grm.N.bin")
@@ -2769,7 +2769,7 @@ ComputeGRMX <- function(DataDir, ResultDir, finput, partGRM, nGRM, minMAF = NULL
                 "v" = grep("GRM has been saved", log_lines, value = TRUE),
                 "i" = grep("Number of SNPs in each pair", log_lines, value = TRUE)
             )))
-            message("\n")
+            rlang::inform("")
         } else {
             rlang::inform(rlang::format_error_bullets(c("i" = "No GRM was created.")))
         }
@@ -3982,7 +3982,7 @@ ComputeBivarREMLone <- function(
             " " = "- verify SNP partitioning or quality of the data"
         )))
         rlang::inform(rlang::format_error_bullets(c("i" = "The result will be provided for the last iteration.")))
-        message("\n")
+        rlang::inform("")
         return(x)
     }
 }
@@ -4080,7 +4080,7 @@ ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nit
             " " = "- verify SNP partitioning or quality of the data"
         )))
         rlang::inform(rlang::format_error_bullets(c("i" = "The result will be provided for the last iteration.")))
-        message("\n")
+        rlang::inform("")
         return(x)
     }
 }
@@ -6788,7 +6788,7 @@ HDL.rg <-
         gen.cov <- sum(HDL12.df[, 1])
 
         ##### Estimated likelihood for h12 + h11, h22 independent #####
-        message("\n")
+        rlang::inform("")
         rlang::inform("Integrating piecewise results")
         log_output(
             "",
@@ -7136,7 +7136,7 @@ HDL.rg <-
         }
 
         end.time <- date()
-        message("\n")
+        rlang::inform("")
         rlang::inform(
             rlang::format_error_bullets(c(
                 paste("Heritability of phenotype 1:", output(h11), "(", output(h11.se), ")"),
@@ -7156,7 +7156,7 @@ HDL.rg <-
                 ))
             )
         }
-        message("\n")
+        rlang::inform("")
         rlang::inform(paste("Analysis finished at", end.time))
 
         log_output(
@@ -7661,7 +7661,7 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     }
     close(pb)
 
-    message("\n")
+    rlang::inform("")
 
     h1_2 <- sum(unlist(lapply(HDL.res.pieces.list, FUN = "[[", 1)))
     h2_2 <- sum(unlist(lapply(HDL.res.pieces.list, FUN = "[[", 2)))
@@ -7673,7 +7673,7 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
 
     ##### Estimated likelihood for h12 + h11,h22 independent #####
 
-    message("\n")
+    rlang::inform("")
     rlang::inform("Integrating piecewise results")
     log_output(
         "",
@@ -8038,7 +8038,7 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     }
 
     end.time <- date()
-    message("\n")
+    rlang::inform("")
     rlang::inform(
         rlang::format_error_bullets(c(
             paste("Heritability of phenotype 1:", output(h11), "(", output(h11.se), ")"),
@@ -8058,7 +8058,7 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
             ))
         )
     }
-    message("\n")
+    rlang::inform("")
     rlang::inform(paste("Analysis finished at", end.time))
 
     log_output(
