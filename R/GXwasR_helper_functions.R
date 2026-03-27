@@ -1159,15 +1159,15 @@ fisher.method <-
 # Copied from ex-CRAN package MADAM and exported. The man pages are copied from the original package.
 fisher.method.perm <-
     function(pvals,
-    p.corr = c("bonferroni", "BH", "none"),
-    zero.sub = 0.00001,
-    B = 10000,
-    mc.cores = NULL,
-    blinker = 1000) {
+             p.corr = c("bonferroni", "BH", "none"),
+             zero.sub = 0.00001,
+             B = 10000,
+             mc.cores = NULL,
+             blinker = 1000) {
         stopifnot(is.na(blinker) || blinker > 0)
         stopifnot(p.corr %in% c("none", "bonferroni", "BH"))
         stopifnot(all(pvals >= 0, na.rm = TRUE) &
-            all(pvals <= 1, na.rm = TRUE))
+                  all(pvals <= 1, na.rm = TRUE))
         stopifnot(zero.sub >= 0 & zero.sub <= 1 || length(zero.sub) != 1)
         if (is.null(dim(pvals))) {
             stop("pvals must have a dim attribute")
@@ -1175,16 +1175,26 @@ fisher.method.perm <-
         p.corr <- ifelse(length(p.corr) != 1, "BH", p.corr)
         pvals[pvals == 0] <- zero.sub
 
-        res.perm <- lapply(seq_len(nrow(pvals)), function(i) {
-            if (!is.na(blinker) & i %% blinker == 0) {
-                message("=", appendLF = FALSE)
+        n <- nrow(pvals)
+
+        # Only show progress if blinker is active
+        if (!is.na(blinker) && blinker > 0) {
+            cli::cli_progress_bar(
+                total = n,
+                format = "Processing [{bar}] {current}/{total}"
+            )
+        }
+
+        res.perm <- lapply(seq_len(n), function(i) {
+
+            if (!is.na(blinker) && blinker > 0) {
+                cli::cli_progress_update()
             }
-            ## which studies contribute to S (don't have a NA in row i)
+
             good.p <- which(!is.na(pvals[i, ]))
             S.obs <- fisher.sum(pvals[i, good.p], na.rm = FALSE)
             if (is.null(mc.cores)) {
                 S.rand <- unlist(lapply(seq_len(B), function(b) {
-                    ## get non NA p-values from studies contributing to S
                     myp <- vapply(good.p, function(pc) {
                         sample(stats::na.exclude(pvals[, pc]), 1)
                     }, numeric(1))
@@ -1192,7 +1202,6 @@ fisher.method.perm <-
                 }))
             } else {
                 S.rand <- unlist(parallel::mclapply(seq_len(B), function(b) {
-                    ## get non NA p-values from studies contributing to S
                     myp <- vapply(good.p, function(pc) {
                         sample(stats::na.exclude(pvals[, pc]), 1)
                     }, numeric(1))
@@ -1206,12 +1215,13 @@ fisher.method.perm <-
                 p.value = p.value
             )
         })
-        res.perm <- data.frame(do.call(rbind, res.perm))
 
         if (!is.na(blinker) && blinker > 0) {
-            message()
+            cli::cli_progress_done()
         }
-        ## rownames(res.perm) <- rownames(pvals)
+
+        res.perm <- data.frame(do.call(rbind, res.perm))
+
         res.perm$p.adj <- switch(p.corr,
             bonferroni = stats::p.adjust(res.perm$p.value, "bonferroni"),
             BH = stats::p.adjust(res.perm$p.value, "BH"),

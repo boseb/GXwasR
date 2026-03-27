@@ -179,7 +179,7 @@
 #' @importFrom regioneR toGRanges
 #' @importFrom plyranges join_overlap_intersect
 #' @importFrom sumFREGAT SKAT SKATO sumchi ACAT BT PCA FLM simpleM minp
-#' @importFrom rlang inform format_error_bullets
+#' @importFrom rlang abort inform format_error_bullets warn
 #'
 #' @export
 #'
@@ -453,14 +453,16 @@ TestXGene <- function(
                 }
             },
             error = function(e) {
-                message("An error occurred: ", e$message)
-                return(NULL)
+                rlang::abort(
+                    message = glue::glue("An error occurred: {e$message}"),
+                    class = 'TestXGene_error'
+                )
             },
             warning = function(w) {
-                rlang::inform(
-                    rlang::format_error_bullets(
-                        c("!" = paste("Warning:", conditionMessage(w)))
-                    )
+                rlang::warn(
+                    message = conditionMessage(w),
+                    .frequency = "regularly", 
+                    .frequency_id = "TestXGene_warning"
                 )
                 invokeRestart("muffleWarning")
             }
@@ -799,11 +801,16 @@ MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile =
             return(list(Resultfixed = Mfixed, Resultrandom = Mrandom, Resultweighted = Mweighted, Metadata = Msummdata, ProblemSNP = MP, forestPlots = forest_plots))
         },
         error = function(e) {
-            message("An error occurred: ", e$message)
-            return(NULL)
+            rlang::abort(
+                message = e$message, 
+                class = 'MetaGWAS_error'
+            )
         },
         warning = function(w) {
-            message("Warning: ", w$message)
+            rlang::warn(
+                message = w$message,
+                .frequency = "regularly", 
+                .frequency_id = "MetaGWAS_warning")
         }
     )
 }
@@ -1094,11 +1101,17 @@ ComputePGS <- function(
             removeFiles(additionalFilesToRemove, ResultDir)
         },
         error = function(e) {
-            message("An error occurred: ", e$message)
-            return(NULL)
+            rlang::abort(
+                message =e$message, 
+                class = "ComputePGS_error"
+            )
         },
         warning = function(w) {
-            message("Warning: ", w$message)
+            rlang::warn(
+                message = w$message, 
+                .frequency = "regularly", 
+                .frequency_id = "ComputePGS_warning"
+            )
         }
     )
 
@@ -1473,11 +1486,17 @@ GeneticCorrBT <- function(
                 }
             },
             error = function(e) {
-                message("An error occurred: ", e$message)
-                return(NULL)
+                rlang::abort(
+                    message = e$message, 
+                    class = "GeneticCorrBT_error"
+                )
             },
             warning = function(w) {
-                message("Warning: ", w$message)
+                rlang::warn(
+                    message = w$message, 
+                    .frequency = "regularly", 
+                    .frequency_id = "GeneticCorrBT_warning"
+                )
                 invokeRestart("muffleWarning")
             }
         )
@@ -1860,11 +1879,17 @@ EstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL, 
             }
         },
         error = function(e) {
-            message("An error occurred: ", e$message)
-            return(NULL)
+            rlang::abort(
+                message = e$message, 
+                class = "EstimateHerit_error"
+            )
         },
         warning = function(w) {
-            message("Warning: ", w$message)
+            rlang::warn(
+                message = w$message, 
+                .frequency = "regularly", 
+                .frequency_id = "EstimateHerit_warning"
+            )
         }
     )
 }
