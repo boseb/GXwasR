@@ -406,11 +406,18 @@ QCsample <- function(DataDir,
             ))
         },
         error = function(e) {
-            message("An error occurred: ", e$message)
-            return(NULL)
+            rlang::abort(
+                message = e$message, 
+                class = "QCSample_error"
+            )
         },
         warning = function(w) {
-            message("Warning: ", w$message)
+            rlang::warn(
+                message = w$message, 
+                class = "QCSample_warning", 
+                .frequency = "regularly", 
+                .frequency_id = "QCSample_warning"
+            )
         }
     )
 }
@@ -758,11 +765,18 @@ AncestryCheck <- function(
             return(Outlier_samples1)
         },
         error = function(e) {
-            message("An error occurred: ", e$message)
-            return(NULL)
+            rlang::abort(
+                message = e$message, 
+                class = "AncestryCheck_error"
+            )
         },
         warning = function(w) {
-            message("Warning: ", w$message)
+            rlang::warn(
+                message = w$message, 
+                class = "AncestryCheck_warning", 
+                .frequency = "regularly", 
+                .frequency_id = "AncestryCheck_warning"
+            )
         }
     )
 }
@@ -1048,11 +1062,18 @@ SexCheck <-
                 return(check_sex)
             },
             error = function(e) {
-                message("An error occurred: ", e$message)
-                return(NULL)
+                rlang::abort(
+                    message = e_message,
+                    class = 'SexCheck_error'
+                )
             },
             warning = function(w) {
-                message("Warning: ", w$message)
+                rlang::warn(
+                    message = w$message,
+                    class = 'PreImputationQC_warning',
+                    .frequency = "regularly",
+                    .frequency_id = "SexCheck_warning"
+                )
             }
         )
     }

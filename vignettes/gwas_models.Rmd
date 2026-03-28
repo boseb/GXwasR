@@ -209,7 +209,7 @@ colnames(sig.snps) <- c("SNP", "CHR", "BP", "A1", "T_statistic", "Pvalue", "Adju
 if (nrow(sig.snps) > 0) {
     knitr::kable(sig.snps, caption = "SNPs with significant sex-differential effect.")
 } else {
-    message("No SNPs with significant sex-differential effect were found.")
+    rlang::inform(message = "No SNPs with significant sex-differential effect were found.")
 }
 ```
 

@@ -102,11 +102,18 @@ SexDiff <- function(Mfile, Ffile) {
             return(y)
         },
         error = function(e) {
-            message("An error occurred: ", e$message)
-            return(NULL)
+            rlang::abort(
+                message = e$message, 
+                class = "SexDiff_error"
+            )
         },
         warning = function(w) {
-            message("Warning: ", w$message)
+            rlang::warn(
+                message = w$message, 
+                class = "SexDiff_warning", 
+                .frequency = "regularly", 
+                .frequency_id = "SexDiff_warning"
+            )
         }
     )
 }
@@ -182,11 +189,18 @@ SexDiffZscore <- function(inputdata) {
             return(inputdata)
         },
         error = function(e) {
-            message("An error occurred: ", e$message)
-            return(NULL)
+            rlang::abort(
+                message = e$message,
+                class = "SexDiffZscore_error"
+            )
         },
         warning = function(w) {
-            message("Warning: ", w$message)
+            rlang::warn(
+                message = w$message,
+                class = "SexDiffZscore_warning",
+                .frequency = "regularly",
+                .frequency_id = "SexDiffZscore_warning"
+            )
         }
     )
 }
@@ -289,11 +303,17 @@ DiffZeroOne <- function(inputdata, diffzero = TRUE, diffone = TRUE) {
             return(inputdata1)
         },
         error = function(e) {
-            message("An error occurred: ", e$message)
-            return(NULL)
+            rlang::abort(
+                message = e_message,
+                class = "DiffZeroOne_error"
+            )
         },
         warning = function(w) {
-            message("Warning: ", w$message)
-        }
+            rlang::warn(
+                message = w_message,
+                class = "DiffZeroOne_warning", 
+                .frequency = "regularly", 
+                .frequency_id = "DiffZeroOne_warning"
+            )
     )
 }
