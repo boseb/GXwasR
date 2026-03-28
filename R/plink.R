@@ -595,8 +595,8 @@ FilterPlinkSample <- function(DataDir, ResultDir,
         },
         warning = function(w) {
             rlang::warn(message = w$message, 
-                class = "FilterPlinkSample_warning", .
-                frequency = "regularly", 
+                class = "FilterPlinkSample_warning", 
+                .frequency = "regularly", 
                 .frequency_id = "FilterPlinkSample_warning"
             )
         }
