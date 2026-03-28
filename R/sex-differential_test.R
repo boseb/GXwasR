@@ -315,5 +315,6 @@ DiffZeroOne <- function(inputdata, diffzero = TRUE, diffone = TRUE) {
                 .frequency = "regularly", 
                 .frequency_id = "DiffZeroOne_warning"
             )
+        }
     )
 }
