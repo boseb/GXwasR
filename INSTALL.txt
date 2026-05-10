@@ -43,7 +43,7 @@ Linux
 1. Visit: https://www.cog-genomics.org/plink/1.9/
 2. Download the Linux binary.
 3. Extract the archive contents. 
-4. Move `plink` to a directory in your PATH, e.g., `/usr/local/bin/` or `/opt/homebrew/bin/`.
+4. Move `plink` to a directory in your PATH, e.g., `/usr/local/bin/` or `/opt/plink/bin/`.
 5. Make sure the binary is executable:
      chmod +x /usr/local/bin/plink
 5. Preferrably, set the PLINK_PATH environment variable in R:
