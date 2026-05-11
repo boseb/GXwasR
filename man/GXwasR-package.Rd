@@ -6,7 +6,7 @@
 \alias{GXwasR-package}
 \title{GXwasR: Genome-wide and x-chromosome wide association analyses applying best practices of quality control over genetic data}
 \description{
-\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+\if{html}{\figure{logo.svg}{options: style='float: right' alt='logo' width='120'}}
 
 This package performs various models of genome-wide and x-chromosome wide association analyses applying best practices of quality control over genetic data.
 }
@@ -20,6 +20,11 @@ Useful links:
 }
 \author{
 \strong{Maintainer}: Banabithi Bose \email{banabithi.bose@gmail.com} (\href{https://orcid.org/0000-0003-0842-8768}{ORCID})
+
+Authors:
+\itemize{
+  \item Banabithi Bose \email{banabithi.bose@gmail.com} (\href{https://orcid.org/0000-0003-0842-8768}{ORCID})
+}
 
 }
 \keyword{internal}
