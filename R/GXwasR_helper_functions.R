@@ -359,7 +359,53 @@ handleLDPruning <- function(ld_prunning, highLD_regions, ResultDir, window_size,
 }
 
 
+# Helper Function to Handle Differential Missingness Filtering for Case-Control Data
+handleCaseControlFiltering <- function(ResultDir, casecontrol, dmissX, dmissAutoY, caldiffmiss, SNPmissCC, diffmissFilter, foutput) {
+    SNPmissCC <- NULL # Initialize
 
+    if (casecontrol) {
+        chrfilter <- NULL
+        chrv <- NULL
+        if (dmissX & dmissAutoY) {
+            # No additional filters needed
+        } else if (dmissX & !dmissAutoY) {
+            chrfilter <- "--chr"
+            chrv <- 23
+        } else if (!dmissX & dmissAutoY) {
+            chrfilter <- "--not-chr"
+            chrv <- 23
+        } else {
+            rlang::inform(rlang::format_error_bullets(c("i" = "Filtering for differential missingness between cases and controls is turned off.")))
+        }
+
+        if (caldiffmiss) {
+            executePlinkAd(ResultDir, args = c(
+                "--bfile", normalizePath(file.path(ResultDir, "filtered_temp4_processed"), mustWork = FALSE),
+                chrfilter, chrv,
+                "--test-missing", "--adjust",
+                "--make-bed", "--allow-no-sex",
+                "--out", normalizePath(file.path(ResultDir, "filtered_temp_casecontrol"), mustWork = FALSE),
+                "--silent"
+            ))
+
+            # Process the differential missingness results
+            SNPmissCC <- processDifferentialMissingnessResults(ResultDir)
+        }
+
+        applySNPmissCCFilter(ResultDir, SNPmissCC, diffmissFilter, foutput)
+    } else {
+        rlang::inform(rlang::format_error_bullets(c("i" = "No filter based on differential missingness will be applied.")))
+
+        executePlinkAd(ResultDir, args = c(
+            "--bfile", normalizePath(file.path(ResultDir, "filtered_temp4_processed"), mustWork = FALSE), # TEST
+            "--make-bed", "--allow-no-sex",
+            "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
+            "--silent"
+        ))
+    }
+
+    return(SNPmissCC)
+}
 
 ## Function 34
 ######### Added in 3.0
