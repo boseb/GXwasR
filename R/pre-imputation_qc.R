@@ -1063,7 +1063,7 @@ SexCheck <-
             },
             error = function(e) {
                 rlang::abort(
-                    message = e_message,
+                    message = e$message,
                     class = 'SexCheck_error'
                 )
             },

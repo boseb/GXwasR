@@ -304,13 +304,13 @@ DiffZeroOne <- function(inputdata, diffzero = TRUE, diffone = TRUE) {
         },
         error = function(e) {
             rlang::abort(
-                message = e_message,
+                message = e$message,
                 class = "DiffZeroOne_error"
             )
         },
         warning = function(w) {
             rlang::warn(
-                message = w_message,
+                message = w$message,
                 class = "DiffZeroOne_warning", 
                 .frequency = "regularly", 
                 .frequency_id = "DiffZeroOne_warning"
