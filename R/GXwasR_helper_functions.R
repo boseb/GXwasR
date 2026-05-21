@@ -358,6 +358,59 @@ handleLDPruning <- function(ld_prunning, highLD_regions, ResultDir, window_size,
     return(list(excluderange = excluderange, highLD_regions = highLD_regions, indep = indep, window_size = window_size, step_size = step_size, r2_threshold = r2_threshold))
 }
 
+## Function 33
+######### Added in 3.0
+# Helper Function to Handle Differential Missingness Filtering for Case-Control Data
+handleCaseControlFiltering <- function(ResultDir, casecontrol, dmissX, dmissAutoY, caldiffmiss, SNPmissCC, diffmissFilter, foutput) {
+
+  SNPmissCC <- NULL  # Initialize
+
+  if (casecontrol) {
+    chrfilter <- NULL
+    chrv <- NULL
+    if (dmissX & dmissAutoY) {
+      # No additional filters needed
+    } else if (dmissX & !dmissAutoY) {
+      chrfilter <- "--chr"
+      chrv <- 23
+    } else if (!dmissX & dmissAutoY) {
+      chrfilter <- "--not-chr"
+      chrv <- 23
+    } else {
+      print("Filtering for differential missingness between cases and controls is turned off.")
+    }
+
+    if (caldiffmiss) {
+      executePlinkAd(ResultDir, args = c(
+        #"--bfile", paste0(ResultDir, "/filtered_temp4"),
+        "--bfile", paste0(ResultDir, "/filtered_temp4_processed"),## TEST
+        chrfilter, chrv,
+        "--test-missing", "--adjust",
+        "--make-bed", "--allow-no-sex",
+        "--out", paste0(ResultDir, "/filtered_temp_casecontrol")
+        #"--silent"
+      ))
+
+      # Process the differential missingness results
+      SNPmissCC <- processDifferentialMissingnessResults(ResultDir)
+    }
+
+    applySNPmissCCFilter(ResultDir, SNPmissCC, diffmissFilter, foutput)
+
+  } else {
+    print("No filter based on differential missingness will be applied.")
+
+    executePlinkAd(ResultDir, args = c(
+      #"--bfile", paste0(ResultDir, "/filtered_temp4"),
+      "--bfile", paste0(ResultDir, "/filtered_temp4_processed"),#TEST
+      "--make-bed", "--allow-no-sex",
+      "--out", paste0(ResultDir, "/", foutput),
+      "--silent"
+    ))
+  }
+
+  return( SNPmissCC)
+}
 
 
 
