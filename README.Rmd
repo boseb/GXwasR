@@ -178,10 +178,10 @@ ResultGXwas <- GXwas(
     xsex = FALSE,
     combtest = "fisher.method",
     MF.p.corr = "none",
-    snp_pval = 1e-08,
+    snp_pval = 1e-01,
     plot.jpeg = FALSE,
-    suggestiveline = 5,
-    genomewideline = 7.3,
+    suggestiveline = 1.2,
+    genomewideline = 1.5,
     MF.mc.cores = 1,
     ncores = 0
 )
