@@ -2632,10 +2632,10 @@ ComputeLDSC <- function(summarystat, precomputedLD, LDSC_blocks, chi2_thr1, chi2
     summarystat$chi2 <- (summarystat$beta / summarystat$beta_se)^2
 
     # Checking if summary stat and precomputed LD have same SNP positions
-    S1 <- summarystat[, c(1, 2, 5, 8)]
+    S1 <- summarystat[,c("chr", "rsid", "n_eff", "chi2")]
     colnames(S1) <- c("CHR", "SNP", "sample_size", "chi2")
 
-    S2 <- precomputedLD[, c(1, 2, 6)]
+    S2 <- precomputedLD[,c("CHR", "SNP", "ld_score")]
     colnames(S2) <- c("CHR", "SNP", "ld_score")
     S2$ld_size <- length(unique(S2$SNP))
 
@@ -3192,6 +3192,8 @@ GeneProtein <- function(hg, chromosome) {
     }
 
     df$Chrom <- stringr::str_remove(df$Chrom, "^chr")
+    df[df$Chrom=="X","Chrom"] <- 23
+    df[df$Chrom=="Y","Chrom"] <- 24
 
     # Count total genes
     genes <- unique(df[, c("hgnc_symbol", "Chrom", "gene_biotype")]) ## be explicit
