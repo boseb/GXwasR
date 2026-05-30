@@ -6180,7 +6180,7 @@ processRegionFilter <- function(x, filterPAR, filterXTR, filterAmpliconic, Resul
                 "range", normalizePath(file.path(ResultDir, "xtr_region.txt"), mustWork = FALSE),
                 "--allow-no-sex", ## Adding in 4.0.
                 "--make-bed",
-                "--out", normalizePath(file.path(ResultDir, foutput, "_xtr_region"), mustWork = FALSE),
+                "--out", normalizePath(file.path(ResultDir, paste0(foutput, "_xtr_region")), mustWork = FALSE),
                 "--silent"
             ),
             std_out = FALSE,
