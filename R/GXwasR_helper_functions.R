@@ -6210,7 +6210,7 @@ processRegionFilter <- function(x, filterPAR, filterXTR, filterAmpliconic, Resul
 
         write.table(
             y,
-            file = normalizePath(file.path(ResultDir, "/ampliconic_region.txt"), mustWork = FALSE),
+            file = normalizePath(file.path(ResultDir, "ampliconic_region.txt"), mustWork = FALSE),
             quote = FALSE,
             row.names = FALSE,
             col.names = FALSE,
