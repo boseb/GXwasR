@@ -1,4 +1,5 @@
 
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # GXwasR <img src="man/figures/logo.svg" align="right" height="139" alt="" style="float:right; height:139px;"/>
@@ -58,9 +59,9 @@ pak::pak("boseb/GXwasR")
 This package requires PLINK and GCTA, two widely used command-line tools
 for genetic data analysis:
 
-- PLINK: A toolset for genome association and linkage analysis.
-- GCTA: Genome-wide Complex Trait Analysis, used for estimating genetic
-  relationships and variance components.
+-   PLINK: A toolset for genome association and linkage analysis.
+-   GCTA: Genome-wide Complex Trait Analysis, used for estimating
+    genetic relationships and variance components.
 
 Please follow the instructions below to ensure both tools are installed
 and available to your system before use.
@@ -73,14 +74,15 @@ made available on your system.
 
 PLINK is not bundled with this package and must either:
 
-- (*preferred*) be specified via the PLINK_PATH environment variable, or
-- be on your system PATH.
+-   (*preferred*) be specified via the PLINK_PATH environment variable,
+    or
+-   be on your system PATH.
 
 ##### 🔧 PLINK Installation Instructions
 
 Binaries for all major platforms can be downloaded from:
 
-- [PLINK v1.9](https://www.cog-genomics.org/plink/1.9/)
+-   [PLINK v1.9](https://www.cog-genomics.org/plink/1.9/)
 
 Detailed, platform-specific setup instructions can be found in the
 INSTALL file included with this package.
@@ -89,8 +91,8 @@ INSTALL file included with this package.
 
 This package will attempt to locate PLINK using:
 
-- The `PLINK_PATH` environment variable, if set.
-- The system path, via `Sys.which("plink")`.
+-   The `PLINK_PATH` environment variable, if set.
+-   The system path, via `Sys.which("plink")`.
 
 If PLINK is not found, an error will be raised with guidance on how to
 resolve it.
@@ -124,8 +126,9 @@ installed separately and made available on your system.
 
 GCTA is not bundled with this package and must either:
 
-- (*preferred*) be specified via the GCTA_PATH environment variable, or
-- be on your system PATH.
+-   (*preferred*) be specified via the GCTA_PATH environment variable,
+    or
+-   be on your system PATH.
 
 ##### 🔧 GCTA Installation Instructions
 
@@ -139,8 +142,8 @@ INSTALL file included with this package.
 
 This package will attempt to locate GCTA using:
 
-- The GCTA_PATH environment variable, if set.
-- The system path, via `Sys.which("gcta64")`.
+-   The GCTA_PATH environment variable, if set.
+-   The system path, via `Sys.which("gcta64")`.
 
 If GCTA is not found, an error will be raised with guidance on how to
 resolve it.
@@ -193,19 +196,6 @@ association study (XWAS):
 
 ``` r
 library(GXwasR)
-#> 
-#> GXwasR: Genome-wide and x-chromosome wide association analyses applying best practices of quality control over genetic data
-#> Version 0.99.0 () installed
-#> Author: c(
-#>     person(given = "Banabithi",
-#>            family = "Bose",
-#>            role = c("cre", "aut"),
-#>            email = "banabithi.bose@gmail.com",
-#>            comment = c(ORCID = "0000-0003-0842-8768"))
-#>            )
-#> Maintainer: Banabithi Bose <banabithi.bose@gmail.com>
-#> Tutorial: https://github.com
-#> Use citation("GXwasR") to know how to cite this work.
 ResultGXwas <- GXwas(
     DataDir = GXwasR:::GXwasR_data(),
     ResultDir = tempdir(),
@@ -217,35 +207,41 @@ ResultGXwas <- GXwas(
     xsex = FALSE,
     combtest = "fisher.method",
     MF.p.corr = "none",
-    snp_pval = 1e-08,
+    snp_pval = 1e-01,
     plot.jpeg = FALSE,
-    suggestiveline = 5,
-    genomewideline = 7.3,
+    suggestiveline = 1.2,
+    genomewideline = 1.5,
     MF.mc.cores = 1,
     ncores = 0
 )
 #> • Running FMstratified model
-#> Using PLINK v1.9.0-b.7.7 64-bit (22 Oct 2024)
+#> Using PLINK v1.9.0-b.7.11 64-bit (19 Aug 2025)
 #> • Stratified test is running for females
 #> • Stratified test is running for males
 #> ℹ If you want parallel computation, please provide non-zero value for argument ncores.
 #> ℹ Plots are initiated.
-#> ℹ Saving plot to /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmphpVrBN/Stratified_GWAS.png
-#> This message is displayed once every 8 hours.
+#> ℹ Saving plot to /tmp/Rtmp30hnQd/Stratified_GWAS.png
 ```
 
-<img src="man/figures/README-example-1.png" width="100%" />
+<img src="man/figures/README-example-1.png" style="width:100.0%" />
 
-    #> ℹ Saving plot to
-    #> /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmphpVrBN/Stratified_XWAS.png
+    #> ℹ Saving plot to /tmp/Rtmp30hnQd/Stratified_XWAS.png
 
-<img src="man/figures/README-example-2.png" width="100%" /><img src="man/figures/README-example-3.png" width="100%" /><img src="man/figures/README-example-4.png" width="100%" /><img src="man/figures/README-example-5.png" width="100%" /><img src="man/figures/README-example-6.png" width="100%" />
+<img src="man/figures/README-example-2.png" style="width:100.0%" />
+
+<img src="man/figures/README-example-3.png" style="width:100.0%" />
+
+<img src="man/figures/README-example-4.png" style="width:100.0%" />
+
+<img src="man/figures/README-example-5.png" style="width:100.0%" />
+
+<img src="man/figures/README-example-6.png" style="width:100.0%" />
 
     #> Three data frames have been created and saved:
     #> • CombinedWAS
     #> • MaleWAS
     #> • FemaleWAS
-    #> ℹ You can find them in the directory: /var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T//RtmphpVrBN
+    #> ℹ You can find them in the directory: /tmp/Rtmp30hnQd
     ResultGXwas
     #> $CombinedWAS
     #> Key: <SNP>

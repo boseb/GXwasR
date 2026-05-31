@@ -8,7 +8,7 @@ verifyGCTA <- function() {
         if (file.exists(resolved_env_path)) {
             return(resolved_env_path)
         } else {
-            message("GCTA_PATH is set but file does not exist: ", resolved_env_path)
+            rlang::warn(glue::glue("GCTA_PATH is set but file does not exist: {resolved_env_path}"))
         }
     }
 

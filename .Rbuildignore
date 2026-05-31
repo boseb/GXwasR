@@ -34,3 +34,5 @@
 ^vignettes/gwas1\.array.example\.rds$
 ^vignettes/gwas2\.array.example\.rds$
 ^vignettes/genetic_correlation_sumstat\.Rmd\.orig$
+^\.positai$
+^\.claude$

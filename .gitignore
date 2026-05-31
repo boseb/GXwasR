@@ -11,3 +11,5 @@ vignettes/*.R
 vignettes/figures
 pkgdown
 _pkgdown.yml
+.positai
+*.Rproj

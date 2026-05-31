@@ -187,11 +187,18 @@ Xhwe <- function(DataDir, ResultDir = tempdir(), finput, filterSNP = TRUE, foutp
             }
         },
         error = function(e) {
-            message("An error occurred: ", e$message)
-            return(NULL)
+            rlang::abort(
+                message = e$message, 
+                class = "Xhwe_error"
+            )
         },
         warning = function(w) {
-            message("Warning: ", w$message)
+            rlang::warn(
+                message = w$message, 
+                class = "Xhwe_warning", 
+                .frequency = "regularly", 
+                .frequency_id = "Xhwe_warning"
+            )
         }
     )
 }
@@ -398,11 +405,17 @@ MAFdiffSexControl <- function(
             return(flaggedSnps)
         },
         error = function(e) {
-            message("An error occurred: ", e$message)
-            return(NULL)
+            rlang::abort(
+                message = e$message, 
+                class = "MAFdiffSexControl_error")
         },
         warning = function(w) {
-            message("Warning: ", w$message)
+            rlang::warn(
+                message = w$message, 
+                class = "MAFdiffSexControl_warning", 
+                .frequency = "regularly", 
+                .frequency_id = "MAFdiffSexControl_warning"
+            )
         }
     )
 }
@@ -632,11 +645,17 @@ FilterRegion <-
                 }
             },
             error = function(e) {
-                message("An error occurred: ", e$message)
-                return(NULL)
+                rlang::abort(
+                    message = e$message, 
+                    class = "FilterRegion_error"
+                )
             },
             warning = function(w) {
-                message("Warning: ", w$message)
+                rlang::warn(message = w$message, 
+                    class = "FilterRegion_warning", 
+                    .frequency = "regularly", 
+                    .frequency_id = "FilterRegion_warning"
+                )
             }
         )
     }

@@ -30,7 +30,12 @@ verifyPlink <- function() {
         if (file.exists(resolved_env_path) && is_bioinformatics_plink(resolved_env_path)) {
             return(resolved_env_path)
         } else if (file.exists(resolved_env_path)) {
-            message("PLINK_PATH is set but points to a non-bioinformatics 'plink' binary: ", resolved_env_path)
+            rlang::warn(
+                message = glue::glue("PLINK_PATH is set but points to a non-bioinformatics 'plink' binary: {resolved_env_path}"), 
+                .frequency = "regularly", 
+                .frequency_id = "plink_check",
+                class = "verifyPlink_env_warning"
+            )
         }
     }
 
@@ -46,7 +51,12 @@ verifyPlink <- function() {
         if (is_bioinformatics_plink(resolved_sys_path)) {
             return(resolved_sys_path)
         } else {
-            message("System 'plink' found at ", resolved_sys_path, ", but it does not appear to be the bioinformatics version.")
+            rlang::warn(
+                message = glue::glue("System 'plink' found at {resolved_sys_path} but it does not appear to be the bioinformatics version."), 
+                .frequency = "regularly", 
+                .frequency_id = "plink_check",
+                class = "verifyPlink_sys_warning"
+            )
         }
     }
 
@@ -61,7 +71,7 @@ verifyPlink <- function() {
         )),
         class = "plink_not_found"
     )
-}
+        }
 
 
 ## PLINK Binary Location
@@ -578,11 +588,17 @@ FilterPlinkSample <- function(DataDir, ResultDir,
             return()
         },
         error = function(e) {
-            message("An error occurred: ", e$message)
-            return(NULL)
+            rlang::abort(
+                message = e$message, 
+                class = "FilterPlinkSample_error"
+            )
         },
         warning = function(w) {
-            message("Warning: ", w$message)
+            rlang::warn(message = w$message, 
+                class = "FilterPlinkSample_warning", 
+                .frequency = "regularly", 
+                .frequency_id = "FilterPlinkSample_warning"
+            )
         }
     )
 }
@@ -705,11 +721,18 @@ GetMFPlink <- function(DataDir,
             return()
         },
         error = function(e) {
-            message("An error occurred: ", e$message)
-            return(NULL)
+            rlang::abort(
+                message = e$message, 
+                class = "GetMFPlink_error"
+            )
         },
         warning = function(w) {
-            message("Warning: ", w$message)
+            rlang::warn(
+                message = w$message, 
+                class = "GetMFPlink_warning", 
+                .frequency = "regularly", 
+                .frequency_id = "GetMFPlink_warning"
+            )
         }
     )
 }
@@ -789,10 +812,16 @@ PlinkSummary <- function(DataDir, ResultDir = tempdir(), finput) {
             return(invisible(NULL))
         },
         error = function(e) {
-            rlang::abort("An error occurred: ", e$message)
+            rlang::abort(
+                e$message, 
+                class = "PlinkSummary_error"
+            )
         },
         warning = function(w) {
-            rlang::warn("Warning: ", w$message)
+            rlang::warn(
+                w$message, 
+                class = "PlinkSummary_warning"
+            )
         }
     )
 }
@@ -967,7 +996,7 @@ plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput,
                     chrs <- unique(bimfile$V1)
                     chrs <- gsub("^chr", "", chrs) # Normalize chromosome names
                     invisible(lapply(chrs, function(chr) {
-                        message("Processing chromosome: ", chr)
+                        rlang::inform(message = glue::glue("Processing chromosome: {chr}"))
                         convertPlinkToVCF(paste0(foutput, "_chr", chr), chr)
                     }))
                 } else {
@@ -997,7 +1026,7 @@ plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput,
                         col.names = FALSE, row.names = FALSE, quote = FALSE
                     )
                 } else {
-                    message("Famfile is NULL. The generated .fam file will have missing phenotypes.")
+                    rlang::inform(message = "Famfile is NULL. The generated .fam file will have missing phenotypes.")
                 }
             }
 
@@ -1008,11 +1037,18 @@ plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput,
             )
         },
         error = function(e) {
-            message("An error occurred: ", e$message)
-            return(NULL)
+            rlang::abort(
+                message =  e$message, 
+                class = "PlinkVCF_error"
+            )
         },
         warning = function(w) {
-            message("Warning: ", w$message)
+            rlang::warn(
+                message = w$message, 
+                class = "PlinkVCF_warning", 
+                .frequency = "regularly", 
+                .frequency_id = "PlinkVCF_warning"
+            )
         }
     )
 }

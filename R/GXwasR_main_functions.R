@@ -239,11 +239,16 @@ QCsnp <-
                 return(list(MonomorSNPs = mmSNP1, DiffMissSNPs = SNPmissCC))
             },
             error = function(e) {
-                message("An error occurred: ", e$message)
-                return(NULL)
+                rlang::abort(
+                    message = e$message, 
+                    class = "QCsnp_error")
             },
             warning = function(w) {
-                message("Warning: ", w$message)
+                rlang::warn(
+                    message = w$message, 
+                    .frequency = "regularly", 
+                    .frequency_id = "QCsnp_warning"
+                )
             }
         )
     }
@@ -463,11 +468,17 @@ ComputeGeneticPC <- function(
             )
         },
         error = function(e) {
-            message("An error occurred: ", e$message)
-            return(NULL)
+            rlang::abort(
+                message = e$message, 
+                class = "ComputeGeneticPC_error"
+            )
         },
         warning = function(w) {
-            message("Warning: ", w$message)
+            rlang::warn(
+                message = w$message, 
+                .frequency = "regularly", 
+                .frequency_id = "ComputeGeneticPC_warning"
+            )
             if (str_detect(conditionMessage(w), "cannot remove")) {
                 return(
                     list(
@@ -579,11 +590,17 @@ MergeRegion <- function(DataDir, ResultDir, finput1, finput2, foutput, use_commo
             rlang::inform(rlang::format_error_bullets(c("v" = paste0("Plink files with merged regions are in ", ResultDir, " prefixed as ", foutput))))
         },
         error = function(e) {
-            message("An error occurred: ", e$message)
-            return(NULL)
+            rlang::abort(
+                message = e$message, 
+                class = "MergeRegion_error"
+            )
         },
         warning = function(w) {
-            message("Warning: ", w$message)
+            rlang::warn(
+                message = w$message, 
+                .frequency = "regularly", 
+                .frequency_id = "MergeRegion_warning"
+            )
         }
     )
 }
@@ -979,11 +996,17 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
             return(x)
         },
         error = function(e) {
-            message("An error occurred: ", e$message)
-            return(NULL)
+            rlang::abort(
+                message = e$message, 
+                class = "GXwasR_error"
+            )
         },
         warning = function(w) {
-            message("Warning: ", w$message)
+            rlang::warn(
+                message = w$message, 
+                .frequency = "regularly", 
+                .frequency_id = "GXwasR_warning"
+            )
         }
     )
 }
@@ -1248,11 +1271,17 @@ ClumpLD <- function(DataDir, finput, SNPdata, ResultDir = tempdir(),
             }
         },
         error = function(e) {
-            message("An error occurred: ", e$message)
-            return(NULL)
+            rlang::abort(
+                message = e$message, 
+                class = "ClumpLD_error"
+            )
         },
         warning = function(w) {
-            message("Warning: ", w$message)
+            rlang::warn(
+                message = w$message, 
+                .frequency = "regularly", 
+                .frequency_id = "ClumpLD_warning"
+            )
         }
     )
 
@@ -1323,11 +1352,17 @@ SexRegress <- function(fdata, regressor_index, response_index) {
             return(model.result)
         },
         error = function(e) {
-            message("An error occurred: ", e$message)
-            return(NULL)
+            rlang::abort(
+                message = e$message, 
+                class = "SexRegress_error"
+            )
         },
         warning = function(w) {
-            message("Warning: ", w$message)
+            rlang::warn(
+                message = w$message, 
+                .frequency = "regularly", 
+                .frequency_id = "SexRegress_warning"
+            )
         }
     )
 }
@@ -1421,11 +1456,17 @@ FilterAllele <- function(DataDir, ResultDir, finput, foutput) {
             return()
         },
         error = function(e) {
-            message("An error occurred: ", e$message)
-            return(NULL)
+            rlang::abort(
+                message = e$message, 
+                class = "FilterAllele_error"
+            )
         },
         warning = function(w) {
-            message("Warning: ", w$message)
+            rlang::warn(
+                message = w$message, 
+                .frequency = "regularly", 
+                .frequency_id = "FilterAllele_warning"
+            )
         }
     )
 }
@@ -1637,11 +1678,14 @@ PvalComb <- function(SumstatMale, SumstatFemale,
             return(na.omit(Result))
         },
         error = function(e) {
-            message("An error occurred: ", e$message)
-            return(NULL)
+            rlang::abort(message = e$message, class = 'PvalComb_error')
         },
         warning = function(w) {
-            message("Warning: ", w$message)
+            rlang::warn(
+                message = w$message, 
+                .frequency = "regularly", 
+                .frequency_id = "PvalComb_warning"
+            )
         }
     )
 }
@@ -1725,11 +1769,17 @@ FilterSNP <- function(DataDir, ResultDir, finput, foutput, SNPvec, extract = FAL
             return(NULL)
         },
         error = function(e) {
-            message("An error occurred: ", e$message)
-            return(NULL)
+            rlang::abort(
+                message = e$message, 
+                class = 'FilterSNP_error'
+            )
         },
         warning = function(w) {
-            message("Warning: ", w$message)
+            rlang::warn(
+                message = w$message, 
+                .frequency = "regularly", 
+                .frequency_id = "FilterSNP_warning"
+            )
         }
     )
 }
@@ -2114,8 +2164,10 @@ SumstatGenCorr <- function(
             }
         },
         error = function(e) {
-            message("Error in estimating Genetic Correlation: ", e$message)
-            return(NULL)
+            rlang::abort(
+                message = glue::glue("Error in estimating Genetic Correlation: {e$message}"), 
+                class = "SumstatGenCorr_error"
+            )
         }
     )
 
