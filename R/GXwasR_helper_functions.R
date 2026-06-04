@@ -199,7 +199,7 @@ filterSamples <- function(DataDir, ResultDir, finput, failed_het_imiss, filterSa
             "--remove", normalizePath(file.path(ResultDir, "failed_het_imiss"), mustWork = FALSE),
             "--allow-no-sex", ## Adding in 4.0
             "--make-bed",
-            "--out", normalizePath(file.path(ResultDir, "foutput"), mustWork = FALSE),
+            "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
             "--silent"
         )
         executePlink(excludeSamplesArgs, ResultDir)
@@ -207,7 +207,7 @@ filterSamples <- function(DataDir, ResultDir, finput, failed_het_imiss, filterSa
         excludeSamplesArgs <- c(
             "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
             "--make-bed",
-            "--out", normalizePath(file.path(ResultDir, "foutput"), mustWork = FALSE),
+            "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
             "--silent"
         )
         executePlink(excludeSamplesArgs, ResultDir)
