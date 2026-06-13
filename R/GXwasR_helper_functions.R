@@ -199,7 +199,7 @@ filterSamples <- function(DataDir, ResultDir, finput, failed_het_imiss, filterSa
             "--remove", normalizePath(file.path(ResultDir, "failed_het_imiss"), mustWork = FALSE),
             "--allow-no-sex", ## Adding in 4.0
             "--make-bed",
-            "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
+            "--out", normalizePath(file.path(ResultDir, ), mustWork = FALSE),
             "--silent"
         )
         executePlink(excludeSamplesArgs, ResultDir)
@@ -207,7 +207,7 @@ filterSamples <- function(DataDir, ResultDir, finput, failed_het_imiss, filterSa
         excludeSamplesArgs <- c(
             "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
             "--make-bed",
-            "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
+            "--out", normalizePath(file.path(ResultDir, ), mustWork = FALSE),
             "--silent"
         )
         executePlink(excludeSamplesArgs, ResultDir)
@@ -238,7 +238,7 @@ printSampleFilterResults <- function(imissfail, hetfail, failed_het_imiss) {
 
 ## Function 18
 ######### Added in 3.0
-processIBDData <- function(IBD, IBDmatrix, ResultDir, foutput, filterSample) {
+processIBDData <- function(IBD, IBDmatrix, ResultDir, , filterSample) {
     if (!is.null(IBD)) {
         # Compute and save filtered IBD data
         executePlinkForIBD(ResultDir, IBD, "filtered_ibd")
@@ -255,14 +255,14 @@ processIBDData <- function(IBD, IBDmatrix, ResultDir, foutput, filterSample) {
 
         # Update PLINK files based on IBD results
         if (filterSample == TRUE) {
-            updatePlinkFilesWithIBDFilter(ResultDir = ResultDir, foutput = foutput, failed_ibd = failed_ibd)
+            updatePlinkFilesWithIBDFilter(ResultDir = ResultDir,  = , failed_ibd = failed_ibd)
         } else {
-            executeMakeBed(ResultDir = ResultDir, foutput = foutput)
+            executeMakeBed(ResultDir = ResultDir,  = )
             NULL
         }
     } else {
         # Generate BED files without IBD filtering
-        executeMakeBed(ResultDir = ResultDir, foutput = foutput)
+        executeMakeBed(ResultDir = ResultDir,  = )
         failed_ibd <- NULL
         ibd <- NULL
     }
@@ -282,7 +282,7 @@ readIBDData <- function(ResultDir, fileName) {
 identifyFailedSamplesFromIBD <- function(ibd, ResultDir) {
     failedSamples <- unique(c(ibd$IID1, ibd$IID2))
     if (length(failedSamples) > 0) {
-        famData <- read.table(normalizePath(file.path(ResultDir, paste0("foutput", ".fam")), mustWork = FALSE))
+        famData <- read.table(normalizePath(file.path(ResultDir, paste0(foutput, ".fam")), mustWork = FALSE))
         famData[famData$V2 %in% failedSamples, seq_len(2)]
     } else {
         NULL
