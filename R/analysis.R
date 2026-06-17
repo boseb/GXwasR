@@ -959,7 +959,7 @@ MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile =
 #'     effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2,
 #'     clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions,
 #'     ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6,
-#'     pheno_type = "binary"
+#'     pheno_type = "binary", prevalence = NULL, liability_R2 = FALSE
 #' )
 #'
 #' ## This table shows 10 samples with phenotype, covariates and a PGS column.
@@ -972,7 +972,7 @@ ComputePGS <- function(
       DataDir, ResultDir = tempdir(), finput, summarystat, phenofile, covarfile = NULL,
       effectsize = c("BETA", "OR"), ldclump = FALSE, LDreference, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE,
       pthreshold = c(0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5), highLD_regions, ld_prunning = FALSE,
-      window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary"
+      window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary", prevalence = NULL, liability_R2 = FALSE
 ) {
     # Validate inputs
     if (!validateInputForComputePGS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize, ldclump, LDreference, clump_p1, clump_p2, clump_r2, clump_kb, byCHR, pthreshold, highLD_regions, ld_prunning, window_size, step_size, r2_threshold, nPC, pheno_type)) {
