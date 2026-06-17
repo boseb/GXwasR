@@ -5638,6 +5638,18 @@ validateInputForComputePGS <- function(DataDir, ResultDir = tempdir(), finput, s
         stop("Error in summarystat: The third column must be either 'BETA' or 'OR'.")
     }
 
+    if (liability_R2 && pheno_type != "binary") {
+    stop("liability_R2 is only available for binary traits.")
+}
+
+if (liability_R2 && is.null(prevalence)) {
+    stop("prevalence must be provided when liability_R2 = TRUE.")
+}
+
+if (!is.null(prevalence) && (prevalence <= 0 || prevalence >= 1)) {
+    stop("prevalence must be between 0 and 1.")
+}
+    
     # Validate phenofile
     if (!is.data.frame(phenofile)) {
         stop("Error in phenofile: Must be a dataframe..")
