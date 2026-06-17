@@ -8141,3 +8141,17 @@ verify_snp_format <- function(bim) {
         )
     }
 }
+
+#' Function for ComputePGS
+  liability_R2 <- function(R2_obs, K, P) {
+  #' R2_obs = observed-scale incremental R2 for PGS
+  #' K = population prevalence
+  #' P = case fraction in target sample
+  
+  t <- qnorm(1 - K)
+  z <- dnorm(t)
+  
+  R2_liab <- R2_obs * (K^2 * (1 - K)^2) / (P * (1 - P) * z^2)
+  return(R2_liab)
+}
+        
