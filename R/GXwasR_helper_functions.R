@@ -734,7 +734,7 @@ computeNullModel <- function(pheno, pheno_type) {
 
 ## Function 40
 ######### Added in 3.0
-pgsFun <- function(pthreshold, ResultDir, DataDir, finput, clumpExtract, clumpSNP, pheno, pheno_type, null_model) {
+pgsFun <- function(pthreshold, ResultDir, DataDir, finput, clumpExtract, clumpSNP, pheno, pheno_type, null_model, prevalence = NULL, liability_R2 = FALSE) {
     rlang::inform(rlang::format_error_bullets(c("i" = pthreshold)))
     rlang::inform(rlang::format_error_bullets(paste0("Computing PGS for threshold ", pthreshold)))
 
@@ -763,16 +763,36 @@ pgsFun <- function(pthreshold, ResultDir, DataDir, finput, clumpExtract, clumpSN
         phenoBin.pgs <- pheno.pgs
         phenoBin.pgs$Pheno1 <- as.integer(phenoBin.pgs$Pheno1 == 2)
         model <- glm(Pheno1 ~ ., data = phenoBin.pgs[, !colnames(phenoBin.pgs) %in% c("FID", "IID")], family = binomial)
-        McFaddenR2 <- 1 - stats::logLik(model) / stats::logLik(null_model)
-        pgs.r2 <- McFaddenR2[1]
+       McFaddenR2_full <- 1 - stats::logLik(model) / stats::logLik(null_model)
+       covar_model <- glm( Pheno1 ~ ., data = phenoBin.pgs[, !colnames(phenoBin.pgs) %in% c("FID", "IID", "SCORE")], family = binomial
+)
+
+McFaddenR2_covar <- 1 - stats::logLik(covar_model) / stats::logLik(null_model)
+
+pgs.r2 <- as.numeric(McFaddenR2_full - McFaddenR2_covar)
+        if (liability_R2) {
+    if (is.null(prevalence)) {
+        stop("Population prevalence must be provided to calculate liability-scale R2.")
+    }
+
+    sample_prev <- mean(phenoBin.pgs$Pheno1 == 1)
+    threshold <- stats::qnorm(1 - prevalence)
+    z <- stats::dnorm(threshold)
+
+    pgs.liability.r2 <- pgs.r2 *
+        (prevalence^2 * (1 - prevalence)^2) /
+        (sample_prev * (1 - sample_prev) * z^2)
+} else {
+    pgs.liability.r2 <- NA_real_
+}
     } else {
         model <- lm(Pheno1 ~ ., data = pheno.pgs[, !colnames(pheno.pgs) %in% c("FID", "IID")])
         pgs.r2 <- summary(model)$r.squared - summary(null_model)$r.squared
     }
 
     pgs.coef <- summary(model)$coefficients["SCORE", ]
-    pgs.result <- rbind(data.frame(pthreshold, R2 = pgs.r2, P = pgs.coef[4], BETA = pgs.coef[1], SE = pgs.coef[2]))
-    colnames(pgs.result) <- c("Threshold", "R2", "P", "BETA", "SE")
+    pgs.result <- rbind(data.frame(pthreshold, R2 = pgs.r2, Liability_R2 = pgs.liability.r2, P = pgs.coef[4], BETA = pgs.coef[1], SE = pgs.coef[2]))
+    colnames(pgs.result) <- c("Threshold", "R2", "Liability_R2", "P", "BETA", "SE")
 
     return(pgs.result)
 }
