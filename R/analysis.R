@@ -864,6 +864,12 @@ MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile =
 #' @param pheno_type
 #' Boolean value, ‘binary’ or ‘quantitative’, specifying the type of the trait. The default is ‘binary’.
 #'
+#' @param prevalence 
+#' Population disease prevalence for binary traits. Required if `liability_R2 = TRUE`.
+#'
+#' @param liability_R2 
+#' Logical; if TRUE, computes liability-scale R² for binary traits following Lee et al. 2012.
+#'
 #' @param effectsize
 #' Boolean value, 'BETA' or 'OR', specifying the type of the GWAS effect size. The default is 'BETA'.
 #'
