@@ -238,7 +238,7 @@ printSampleFilterResults <- function(imissfail, hetfail, failed_het_imiss) {
 
 ## Function 18
 ######### Added in 3.0
-processIBDData <- function(IBD, IBDmatrix, ResultDir, , filterSample) {
+processIBDData <- function(IBD, IBDmatrix, ResultDir, filterSample) {
     if (!is.null(IBD)) {
         # Compute and save filtered IBD data
         executePlinkForIBD(ResultDir, IBD, "filtered_ibd")
