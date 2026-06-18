@@ -238,7 +238,7 @@ printSampleFilterResults <- function(imissfail, hetfail, failed_het_imiss) {
 
 ## Function 18
 ######### Added in 3.0
-processIBDData <- function(IBD, IBDmatrix, ResultDir, filterSample) {
+processIBDData <- function(IBD, IBDmatrix, ResultDir, foutput, filterSample) {
     if (!is.null(IBD)) {
         # Compute and save filtered IBD data
         executePlinkForIBD(ResultDir, IBD, "filtered_ibd")
@@ -255,14 +255,14 @@ processIBDData <- function(IBD, IBDmatrix, ResultDir, filterSample) {
 
         # Update PLINK files based on IBD results
         if (filterSample == TRUE) {
-            updatePlinkFilesWithIBDFilter(ResultDir = ResultDir,  = , failed_ibd = failed_ibd)
+            updatePlinkFilesWithIBDFilter(ResultDir = ResultDir,  foutput = foutput , failed_ibd = failed_ibd)
         } else {
-            executeMakeBed(ResultDir = ResultDir,  = )
+            executeMakeBed(ResultDir = ResultDir,  foutput = foutput)
             NULL
         }
     } else {
         # Generate BED files without IBD filtering
-        executeMakeBed(ResultDir = ResultDir,  = )
+        executeMakeBed(ResultDir = ResultDir,  foutput = foutput )
         failed_ibd <- NULL
         ibd <- NULL
     }
