@@ -26,7 +26,9 @@ ComputePGS(
   step_size = 5,
   r2_threshold = 0.02,
   nPC = 6,
-  pheno_type = "binary"
+  pheno_type = "binary",
+  prevalence = NULL,
+  liability_R2 = FALSE
 )
 }
 \arguments{
@@ -93,6 +95,10 @@ to impute the target dataset). These files should be in 'DataDir'.}
 \item{nPC}{Positive integer value, specifying the number of genetic PCs to be included as predictor in the PGS model fit. The default is 6.}
 
 \item{pheno_type}{Boolean value, ‘binary’ or ‘quantitative’, specifying the type of the trait. The default is ‘binary’.}
+
+\item{prevalence}{Numeric value, specifying the disease prevalence. The default is \code{NULL}.}
+
+\item{liability_R2}{Logical; if TRUE, computes liability-scale R² for binary traits following Lee et al. 2012.}
 }
 \value{
 A list object containing a dataframe, a numeric value, a GeneticPC plot (if requested), and a PGS plot. The dataframe, PGS, contains four
@@ -143,7 +149,7 @@ PGSresult <- ComputePGS(DataDir, ResultDir, finput, summarystat, phenofile, cova
     effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2,
     clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions,
     ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6,
-    pheno_type = "binary"
+    pheno_type = "binary", prevalence = NULL, liability_R2 = FALSE
 )
 
 ## This table shows 10 samples with phenotype, covariates and a PGS column.

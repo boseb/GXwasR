@@ -199,7 +199,7 @@ filterSamples <- function(DataDir, ResultDir, finput, failed_het_imiss, filterSa
             "--remove", normalizePath(file.path(ResultDir, "failed_het_imiss"), mustWork = FALSE),
             "--allow-no-sex", ## Adding in 4.0
             "--make-bed",
-            "--out", normalizePath(file.path(ResultDir, ), mustWork = FALSE),
+            "--out", normalizePath(file.path(ResultDir, "foutput"), mustWork = FALSE),
             "--silent"
         )
         executePlink(excludeSamplesArgs, ResultDir)
@@ -207,7 +207,7 @@ filterSamples <- function(DataDir, ResultDir, finput, failed_het_imiss, filterSa
         excludeSamplesArgs <- c(
             "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
             "--make-bed",
-            "--out", normalizePath(file.path(ResultDir, ), mustWork = FALSE),
+            "--out", normalizePath(file.path(ResultDir, "foutput"), mustWork = FALSE),
             "--silent"
         )
         executePlink(excludeSamplesArgs, ResultDir)
@@ -251,7 +251,7 @@ processIBDData <- function(IBD, IBDmatrix, ResultDir, foutput, filterSample) {
 
         # Read filtered IBD data
         ibd <- readIBDData(ResultDir, "filtered_ibd.genome")
-        failed_ibd <- identifyFailedSamplesFromIBD(ibd, ResultDir)
+        failed_ibd <- identifyFailedSamplesFromIBD(ibd, ResultDir, foutput)
 
         # Update PLINK files based on IBD results
         if (filterSample == TRUE) {
@@ -279,10 +279,10 @@ readIBDData <- function(ResultDir, fileName) {
 
 ## Function 21
 ######### Added in 3.0
-identifyFailedSamplesFromIBD <- function(ibd, ResultDir) {
+identifyFailedSamplesFromIBD <- function(ibd, ResultDir, foutput) {
     failedSamples <- unique(c(ibd$IID1, ibd$IID2))
     if (length(failedSamples) > 0) {
-        famData <- read.table(normalizePath(file.path(ResultDir, paste0(foutput, ".fam")), mustWork = FALSE))
+        famData <- read.table(normalizePath(file.path(ResultDir, paste0("foutput", ".fam")), mustWork = FALSE))
         famData[famData$V2 %in% failedSamples, seq_len(2)]
     } else {
         NULL
@@ -5606,7 +5606,7 @@ validateInputForComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), fin
 
 ## Function 131
 ## Added in 3.0
-validateInputForComputePGS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phenofile, covarfile = NULL, effectsize = c("BETA", "OR"), ldclump = FALSE, LDreference, clump_p1 = 0.0001, clump_p2 = 0.01, clump_r2 = 0.50, clump_kb = 250, byCHR = TRUE, pthreshold = c(0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5), highLD_regions = "high-LD-regions-hg19-GRCh37.txt", ld_prunning = FALSE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary") {
+validateInputForComputePGS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, prevalence = NULL, phenofile, covarfile = NULL, effectsize = c("BETA", "OR"), ldclump = FALSE, LDreference, clump_p1 = 0.0001, clump_p2 = 0.01, clump_r2 = 0.50, clump_kb = 250, byCHR = TRUE, pthreshold = c(0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5), highLD_regions = "high-LD-regions-hg19-GRCh37.txt", ld_prunning = FALSE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary") {
     # Validate directories
     if (!dir.exists(DataDir)) {
         stop("Error in DataDir: Directory does not exist.")
@@ -8175,15 +8175,19 @@ verify_snp_format <- function(bim) {
 }
 
 #' Function for ComputePGS
-  liability_R2 <- function(R2_obs, K, P) {
-  #' R2_obs = observed-scale incremental R2 for PGS
-  #' K = population prevalence
-  #' P = case fraction in target sample
+#' 
+#' @param R2_obs = observed-scale incremental R2 for PGS 
+#' @param K = population prevalence
+#' @param P = case fraction in target sample
+#' 
+#' @return R2_liab
+#'
+#' @noRd
+liability_R2 <- function(R2_obs, K, P) {
+    t <- qnorm(1 - K)
+    z <- dnorm(t)
   
-  t <- qnorm(1 - K)
-  z <- dnorm(t)
-  
-  R2_liab <- R2_obs * (K^2 * (1 - K)^2) / (P * (1 - P) * z^2)
-  return(R2_liab)
+    R2_liab <- R2_obs * (K^2 * (1 - K)^2) / (P * (1 - P) * z^2)
+    return(R2_liab)
 }
         

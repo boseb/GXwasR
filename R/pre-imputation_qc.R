@@ -254,7 +254,6 @@ QCsample <- function(DataDir,
 
             executePlink(heterozygosityArgs)
 
-
             miss <- readDataFile(normalizePath(file.path(ResultDir, "filtered_missing.imiss"), mustWork = FALSE))
             heter <- readDataFile(normalizePath(file.path(ResultDir, "filtered_hetero.het"), mustWork = FALSE))
 
@@ -296,7 +295,6 @@ QCsample <- function(DataDir,
                 )
 
                 printSampleFilterResults(imissfail, hetfail, failed_het_imiss)
-
 
                 if (nrow(hetermiss) == 0) {
                     hetermiss <- NULL

@@ -915,6 +915,12 @@ MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile =
 #'
 #' @param highLD_regions
 #' Character string, specifying the .txt file name with known genomic regions with high LD. The default is `NULL`.
+#' 
+#' @param prevalence
+#' Numeric value, specifying the disease prevalence. The default is `NULL`.
+#' 
+#' @param liability_R2 
+#' Logical; if TRUE, computes liability-scale R² for binary traits following Lee et al. 2012.
 #'
 #' @return
 #' A list object containing a dataframe, a numeric value, a GeneticPC plot (if requested), and a PGS plot. The dataframe, PGS, contains four
@@ -981,7 +987,7 @@ ComputePGS <- function(
       window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary", prevalence = NULL, liability_R2 = FALSE
 ) {
     # Validate inputs
-    if (!validateInputForComputePGS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile, effectsize, ldclump, LDreference, clump_p1, clump_p2, clump_r2, clump_kb, byCHR, pthreshold, highLD_regions, ld_prunning, window_size, step_size, r2_threshold, nPC, pheno_type)) {
+    if (!validateInputForComputePGS(DataDir, ResultDir, finput, summarystat, prevalence, phenofile, covarfile, effectsize, ldclump, LDreference, clump_p1, clump_p2, clump_r2, clump_kb, byCHR, pthreshold, highLD_regions, ld_prunning, window_size, step_size, r2_threshold, nPC, pheno_type)) {
         stop("Please validate all inputs")
     }
 
