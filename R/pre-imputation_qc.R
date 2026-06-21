@@ -176,7 +176,7 @@ validateInputForQCsample <- function(DataDir, ResultDir, finput, foutput, imiss,
 #' @export
 #'
 #' @examples
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "Test_output"
@@ -521,7 +521,7 @@ QCsample <- function(DataDir,
 #' @examples
 #' data("highLD_hg19", package = "GXwasR")
 #' data("example_data_study_sample_ancestry", package = "GXwasR")
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' reference <- "HapMapIII_NCBI36"
@@ -894,7 +894,7 @@ validateInputForSexCheck <- function(DataDir, ResultDir = tempdir(), finput, inf
 #' \insertAllCited{}
 #'
 #' @examples
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' LD <- TRUE

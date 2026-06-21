@@ -186,7 +186,7 @@
 #' @examples
 #' if (!(Sys.getenv("CI") == "true" && Sys.info()[["sysname"]] == "Darwin")) {
 #'     data("XWAS_Summary_Example", package = "GXwasR")
-#'     DataDir <- GXwasR:::GXwasR_data()
+#'     DataDir <- system.file("extdata", package = "GXwasR")
 #'     ResultDir <- tempdir()
 #'     finput <- "GXwasR_example"
 #'     sumstat <- XWAS_Summary_Example
@@ -589,7 +589,7 @@ TestXGene <- function(
 #' @examples
 #' data("Summary_Stat_Ex1", package = "GXwasR")
 #' data("Summary_Stat_Ex2", package = "GXwasR")
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' SummData <- list(Summary_Stat_Ex1, Summary_Stat_Ex2)
 #' SNPfile <- "UniqueLoci"
@@ -946,7 +946,7 @@ MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile =
 #' data("Example_covarfile", package = "GXwasR")
 #' data("Example_pthresoldfile", package = "GXwasR")
 #' data("highLD_hg19", package = "GXwasR")
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' summarystat <- Summary_Stat_Ex1[, c(2, 4, 7, 1, 3, 12)]
@@ -1311,7 +1311,7 @@ validateInputForGeneticCorrBT <- function(DataDir, ResultDir, finput, byCHR, REM
 #'
 #' @examples
 #' data("Example_phenofile", package = "GXwasR")
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' byCHR <- TRUE
@@ -1795,7 +1795,7 @@ validateInputForEstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(),
 #' @examples
 #' data("Summary_Stat_Ex1", package = "GXwasR")
 #' data("highLD_hg19", package = "GXwasR")
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' precomputedLD <- NULL
 #' finput <- "GXwasR_example"

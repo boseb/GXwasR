@@ -168,7 +168,7 @@ Run a genome-wide association study (GWAS) and X-chromosome-wide association stu
 ```{r example}
 library(GXwasR)
 ResultGXwas <- GXwas(
-    DataDir = GXwasR:::GXwasR_data(),
+    DataDir = system.file("extdata", package = "GXwasR"),
     ResultDir = tempdir(),
     finput = "GXwasR_example",
     trait = "binary",

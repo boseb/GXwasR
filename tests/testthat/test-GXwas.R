@@ -1,6 +1,6 @@
 test_that("GXwas function returns expected results for binary trait with FMcombx02 model", {
     skip_on_bioc()
-    DataDir <- GXwasR:::GXwasR_data()
+    DataDir <- system.file("extdata", package = "GXwasR")
     ResultDir <- tempdir()
     finput <- "GXwasR_example"
     standard_beta <- TRUE

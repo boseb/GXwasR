@@ -61,7 +61,7 @@ validateInputForXhwe <- function(DataDir, ResultDir = tempdir(), finput, foutput
 #' @export
 #'
 #' @examples
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "Test_output"
@@ -271,7 +271,7 @@ validateInputForMAFdiffSexControl <- function(DataDir, ResultDir = tempdir(), fi
 #' @export
 #'
 #' @examples
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "Test_output"
@@ -490,7 +490,7 @@ MAFdiffSexControl <- function(
 #' @export
 #'
 #' @examples
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "PostimputeEX_QC1"
@@ -525,7 +525,7 @@ FilterRegion <-
 
         tryCatch(
             {
-                DataDir1 <- GXwasR_data()
+                DataDir1 <- system.file("extdata", package = "GXwasR")
 
                 # Set filter parameters
                 para <- setFilterParameters(CHRX, CHRY, filterCHR, regionfile, filterPAR, filterXTR, filterAmpliconic)

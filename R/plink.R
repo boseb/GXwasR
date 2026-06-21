@@ -503,7 +503,7 @@ applySNPmissCCFilter <- function(ResultDir, SNPmissCC, diffmissFilter, foutput) 
 #' @export
 #'
 #' @examples
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "casesPlink"
@@ -638,7 +638,7 @@ FilterPlinkSample <- function(DataDir, ResultDir,
 #' @export
 #'
 #' @examples
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "Test_output"
@@ -747,10 +747,13 @@ GetMFPlink <- function(DataDir,
 #' @return This function is called for its side effect: printing summary statistics to the console. It returns `NULL` invisibly.
 #' @export
 #'
+#' @importFrom tibble tibble
 #' @importFrom rlang abort warn
+#' 
+#' @return Invisible. tibble containing summary stats
 #'
 #' @examples
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #'
@@ -801,6 +804,8 @@ PlinkSummary <- function(DataDir, ResultDir = tempdir(), finput) {
             No.of.snps <- length(unique(bim$V2))
             No.of.samples <- length(unique(fam$V2))
 
+            summary <- tibble::tibble(n_chr = No.of.chr, unique_chr = list(chr_unique = unique(bim$V1)), n_snps = No.of.snps, n_samples = No.of.samples)
+            
             rlang::inform(
                 rlang::format_error_bullets(c(
                     "i" = paste("Number of chromosomes:", No.of.chr),
@@ -809,7 +814,7 @@ PlinkSummary <- function(DataDir, ResultDir = tempdir(), finput) {
                     "i" = paste("Total number of samples:", No.of.samples)
                 ))
             )
-            return(invisible(NULL))
+            return(invisible(summary))
         },
         error = function(e) {
             rlang::abort(
@@ -847,7 +852,7 @@ PlinkSummary <- function(DataDir, ResultDir = tempdir(), finput) {
 #' @export
 #'
 #' @examples
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' maf_data <- executePlinkMAF(DataDir, ResultDir, finput)
@@ -948,7 +953,7 @@ executePlinkMAF <- function(DataDir, ResultDir, finput) {
 #' @examples
 #' finput <- "GXwasR_example" # Plink file
 #' foutput <- "GXwasR_example1"
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' PtoV <- TRUE
 #' VtoP <- FALSE

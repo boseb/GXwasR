@@ -2,7 +2,7 @@ test_that("ComputeLD function returns expected output", {
     skip_on_bioc()
     ResultDir <- tempdir()
     snpld <- ComputeLD(
-        DataDir = GXwasR:::GXwasR_data(), ResultDir = ResultDir,
+        DataDir = system.file("extdata", package = "GXwasR"), ResultDir = ResultDir,
         finput = "GXwasR_example", ByCHR = TRUE, CHRnum = 1, r2_LD = 0.2
     )
     expected <- data.frame(

@@ -32,7 +32,7 @@ and can remove these regions from analysis in all samples. The p-value threshold
 X-chromosome variants.
 }
 \examples{
-DataDir <- GXwasR:::GXwasR_data()
+DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 foutput <- "Test_output"

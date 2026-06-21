@@ -1,6 +1,6 @@
 test_that("FilterSNP generates correct output files", {
     skip_on_bioc()
-    DataDir <- GXwasR:::GXwasR_data()
+    DataDir <- system.file("extdata", package = "GXwasR")
     ResultDir <- tempdir()
     SNPvec <- c("rs6529954", "rs12858640", "rs5962098")
     finput <- "GXwasR_example"

@@ -180,7 +180,7 @@ For details about the different XWAS model, please follow the associated publica
 }
 \examples{
 
-DataDir <- GXwasR:::GXwasR_data()
+DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 standard_beta <- TRUE

@@ -1,6 +1,6 @@
 test_that("FilterRegion returns expected output", {
     skip_on_bioc()
-    DataDir <- GXwasR:::GXwasR_data()
+    DataDir <- system.file("extdata", package = "GXwasR")
     ResultDir <- tempdir()
     finput <- "GXwasR_example"
     foutput <- "PostimputeEX_QC1"

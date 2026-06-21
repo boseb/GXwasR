@@ -15,12 +15,14 @@ PlinkSummary(DataDir, ResultDir = tempdir(), finput)
 }
 \value{
 This function is called for its side effect: printing summary statistics to the console. It returns \code{NULL} invisibly.
+
+Invisible. tibble containing summary stats
 }
 \description{
 PlinkSummary: Summary of PLINK format genotype dataset
 }
 \examples{
-DataDir <- GXwasR:::GXwasR_data()
+DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 

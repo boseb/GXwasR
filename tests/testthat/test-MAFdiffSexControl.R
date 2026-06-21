@@ -1,6 +1,6 @@
 test_that("MAFdiffSexControl produces the correct number of files", {
     skip_on_bioc()
-    DataDir <- GXwasR:::GXwasR_data()
+    DataDir <- system.file("extdata", package = "GXwasR")
     ResultDir <- tempdir()
     finput <- "GXwasR_example"
     foutput <- "Test_output"

@@ -37,7 +37,7 @@ the controls with a sex difference in MAF be carefully evaluated and identified 
 (Khramtsova et. al., 2023). In autosomal allele frequencies, sex differences are not anticipated.
 }
 \examples{
-DataDir <- GXwasR:::GXwasR_data()
+DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 foutput <- "Test_output"

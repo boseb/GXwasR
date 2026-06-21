@@ -3,7 +3,7 @@ test_that("ClumpLD returns expected results", {
     skip_on_bioc()
     data("Summary_Stat_Ex1", package = "GXwasR")
     data("Summary_Stat_Ex2", package = "GXwasR")
-    DataDir <- GXwasR:::GXwasR_data()
+    DataDir <- system.file("extdata", package = "GXwasR")
     ResultDir <- tempdir()
     finput <- "GXwasR_example"
     SNPdata <- list(Summary_Stat_Ex1, Summary_Stat_Ex2)

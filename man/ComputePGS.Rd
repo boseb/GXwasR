@@ -124,7 +124,7 @@ data("Example_phenofile", package = "GXwasR")
 data("Example_covarfile", package = "GXwasR")
 data("Example_pthresoldfile", package = "GXwasR")
 data("highLD_hg19", package = "GXwasR")
-DataDir <- GXwasR:::GXwasR_data()
+DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 summarystat <- Summary_Stat_Ex1[, c(2, 4, 7, 1, 3, 12)]

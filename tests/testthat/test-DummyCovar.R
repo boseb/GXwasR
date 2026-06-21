@@ -1,6 +1,6 @@
 test_that("DummyCovar() generates correct output", {
     skip_on_bioc()
-    DataDir <- GXwasR:::GXwasR_data()
+    DataDir <- system.file("extdata", package = "GXwasR")
     ResultDir <- tempdir()
     bfile <- "GXwasR_example"
     incovar <- "covarfile_w_pc_age.txt"

@@ -3,7 +3,7 @@ test_that("plinkVCF creates the correct number of output files", {
     skip_on_bioc()
     finput <- "GXwasR_example" # Plink file
     foutput <- "GXwasR_example1"
-    DataDir <- GXwasR:::GXwasR_data()
+    DataDir <- system.file("extdata", package = "GXwasR")
     ResultDir <- tempdir()
     PtoV <- TRUE
     VtoP <- FALSE

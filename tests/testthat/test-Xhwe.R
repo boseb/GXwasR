@@ -1,7 +1,7 @@
 test_that("Xhwe returns a character vector of length 3", {
     skip_on_ci()
     skip_on_bioc()
-    DataDir <- GXwasR:::GXwasR_data()
+    DataDir <- system.file("extdata", package = "GXwasR")
     ResultDir <- tempdir()
     finput <- "GXwasR_example"
     foutput <- "Test_output"
