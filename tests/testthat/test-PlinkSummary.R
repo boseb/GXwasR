@@ -1,4 +1,4 @@
-test_that("PlinkSummary produces the correct number of files", {
+test_that("PlinkSummary produces the correct output", {
     skip_on_bioc()
     DataDir <- system.file("extdata", package = "GXwasR")
     ResultDir <- tempdir()
