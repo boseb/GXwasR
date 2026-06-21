@@ -5606,7 +5606,7 @@ validateInputForComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), fin
 
 ## Function 131
 ## Added in 3.0
-validateInputForComputePGS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, prevalence = NULL, phenofile, covarfile = NULL, effectsize = c("BETA", "OR"), ldclump = FALSE, LDreference, clump_p1 = 0.0001, clump_p2 = 0.01, clump_r2 = 0.50, clump_kb = 250, byCHR = TRUE, pthreshold = c(0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5), highLD_regions = "high-LD-regions-hg19-GRCh37.txt", ld_prunning = FALSE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary") {
+validateInputForComputePGS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, prevalence = NULL, phenofile, covarfile = NULL, effectsize = c("BETA", "OR"), ldclump = FALSE, LDreference, clump_p1 = 0.0001, clump_p2 = 0.01, clump_r2 = 0.50, clump_kb = 250, byCHR = TRUE, pthreshold = c(0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5), highLD_regions = "high-LD-regions-hg19-GRCh37.txt", ld_prunning = FALSE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary", liability_R2 = NULL) {
     # Validate directories
     if (!dir.exists(DataDir)) {
         stop("Error in DataDir: Directory does not exist.")
@@ -5640,15 +5640,15 @@ validateInputForComputePGS <- function(DataDir, ResultDir = tempdir(), finput, s
 
     if (liability_R2 && pheno_type != "binary") {
     stop("liability_R2 is only available for binary traits.")
-}
+    }
 
-if (liability_R2 && is.null(prevalence)) {
-    stop("prevalence must be provided when liability_R2 = TRUE.")
-}
+    if (liability_R2 && is.null(prevalence)) {
+        stop("prevalence must be provided when liability_R2 = TRUE.")
+    }
 
-if (!is.null(prevalence) && (prevalence <= 0 || prevalence >= 1)) {
-    stop("prevalence must be between 0 and 1.")
-}
+    if (!is.null(prevalence) && (prevalence <= 0 || prevalence >= 1)) {
+        stop("prevalence must be between 0 and 1.")
+    }
     
     # Validate phenofile
     if (!is.data.frame(phenofile)) {
@@ -8183,7 +8183,7 @@ verify_snp_format <- function(bim) {
 #' @return R2_liab
 #'
 #' @noRd
-liability_R2 <- function(R2_obs, K, P) {
+liabilityR2 <- function(R2_obs, K, P) {
     t <- qnorm(1 - K)
     z <- dnorm(t)
   

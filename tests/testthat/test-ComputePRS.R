@@ -24,12 +24,14 @@ test_that("ComputePGS returns expected results", {
     r2_threshold <- 0.02
     nPC <- 6
     pheno_type <- "binary"
+    prevalence <- NULL
+    liability_R2 <- FALSE
 
     PGSresult <- ComputePGS(DataDir, ResultDir, finput, summarystat, phenofile, covarfile,
         effectsize = "BETA", LDreference = "GXwasR_example", ldclump = FALSE, clump_p1, clump_p2,
         clump_r2, clump_kb, byCHR = TRUE, pthreshold = pthreshold, highLD_regions = highLD_regions,
         ld_prunning = TRUE, window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6,
-        pheno_type = "binary"
+        pheno_type = "binary", liability_R2 = liability_R2
     )
 
     expect_type(PGSresult, "list")

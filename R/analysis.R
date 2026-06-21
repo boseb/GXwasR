@@ -987,7 +987,7 @@ ComputePGS <- function(
       window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary", prevalence = NULL, liability_R2 = FALSE
 ) {
     # Validate inputs
-    if (!validateInputForComputePGS(DataDir, ResultDir, finput, summarystat, prevalence, phenofile, covarfile, effectsize, ldclump, LDreference, clump_p1, clump_p2, clump_r2, clump_kb, byCHR, pthreshold, highLD_regions, ld_prunning, window_size, step_size, r2_threshold, nPC, pheno_type)) {
+    if (!validateInputForComputePGS(DataDir, ResultDir, finput, summarystat, prevalence, phenofile, covarfile, effectsize, ldclump, LDreference, clump_p1, clump_p2, clump_r2, clump_kb, byCHR, pthreshold, highLD_regions, ld_prunning, window_size, step_size, r2_threshold, nPC, pheno_type, liability_R2)) {
         stop("Please validate all inputs")
     }
 
