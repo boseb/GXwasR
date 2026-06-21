@@ -747,7 +747,7 @@ GetMFPlink <- function(DataDir,
 #' @return This function is called for its side effect: printing summary statistics to the console. It returns `NULL` invisibly.
 #' @export
 #'
-#' @importFrom tibble tibble
+#' @importFrom dplyr tibble
 #' @importFrom rlang abort warn
 #' 
 #' @return Invisible. tibble containing summary stats
@@ -804,7 +804,7 @@ PlinkSummary <- function(DataDir, ResultDir = tempdir(), finput) {
             No.of.snps <- length(unique(bim$V2))
             No.of.samples <- length(unique(fam$V2))
 
-            summary <- tibble::tibble(n_chr = No.of.chr, unique_chr = list(chr_unique = unique(bim$V1)), n_snps = No.of.snps, n_samples = No.of.samples)
+            summary <- tibble(n_chr = No.of.chr, unique_chr = list(chr_unique = unique(bim$V1)), n_snps = No.of.snps, n_samples = No.of.samples)
             
             rlang::inform(
                 rlang::format_error_bullets(c(

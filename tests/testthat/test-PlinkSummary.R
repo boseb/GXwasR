@@ -6,7 +6,7 @@ test_that("PlinkSummary produces the correct output", {
     #'
     x <- PlinkSummary(DataDir, ResultDir, finput)
 
-    expected_result <- tibble::tibble(
+    expected_result <- dplyr::tibble(
         n_chr = 12L, 
         unique_chr = list(chr_unique = c(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 23L, 24L)),
         n_snps = 26527L,
