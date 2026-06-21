@@ -1,10 +1,12 @@
-test_that("FilterAllele produces the correct number of files", {
+test_that("FilterAllele produces emits informative message when no multi-allelic snps present", {
     DataDir <- system.file("extdata", package = "GXwasR")
     ResultDir <- tempdir()
     finput <- "GXwasR_example"
     foutput <- "Filter_Test"
-    x <- FilterAllele(DataDir, ResultDir, finput, foutput)
 
-    expect_equal(list.files(ResultDir, pattern = "^GXwasR_data") %>% length(), 1)
+    expect_message(
+        FilterAllele(DataDir, ResultDir, finput, foutput), 
+        'There are no multi-allelic SNPs present in the input dataset.'
+    )
     unlink(ResultDir, recursive = TRUE)
 })

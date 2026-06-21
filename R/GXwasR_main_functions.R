@@ -1426,15 +1426,16 @@ FilterAllele <- function(DataDir, ResultDir, finput, foutput) {
             if (nrow(x1) != 0) {
                 write.table(x1$V2, file = normalizePath(file.path(ResultDir, "snps_multiallelic"), mustWork = FALSE), quote = FALSE, col.names = FALSE, row.names = FALSE)
             } else {
-                rlang::inform(rlang::format_error_bullets(c("i" = "There is no multi-allelic SNP present in the input dataset.")))
-                return()
+                rlang::inform(
+                    rlang::format_error_bullets(c("i" = "There are no multi-allelic SNPs present in the input dataset."))
+                )
             }
-
+            exclude_arg <- if (nrow(x1) > 0) normalizePath(file.path(ResultDir, "snps_multiallelic"), mustWork = FALSE) else NULL
             invisible(sys::exec_wait(
                 plink(),
                 args = c(
                     "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
-                    "--exclude", normalizePath(file.path(ResultDir, "snps_multiallelic"), mustWork = FALSE),
+                    "--exclude", exclude_arg,
                     "--allow-no-sex", # 4.0
                     "--make-bed",
                     "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
@@ -1443,17 +1444,18 @@ FilterAllele <- function(DataDir, ResultDir, finput, foutput) {
                 std_out = FALSE,
                 std_err = FALSE
             ))
+            if(nrow(x1) > 0) {
+                bimf1 <- read.table(normalizePath(file.path(ResultDir, paste0(foutput, ".bim")), mustWork = FALSE))
 
-            bimf1 <- read.table(normalizePath(file.path(ResultDir, paste0(foutput, ".bim")), mustWork = FALSE))
-
-            rlang::inform(
-                rlang::format_error_bullets(c(
-                    "i" = paste0("Input dataset has ", nrow(bimf), " SNPs."),
-                    "i" = paste0("Output dataset has ", nrow(bimf1), " SNPs."),
-                    "v" = paste0("Plink files with only biallelic SNPs are in ", ResultDir, " prefixed as ", foutput)
-                ))
-            )
-            return()
+                rlang::inform(
+                    rlang::format_error_bullets(c(
+                        "i" = paste0("Input dataset has ", nrow(bimf), " SNPs."),
+                        "i" = paste0("Output dataset has ", nrow(bimf1), " SNPs."),
+                        "v" = paste0("Plink files with only biallelic SNPs are in ", ResultDir, " prefixed as ", foutput)
+                    ))
+                )
+                return(invisible(bimf1))
+            }
         },
         error = function(e) {
             rlang::abort(
