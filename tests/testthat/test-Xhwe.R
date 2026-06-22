@@ -12,6 +12,6 @@ test_that("Xhwe returns a character vector of length 3", {
     expect_type(x, "character")
     expect_equal(length(x), 3)
     expect_equal(x, c("rs56053951", "rs12353847", "rs5940058"))
-    expect_equal(list.files(ResultDir) %>% length(), 5)
+    expect_equal(list.files(ResultDir) %>% length(), 6)
     unlink(ResultDir, recursive = TRUE)
 })
