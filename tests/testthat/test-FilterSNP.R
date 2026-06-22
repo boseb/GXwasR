@@ -7,7 +7,7 @@ test_that("FilterSNP generates correct output files", {
     foutput <- "Filter_Test"
     FilterSNP(DataDir, ResultDir, finput, foutput, SNPvec = SNPvec, extract = TRUE)
 
-    expect_equal(list.files(ResultDir) %>% length(), 6)
+    expect_equal(list.files(ResultDir, pattern = '^Filter') %>% length(), 4)
 
     unlink(ResultDir, recursive = TRUE)
 })

@@ -1768,7 +1768,7 @@ FilterSNP <- function(DataDir, ResultDir, finput, foutput, SNPvec, extract = FAL
                     "v" = paste0("Plink files with extracted SNPs are in ", ResultDir, " prefixed as ", foutput)
                 ))
             )
-            return(NULL)
+            return(invisible(NULL))
         },
         error = function(e) {
             rlang::abort(

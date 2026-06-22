@@ -284,7 +284,7 @@ MAFdiffSexControl <- function(
       foutput = NULL
 ) {
     if (!validateInputForMAFdiffSexControl(DataDir, ResultDir, finput, filterSNP, foutput)) {
-        return(NULL)
+        return(invisible(NULL))
     }
 
     if (!checkFiles(DataDir, finput)) {

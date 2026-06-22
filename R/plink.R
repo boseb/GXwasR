@@ -585,7 +585,7 @@ FilterPlinkSample <- function(DataDir, ResultDir,
                 }
             }
             rlang::inform(rlang::format_error_bullets(c("v" = paste0(foutput, " PLINK files with desired samples are in ", ResultDir))))
-            return()
+            return(invisible(NULL))
         },
         error = function(e) {
             rlang::abort(
@@ -718,7 +718,7 @@ GetMFPlink <- function(DataDir,
             }
 
             rlang::inform(rlang::format_error_bullets(c("v" = paste0("Output PLINK files, prefixed as ", foutput, ", are in ", ResultDir))))
-            return()
+            return(invisible(NULL))
         },
         error = function(e) {
             rlang::abort(
