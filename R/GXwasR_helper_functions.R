@@ -1171,7 +1171,7 @@ FMmain <- function(DataDir, ResultDir, finput, trait, standard_beta, xmodel,
 
         # Parallel computation
         rlang::inform(rlang::format_error_bullets("Parallel computation is in progress --------->"))
-        cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
+        cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "PSOCK")
 
         # Load namespaces quietly on each worker
         parallel::clusterCall(cl, function() {
@@ -1482,7 +1482,7 @@ applyStoufferMethod <- function(pvals, MF.p.corr, MF.zero.sub, MF.na.rm, MF.mc.c
         chunks <- round(seq(1, nrow(pvals), by = chunk), 0)
 
         rlang::inform(rlang::format_error_bullets(c("i" = "Creating parallel workers...")))
-        cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
+        cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "PSOCK")
 
         # Load namespaces quietly on each worker
         parallel::clusterCall(cl, function() {
@@ -1802,7 +1802,7 @@ FMcomb_sub <- function(ResultDir, combtest, MF.p.corr,
 
             #### Parallel computation
             rlang::inform(rlang::format_error_bullets("Parallel computation is in progress --------->"))
-            cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
+            cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "PSOCK")
 
             parallel::clusterCall(cl, function() {
                 requireNamespace("data.table", quietly = TRUE)
@@ -2105,7 +2105,7 @@ autoFun <- function(DataDir, ResultDir, finput, sex, standard_beta, covarfile, i
 
         #### Parallel computation
         rlang::inform(rlang::format_error_bullets("Parallel computation is in progress --------->"))
-        cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
+        cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "PSOCK")
 
         parallel::clusterCall(cl, function() {
             requireNamespace("data.table", quietly = TRUE)
@@ -2548,7 +2548,7 @@ XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
             #### Parallel computation
             gc(reset = TRUE)
             rlang::inform(rlang::format_error_bullets("Parallel computation is in progress --------->"))
-            cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
+            cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "PSOCK")
 
             parallel::clusterCall(cl, function() {
                 requireNamespace("data.table", quietly = TRUE)
@@ -2581,7 +2581,7 @@ XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
             #### Parallel computation
             gc(reset = TRUE)
             rlang::inform(rlang::format_error_bullets("Parallel computation is in progress --------->"))
-            cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "FORK")
+            cl <- parallel::makeCluster(mc <- getOption("cl.cores", ncores), type = "PSOCK")
 
             parallel::clusterCall(cl, function() {
                 requireNamespace("data.table", quietly = TRUE)

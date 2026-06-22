@@ -897,7 +897,7 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #' combtest <- "fisher.method"
 #' snp_pval <- 1e-08
 #' covarfile <- NULL
-#' ncores <- 0
+#' ncores <- 2
 #' MF.mc.cores <- 1
 #' ResultGXwas <- GXwas(
 #'     DataDir = DataDir, ResultDir = ResultDir,
