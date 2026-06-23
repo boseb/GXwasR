@@ -149,7 +149,7 @@ executePlinkForIBD <- function(ResultDir, IBD, outFileName) {
     # Extract pruned SNPs based on the .prune.in file
     executePlinkAd(ResultDir, c(
         "--bfile", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE), # Original data
-        "--extract", normalizePath(file.path(ResultDir, paste0(foutput, ".prune.in"))), mustWork = FALSE), # Use pruned SNP list
+        "--extract", normalizePath(file.path(ResultDir, paste0(foutput, ".prune.in")), mustWork = FALSE), # Use pruned SNP list
         "--allow-no-sex",
         "--make-bed",
         "--out", normalizePath(file.path(ResultDir, "foutput1"), mustWork = FALSE),
