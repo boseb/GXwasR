@@ -139,17 +139,17 @@ plinkExcludeExtract <- function(DataDir, finput, ResultDir, foutput, region_file
 executePlinkForIBD <- function(ResultDir, IBD, outFileName) {
     ####### Added in final version #######
     executePlinkAd(ResultDir, c(
-        "--bfile", normalizePath(file.path(ResultDir, "foutput"), mustWork = FALSE),
+        "--bfile", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
         "--indep-pairwise", 50, 5, 0.02, # We made these as hard thresholds.
         "--allow-no-sex", ## Adding in 4.0
-        "--out", normalizePath(file.path(ResultDir, "foutput"), mustWork = FALSE),
+        "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
         "--silent"
     ))
 
     # Extract pruned SNPs based on the .prune.in file
     executePlinkAd(ResultDir, c(
-        "--bfile", normalizePath(file.path(ResultDir, "foutput"), mustWork = FALSE), # Original data
-        "--extract", normalizePath(file.path(ResultDir, "foutput.prune.in"), mustWork = FALSE), # Use pruned SNP list
+        "--bfile", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE), # Original data
+        "--extract", normalizePath(file.path(ResultDir, paste0(foutput, ".prune.in")), mustWork = FALSE), # Use pruned SNP list
         "--allow-no-sex",
         "--make-bed",
         "--out", normalizePath(file.path(ResultDir, "foutput1"), mustWork = FALSE),
@@ -177,9 +177,9 @@ updatePlinkFilesWithIBDFilter <- function(ResultDir, foutput, failed_ibd) {
     if (!is.null(failed_ibd)) {
         write.table(failed_ibd, file = normalizePath(file.path(ResultDir, "samples_failed_ibd"), mustWork = FALSE), quote = FALSE, row.names = FALSE, col.names = FALSE)
         removeSamplesArgs <- c(
-            "--bed", normalizePath(file.path(ResultDir, paste0("foutput", ".bed")), mustWork = FALSE),
-            "--bim", normalizePath(file.path(ResultDir, paste0("foutput", ".bim")), mustWork = FALSE),
-            "--fam", normalizePath(file.path(ResultDir, paste0("foutput", ".fam")), mustWork = FALSE),
+            "--bed", normalizePath(file.path(ResultDir, paste0(foutput, ".bed")), mustWork = FALSE),
+            "--bim", normalizePath(file.path(ResultDir, paste0(foutput, ".bim")), mustWork = FALSE),
+            "--fam", normalizePath(file.path(ResultDir, paste0(foutput, ".fam")), mustWork = FALSE),
             "--remove", normalizePath(file.path(ResultDir, "/samples_failed_ibd"), mustWork = FALSE),
             "--allow-no-sex", "--make-bed",
             "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
@@ -188,9 +188,9 @@ updatePlinkFilesWithIBDFilter <- function(ResultDir, foutput, failed_ibd) {
         executePlink(removeSamplesArgs, ResultDir)
     } else {
         removeSamplesArgs <- c(
-            "--bed", normalizePath(file.path(ResultDir, paste0("foutput", ".bed")), mustWork = FALSE),
-            "--bim", normalizePath(file.path(ResultDir, paste0("foutput", ".bim")), mustWork = FALSE),
-            "--fam", normalizePath(file.path(ResultDir, paste0("foutput", ".fam")), mustWork = FALSE),
+            "--bed", normalizePath(file.path(ResultDir, paste0(foutput, ".bed")), mustWork = FALSE),
+            "--bim", normalizePath(file.path(ResultDir, paste0(foutput, ".bim")), mustWork = FALSE),
+            "--fam", normalizePath(file.path(ResultDir, paste0(foutput, ".fam")), mustWork = FALSE),
             "--make-bed", "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
             "--silent"
         )
