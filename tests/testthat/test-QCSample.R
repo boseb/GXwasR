@@ -75,4 +75,6 @@ test_that("QCsample returns foutput when het = NULL", {
     output_files <- list.files(ResultDir, pattern = foutput)
     expect_equal(length(output_files), 7)
     unlink(ResultDir, recursive = TRUE)
+    cleanupDataDir <- list.files(DataDir, pattern = 'PreimputeEX_QC', full.names = TRUE)
+    unlink(cleanupDataDir)
 })
