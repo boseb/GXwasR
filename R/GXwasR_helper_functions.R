@@ -241,11 +241,11 @@ printSampleFilterResults <- function(imissfail, hetfail, failed_het_imiss) {
 processIBDData <- function(IBD, IBDmatrix, ResultDir, foutput, filterSample) {
     if (!is.null(IBD)) {
         # Compute and save filtered IBD data
-        executePlinkForIBD(ResultDir, IBD, "filtered_ibd")
+        executePlinkForIBD(ResultDir, foutput, IBD, "filtered_ibd")
 
         # Optionally save the entire IBD matrix
         if (IBDmatrix) {
-            executePlinkForIBD(ResultDir, NULL, "Entire_ibd")
+            executePlinkForIBD(ResultDir, foutput, NULL, "Entire_ibd")
             rlang::inform(rlang::format_error_bullets(c("v" = "Entire IBD matrix 'Entire_ibd.genome' saved in ResultDir.")))
         }
 

@@ -136,7 +136,7 @@ plinkExcludeExtract <- function(DataDir, finput, ResultDir, foutput, region_file
 
 ## Function 19
 ######### Added in 3.0
-executePlinkForIBD <- function(ResultDir, IBD, outFileName) {
+executePlinkForIBD <- function(ResultDir, foutput, IBD, outFileName) {
     ####### Added in final version #######
     executePlinkAd(ResultDir, c(
         "--bfile", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
