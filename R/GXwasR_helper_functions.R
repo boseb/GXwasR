@@ -377,7 +377,7 @@ handleCaseControlFiltering <- function(ResultDir, casecontrol, dmissX, dmissAuto
       chrfilter <- "--not-chr"
       chrv <- 23
     } else {
-      print("Filtering for differential missingness between cases and controls is turned off.")
+      rlang::inform("Filtering for differential missingness between cases and controls is turned off.")
     }
 
     if (caldiffmiss) {
@@ -398,7 +398,7 @@ handleCaseControlFiltering <- function(ResultDir, casecontrol, dmissX, dmissAuto
     applySNPmissCCFilter(ResultDir, SNPmissCC, diffmissFilter, foutput)
 
   } else {
-    print("No filter based on differential missingness will be applied.")
+    rlang::inform("No filter based on differential missingness will be applied.")
 
     executePlinkAd(ResultDir, args = c(
       #"--bfile", paste0(ResultDir, "/filtered_temp4"),
