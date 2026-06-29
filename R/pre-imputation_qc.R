@@ -286,7 +286,7 @@ QCsample <- function(DataDir,
 
             ## Updating it in 6.0
             if (!is.null(imiss) && !is.null(het)) {
-                filterSamples(DataDir, ResultDir, finput, failed_het_imiss, filterSample)
+                filterSamples(DataDir, ResultDir, finput, foutput, failed_het_imiss, filterSample)
 
 
                 ## Plot

@@ -192,14 +192,14 @@ processAmbiguousSamples <- function(DataDir, ResultDir, finput, fam1) {
 
 ## Function 16
 ######### Added in 3.0
-filterSamples <- function(DataDir, ResultDir, finput, failed_het_imiss, filterSample) {
+filterSamples <- function(DataDir, ResultDir, finput, foutput, failed_het_imiss, filterSample) {
     if (filterSample == TRUE) {
         excludeSamplesArgs <- c(
             "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
             "--remove", normalizePath(file.path(ResultDir, "failed_het_imiss"), mustWork = FALSE),
             "--allow-no-sex", ## Adding in 4.0
             "--make-bed",
-            "--out", normalizePath(file.path(ResultDir, "foutput"), mustWork = FALSE),
+            "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
             "--silent"
         )
         executePlink(excludeSamplesArgs, ResultDir)
@@ -207,7 +207,7 @@ filterSamples <- function(DataDir, ResultDir, finput, failed_het_imiss, filterSa
         excludeSamplesArgs <- c(
             "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
             "--make-bed",
-            "--out", normalizePath(file.path(ResultDir, "foutput"), mustWork = FALSE),
+            "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
             "--silent"
         )
         executePlink(excludeSamplesArgs, ResultDir)
@@ -282,7 +282,7 @@ readIBDData <- function(ResultDir, fileName) {
 identifyFailedSamplesFromIBD <- function(ibd, ResultDir, foutput) {
     failedSamples <- unique(c(ibd$IID1, ibd$IID2))
     if (length(failedSamples) > 0) {
-        famData <- read.table(normalizePath(file.path(ResultDir, paste0("foutput", ".fam")), mustWork = FALSE))
+        famData <- read.table(normalizePath(file.path(ResultDir, paste0(foutput, ".fam")), mustWork = FALSE))
         famData[famData$V2 %in% failedSamples, seq_len(2)]
     } else {
         NULL
