@@ -192,6 +192,8 @@ validateInputForQCsample <- function(DataDir, ResultDir, finput, foutput, imiss,
 #'     foutput = foutput, imiss = imiss, het = het, IBD = IBD,
 #'     ambi_out = ambi_out
 #' )
+#' cleanupDataDir <- list.files(DataDir, pattern = 'PreimputeEX_QC', full.names = TRUE)
+#' unlink(cleanupDataDir)
 QCsample <- function(DataDir,
     ResultDir,
     finput,
@@ -295,7 +297,7 @@ QCsample <- function(DataDir,
                 )
 
                 printSampleFilterResults(imissfail, hetfail, failed_het_imiss)
-
+              
                 if (nrow(hetermiss) == 0) {
                     hetermiss <- NULL
                 } else {

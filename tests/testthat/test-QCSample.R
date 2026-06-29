@@ -10,7 +10,7 @@ test_that("QCsample returns expected output", {
     IBD <- 0.2
     IBDmatrix <- FALSE
     ambi_out <- TRUE
-    #'
+    
     x <- QCsample(
         DataDir = DataDir, ResultDir = ResultDir, finput = finput,
         foutput = foutput, imiss = imiss, het = het, IBD = IBD,
