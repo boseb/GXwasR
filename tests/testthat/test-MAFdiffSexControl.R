@@ -4,7 +4,7 @@ test_that("MAFdiffSexControl produces the messaging for example", {
     ResultDir <- tempdir()
     finput <- "GXwasR_example"
     foutput <- "Test_output"
-    
-    expect_message(MAFdiffSexControl(DataDir, ResultDir, finput, filterSNP = TRUE, foutput = foutput), 'No SNP to be flagged or excluded.')
+
+    expect_message(MAFdiffSexControl(DataDir, ResultDir, finput, filterSNP = TRUE, foutput = foutput), "No SNP to be flagged or excluded.")
     unlink(ResultDir, recursive = TRUE)
 })

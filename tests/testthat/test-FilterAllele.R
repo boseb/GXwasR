@@ -5,8 +5,8 @@ test_that("FilterAllele produces emits informative message when no multi-allelic
     foutput <- "Filter_Test"
 
     expect_message(
-        FilterAllele(DataDir, ResultDir, finput, foutput), 
-        'There are no multi-allelic SNPs present in the input dataset.'
+        FilterAllele(DataDir, ResultDir, finput, foutput),
+        "There are no multi-allelic SNPs present in the input dataset."
     )
     unlink(ResultDir, recursive = TRUE)
 })

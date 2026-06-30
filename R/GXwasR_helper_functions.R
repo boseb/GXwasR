@@ -29,7 +29,6 @@
 #' @importFrom parallel clusterCall clusterExport parLapply makeCluster stopCluster
 
 
-
 ## Function 3
 ########## Added in 3.0
 checkFiles <- function(DataDir, finput) {
@@ -255,20 +254,19 @@ processIBDData <- function(IBD, IBDmatrix, ResultDir, foutput, filterSample) {
 
         # Update PLINK files based on IBD results
         if (filterSample == TRUE) {
-            updatePlinkFilesWithIBDFilter(ResultDir = ResultDir,  foutput = foutput , failed_ibd = failed_ibd)
+            updatePlinkFilesWithIBDFilter(ResultDir = ResultDir, foutput = foutput, failed_ibd = failed_ibd)
         } else {
-            executeMakeBed(ResultDir = ResultDir,  foutput = foutput)
+            executeMakeBed(ResultDir = ResultDir, foutput = foutput)
             NULL
         }
     } else {
         # Generate BED files without IBD filtering
-        executeMakeBed(ResultDir = ResultDir,  foutput = foutput )
+        executeMakeBed(ResultDir = ResultDir, foutput = foutput)
         failed_ibd <- NULL
         ibd <- NULL
     }
     return(list(failed_ibd = failed_ibd, ibd = ibd))
 }
-
 
 
 ## Function 20
@@ -362,51 +360,49 @@ handleLDPruning <- function(ld_prunning, highLD_regions, ResultDir, window_size,
 ######### Added in 3.0
 # Helper Function to Handle Differential Missingness Filtering for Case-Control Data
 handleCaseControlFiltering <- function(ResultDir, casecontrol, dmissX, dmissAutoY, caldiffmiss, SNPmissCC, diffmissFilter, foutput) {
+    SNPmissCC <- NULL # Initialize
 
-  SNPmissCC <- NULL  # Initialize
+    if (casecontrol) {
+        chrfilter <- NULL
+        chrv <- NULL
+        if (dmissX & dmissAutoY) {
+            # No additional filters needed
+        } else if (dmissX & !dmissAutoY) {
+            chrfilter <- "--chr"
+            chrv <- 23
+        } else if (!dmissX & dmissAutoY) {
+            chrfilter <- "--not-chr"
+            chrv <- 23
+        } else {
+            rlang::inform("Filtering for differential missingness between cases and controls is turned off.")
+        }
 
-  if (casecontrol) {
-    chrfilter <- NULL
-    chrv <- NULL
-    if (dmissX & dmissAutoY) {
-      # No additional filters needed
-    } else if (dmissX & !dmissAutoY) {
-      chrfilter <- "--chr"
-      chrv <- 23
-    } else if (!dmissX & dmissAutoY) {
-      chrfilter <- "--not-chr"
-      chrv <- 23
+        if (caldiffmiss) {
+            executePlinkAd(ResultDir, args = c(
+                "--bfile", paste0(ResultDir, "/filtered_temp4_processed"),
+                chrfilter, chrv,
+                "--test-missing", "--adjust",
+                "--make-bed", "--allow-no-sex",
+                "--out", paste0(ResultDir, "/filtered_temp_casecontrol")
+            ))
+
+            # Process the differential missingness results
+            SNPmissCC <- processDifferentialMissingnessResults(ResultDir)
+        }
+
+        applySNPmissCCFilter(ResultDir, SNPmissCC, diffmissFilter, foutput)
     } else {
-      rlang::inform("Filtering for differential missingness between cases and controls is turned off.")
+        rlang::inform("No filter based on differential missingness will be applied.")
+
+        executePlinkAd(ResultDir, args = c(
+            "--bfile", paste0(ResultDir, "/filtered_temp4_processed"),
+            "--make-bed", "--allow-no-sex",
+            "--out", paste0(ResultDir, "/", foutput),
+            "--silent"
+        ))
     }
 
-    if (caldiffmiss) {
-      executePlinkAd(ResultDir, args = c(
-        "--bfile", paste0(ResultDir, "/filtered_temp4_processed"),
-        chrfilter, chrv,
-        "--test-missing", "--adjust",
-        "--make-bed", "--allow-no-sex",
-        "--out", paste0(ResultDir, "/filtered_temp_casecontrol")
-      ))
-
-      # Process the differential missingness results
-      SNPmissCC <- processDifferentialMissingnessResults(ResultDir)
-    }
-
-    applySNPmissCCFilter(ResultDir, SNPmissCC, diffmissFilter, foutput)
-
-  } else {
-    rlang::inform("No filter based on differential missingness will be applied.")
-
-    executePlinkAd(ResultDir, args = c(
-      "--bfile", paste0(ResultDir, "/filtered_temp4_processed"),
-      "--make-bed", "--allow-no-sex",
-      "--out", paste0(ResultDir, "/", foutput),
-      "--silent"
-    ))
-  }
-
-  return( SNPmissCC)
+    return(SNPmissCC)
 }
 
 # Helper Function to Handle Differential Missingness Filtering for Case-Control Data
@@ -475,12 +471,14 @@ processDifferentialMissingnessResults <- function(ResultDir) {
 
 ## Function 36
 #' @importFrom ggplot2 element_rect expansion
-gmirror <- function(top, bottom, tline, bline, chroms = c(seq_len(22), "X", "Y"), log10 = TRUE,
-    yaxis, opacity = 1, annotate_snp, annotate_p, toptitle = NULL,
-    bottomtitle = NULL, highlight_snp, highlight_p, highlighter = "red",
-    chrcolor1 = "#AAAAAA", chrcolor2 = "#4D4D4D", freey = FALSE,
-    background = "variegated", chrblocks = FALSE, file = "gmirror",
-    type = "png", hgt = 7, hgtratio = 0.5, wi = 12, res = 300) {
+gmirror <- function(
+      top, bottom, tline, bline, chroms = c(seq_len(22), "X", "Y"), log10 = TRUE,
+      yaxis, opacity = 1, annotate_snp, annotate_p, toptitle = NULL,
+      bottomtitle = NULL, highlight_snp, highlight_p, highlighter = "red",
+      chrcolor1 = "#AAAAAA", chrcolor2 = "#4D4D4D", freey = FALSE,
+      background = "variegated", chrblocks = FALSE, file = "gmirror",
+      type = "png", hgt = 7, hgtratio = 0.5, wi = 12, res = 300
+) {
     # Sort data
     topn <- names(top)
     bottomn <- names(bottom)
@@ -760,28 +758,27 @@ pgsFun <- function(pthreshold, ResultDir, DataDir, finput, clumpExtract, clumpSN
         phenoBin.pgs <- pheno.pgs
         phenoBin.pgs$Pheno1 <- as.integer(phenoBin.pgs$Pheno1 == 2)
         model <- glm(Pheno1 ~ ., data = phenoBin.pgs[, !colnames(phenoBin.pgs) %in% c("FID", "IID")], family = binomial)
-       McFaddenR2_full <- 1 - stats::logLik(model) / stats::logLik(null_model)
-       covar_model <- glm( Pheno1 ~ ., data = phenoBin.pgs[, !colnames(phenoBin.pgs) %in% c("FID", "IID", "SCORE")], family = binomial
-)
+        McFaddenR2_full <- 1 - stats::logLik(model) / stats::logLik(null_model)
+        covar_model <- glm(Pheno1 ~ ., data = phenoBin.pgs[, !colnames(phenoBin.pgs) %in% c("FID", "IID", "SCORE")], family = binomial)
 
-McFaddenR2_covar <- 1 - stats::logLik(covar_model) / stats::logLik(null_model)
+        McFaddenR2_covar <- 1 - stats::logLik(covar_model) / stats::logLik(null_model)
 
-pgs.r2 <- as.numeric(McFaddenR2_full - McFaddenR2_covar)
+        pgs.r2 <- as.numeric(McFaddenR2_full - McFaddenR2_covar)
         if (liability_R2) {
-    if (is.null(prevalence)) {
-        stop("Population prevalence must be provided to calculate liability-scale R2.")
-    }
+            if (is.null(prevalence)) {
+                stop("Population prevalence must be provided to calculate liability-scale R2.")
+            }
 
-    sample_prev <- mean(phenoBin.pgs$Pheno1 == 1)
-    threshold <- stats::qnorm(1 - prevalence)
-    z <- stats::dnorm(threshold)
+            sample_prev <- mean(phenoBin.pgs$Pheno1 == 1)
+            threshold <- stats::qnorm(1 - prevalence)
+            z <- stats::dnorm(threshold)
 
-    pgs.liability.r2 <- pgs.r2 *
-        (prevalence^2 * (1 - prevalence)^2) /
-        (sample_prev * (1 - sample_prev) * z^2)
-} else {
-    pgs.liability.r2 <- NA_real_
-}
+            pgs.liability.r2 <- pgs.r2 *
+                (prevalence^2 * (1 - prevalence)^2) /
+                (sample_prev * (1 - sample_prev) * z^2)
+        } else {
+            pgs.liability.r2 <- NA_real_
+        }
     } else {
         model <- lm(Pheno1 ~ ., data = pheno.pgs[, !colnames(pheno.pgs) %in% c("FID", "IID")])
         pgs.r2 <- summary(model)$r.squared - summary(null_model)$r.squared
@@ -989,11 +986,9 @@ FMsub <- function(ResultDir, plot.jpeg, plotname, snp_pval, annotateTopSnp, sugg
 
 ## Function 46
 ## Added in 3.0
-paraGwas <- function(
-      chunks, chunk, ResultDir, DataDir, finput, trait, modelv, regress, standard_b, noxsexv, sexv,
-      interactionv, parameterv, Inphenocovv, covar, covarv,
-      snpfile
-) {
+paraGwas <- function(chunks, chunk, ResultDir, DataDir, finput, trait, modelv, regress, standard_b, noxsexv, sexv,
+    interactionv, parameterv, Inphenocovv, covar, covarv,
+    snpfile) {
     ## Chunkfile create
     rlang::inform(rlang::format_error_bullets(paste0("Chunk index processing: ", chunks)))
     if (nrow(snpfile) >= (chunks + chunk)) {
@@ -1053,8 +1048,10 @@ paraGwas <- function(
 
 ## Function 47
 ## Updated in 3.0
-FMmain <- function(DataDir, ResultDir, finput, trait, standard_beta, xmodel,
-    sex, xsex, covarfile, interaction, covartest, Inphenocov, plot.jpeg, plotname, snp_pval, annotateTopSnp, suggestiveline, genomewideline, ncores) {
+FMmain <- function(
+      DataDir, ResultDir, finput, trait, standard_beta, xmodel,
+      sex, xsex, covarfile, interaction, covartest, Inphenocov, plot.jpeg, plotname, snp_pval, annotateTopSnp, suggestiveline, genomewideline, ncores
+) {
     if (xmodel[1] == "FMcombx01" | xmodel[1] == "FMstratified") {
         modelv <- 1
     } else if (xmodel[1] == "FMcombx02") {
@@ -1222,15 +1219,17 @@ fisher.sum <- function(p, zero.sub = 0.00001, na.rm = FALSE) {
 ## Function 49
 # Copied from ex-CRAN package MADAM and exported. The man pages are copied from the original package.
 fisher.method <-
-    function(pvals,
-    method = c("fisher"),
-    p.corr = c(
-        "bonferroni", "BH",
-        "none"
-    ),
-    zero.sub = 0.00001,
-    na.rm = FALSE,
-    mc.cores = NULL) {
+    function(
+      pvals,
+      method = c("fisher"),
+      p.corr = c(
+          "bonferroni", "BH",
+          "none"
+      ),
+      zero.sub = 0.00001,
+      na.rm = FALSE,
+      mc.cores = NULL
+    ) {
         stopifnot(method %in% c("fisher"))
         stopifnot(p.corr %in% c("none", "bonferroni", "BH"))
         stopifnot(all(pvals >= 0, na.rm = TRUE) &
@@ -1275,15 +1274,15 @@ fisher.method <-
 # Copied from ex-CRAN package MADAM and exported. The man pages are copied from the original package.
 fisher.method.perm <-
     function(pvals,
-             p.corr = c("bonferroni", "BH", "none"),
-             zero.sub = 0.00001,
-             B = 10000,
-             mc.cores = NULL,
-             blinker = 1000) {
+    p.corr = c("bonferroni", "BH", "none"),
+    zero.sub = 0.00001,
+    B = 10000,
+    mc.cores = NULL,
+    blinker = 1000) {
         stopifnot(is.na(blinker) || blinker > 0)
         stopifnot(p.corr %in% c("none", "bonferroni", "BH"))
         stopifnot(all(pvals >= 0, na.rm = TRUE) &
-                  all(pvals <= 1, na.rm = TRUE))
+            all(pvals <= 1, na.rm = TRUE))
         stopifnot(zero.sub >= 0 & zero.sub <= 1 || length(zero.sub) != 1)
         if (is.null(dim(pvals))) {
             stop("pvals must have a dim attribute")
@@ -1302,7 +1301,6 @@ fisher.method.perm <-
         }
 
         res.perm <- lapply(seq_len(n), function(i) {
-
             if (!is.na(blinker) && blinker > 0) {
                 cli::cli_progress_update()
             }
@@ -1349,15 +1347,17 @@ fisher.method.perm <-
 
 ## Function 51
 stouffer.method <-
-    function(pvals,
-    method = c("stouffer"),
-    p.corr = c(
-        "bonferroni", "BH",
-        "none"
-    ),
-    zero.sub = 0.00001,
-    na.rm = FALSE,
-    mc.cores = NULL) {
+    function(
+      pvals,
+      method = c("stouffer"),
+      p.corr = c(
+          "bonferroni", "BH",
+          "none"
+      ),
+      zero.sub = 0.00001,
+      na.rm = FALSE,
+      mc.cores = NULL
+    ) {
         stopifnot(method %in% c("stouffer"))
         stopifnot(p.corr %in% c("none", "bonferroni", "BH"))
         stopifnot(all(pvals >= 0, na.rm = TRUE) &
@@ -1406,15 +1406,17 @@ paraStouffer <- function(chunks, chunk, pvals, MF.p.corr, MF.zero.sub, MF.na.rm)
         pval_chunk <- pvals[chunks:nrow(pvals), ]
     }
     stouffer.method <-
-        function(pvals,
-    method = c("stouffer"),
-    p.corr = c(
-        "bonferroni", "BH",
-        "none"
-    ),
-    zero.sub = 0.00001,
-    na.rm = FALSE,
-    mc.cores = NULL) {
+        function(
+      pvals,
+      method = c("stouffer"),
+      p.corr = c(
+          "bonferroni", "BH",
+          "none"
+      ),
+      zero.sub = 0.00001,
+      na.rm = FALSE,
+      mc.cores = NULL
+        ) {
             stopifnot(method %in% c("stouffer"))
             stopifnot(p.corr %in% c("none", "bonferroni", "BH"))
             stopifnot(all(pvals >= 0, na.rm = TRUE) &
@@ -1760,18 +1762,20 @@ createPlots <- function(ResultDir, plotname, FemaleWAS, MaleWAS, gwas.t2, gwas.b
 
 ## Function 56
 ###### Updated in 3.0
-FMcomb_sub <- function(ResultDir, combtest, MF.p.corr,
-    MF.zero.sub,
-    MF.na.rm,
-    MF.mc.cores,
-    B,
-    plot.jpeg,
-    plotname,
-    snp_pval,
-    annotateTopSnp,
-    suggestiveline,
-    genomewideline,
-    ncores) {
+FMcomb_sub <- function(
+      ResultDir, combtest, MF.p.corr,
+      MF.zero.sub,
+      MF.na.rm,
+      MF.mc.cores,
+      B,
+      plot.jpeg,
+      plotname,
+      snp_pval,
+      annotateTopSnp,
+      suggestiveline,
+      genomewideline,
+      ncores
+) {
     load(normalizePath(file.path(ResultDir, "MaleWAS.Rda"), mustWork = FALSE))
     MaleWAS <- data.table::as.data.table(MaleWAS)
     gc(reset = TRUE)
@@ -1907,28 +1911,30 @@ FMcomb_sub <- function(ResultDir, combtest, MF.p.corr,
 
 ## Function 57
 ## Updated in 3.0
-FMcomb <- function(DataDir,
-    ResultDir,
-    trait,
-    standard_beta,
-    xmodel,
-    covarfile,
-    covartest,
-    interaction,
-    Inphenocov,
-    combtest,
-    B,
-    MF.p.corr,
-    MF.zero.sub,
-    MF.na.rm,
-    MF.mc.cores,
-    plot.jpeg,
-    plotname,
-    snp_pval,
-    annotateTopSnp,
-    suggestiveline,
-    genomewideline,
-    ncores) {
+FMcomb <- function(
+      DataDir,
+      ResultDir,
+      trait,
+      standard_beta,
+      xmodel,
+      covarfile,
+      covartest,
+      interaction,
+      Inphenocov,
+      combtest,
+      B,
+      MF.p.corr,
+      MF.zero.sub,
+      MF.na.rm,
+      MF.mc.cores,
+      plot.jpeg,
+      plotname,
+      snp_pval,
+      annotateTopSnp,
+      suggestiveline,
+      genomewideline,
+      ncores
+) {
     gc(reset = TRUE)
     # Here DataDir becomes ResultDir, need to put the covarfile always in ResultDir by copying
     if (!is.null(covarfile)) {
@@ -1984,8 +1990,10 @@ FMcomb <- function(DataDir,
 
 ## Function 58
 ## Added in 3.0
-paraGwasAuto <- function(chunks, chunk, ResultDir, finput, regress, sexv, noxsexv, interactionv, standard_b, parameterv, Inphenocovv, covar, covarv,
-    snpfile) {
+paraGwasAuto <- function(
+      chunks, chunk, ResultDir, finput, regress, sexv, noxsexv, interactionv, standard_b, parameterv, Inphenocovv, covar, covarv,
+      snpfile
+) {
     ## Chunkfile create
     if (nrow(snpfile) >= (chunks + chunk)) {
         snp_names <- snpfile$V2[chunks:(chunks + chunk)]
@@ -2498,10 +2506,12 @@ removePatternFiles <- function(ResultDir, patterns) {
 
 ## Function 68
 ## Updated in 3.0
-XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
-    covarfile, sex, covartest, interaction, Inphenocov, plot.jpeg, plotname, snp_pval,
-    annotateTopSnp, suggestiveline = suggestiveline, genomewideline = genomewideline,
-    ncores = ncores) {
+XCMAFun <- function(
+      DataDir, ResultDir, finput, standard_beta,
+      covarfile, sex, covartest, interaction, Inphenocov, plot.jpeg, plotname, snp_pval,
+      annotateTopSnp, suggestiveline = suggestiveline, genomewideline = genomewideline,
+      ncores = ncores
+) {
     # Prepare data and get necessary files
     file_path <- normalizePath(file.path(ResultDir, "sink_file.txt"), mustWork = FALSE)
 
@@ -2702,10 +2712,10 @@ ComputeLDSC <- function(summarystat, precomputedLD, LDSC_blocks, chi2_thr1, chi2
     summarystat$chi2 <- (summarystat$beta / summarystat$beta_se)^2
 
     # Checking if summary stat and precomputed LD have same SNP positions
-    S1 <- summarystat[,c("chr", "rsid", "n_eff", "chi2")]
+    S1 <- summarystat[, c("chr", "rsid", "n_eff", "chi2")]
     colnames(S1) <- c("CHR", "SNP", "sample_size", "chi2")
 
-    S2 <- precomputedLD[,c("CHR", "SNP", "ld_score")]
+    S2 <- precomputedLD[, c("CHR", "SNP", "ld_score")]
     colnames(S2) <- c("CHR", "SNP", "ld_score")
     S2$ld_size <- length(unique(S2$SNP))
 
@@ -2736,11 +2746,9 @@ ComputeLDSC <- function(summarystat, precomputedLD, LDSC_blocks, chi2_thr1, chi2
 }
 
 ## Function 73
-ComputeGRMauto <- function(
-      DataDir, ResultDir, finput, partGRM, nGRM, cripticut,
-      minMAF = NULL, maxMAF = NULL,
-      ByCHR = FALSE, CHRnum = NULL, ncores = ncores
-) {
+ComputeGRMauto <- function(DataDir, ResultDir, finput, partGRM, nGRM, cripticut,
+    minMAF = NULL, maxMAF = NULL,
+    ByCHR = FALSE, CHRnum = NULL, ncores = ncores) {
     autosome <- if (!ByCHR) "--autosome" else NULL
     chr <- if (ByCHR) "--chr" else NULL
 
@@ -2927,8 +2935,10 @@ ComputeGRMX <- function(DataDir, ResultDir, finput, partGRM, nGRM, minMAF = NULL
 
 
 ## Function 75
-ComputeREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile = NULL, cat_covarfile = NULL, quant_covarfile = NULL,
-    prevalence = 0.01, chr, grmfile, ncores) {
+ComputeREMLone <- function(
+      DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile = NULL, cat_covarfile = NULL, quant_covarfile = NULL,
+      prevalence = 0.01, chr, grmfile, ncores
+) {
     if (is.null(phenofile)) {
         pheno <- NULL
         phenofile <- NULL
@@ -3025,8 +3035,10 @@ ComputeREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100
 }
 
 ## Function 76
-ComputeREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile = NULL, GE = FALSE, cat_covarfile = NULL, quant_covarfile = NULL,
-    prevalence = 0.01, grmfile = "multi_GRMs.txt", computeGRM = FALSE, grmfile_name = NULL, ncores = 2) {
+ComputeREMLmulti <- function(
+      DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile = NULL, GE = FALSE, cat_covarfile = NULL, quant_covarfile = NULL,
+      prevalence = 0.01, grmfile = "multi_GRMs.txt", computeGRM = FALSE, grmfile_name = NULL, ncores = 2
+) {
     rlang::inform(rlang::format_error_bullets(c("i" = paste("computeGRM is set to:", computeGRM))))
 
     if (is.null(phenofile)) {
@@ -3184,8 +3196,10 @@ GettingGene <- function(gene_file, gene_range, SNP_bimfile, finput) {
 }
 
 ## Function 79
-ChrwiseLDprun <- function(DataDir, ResultDir, finput, chromosome, highLD_regions, IndepSNP_window_size,
-    IndepSNP_step_size, IndepSNP_r2_threshold) {
+ChrwiseLDprun <- function(
+      DataDir, ResultDir, finput, chromosome, highLD_regions, IndepSNP_window_size,
+      IndepSNP_step_size, IndepSNP_r2_threshold
+) {
     if (is.null(highLD_regions)) {
         highLD_regions <- NULL
         excludev <- NULL
@@ -3262,8 +3276,8 @@ GeneProtein <- function(hg, chromosome) {
     }
 
     df$Chrom <- stringr::str_remove(df$Chrom, "^chr")
-    df[df$Chrom=="X","Chrom"] <- 23
-    df[df$Chrom=="Y","Chrom"] <- 24
+    df[df$Chrom == "X", "Chrom"] <- 23
+    df[df$Chrom == "Y", "Chrom"] <- 24
 
     # Count total genes
     genes <- unique(df[, c("hgnc_symbol", "Chrom", "gene_biotype")]) ## be explicit
@@ -3980,9 +3994,11 @@ metaFun <- function(DataDir, ResultDir, SummData, CHR, chromosome, nomap, UseA1v
 
 ## Function 94
 # Added in 3.0
-generatePlots <- function(MRfiltered, Sbeta, ResultDir, plotname,
-    useSNPposition, pval_threshold_manplot,
-    chosen_snps_file) {
+generatePlots <- function(
+      MRfiltered, Sbeta, ResultDir, plotname,
+      useSNPposition, pval_threshold_manplot,
+      chosen_snps_file
+) {
     # Determine the number of SNPs to plot
     numSNPs <- min(length(unique(MRfiltered$SNP)), 10)
     if (length(unique(MRfiltered$SNP)) > 10) {
@@ -4010,10 +4026,8 @@ generatePlots <- function(MRfiltered, Sbeta, ResultDir, plotname,
 }
 
 ## Function 95
-ComputeBivarREMLone <- function(
-      DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile, cat_covarfile = NULL,
-      quant_covarfile = NULL, grmfile = "GXwasR", excludeResidual = c("FALSE", "TRUE"), chr, ncores = 2
-) {
+ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile, cat_covarfile = NULL,
+    quant_covarfile = NULL, grmfile = "GXwasR", excludeResidual = c("FALSE", "TRUE"), chr, ncores = 2) {
     if (excludeResidual == "FALSE") {
         ExResi <- NULL
     } else {
@@ -4106,8 +4120,10 @@ ComputeBivarREMLone <- function(
 }
 
 ## Function 96
-ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile, cat_covarfile = NULL,
-    quant_covarfile = NULL, grmfile = "multi_GRMs.txt", excludeResidual = c("FALSE", "TRUE"), computeGRM = FALSE, grmfile_name = NULL, ncores = 2) {
+ComputeBivarREMLmulti <- function(
+      DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile, cat_covarfile = NULL,
+      quant_covarfile = NULL, grmfile = "multi_GRMs.txt", excludeResidual = c("FALSE", "TRUE"), computeGRM = FALSE, grmfile_name = NULL, ncores = 2
+) {
     rlang::inform(rlang::format_error_bullets(c("i" = paste("computeGRM is set to:", computeGRM))))
 
     if (excludeResidual == "FALSE") {
@@ -4802,9 +4818,11 @@ processLDreferenceData <- function(ResultDir, highLD_regions, referLD, referLD_w
 }
 
 ## Function 103
-filterATGCSNPs <- function(study_bim_path, study_bed_path, study_fam_path,
-    ref_bim_path, ref_bed_path, ref_fam_path,
-    ResultDir) {
+filterATGCSNPs <- function(
+      study_bim_path, study_bed_path, study_fam_path,
+      ref_bim_path, ref_bed_path, ref_fam_path,
+      ResultDir
+) {
     # Helper to identify ambiguous SNPs (A-T / G-C)
     getAmbiguousSNPs <- function(bim_file) {
         bimData <- vroom::vroom(
@@ -5132,7 +5150,7 @@ loadAndProcessReferenceAncestry <- function(ResultDir, reference) {
     if (reference == "HapMapIII_NCBI36") {
         ref_ancestry1 <-
             vroom::vroom(
-                file = system.file('extdata', 'hapmap_relationships_w_pops_121708.txt', package = "GXwasR"),
+                file = system.file("extdata", "hapmap_relationships_w_pops_121708.txt", package = "GXwasR"),
                 col_names = TRUE,
                 delim = "\t",
                 show_col_types = FALSE
@@ -5181,7 +5199,7 @@ loadAndProcessReferenceAncestry <- function(ResultDir, reference) {
     } else if (reference %in% c("ThousandGenome", "Ref10Kgenome")) {
         ref_ancestry <-
             vroom::vroom(
-                file = system.file('extdata', '1000genomesampleinfo.txt', package = 'GXwasR'),
+                file = system.file("extdata", "1000genomesampleinfo.txt", package = "GXwasR"),
                 col_names = TRUE,
                 show_col_types = FALSE
             )[, c("Sample", "superpop")]
@@ -5636,7 +5654,7 @@ validateInputForComputePGS <- function(DataDir, ResultDir = tempdir(), finput, s
     }
 
     if (liability_R2 && pheno_type != "binary") {
-    stop("liability_R2 is only available for binary traits.")
+        stop("liability_R2 is only available for binary traits.")
     }
 
     if (liability_R2 && is.null(prevalence)) {
@@ -5646,7 +5664,7 @@ validateInputForComputePGS <- function(DataDir, ResultDir = tempdir(), finput, s
     if (!is.null(prevalence) && (prevalence <= 0 || prevalence >= 1)) {
         stop("prevalence must be between 0 and 1.")
     }
-    
+
     # Validate phenofile
     if (!is.data.frame(phenofile)) {
         stop("Error in phenofile: Must be a dataframe..")
@@ -6008,8 +6026,6 @@ validateInputForClumpLD <- function(DataDir, finput, SNPdata, ResultDir, clump_p
 
     return(TRUE)
 }
-
-
 
 
 ## Function 145
@@ -6570,8 +6586,10 @@ read_plink_clumped_clean <- function(resultDir, filename) {
 ## Helper function from HDL R package ##
 #' @importFrom dplyr n
 HDL.rg <-
-    function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min(gwas1.df$N, gwas2.df$N), output.file = "", eigen.cut = "automatic",
-    jackknife.df = FALSE, intercept.output = FALSE, fill.missing.N = NULL, lim = exp(-18)) {
+    function(
+      gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min(gwas1.df$N, gwas2.df$N), output.file = "", eigen.cut = "automatic",
+      jackknife.df = FALSE, intercept.output = FALSE, fill.missing.N = NULL, lim = exp(-18)
+    ) {
         ## Initialize vars used later
         snps.list.imputed.vector <- NULL
         nsnps.list.imputed <- NULL
@@ -7324,8 +7342,10 @@ HDL.rg <-
 
 #' @importFrom foreach %dopar%
 #' @importFrom dplyr row_number
-HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min(gwas1.df$N, gwas2.df$N), output.file = "", numCores = 2,
-    eigen.cut = "automatic", jackknife.df = FALSE, intercept.output = FALSE, fill.missing.N = NULL, lim = exp(-18)) {
+HDL.rg.parallel <- function(
+      gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min(gwas1.df$N, gwas2.df$N), output.file = "", numCores = 2,
+      eigen.cut = "automatic", jackknife.df = FALSE, intercept.output = FALSE, fill.missing.N = NULL, lim = exp(-18)
+) {
     ## Initialize vars used later
     snps.list.imputed.vector <- NULL
     nsnps.list.imputed <- NULL
@@ -8093,8 +8113,10 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     return(list(rg = rg, rg.se = rg.se, P = P, estimates.df = estimates.df, eigen.use = eigen.use))
 }
 
-llfun.gcov.part.2 <- function(param, h11, h22, rho12, M, N1, N2, N0, Nref,
-    lam0, lam1, lam2, bstar1, bstar2, lim = exp(-10)) {
+llfun.gcov.part.2 <- function(
+      param, h11, h22, rho12, M, N1, N2, N0, Nref,
+      lam0, lam1, lam2, bstar1, bstar2, lim = exp(-10)
+) {
     h12 <- param[1]
     int <- param[2]
     ## sample fractions
@@ -8172,19 +8194,18 @@ verify_snp_format <- function(bim) {
 }
 
 #' Function for ComputePGS
-#' 
-#' @param R2_obs = observed-scale incremental R2 for PGS 
+#'
+#' @param R2_obs = observed-scale incremental R2 for PGS
 #' @param K = population prevalence
 #' @param P = case fraction in target sample
-#' 
+#'
 #' @return R2_liab
 #'
 #' @noRd
 liabilityR2 <- function(R2_obs, K, P) {
     t <- qnorm(1 - K)
     z <- dnorm(t)
-  
+
     R2_liab <- R2_obs * (K^2 * (1 - K)^2) / (P * (1 - P) * z^2)
     return(R2_liab)
 }
-        

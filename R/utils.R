@@ -81,4 +81,3 @@ log_output <- function(..., output.file, sep = "\n", timestamp = TRUE) {
     }
     invisible(NULL)
 }
-

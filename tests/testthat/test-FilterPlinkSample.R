@@ -14,6 +14,6 @@ test_that("FilterPlinkSample generates correct output files", {
         keep = keep
     )
 
-    expect_equal(length(list.files(ResultDir,pattern = '^casesPlink')), 1)
+    expect_equal(length(list.files(ResultDir, pattern = "^casesPlink")), 1)
     unlink(ResultDir, recursive = TRUE)
 })

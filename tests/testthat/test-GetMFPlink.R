@@ -11,6 +11,6 @@ test_that("GetMFPlink creates the correct number of output files", {
         finput = finput, foutput = foutput, sex = sex,
         xplink = FALSE, autoplink = FALSE
     )
-    expect_equal(list.files(ResultDir, pattern = '^Test_output') %>% length(), 4)
+    expect_equal(list.files(ResultDir, pattern = "^Test_output") %>% length(), 4)
     unlink(ResultDir, recursive = TRUE)
 })

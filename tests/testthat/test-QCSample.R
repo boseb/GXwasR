@@ -10,7 +10,7 @@ test_that("QCsample returns expected output", {
     IBD <- 0.2
     IBDmatrix <- FALSE
     ambi_out <- TRUE
-    
+
     x <- QCsample(
         DataDir = DataDir, ResultDir = ResultDir, finput = finput,
         foutput = foutput, imiss = imiss, het = het, IBD = IBD,
@@ -75,6 +75,6 @@ test_that("QCsample returns foutput when het = NULL", {
     output_files <- list.files(ResultDir, pattern = foutput)
     expect_equal(length(output_files), 7)
     unlink(ResultDir, recursive = TRUE)
-    cleanupDataDir <- list.files(DataDir, pattern = 'PreimputeEX_QC', full.names = TRUE)
+    cleanupDataDir <- list.files(DataDir, pattern = "PreimputeEX_QC", full.names = TRUE)
     unlink(cleanupDataDir)
 })
