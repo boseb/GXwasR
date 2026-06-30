@@ -64,7 +64,6 @@ Imports:
     regioneR,
     Rsamtools,
     rlang,
-    R.utils,
     SNPRelate,
     stringr,
     sumFREGAT,

@@ -1,6 +1,3 @@
-
-
-
 #' QCsnp: Quality control (QC) for SNPs.
 #'
 #' @author Banabithi Bose
@@ -95,7 +92,7 @@
 #' @export
 #'
 #' @examples
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "Test_output"
@@ -115,26 +112,28 @@
 #'     caldiffmiss = caldiffmiss
 #' )
 QCsnp <-
-    function(DataDir,
-    ResultDir = tempdir(),
-    finput,
-    foutput = "FALSE",
-    casecontrol = TRUE,
-    hweCase = NULL,
-    hweControl = NULL,
-    hwe = NULL,
-    maf = 0.05,
-    geno = 0.1,
-    monomorphicSNPs = FALSE,
-    caldiffmiss = FALSE,
-    diffmissFilter = FALSE,
-    dmissX = FALSE,
-    dmissAutoY = FALSE,
-    highLD_regions = NULL,
-    ld_prunning = FALSE,
-    window_size = 50,
-    step_size = 5,
-    r2_threshold = 0.02) {
+    function(
+      DataDir,
+      ResultDir = tempdir(),
+      finput,
+      foutput = "FALSE",
+      casecontrol = TRUE,
+      hweCase = NULL,
+      hweControl = NULL,
+      hwe = NULL,
+      maf = 0.05,
+      geno = 0.1,
+      monomorphicSNPs = FALSE,
+      caldiffmiss = FALSE,
+      diffmissFilter = FALSE,
+      dmissX = FALSE,
+      dmissAutoY = FALSE,
+      highLD_regions = NULL,
+      ld_prunning = FALSE,
+      window_size = 50,
+      step_size = 5,
+      r2_threshold = 0.02
+    ) {
         if (!validateInputForQCsnp(DataDir, ResultDir, finput, foutput, casecontrol, hweCase, hweControl, hwe, maf, geno, monomorphicSNPs, caldiffmiss, diffmissFilter, dmissX, dmissAutoY, highLD_regions, ld_prunning, window_size, step_size, r2_threshold)) {
             return(NULL)
         }
@@ -240,21 +239,19 @@ QCsnp <-
             },
             error = function(e) {
                 rlang::abort(
-                    message = e$message, 
-                    class = "QCsnp_error")
+                    message = e$message,
+                    class = "QCsnp_error"
+                )
             },
             warning = function(w) {
                 rlang::warn(
-                    message = w$message, 
-                    .frequency = "regularly", 
+                    message = w$message,
+                    .frequency = "regularly",
                     .frequency_id = "QCsnp_warning"
                 )
             }
         )
     }
-
-
-
 
 
 #' ComputeGeneticPC: Computing principal components from genetic relationship matrix
@@ -315,7 +312,7 @@ QCsnp <-
 #'
 #' @examples
 #' data("highLD_hg19", package = "GXwasR")
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' highLD_regions <- highLD_hg19
@@ -329,11 +326,9 @@ QCsnp <-
 #'     DataDir = DataDir, ResultDir = ResultDir,
 #'     finput = finput, highLD_regions = highLD_hg19, countPC = 20
 #' )
-ComputeGeneticPC <- function(
-      DataDir, ResultDir = tempdir(), finput, countPC = 10, plotPC = TRUE,
-      highLD_regions = NULL, ld_prunning = TRUE,
-      window_size = 50, step_size = 5, r2_threshold = 0.02
-) {
+ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 10, plotPC = TRUE,
+    highLD_regions = NULL, ld_prunning = TRUE,
+    window_size = 50, step_size = 5, r2_threshold = 0.02) {
     # Validate inputs
     if (!validateInputForComputeGeneticPC(DataDir, ResultDir, finput, countPC, plotPC, highLD_regions, ld_prunning, window_size, step_size, r2_threshold)) {
         stop("Please verify all inputs.")
@@ -469,14 +464,14 @@ ComputeGeneticPC <- function(
         },
         error = function(e) {
             rlang::abort(
-                message = e$message, 
+                message = e$message,
                 class = "ComputeGeneticPC_error"
             )
         },
         warning = function(w) {
             rlang::warn(
-                message = w$message, 
-                .frequency = "regularly", 
+                message = w$message,
+                .frequency = "regularly",
                 .frequency_id = "ComputeGeneticPC_warning"
             )
             if (str_detect(conditionMessage(w), "cannot remove")) {
@@ -516,7 +511,7 @@ ComputeGeneticPC <- function(
 #' @export
 #'
 #' @examples
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput1 <- "GXwasR_example"
 #' finput2 <- "GXwasR_example_imputed"
@@ -591,27 +586,19 @@ MergeRegion <- function(DataDir, ResultDir, finput1, finput2, foutput, use_commo
         },
         error = function(e) {
             rlang::abort(
-                message = e$message, 
+                message = e$message,
                 class = "MergeRegion_error"
             )
         },
         warning = function(w) {
             rlang::warn(
-                message = w$message, 
-                .frequency = "regularly", 
+                message = w$message,
+                .frequency = "regularly",
                 .frequency_id = "MergeRegion_warning"
             )
         }
     )
 }
-
-
-
-
-
-
-
-
 
 
 #' Miami plot
@@ -880,7 +867,7 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #'
 #' @examples
 #'
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' standard_beta <- TRUE
@@ -897,7 +884,7 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #' combtest <- "fisher.method"
 #' snp_pval <- 1e-08
 #' covarfile <- NULL
-#' ncores <- 0
+#' ncores <- 2
 #' MF.mc.cores <- 1
 #' ResultGXwas <- GXwas(
 #'     DataDir = DataDir, ResultDir = ResultDir,
@@ -906,12 +893,14 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #'     snp_pval = snp_pval, plot.jpeg = TRUE, suggestiveline = 5, genomewideline = 7.3,
 #'     MF.mc.cores = 1, ncores = ncores
 #' )
-GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"), standard_beta = TRUE,
-    xmodel = c("FMcombx01", "FMcombx02", "FMstratified", "GWAScxci"), sex = FALSE, xsex = FALSE,
-    covarfile = NULL, interaction = FALSE, covartest = c("ALL"), Inphenocov = c("ALL"), combtest = c("fisher.method", "fisher.method.perm", "stouffer.method"),
-    MF.zero.sub = 0.00001, B = 10000, MF.mc.cores = 1, MF.na.rm = FALSE,
-    MF.p.corr = "none", plot.jpeg = FALSE, plotname = "GXwas.plot", snp_pval = 1e-08,
-    annotateTopSnp = FALSE, suggestiveline = 5, genomewideline = 7.3, ncores = 0) {
+GXwas <- function(
+      DataDir, ResultDir, finput, trait = c("binary", "quantitative"), standard_beta = TRUE,
+      xmodel = c("FMcombx01", "FMcombx02", "FMstratified", "GWAScxci"), sex = FALSE, xsex = FALSE,
+      covarfile = NULL, interaction = FALSE, covartest = c("ALL"), Inphenocov = c("ALL"), combtest = c("fisher.method", "fisher.method.perm", "stouffer.method"),
+      MF.zero.sub = 0.00001, B = 10000, MF.mc.cores = 1, MF.na.rm = FALSE,
+      MF.p.corr = "none", plot.jpeg = FALSE, plotname = "GXwas.plot", snp_pval = 1e-08,
+      annotateTopSnp = FALSE, suggestiveline = 5, genomewideline = 7.3, ncores = 0
+) {
     # Initialize progress bar
 
     pb <- progress::progress_bar$new(
@@ -997,14 +986,14 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
         },
         error = function(e) {
             rlang::abort(
-                message = e$message, 
+                message = e$message,
                 class = "GXwasR_error"
             )
         },
         warning = function(w) {
             rlang::warn(
-                message = w$message, 
-                .frequency = "regularly", 
+                message = w$message,
+                .frequency = "regularly",
                 .frequency_id = "GXwasR_warning"
             )
         }
@@ -1091,7 +1080,7 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
 #' @examples
 #' data("Summary_Stat_Ex1", package = "GXwasR")
 #' data("Summary_Stat_Ex2", package = "GXwasR")
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' SNPdata <- list(Summary_Stat_Ex1, Summary_Stat_Ex2)
@@ -1104,9 +1093,11 @@ GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"
 #'     DataDir, finput, SNPdata, ResultDir, clump_p1,
 #'     clump_p2, clump_r2, clump_kb, byCHR
 #' )
-ClumpLD <- function(DataDir, finput, SNPdata, ResultDir = tempdir(),
-    clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE,
-    clump_best = TRUE, clump_index_first = TRUE) {
+ClumpLD <- function(
+      DataDir, finput, SNPdata, ResultDir = tempdir(),
+      clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE,
+      clump_best = TRUE, clump_index_first = TRUE
+) {
     # Check for an unsupported combination:
     if (clump_best == TRUE && clump_index_first == FALSE) {
         warning("The combination clump_best = TRUE and clump_index_first = FALSE is not recommended. Enforcing clump_index_first = TRUE.")
@@ -1272,14 +1263,14 @@ ClumpLD <- function(DataDir, finput, SNPdata, ResultDir = tempdir(),
         },
         error = function(e) {
             rlang::abort(
-                message = e$message, 
+                message = e$message,
                 class = "ClumpLD_error"
             )
         },
         warning = function(w) {
             rlang::warn(
-                message = w$message, 
-                .frequency = "regularly", 
+                message = w$message,
+                .frequency = "regularly",
                 .frequency_id = "ClumpLD_warning"
             )
         }
@@ -1294,11 +1285,6 @@ ClumpLD <- function(DataDir, finput, SNPdata, ResultDir = tempdir(),
 
     return(list(BestClump = LDC, AllClump = All_ldc))
 }
-
-
-
-
-
 
 
 #' SexRegress: Performing linear regression analysis with quantitative response variable.
@@ -1353,14 +1339,14 @@ SexRegress <- function(fdata, regressor_index, response_index) {
         },
         error = function(e) {
             rlang::abort(
-                message = e$message, 
+                message = e$message,
                 class = "SexRegress_error"
             )
         },
         warning = function(w) {
             rlang::warn(
-                message = w$message, 
-                .frequency = "regularly", 
+                message = w$message,
+                .frequency = "regularly",
                 .frequency_id = "SexRegress_warning"
             )
         }
@@ -1393,7 +1379,7 @@ SexRegress <- function(fdata, regressor_index, response_index) {
 #' @export
 #'
 #' @examples
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "Filter_Test"
@@ -1426,15 +1412,16 @@ FilterAllele <- function(DataDir, ResultDir, finput, foutput) {
             if (nrow(x1) != 0) {
                 write.table(x1$V2, file = normalizePath(file.path(ResultDir, "snps_multiallelic"), mustWork = FALSE), quote = FALSE, col.names = FALSE, row.names = FALSE)
             } else {
-                rlang::inform(rlang::format_error_bullets(c("i" = "There is no multi-allelic SNP present in the input dataset.")))
-                return()
+                rlang::inform(
+                    rlang::format_error_bullets(c("i" = "There are no multi-allelic SNPs present in the input dataset."))
+                )
             }
-
+            exclude_arg <- if (nrow(x1) > 0) normalizePath(file.path(ResultDir, "snps_multiallelic"), mustWork = FALSE) else NULL
             invisible(sys::exec_wait(
                 plink(),
                 args = c(
                     "--bfile", normalizePath(file.path(DataDir, finput), mustWork = FALSE),
-                    "--exclude", normalizePath(file.path(ResultDir, "snps_multiallelic"), mustWork = FALSE),
+                    "--exclude", exclude_arg,
                     "--allow-no-sex", # 4.0
                     "--make-bed",
                     "--out", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
@@ -1443,28 +1430,29 @@ FilterAllele <- function(DataDir, ResultDir, finput, foutput) {
                 std_out = FALSE,
                 std_err = FALSE
             ))
+            if (nrow(x1) > 0) {
+                bimf1 <- read.table(normalizePath(file.path(ResultDir, paste0(foutput, ".bim")), mustWork = FALSE))
 
-            bimf1 <- read.table(normalizePath(file.path(ResultDir, paste0(foutput, ".bim")), mustWork = FALSE))
-
-            rlang::inform(
-                rlang::format_error_bullets(c(
-                    "i" = paste0("Input dataset has ", nrow(bimf), " SNPs."),
-                    "i" = paste0("Output dataset has ", nrow(bimf1), " SNPs."),
-                    "v" = paste0("Plink files with only biallelic SNPs are in ", ResultDir, " prefixed as ", foutput)
-                ))
-            )
-            return()
+                rlang::inform(
+                    rlang::format_error_bullets(c(
+                        "i" = paste0("Input dataset has ", nrow(bimf), " SNPs."),
+                        "i" = paste0("Output dataset has ", nrow(bimf1), " SNPs."),
+                        "v" = paste0("Plink files with only biallelic SNPs are in ", ResultDir, " prefixed as ", foutput)
+                    ))
+                )
+                return(invisible(bimf1))
+            }
         },
         error = function(e) {
             rlang::abort(
-                message = e$message, 
+                message = e$message,
                 class = "FilterAllele_error"
             )
         },
         warning = function(w) {
             rlang::warn(
-                message = w$message, 
-                .frequency = "regularly", 
+                message = w$message,
+                .frequency = "regularly",
                 .frequency_id = "FilterAllele_warning"
             )
         }
@@ -1572,21 +1560,23 @@ FilterAllele <- function(DataDir, ResultDir, finput, foutput) {
 #'     suggestiveline = 3, genomewideline = 5.69897, ncores = 1
 #' )
 #'
-PvalComb <- function(SumstatMale, SumstatFemale,
-    combtest,
-    MF.p.corr = "none",
-    MF.zero.sub = 0.00001,
-    MF.na.rm = TRUE,
-    MF.mc.cores = 1,
-    B = 1000,
-    plot.jpeg = TRUE,
-    plotname = "GXwas.plot",
-    PlotDir = tempdir(),
-    snp_pval,
-    annotateTopSnp = FALSE,
-    suggestiveline = 5,
-    genomewideline = 7.3,
-    ncores = 0) {
+PvalComb <- function(
+      SumstatMale, SumstatFemale,
+      combtest,
+      MF.p.corr = "none",
+      MF.zero.sub = 0.00001,
+      MF.na.rm = TRUE,
+      MF.mc.cores = 1,
+      B = 1000,
+      plot.jpeg = TRUE,
+      plotname = "GXwas.plot",
+      PlotDir = tempdir(),
+      snp_pval,
+      annotateTopSnp = FALSE,
+      suggestiveline = 5,
+      genomewideline = 7.3,
+      ncores = 0
+) {
     # Validate inputs
     validation_result <- validatePvalCombInputs(SumstatMale, SumstatFemale, combtest, MF.p.corr, MF.zero.sub, MF.na.rm, MF.mc.cores, B, plot.jpeg, plotname, snp_pval, annotateTopSnp, suggestiveline, genomewideline, ncores)
     if (!is.null(validation_result)) {
@@ -1678,12 +1668,12 @@ PvalComb <- function(SumstatMale, SumstatFemale,
             return(na.omit(Result))
         },
         error = function(e) {
-            rlang::abort(message = e$message, class = 'PvalComb_error')
+            rlang::abort(message = e$message, class = "PvalComb_error")
         },
         warning = function(w) {
             rlang::warn(
-                message = w$message, 
-                .frequency = "regularly", 
+                message = w$message,
+                .frequency = "regularly",
                 .frequency_id = "PvalComb_warning"
             )
         }
@@ -1717,7 +1707,7 @@ PvalComb <- function(SumstatMale, SumstatFemale,
 #'
 #' @examples
 #'
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' SNPvec <- c("rs6529954", "rs12858640", "rs5962098")
 #' finput <- "GXwasR_example"
@@ -1766,18 +1756,18 @@ FilterSNP <- function(DataDir, ResultDir, finput, foutput, SNPvec, extract = FAL
                     "v" = paste0("Plink files with extracted SNPs are in ", ResultDir, " prefixed as ", foutput)
                 ))
             )
-            return(NULL)
+            return(invisible(NULL))
         },
         error = function(e) {
             rlang::abort(
-                message = e$message, 
-                class = 'FilterSNP_error'
+                message = e$message,
+                class = "FilterSNP_error"
             )
         },
         warning = function(w) {
             rlang::warn(
-                message = w$message, 
-                .frequency = "regularly", 
+                message = w$message,
+                .frequency = "regularly",
                 .frequency_id = "FilterSNP_warning"
             )
         }
@@ -1898,7 +1888,7 @@ validate_reference_data <- function(refdata) {
 #' \insertAllCited{}
 #'
 #' @examples
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' bfile <- "GXwasR_example"
 #' incovar <- "covarfile_w_pc_age.txt"
@@ -1971,7 +1961,7 @@ DummyCovar <- function(DataDir, ResultDir = DataDir, bfile, incovar, outcovar) {
 #' @export
 #'
 #' @examples
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' prunedSNPs <- LDPrune(DataDir, finput, ResultDir, 50, 5, 0.2)
@@ -2108,18 +2098,16 @@ LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, st
 #'         parallel = TRUE
 #'     )
 #' }
-SumstatGenCorr <- function(
-      ResultDir = tempdir(),
-      referenceLD,
-      sumstat1,
-      sumstat2,
-      Nref = 335265,
-      N0 = min(sumstat1$N),
-      eigen.cut = "automatic",
-      lim = exp(-18),
-      parallel = FALSE,
-      numCores = 2
-) {
+SumstatGenCorr <- function(ResultDir = tempdir(),
+    referenceLD,
+    sumstat1,
+    sumstat2,
+    Nref = 335265,
+    N0 = min(sumstat1$N),
+    eigen.cut = "automatic",
+    lim = exp(-18),
+    parallel = FALSE,
+    numCores = 2) {
     reference_paths <- list(
         UKB_imputed_hapmap2_SVD_eigen99_extraction = Sys.getenv("UKB_IMPUTED_HAPMAP2_PATH", unset = NA),
         UKB_imputed_SVD_eigen99_extraction = Sys.getenv("UKB_IMPUTED_PATH", unset = NA),
@@ -2165,7 +2153,7 @@ SumstatGenCorr <- function(
         },
         error = function(e) {
             rlang::abort(
-                message = glue::glue("Error in estimating Genetic Correlation: {e$message}"), 
+                message = glue::glue("Error in estimating Genetic Correlation: {e$message}"),
                 class = "SumstatGenCorr_error"
             )
         }
@@ -2193,7 +2181,7 @@ SumstatGenCorr <- function(
 #'
 #' @examples
 #' snpld <- ComputeLD(
-#'     DataDir = GXwasR:::GXwasR_data(), ResultDir = tempdir(),
+#'     DataDir = system.file("extdata", package = "GXwasR"), ResultDir = tempdir(),
 #'     finput = "GXwasR_example", ByCHR = TRUE, CHRnum = 1, r2_LD = 0.2
 #' )
 ComputeLD <- function(DataDir, ResultDir, finput, ByCHR = FALSE, CHRnum = NULL, r2_LD) {

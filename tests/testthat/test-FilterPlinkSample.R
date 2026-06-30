@@ -1,6 +1,6 @@
 test_that("FilterPlinkSample generates correct output files", {
     skip_on_bioc()
-    DataDir <- GXwasR:::GXwasR_data()
+    DataDir <- system.file("extdata", package = "GXwasR")
     ResultDir <- tempdir()
     finput <- "GXwasR_example"
     foutput <- "casesPlink"
@@ -14,6 +14,6 @@ test_that("FilterPlinkSample generates correct output files", {
         keep = keep
     )
 
-    expect_equal(length(list.files(ResultDir)), 2)
+    expect_equal(length(list.files(ResultDir, pattern = "^casesPlink")), 1)
     unlink(ResultDir, recursive = TRUE)
 })

@@ -62,7 +62,7 @@ GXwasR is readily available on Bioconductor and can be installed using BiocManag
 Let's see more details of this genotype dataset that we will call 'Study data'.
 ```{r load_GXwasR}
 library(GXwasR)
-DataDir <- GXwasR:::GXwasR_data()
+DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 x <- PlinkSummary(DataDir, ResultDir, finput)
@@ -194,7 +194,7 @@ data("example_data_study_sample_ancestry", package = "GXwasR")
 
 # Call the AncestryCheck function
 hapmap_results <- AncestryCheck(
-    DataDir = GXwasR:::GXwasR_data(),
+    DataDir = system.file("extdata", package = "GXwasR"),
     ResultDir = tempdir(),
     finput = "GXwasR_example",
     reference = "HapMapIII_NCBI36",
@@ -241,7 +241,7 @@ data("highLD_hg19", package = "GXwasR")
 data("example_data_study_sample_ancestry", package = "GXwasR")
 
 thousandgenome_results <- AncestryCheck(
-  DataDir = GXwasR:::GXwasR_data(), 
+  DataDir = system.file("extdata", package = "GXwasR"), 
   ResultDir = tempdir(), 
   finput = "GXwasR_example", 
   reference = "ThousandGenome", 

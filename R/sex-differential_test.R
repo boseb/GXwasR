@@ -103,15 +103,15 @@ SexDiff <- function(Mfile, Ffile) {
         },
         error = function(e) {
             rlang::abort(
-                message = e$message, 
+                message = e$message,
                 class = "SexDiff_error"
             )
         },
         warning = function(w) {
             rlang::warn(
-                message = w$message, 
-                class = "SexDiff_warning", 
-                .frequency = "regularly", 
+                message = w$message,
+                class = "SexDiff_warning",
+                .frequency = "regularly",
                 .frequency_id = "SexDiff_warning"
             )
         }
@@ -311,8 +311,8 @@ DiffZeroOne <- function(inputdata, diffzero = TRUE, diffone = TRUE) {
         warning = function(w) {
             rlang::warn(
                 message = w$message,
-                class = "DiffZeroOne_warning", 
-                .frequency = "regularly", 
+                class = "DiffZeroOne_warning",
+                .frequency = "regularly",
                 .frequency_id = "DiffZeroOne_warning"
             )
         }

@@ -94,7 +94,7 @@ It can filter based on minor allele frequency, Hardy-Weinberg equilibrium, call 
 differential missingness between cases and controls. It can also perform linkage disequilibrium-based filtering.
 }
 \examples{
-DataDir <- GXwasR:::GXwasR_data()
+DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 foutput <- "Test_output"

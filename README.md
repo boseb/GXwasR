@@ -197,7 +197,7 @@ association study (XWAS):
 ``` r
 library(GXwasR)
 ResultGXwas <- GXwas(
-    DataDir = GXwasR:::GXwasR_data(),
+    DataDir = system.file("extdata", package = "GXwasR"),
     ResultDir = tempdir(),
     finput = "GXwasR_example",
     trait = "binary",

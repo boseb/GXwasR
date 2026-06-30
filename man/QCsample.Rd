@@ -83,7 +83,7 @@ Having the correct designation of sex is important to obtain accurate genotype r
 removing samples, etc. Details can be accessed from the paper.
 }
 \examples{
-DataDir <- GXwasR:::GXwasR_data()
+DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 foutput <- "Test_output"
@@ -99,6 +99,8 @@ x <- QCsample(
     foutput = foutput, imiss = imiss, het = het, IBD = IBD,
     ambi_out = ambi_out
 )
+cleanupDataDir <- list.files(DataDir, pattern = 'PreimputeEX_QC', full.names = TRUE)
+unlink(cleanupDataDir)
 }
 \author{
 Banabithi Bose

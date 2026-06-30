@@ -176,7 +176,7 @@ validateInputForQCsample <- function(DataDir, ResultDir, finput, foutput, imiss,
 #' @export
 #'
 #' @examples
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "Test_output"
@@ -192,22 +192,26 @@ validateInputForQCsample <- function(DataDir, ResultDir, finput, foutput, imiss,
 #'     foutput = foutput, imiss = imiss, het = het, IBD = IBD,
 #'     ambi_out = ambi_out
 #' )
-QCsample <- function(DataDir,
-    ResultDir,
-    finput,
-    foutput = NULL,
-    imiss,
-    het,
-    small_sample_mod = FALSE,
-    IBD,
-    IBDmatrix = FALSE,
-    ambi_out = TRUE,
-    legend_text_size = 8,
-    legend_title_size = 7,
-    axis_text_size = 5,
-    axis_title_size = 7,
-    title_size = 9,
-    filterSample = TRUE) {
+#' cleanupDataDir <- list.files(DataDir, pattern = "PreimputeEX_QC", full.names = TRUE)
+#' unlink(cleanupDataDir)
+QCsample <- function(
+      DataDir,
+      ResultDir,
+      finput,
+      foutput = NULL,
+      imiss,
+      het,
+      small_sample_mod = FALSE,
+      IBD,
+      IBDmatrix = FALSE,
+      ambi_out = TRUE,
+      legend_text_size = 8,
+      legend_title_size = 7,
+      axis_text_size = 5,
+      axis_title_size = 7,
+      title_size = 9,
+      filterSample = TRUE
+) {
     # Validate parameters
     validateInputForQCsample(DataDir, ResultDir, finput, foutput, imiss, het, small_sample_mod, IBD, IBDmatrix, ambi_out, legend_text_size, legend_title_size, axis_text_size, axis_title_size, title_size, filterSample = TRUE)
 
@@ -254,7 +258,6 @@ QCsample <- function(DataDir,
 
             executePlink(heterozygosityArgs)
 
-
             miss <- readDataFile(normalizePath(file.path(ResultDir, "filtered_missing.imiss"), mustWork = FALSE))
             heter <- readDataFile(normalizePath(file.path(ResultDir, "filtered_hetero.het"), mustWork = FALSE))
 
@@ -285,7 +288,7 @@ QCsample <- function(DataDir,
 
             ## Updating it in 6.0
             if (!is.null(imiss) && !is.null(het)) {
-                filterSamples(DataDir, ResultDir, finput, failed_het_imiss, filterSample)
+                filterSamples(DataDir, ResultDir, finput, foutput, failed_het_imiss, filterSample)
 
 
                 ## Plot
@@ -296,7 +299,6 @@ QCsample <- function(DataDir,
                 )
 
                 printSampleFilterResults(imissfail, hetfail, failed_het_imiss)
-
 
                 if (nrow(hetermiss) == 0) {
                     hetermiss <- NULL
@@ -407,15 +409,15 @@ QCsample <- function(DataDir,
         },
         error = function(e) {
             rlang::abort(
-                message = e$message, 
+                message = e$message,
                 class = "QCSample_error"
             )
         },
         warning = function(w) {
             rlang::warn(
-                message = w$message, 
-                class = "QCSample_warning", 
-                .frequency = "regularly", 
+                message = w$message,
+                class = "QCSample_warning",
+                .frequency = "regularly",
                 .frequency_id = "QCSample_warning"
             )
         }
@@ -523,7 +525,7 @@ QCsample <- function(DataDir,
 #' @examples
 #' data("highLD_hg19", package = "GXwasR")
 #' data("example_data_study_sample_ancestry", package = "GXwasR")
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' reference <- "HapMapIII_NCBI36"
@@ -546,26 +548,24 @@ QCsample <- function(DataDir,
 #'     study_pop = study_pop, studyLD = studyLD, referLD = referLD,
 #'     outlierOf = "EUR", outlier = outlier, outlier_threshold = outlier_threshold
 #' )
-AncestryCheck <- function(
-      DataDir,
-      ResultDir = tempdir(),
-      finput,
-      reference = c("HapMapIII_NCBI36", "ThousandGenome"),
-      filterSNP = TRUE,
-      studyLD = TRUE,
-      studyLD_window_size = 50,
-      studyLD_step_size = 5,
-      studyLD_r2_threshold = 0.02,
-      referLD = FALSE,
-      referLD_window_size = 50,
-      referLD_step_size = 5,
-      referLD_r2_threshold = 0.02,
-      highLD_regions,
-      study_pop,
-      outlier = FALSE,
-      outlierOf = "EUR",
-      outlier_threshold = 3
-) {
+AncestryCheck <- function(DataDir,
+    ResultDir = tempdir(),
+    finput,
+    reference = c("HapMapIII_NCBI36", "ThousandGenome"),
+    filterSNP = TRUE,
+    studyLD = TRUE,
+    studyLD_window_size = 50,
+    studyLD_step_size = 5,
+    studyLD_r2_threshold = 0.02,
+    referLD = FALSE,
+    referLD_window_size = 50,
+    referLD_step_size = 5,
+    referLD_r2_threshold = 0.02,
+    highLD_regions,
+    study_pop,
+    outlier = FALSE,
+    outlierOf = "EUR",
+    outlier_threshold = 3) {
     tryCatch(
         {
             # Validate inputs
@@ -766,15 +766,15 @@ AncestryCheck <- function(
         },
         error = function(e) {
             rlang::abort(
-                message = e$message, 
+                message = e$message,
                 class = "AncestryCheck_error"
             )
         },
         warning = function(w) {
             rlang::warn(
-                message = w$message, 
-                class = "AncestryCheck_warning", 
-                .frequency = "regularly", 
+                message = w$message,
+                class = "AncestryCheck_warning",
+                .frequency = "regularly",
                 .frequency_id = "AncestryCheck_warning"
             )
         }
@@ -896,7 +896,7 @@ validateInputForSexCheck <- function(DataDir, ResultDir = tempdir(), finput, inf
 #' \insertAllCited{}
 #'
 #' @examples
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' LD <- TRUE
@@ -917,17 +917,19 @@ validateInputForSexCheck <- function(DataDir, ResultDir = tempdir(), finput, inf
 #' # Checking if there is any wrong sex assignment
 #' problematic_sex <- x[x$STATUS != "OK", ]
 SexCheck <-
-    function(DataDir,
-    ResultDir = tempdir(),
-    finput,
-    infer_sex = FALSE,
-    compute_freq = FALSE,
-    LD = TRUE,
-    LD_window_size = 50,
-    LD_step_size = 5,
-    LD_r2_threshold = 0.02,
-    fmax_F = 0.2,
-    mmin_F = 0.8) {
+    function(
+      DataDir,
+      ResultDir = tempdir(),
+      finput,
+      infer_sex = FALSE,
+      compute_freq = FALSE,
+      LD = TRUE,
+      LD_window_size = 50,
+      LD_step_size = 5,
+      LD_r2_threshold = 0.02,
+      fmax_F = 0.2,
+      mmin_F = 0.8
+    ) {
         # Validate inputs
         if (!validateInputForSexCheck(DataDir, ResultDir, finput, infer_sex, compute_freq, LD, LD_window_size, LD_step_size, LD_r2_threshold, fmax_F, mmin_F)) {
             return(NULL)
@@ -1064,13 +1066,13 @@ SexCheck <-
             error = function(e) {
                 rlang::abort(
                     message = e$message,
-                    class = 'SexCheck_error'
+                    class = "SexCheck_error"
                 )
             },
             warning = function(w) {
                 rlang::warn(
                     message = w$message,
-                    class = 'PreImputationQC_warning',
+                    class = "PreImputationQC_warning",
                     .frequency = "regularly",
                     .frequency_id = "SexCheck_warning"
                 )

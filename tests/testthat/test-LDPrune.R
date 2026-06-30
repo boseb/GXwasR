@@ -1,6 +1,6 @@
 test_that("LDPrune returns expected output", {
     skip_on_bioc()
-    DataDir <- GXwasR:::GXwasR_data()
+    DataDir <- system.file("extdata", package = "GXwasR")
     ResultDir <- tempdir()
     finput <- "GXwasR_example"
     prunedSNPs <- LDPrune(DataDir, finput, ResultDir, 50, 5, 0.2)

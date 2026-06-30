@@ -66,7 +66,7 @@ help(EstimateHerit, package = GXwasR)
 ```{r}
 # Running
 data("highLD_hg19", package = "GXwasR")
-DataDir <- GXwasR:::GXwasR_data()
+DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 ncores <- 3
@@ -157,7 +157,7 @@ H2
 data("Summary_Stat_Ex1", package = "GXwasR")
 model <- "LDSC"
 data("GXwasRData")
-DataDir <- GXwasR:::GXwasR_data()
+DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 test.sumstats <- na.omit(Summary_Stat_Ex1[Summary_Stat_Ex1$TEST == "ADD", c(1:4, 6:8)])
@@ -173,7 +173,7 @@ H2
 ## <a id = "Running EstimateHerit() with model = 'LDSC'"> </a> Running EstimateHerit() chromosome-wise with model = "LDSC"
 ```{r}
 model <- "LDSC"
-DataDir <- GXwasR:::GXwasR_data()
+DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 test.sumstats <- na.omit(Summary_Stat_Ex1[Summary_Stat_Ex1$TEST == "ADD", c(1:4, 6:8)])
@@ -194,7 +194,7 @@ help(GeneticCorrBT, package = GXwasR)
 ## <a id = "Running GeneticCorrBT()"> </a> Running GeneticCorrBT() by computing GRM genome-wide
 ```{r}
 # Running
-DataDir <- GXwasR:::GXwasR_data()
+DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 byCHR <- FALSE

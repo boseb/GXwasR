@@ -1,6 +1,6 @@
 test_that("MergeRegion creates the correct number of output files", {
     skip_on_bioc()
-    DataDir <- GXwasR:::GXwasR_data()
+    DataDir <- system.file("extdata", package = "GXwasR")
     ResultDir <- tempdir()
     finput1 <- "GXwasR_example"
     finput2 <- "GXwasR_example_imputed"

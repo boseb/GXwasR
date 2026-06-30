@@ -1,4 +1,4 @@
-# PLINK Helpers 
+# PLINK Helpers
 ## PLINK Dependency Check
 verifyPlink <- function() {
     os_type <- detect_os_type()
@@ -31,8 +31,8 @@ verifyPlink <- function() {
             return(resolved_env_path)
         } else if (file.exists(resolved_env_path)) {
             rlang::warn(
-                message = glue::glue("PLINK_PATH is set but points to a non-bioinformatics 'plink' binary: {resolved_env_path}"), 
-                .frequency = "regularly", 
+                message = glue::glue("PLINK_PATH is set but points to a non-bioinformatics 'plink' binary: {resolved_env_path}"),
+                .frequency = "regularly",
                 .frequency_id = "plink_check",
                 class = "verifyPlink_env_warning"
             )
@@ -52,8 +52,8 @@ verifyPlink <- function() {
             return(resolved_sys_path)
         } else {
             rlang::warn(
-                message = glue::glue("System 'plink' found at {resolved_sys_path} but it does not appear to be the bioinformatics version."), 
-                .frequency = "regularly", 
+                message = glue::glue("System 'plink' found at {resolved_sys_path} but it does not appear to be the bioinformatics version."),
+                .frequency = "regularly",
                 .frequency_id = "plink_check",
                 class = "verifyPlink_sys_warning"
             )
@@ -71,7 +71,7 @@ verifyPlink <- function() {
         )),
         class = "plink_not_found"
     )
-        }
+}
 
 
 ## PLINK Binary Location
@@ -136,7 +136,7 @@ plinkExcludeExtract <- function(DataDir, finput, ResultDir, foutput, region_file
 
 ## Function 19
 ######### Added in 3.0
-executePlinkForIBD <- function(ResultDir, IBD, outFileName) {
+executePlinkForIBD <- function(ResultDir, foutput, IBD, outFileName) {
     ####### Added in final version #######
     executePlinkAd(ResultDir, c(
         "--bfile", normalizePath(file.path(ResultDir, foutput), mustWork = FALSE),
@@ -503,7 +503,7 @@ applySNPmissCCFilter <- function(ResultDir, SNPmissCC, diffmissFilter, foutput) 
 #' @export
 #'
 #' @examples
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "casesPlink"
@@ -516,12 +516,14 @@ applySNPmissCCFilter <- function(ResultDir, SNPmissCC, diffmissFilter, foutput) 
 #'     finput = finput, foutput = foutput, keep_remove_sample_file = keep_remove_sample_file,
 #'     keep = keep
 #' )
-FilterPlinkSample <- function(DataDir, ResultDir,
-    finput,
-    foutput = NULL,
-    filter_sample = "cases",
-    keep_remove_sample_file = NULL,
-    keep = TRUE) {
+FilterPlinkSample <- function(
+      DataDir, ResultDir,
+      finput,
+      foutput = NULL,
+      filter_sample = "cases",
+      keep_remove_sample_file = NULL,
+      keep = TRUE
+) {
     # Validate inputs
     if (!validateInputForFilterPlinkSample(DataDir, ResultDir, finput, foutput, filter_sample, keep_remove_sample_file, keep)) {
         return(NULL)
@@ -585,18 +587,19 @@ FilterPlinkSample <- function(DataDir, ResultDir,
                 }
             }
             rlang::inform(rlang::format_error_bullets(c("v" = paste0(foutput, " PLINK files with desired samples are in ", ResultDir))))
-            return()
+            return(invisible(NULL))
         },
         error = function(e) {
             rlang::abort(
-                message = e$message, 
+                message = e$message,
                 class = "FilterPlinkSample_error"
             )
         },
         warning = function(w) {
-            rlang::warn(message = w$message, 
-                class = "FilterPlinkSample_warning", 
-                .frequency = "regularly", 
+            rlang::warn(
+                message = w$message,
+                class = "FilterPlinkSample_warning",
+                .frequency = "regularly",
                 .frequency_id = "FilterPlinkSample_warning"
             )
         }
@@ -638,7 +641,7 @@ FilterPlinkSample <- function(DataDir, ResultDir,
 #' @export
 #'
 #' @examples
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "Test_output"
@@ -648,13 +651,15 @@ FilterPlinkSample <- function(DataDir, ResultDir,
 #'     finput = finput, foutput = foutput, sex = sex,
 #'     xplink = FALSE, autoplink = FALSE
 #' )
-GetMFPlink <- function(DataDir,
-    ResultDir = tempdir(),
-    finput,
-    foutput,
-    sex,
-    xplink = FALSE,
-    autoplink = FALSE) {
+GetMFPlink <- function(
+      DataDir,
+      ResultDir = tempdir(),
+      finput,
+      foutput,
+      sex,
+      xplink = FALSE,
+      autoplink = FALSE
+) {
     if (!checkFiles(DataDir, finput)) {
         stop("Missing required Plink files in the specified DataDir.")
     }
@@ -718,19 +723,19 @@ GetMFPlink <- function(DataDir,
             }
 
             rlang::inform(rlang::format_error_bullets(c("v" = paste0("Output PLINK files, prefixed as ", foutput, ", are in ", ResultDir))))
-            return()
+            return(invisible(NULL))
         },
         error = function(e) {
             rlang::abort(
-                message = e$message, 
+                message = e$message,
                 class = "GetMFPlink_error"
             )
         },
         warning = function(w) {
             rlang::warn(
-                message = w$message, 
-                class = "GetMFPlink_warning", 
-                .frequency = "regularly", 
+                message = w$message,
+                class = "GetMFPlink_warning",
+                .frequency = "regularly",
                 .frequency_id = "GetMFPlink_warning"
             )
         }
@@ -747,10 +752,13 @@ GetMFPlink <- function(DataDir,
 #' @return This function is called for its side effect: printing summary statistics to the console. It returns `NULL` invisibly.
 #' @export
 #'
+#' @importFrom dplyr tibble
 #' @importFrom rlang abort warn
 #'
+#' @return Invisible. tibble containing summary stats
+#'
 #' @examples
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #'
@@ -801,6 +809,8 @@ PlinkSummary <- function(DataDir, ResultDir = tempdir(), finput) {
             No.of.snps <- length(unique(bim$V2))
             No.of.samples <- length(unique(fam$V2))
 
+            summary <- tibble(n_chr = No.of.chr, unique_chr = list(chr_unique = unique(bim$V1)), n_snps = No.of.snps, n_samples = No.of.samples)
+
             rlang::inform(
                 rlang::format_error_bullets(c(
                     "i" = paste("Number of chromosomes:", No.of.chr),
@@ -809,17 +819,17 @@ PlinkSummary <- function(DataDir, ResultDir = tempdir(), finput) {
                     "i" = paste("Total number of samples:", No.of.samples)
                 ))
             )
-            return(invisible(NULL))
+            return(invisible(summary))
         },
         error = function(e) {
             rlang::abort(
-                e$message, 
+                e$message,
                 class = "PlinkSummary_error"
             )
         },
         warning = function(w) {
             rlang::warn(
-                w$message, 
+                w$message,
                 class = "PlinkSummary_warning"
             )
         }
@@ -847,7 +857,7 @@ PlinkSummary <- function(DataDir, ResultDir = tempdir(), finput) {
 #' @export
 #'
 #' @examples
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' maf_data <- executePlinkMAF(DataDir, ResultDir, finput)
@@ -948,15 +958,17 @@ executePlinkMAF <- function(DataDir, ResultDir, finput) {
 #' @examples
 #' finput <- "GXwasR_example" # Plink file
 #' foutput <- "GXwasR_example1"
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' PtoV <- TRUE
 #' VtoP <- FALSE
 #' Famfile <- NULL
 #' PVbyCHR <- FALSE
 #' plinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)
-plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput,
-    VtoP = FALSE, PtoV = TRUE, Famfile = NULL, PVbyCHR = TRUE) {
+plinkVCF <- function(
+      DataDir, ResultDir = tempdir(), finput, foutput,
+      VtoP = FALSE, PtoV = TRUE, Famfile = NULL, PVbyCHR = TRUE
+) {
     # Validate Inputs
     if (!validateInputForPlinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)) {
         return(NULL)
@@ -1038,15 +1050,15 @@ plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput,
         },
         error = function(e) {
             rlang::abort(
-                message =  e$message, 
+                message = e$message,
                 class = "PlinkVCF_error"
             )
         },
         warning = function(w) {
             rlang::warn(
-                message = w$message, 
-                class = "PlinkVCF_warning", 
-                .frequency = "regularly", 
+                message = w$message,
+                class = "PlinkVCF_warning",
+                .frequency = "regularly",
                 .frequency_id = "PlinkVCF_warning"
             )
         }

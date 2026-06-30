@@ -71,7 +71,7 @@ user-defined regions from input PLINK files. Only one type of filtering can be d
 \code{filterXTR} and \code{filterAmpliconic.}
 }
 \examples{
-DataDir <- GXwasR:::GXwasR_data()
+DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 foutput <- "PostimputeEX_QC1"

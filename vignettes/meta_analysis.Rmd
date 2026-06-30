@@ -101,7 +101,7 @@ help(MetaGWAS, package = GXwasR)
 ```{r metaGWAS-1}
 data(Summary_Stat_Ex1)
 data(Summary_Stat_Ex2)
-DataDir <- GXwasR:::GXwasR_data()
+DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
 SummData <- list(Summary_Stat_Ex1, Summary_Stat_Ex2)
 SNPfile <- "UniqueLoci"

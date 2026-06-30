@@ -61,7 +61,7 @@ validateInputForXhwe <- function(DataDir, ResultDir = tempdir(), finput, foutput
 #' @export
 #'
 #' @examples
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "Test_output"
@@ -188,15 +188,15 @@ Xhwe <- function(DataDir, ResultDir = tempdir(), finput, filterSNP = TRUE, foutp
         },
         error = function(e) {
             rlang::abort(
-                message = e$message, 
+                message = e$message,
                 class = "Xhwe_error"
             )
         },
         warning = function(w) {
             rlang::warn(
-                message = w$message, 
-                class = "Xhwe_warning", 
-                .frequency = "regularly", 
+                message = w$message,
+                class = "Xhwe_warning",
+                .frequency = "regularly",
                 .frequency_id = "Xhwe_warning"
             )
         }
@@ -271,20 +271,18 @@ validateInputForMAFdiffSexControl <- function(DataDir, ResultDir = tempdir(), fi
 #' @export
 #'
 #' @examples
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "Test_output"
 #' x <- MAFdiffSexControl(DataDir, ResultDir, finput, filterSNP = TRUE, foutput = foutput)
-MAFdiffSexControl <- function(
-      DataDir,
-      ResultDir = tempdir(),
-      finput,
-      filterSNP = FALSE,
-      foutput = NULL
-) {
+MAFdiffSexControl <- function(DataDir,
+    ResultDir = tempdir(),
+    finput,
+    filterSNP = FALSE,
+    foutput = NULL) {
     if (!validateInputForMAFdiffSexControl(DataDir, ResultDir, finput, filterSNP, foutput)) {
-        return(NULL)
+        return(invisible(NULL))
     }
 
     if (!checkFiles(DataDir, finput)) {
@@ -406,14 +404,15 @@ MAFdiffSexControl <- function(
         },
         error = function(e) {
             rlang::abort(
-                message = e$message, 
-                class = "MAFdiffSexControl_error")
+                message = e$message,
+                class = "MAFdiffSexControl_error"
+            )
         },
         warning = function(w) {
             rlang::warn(
-                message = w$message, 
-                class = "MAFdiffSexControl_warning", 
-                .frequency = "regularly", 
+                message = w$message,
+                class = "MAFdiffSexControl_warning",
+                .frequency = "regularly",
                 .frequency_id = "MAFdiffSexControl_warning"
             )
         }
@@ -490,7 +489,7 @@ MAFdiffSexControl <- function(
 #' @export
 #'
 #' @examples
-#' DataDir <- GXwasR:::GXwasR_data()
+#' DataDir <- system.file("extdata", package = "GXwasR")
 #' ResultDir <- tempdir()
 #' finput <- "GXwasR_example"
 #' foutput <- "PostimputeEX_QC1"
@@ -501,21 +500,19 @@ MAFdiffSexControl <- function(
 #'     regionfile = FALSE, filterCHR = NULL, Hg = "38", exclude = TRUE
 #' )
 FilterRegion <-
-    function(
-      DataDir,
-      ResultDir,
-      finput,
-      foutput,
-      CHRX = TRUE,
-      CHRY = FALSE,
-      filterPAR = TRUE,
-      filterXTR = TRUE,
-      filterAmpliconic = TRUE,
-      regionfile = FALSE,
-      filterCHR = NULL,
-      Hg = "19",
-      exclude = TRUE
-    ) {
+    function(DataDir,
+    ResultDir,
+    finput,
+    foutput,
+    CHRX = TRUE,
+    CHRY = FALSE,
+    filterPAR = TRUE,
+    filterXTR = TRUE,
+    filterAmpliconic = TRUE,
+    regionfile = FALSE,
+    filterCHR = NULL,
+    Hg = "19",
+    exclude = TRUE) {
         # Validate parameters
         validateFilterRegionParams(DataDir, ResultDir, finput, foutput, CHRX, CHRY, filterPAR, filterXTR, filterAmpliconic, regionfile, filterCHR, Hg, exclude)
 
@@ -525,7 +522,7 @@ FilterRegion <-
 
         tryCatch(
             {
-                DataDir1 <- GXwasR_data()
+                DataDir1 <- system.file("extdata", package = "GXwasR")
 
                 # Set filter parameters
                 para <- setFilterParameters(CHRX, CHRY, filterCHR, regionfile, filterPAR, filterXTR, filterAmpliconic)
@@ -646,14 +643,15 @@ FilterRegion <-
             },
             error = function(e) {
                 rlang::abort(
-                    message = e$message, 
+                    message = e$message,
                     class = "FilterRegion_error"
                 )
             },
             warning = function(w) {
-                rlang::warn(message = w$message, 
-                    class = "FilterRegion_warning", 
-                    .frequency = "regularly", 
+                rlang::warn(
+                    message = w$message,
+                    class = "FilterRegion_warning",
+                    .frequency = "regularly",
                     .frequency_id = "FilterRegion_warning"
                 )
             }

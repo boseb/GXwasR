@@ -1,6 +1,6 @@
 test_that("QCsample returns expected output", {
     skip_on_bioc()
-    DataDir <- GXwasR:::GXwasR_data()
+    DataDir <- system.file("extdata", package = "GXwasR")
     ResultDir <- tempdir()
     finput <- "GXwasR_example"
     foutput <- "Test_output"
@@ -10,7 +10,7 @@ test_that("QCsample returns expected output", {
     IBD <- 0.2
     IBDmatrix <- FALSE
     ambi_out <- TRUE
-    #'
+
     x <- QCsample(
         DataDir = DataDir, ResultDir = ResultDir, finput = finput,
         foutput = foutput, imiss = imiss, het = het, IBD = IBD,
@@ -30,7 +30,7 @@ test_that("QCsample returns foutput when het = NULL", {
     skip_on_bioc()
     ## Use example from preimputationQC vignette to ensure
     ## all necessary intermediate files are present.
-    DataDir <- GXwasR:::GXwasR_data()
+    DataDir <- system.file("extdata", package = "GXwasR")
     ResultDir <- tempdir()
     finput <- "GXwasR_example"
     foutput <- "PreimputeEX_QC1"
@@ -75,4 +75,6 @@ test_that("QCsample returns foutput when het = NULL", {
     output_files <- list.files(ResultDir, pattern = foutput)
     expect_equal(length(output_files), 7)
     unlink(ResultDir, recursive = TRUE)
+    cleanupDataDir <- list.files(DataDir, pattern = "PreimputeEX_QC", full.names = TRUE)
+    unlink(cleanupDataDir)
 })
