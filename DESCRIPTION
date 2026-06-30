@@ -13,7 +13,7 @@ License: GPL (>= 3) + file LICENSE
 URL: https://github.com/boseb/GXwasR/
 BugReports: https://github.com/boseb/GXwasR/issues
 Encoding: UTF-8
-Depends: R (>= 4.5.0)
+Depends: R (>= 4.2.0)
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 Suggests: 
