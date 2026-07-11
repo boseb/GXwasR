@@ -95,7 +95,7 @@ This part should be done in the imputation server with the VCF files.
 3.Remove pair of individuals with IBD statistics pihat > 0.2.
 
 ## Loading the GXwasR library
-```{r}
+```{r libraries}
 ## Call some libraries
 library(GXwasR)
 library(printr)
@@ -133,7 +133,7 @@ x <- PlinkSummary(DataDir, ResultDir, finput)
 
 GXwasR cannot work with multi-allelic variants
 
-```{r}
+```{r filter_variants}
 foutput <- "PostimputeEX_QC"
 x <- FilterAllele(DataDir, ResultDir, finput, foutput)
 ```
@@ -144,7 +144,7 @@ Since there is no multi-allelic SNPs, proceed with the same input dataset.
 
 For this we will use `QCsnp()` blocking all other filtering. The function will implicitly perform filtering based on ambiguous SNPs.
 
-```{r}
+```{r filter_ambiguous}
 finput <- "GXwasR_example"
 foutput <- "PostimputeEX_QC1"
 geno <- NULL
@@ -162,7 +162,7 @@ x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = 
 
 Copying the plink files from ResultDir to DataDir.
 
-```{r}
+```{r copy_plink}
 ftemp <- list.files(ResultDir, pattern = "PostimputeEX_QC1", full.names = TRUE)
 file.copy(ftemp, DataDir)
 ```
@@ -170,7 +170,7 @@ file.copy(ftemp, DataDir)
 ## Step 3: Flag PAR, XTR and Ampliconic Regions
 Now, we will flag PAR, XTR and Ampliconic regions from the X-chromosome and will combine these regions with autosomes for autosomal QC.
 
-```{r}
+```{r flag_regions}
 ## Running
 finput <- "PostimputeEX_QC1"
 x <- PlinkSummary(DataDir, ResultDir, finput)
@@ -185,7 +185,7 @@ save(Ampli_SNPs, file = file.path(ResultDir, "Postimpute_Ampli_SNPs.Rda"))
 save(PAR_SNPs, file = file.path(ResultDir, "Postimpute_PAR_SNPs.Rda"))
 ```
 
-```{r}
+```{r flag_regions_2}
 ## Output
 ## SNPs in PAR
 PAR_SNPs <- x$PAR ## No PAR SNP
@@ -201,7 +201,7 @@ knitr::kable(Ampliconic_SNPs, caption = "SNPs in Ampliconic region.")
 
 ## Step 4: Filter only PAR Regions from X-chromosome
 
-```{r, eval = FALSE}
+```{r filter_par, eval = FALSE}
 #finput <- "PostimputeEX_QC1"
 #x <- PlinkSummary(DataDir, ResultDir, finput)
 #foutput <- "PostimputeEX_QC2"
@@ -212,7 +212,7 @@ Now, users need to move the QC-ed files (i.e., "PostimputeEX_QC2" and “Postimp
 
 Copying the plink files from ResultDir to DataDir.
 
-```{r, eval = FALSE}
+```{r copy_plink_2, eval = FALSE}
 ftemp <- list.files(ResultDir, pattern = "PostimputeEX_QC2", full.names = TRUE)
 file.copy(ftemp, DataDir)
 ```
@@ -221,7 +221,7 @@ file.copy(ftemp, DataDir)
 
 Now, we will prepare two sets of plink binary files from “PostimputeEX_QC1” containing autosomes and X-chromosomes, respectively. For this purpose, we will again use `FilterRegion()`.
 
-```{r}
+```{r pre_plink_binaries}
 finput <- "PostimputeEX_QC1"
 foutput <- "PostimputeEX_QC3"
 
@@ -230,7 +230,7 @@ y <- FilterRegion(DataDir = DataDir, ResultDir = ResultDir, finput = finput, fou
 
 “PostimputeEX_QC3_snps_extracted” contains X-chromosome, while “PostimputeEX_QC3” contains autosomal SNPs.
 
-```{r}
+```{r copy_plink_3}
 # Now, copying these files to DataDir.
 ftemp <- list.files(ResultDir, pattern = "PostimputeEX_QC3", full.names = FALSE)
 file.copy(ftemp, DataDir)
@@ -242,7 +242,7 @@ file.copy(ftemp, DataDir)
 
 We will now merge the autosomal files with PAR regions using `MergeRegion()`.
 
-```{r, eval = FALSE}
+```{r merge_par_regions, eval = FALSE}
 finput1 <- "PostimputeEX_QC3"
 finput2 <- "PostimputeEX_QC3_snps_extracted"
 foutput <- "PostimputeEX_QC3_autopar"
@@ -256,7 +256,7 @@ With “PostimputeEX_QC3”, we will flag the SNPs in the controls with a sex di
 
 ## Step 7: Flag the SNPs in the controls with a sex difference in MAF
 
-```{r}
+```{r flag_snps}
 finput <- "PostimputeEX_QC3"
 foutput <- "Test_output"
 x <- MAFdiffSexControl(DataDir, ResultDir, finput, foutput, filterSNP = FALSE)
@@ -266,7 +266,7 @@ Since no SNP is having MAF difference in sexes in controls, we will proceed to t
 
 ## Step 8: Prepare separate male and female subsets of the genotypes.
 
-```{r}
+```{r prep_subsets}
 finput <- "PostimputeEX_QC3"
 foutput <- "PostimputeEX_QC4_Female"
 sex <- "females"
@@ -279,7 +279,7 @@ x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutp
 
 Removing the previous QC-ed file from DataDir and copying the new QC-ed file to DataDir.
 
-```{r}
+```{r cleanup_1}
 ## Removing the previous QC-ed file from DataDir and copying the new QC-ed file to DataDir.
 ftemp <- list.files(DataDir, pattern = "PostimputeEX_QC1", full.names = TRUE)
 file.remove(ftemp)
@@ -301,7 +301,7 @@ We recommend setting the threshold filters to be the same in males and females f
 
 For this, we will use `QCsnp()` function.
 
-```{r}
+```{r qcsnp}
 ## Applying filter to female-specific plink files
 finput <- "PostimputeEX_QC4_Female"
 foutput <- "PostimputeEX_QC5_Female"
@@ -324,7 +324,7 @@ x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = 
 
 Removing the previous QC-ed file from DataDir and copying the new QC-ed file to DataDir.
 
-```{r}
+```{r copy_files}
 ftemp <- list.files(DataDir, pattern = "PostimputeEX_QC4", full.names = TRUE)
 file.remove(ftemp)
 ftemp <- list.files(ResultDir, pattern = "PostimputeEX_QC4", full.names = TRUE)
@@ -337,7 +337,7 @@ file.copy(ftemp, DataDir)
 
 ## Step 10: Combine sex-specific autosomal QC-ed files using common SNPs:
 
-```{r}
+```{r combine}
 finput1 <- "PostimputeEX_QC5_Female"
 finput2 <- "PostimputeEX_QC5_Male"
 foutput <- "PostimputeEX_Auto"
@@ -346,7 +346,7 @@ y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput, use_common_snps 
 
 Removing the previous QC-ed file from DataDir and copying the new QC-ed file to DataDir.
 
-```{r}
+```{r copy_files_2}
 ftemp <- list.files(DataDir, pattern = "PostimputeEX_QC5", full.names = TRUE)
 file.remove(ftemp)
 
@@ -366,7 +366,7 @@ For this, we will use plink files prefixed as “PostimputeEX_QC3_snps_extracted
 
 We will utilize `GetMFPlink()` function to get male and female plink binary files with X chromosomes. We will move these files from ResultDir to DataDir and will run the sex-specific QC steps.
 
-```{r}
+```{r get_plink_files}
 finput <- "PostimputeEX_QC3_snps_extracted"
 foutput <- "PostimputeEX_QC3_XFemale"
 ## Making female-specific plink files X chromosome
@@ -387,7 +387,7 @@ Here, we will remove SNPs with a missingness difference in cases vs controls, se
 
 For this, we will use `QCsnp()` function.
 
-```{r}
+```{r qc_snps}
 ## Female-specific QC
 finput <- "PostimputeEX_QC3_XFemale"
 foutput <- "PostimputeEX_QC4_XFemale"
@@ -409,7 +409,7 @@ foutput <- "PostimputeEX_QC4_XMale"
 x <- QCsnp(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, geno = geno, maf = maf, hweCase = hweCase, hweControl = hweControl, ld_prunning = ld_prunning, casecontrol = casecontrol, monomorphicSNPs = monomorphicSNPs, caldiffmiss = caldiffmiss, diffmissFilter = diffmissFilter, dmissX = dmissX, dmissAutoY = dmissAutoY)
 ```
 
-```{r}
+```{r cleanup_2}
 ## Removing the previous QC-ed file from DataDir and copying the new QC-ed file to DataDir.
 ftemp <- list.files(DataDir, pattern = "PostimputeEX_QC3", full.names = TRUE)
 file.remove(ftemp)
@@ -426,14 +426,14 @@ file.remove(ftemp)
 
 ## Step 13: Combine sex-specific QC-ed X chromosomal dataset using common SNPs
 
-```{r}
+```{r combine_common_snps}
 finput1 <- "PostimputeEX_QC4_XFemale"
 finput2 <- "PostimputeEX_QC4_XMale"
 foutput <- "PostimputeEX_QC5_Xchr"
 y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput, use_common_snps = TRUE)
 ```
 
-```{r}
+```{r copy_plink_4}
 ## Copying merged plink files to DataDir
 ftemp <- list.files(ResultDir, pattern = "PostimputeEX_QC5_Xchr", full.names = TRUE)
 file.copy(ftemp, DataDir)
@@ -446,20 +446,20 @@ file.remove(ftemp)
 ## Step 14: Test for HWE across the X chromosomes in females
 Test for HWE across the X in females (cases and controls combined) and remove these regions from analysis for all samples. 
 
-```{r}
+```{r xhwe}
 finput <- "PostimputeEX_QC5_Xchr"
 foutput <- "PostimputeEX_Xchr"
 x <- Xhwe(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, filterSNP = TRUE)
 ```
 
-```{r}
+```{r xhwe_result}
 ## No. of the SNPs failed the test.
 length(x) # 2 SNPs in X chr in females failed HWE test.
 ## The failed SNPs
 x
 ```
 
-```{r}
+```{r cleanup_3}
 ## Removing the previous QC-ed file from DataDir and copying the new QC-ed file to DataDir.
 ftemp <- list.files(DataDir, pattern = "PostimputeEX_QC5_Xchr", full.names = TRUE)
 file.remove(ftemp)
@@ -473,7 +473,7 @@ file.copy(ftemp, DataDir)
 
 This test should be performed only for binary traits. We will flag the failed SNPs if any.
 
-```{r}
+```{r check_maf}
 finput <- "PostimputeEX_Xchr"
 foutput <- "Test_output"
 x <- MAFdiffSexControl(DataDir, ResultDir, finput, filterSNP = FALSE, foutput = foutput)
@@ -482,7 +482,7 @@ x
 
 # Step 16: Combining autosomal and X-chromosomal QC-ed datasets
 
-```{r}
+```{r combine_autosomal}
 finput1 <- "PostimputeEX_Auto"
 finput2 <- "PostimputeEX_Xchr"
 foutput <- "PostimputeQC"
@@ -490,7 +490,7 @@ use_common_snps <- FALSE
 y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput, use_common_snps = FALSE)
 ```
 
-```{r}
+```{r cleanup_4}
 ## Removing the previous QC-ed file from DataDir and copying the new QC-ed file to DataDir.
 ftemp <- list.files(DataDir, pattern = "PostimputeEX", full.names = TRUE)
 file.remove(ftemp)
@@ -502,7 +502,7 @@ file.remove(ftemp)
 
 ## Step 17: Preparing separate male and female genotype dataset for sample level QC
 
-```{r}
+```{r prep_genotype}
 ## Making female-specific plink files
 finput <- "PostimputeQC"
 foutput <- "Postimpute_Female"
@@ -516,7 +516,7 @@ sex <- "males"
 x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, sex = sex, xplink = FALSE, autoplink = FALSE)
 ```
 
-```{r}
+```{r copy_plink_5}
 ## Copying sex-specific plink files to DataDir
 ftemp <- list.files(ResultDir, pattern = "Postimpute_Female", full.names = TRUE)
 file.copy(ftemp, DataDir)
@@ -556,7 +556,7 @@ IBD <- 0.2
 x <- QCsample(DataDir = DataDir, ResultDir = ResultDir, small_sample_mod = small_sample_mod, finput = finput, foutput = foutput, imiss = imiss, het = het, IBD = IBD)
 ```
 
-```{r}
+```{r copy_plink_6}
 ## Copying filtered plink files to DataDir
 ftemp <- list.files(ResultDir, pattern = "Postimpute_", full.names = TRUE)
 file.copy(ftemp, DataDir)
@@ -564,7 +564,7 @@ file.remove(ftemp)
 ```
 
 ## Step 19: Combine male and female-specific Qc-ed genotype datasets
-```{r}
+```{r combine qcd_genotype}
 ## Combine male and female-specific files
 ## Running the function
 finput1 <- "Postimpute_Female1"
@@ -573,7 +573,7 @@ foutput <- "PostimputeFinal"
 y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput, use_common_snps = TRUE)
 ```
 
-```{r}
+```{r cleanup_5}
 ## Removing the not needed files from DataDir.
 ftemp <- list.files(DataDir, pattern = "Postimpute_", full.names = TRUE)
 file.remove(ftemp)
@@ -581,12 +581,12 @@ file.remove(ftemp)
 
 # Final Summary of the final QC-ed genotype dataset
 
-```{r}
+```{r final_summary}
 finput <- "PostimputeFinal"
 x <- PlinkSummary(ResultDir, ResultDir, finput)
 ```
 
-```{r}
+```{r copy_plink_7}
 ## Copying filtered plink files to DataDir
 ftemp <- list.files(ResultDir, pattern = "PostimputeFinal", full.names = TRUE)
 file.copy(ftemp, DataDir)
@@ -594,12 +594,6 @@ file.remove(ftemp)
 ```
 
 # Sex-combined and sex-stratified GWAS with XWAS
-
-## Function: GXwas()
-
-```{r}
-help(GXwas, package = GXwasR)
-```
 
 ## <a id = "Running GXwas"> </a> Running sex combined GXwas with FMcombx02 model
 ```{r gwas_models-gxwas}
@@ -636,13 +630,13 @@ plotname <- "GXwas.plot"
 ResultGXwas <- GXwas(DataDir = DataDir, ResultDir = ResultDir, finput = finput, xmodel = xmodel, trait = trait, covarfile = covarfile, sex = sex, xsex = xsex, combtest = combtest, MF.p.corr = "none", snp_pval = snp_pval, plot.jpeg = plot.jpeg, suggestiveline = 5, genomewideline = 7.3, MF.mc.cores = 1, ncores = ncores)
 ```
 
-```{r}
+```{r result}
 # Outputs
 knitr::kable(ResultGXwas[1:5, ], caption = "FMcombx02 GWAS result.")
 ```
 
 ## <a id = "Running GXwas"> </a> Running sex stratified GXwas
-```{r gwas_models-gxwas}
+```{r gwas_models-gxwas_sex_stratified}
 ## Running
 DataDir <- system.file("extdata", package = "GXwasR")
 ResultDir <- tempdir()
@@ -676,13 +670,13 @@ plotname <- "GXwas.plot"
 ResultGXwas <- GXwas(DataDir = DataDir, ResultDir = ResultDir, finput = finput, xmodel = xmodel, trait = trait, covarfile = covarfile, sex = sex, xsex = xsex, combtest = combtest, MF.p.corr = "none", snp_pval = snp_pval, plot.jpeg = plot.jpeg, suggestiveline = 5, genomewideline = 7.3, MF.mc.cores = 1, ncores = ncores)
 ```
 
-```{r}
+```{r result_2}
 # Outputs
 knitr::kable(ResultGXwas$MaleWAS[1:5, ], caption = "Stratified GWAS result with male cohort.")
 knitr::kable(ResultGXwas$FemaleWAS[1:5, ], caption = "Stratified GWAS result with female cohort.")
 ```
 
-```{r}
+```{r top10-f}
 ## Top ten associations in female-specific study:
 load(file.path(ResultDir, "FemaleWAS.Rda"))
 x1 <- FemaleWAS
@@ -692,7 +686,7 @@ x <- x3[1:10, -c(5:6)]
 x
 ```
 
-```{r}
+```{r top10-m}
 ## Top ten associations in male-specific study:
 load(file.path(ResultDir, "MaleWAS.Rda"))
 x1 <- MaleWAS
@@ -702,7 +696,7 @@ x <- x3[1:10, -c(5:6)]
 x
 ```
 
-```{r}
+```{r top10-fm02}
 ## Top ten associations in FM02comb model:
 load(file.path(ResultDir, "CombinedWAS.Rda"))
 x1 <- CombinedWAS
@@ -714,12 +708,6 @@ x
 # Performing sex-differential test
 
 Now, we will perform a sex-differential test:
-
-## Function: SexDiff()
-
-```{r}
-help(SexDiff, package = GXwasR)
-```
 
 ## Running SexDiff
 
@@ -737,7 +725,7 @@ colnames(x2) <- c("CHR", "SNP", "BP", "A1", "BETA_F", "SE_F")
 Difftest <- SexDiff(Mfile = x1, Ffile = x2)
 ```
 
-```{r}
+```{r sex-differential_effect}
 ## Significant SNPs with sex-differential effect
 sig.snps <- Difftest[Difftest$adjP < 0.05, ]
 colnames(sig.snps) <- c("SNP", "CHR", "BP", "A1", "T_statistic", "Pvalue", "Adjusted_Pvalue")
@@ -752,7 +740,7 @@ if (nrow(sig.snps) > 0) {
 
 We hope that `r BiocStyle::Biocpkg("GXwasR")` will be useful for your research. Please use the following information to cite the package and the overall approach. Thank you!
 
-```{r "citation"}
+```{r citation}
 ## Citation info
 citation("GXwasR")
 ```
