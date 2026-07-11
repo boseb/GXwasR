@@ -108,7 +108,7 @@ library(rmarkdown)
 
 To explore all available functions, users should first check this link: [https://boseb.github.io/GXwasR/articles/GXwasR_overview.html](https://boseb.github.io/GXwasR/articles/GXwasR_overview.html)
 
-```{r, eval = FALSE}
+```{r prep, eval = FALSE}
 library(GXwasR)
 browseVignettes("GXwasR")
 ```
@@ -121,8 +121,14 @@ We will use plink binary files from DataDir, prefixed as “GXwasR_example” fo
 # Example Dataset Summary
 **Dataset: GXwasR_example**
 
-```{r}
-DataDir <- system.file("extdata", package = "GXwasR")
+```{r example_prep}
+## Example Prep
+DataDir <- file.path(tempdir(), paste0("GXwasR_data_", basename(tempfile())))
+dir.create(DataDir, recursive = TRUE)
+example_files <- list.files(system.file("extdata", package = "GXwasR"), full.names = TRUE)
+file.copy(example_files, DataDir, overwrite = TRUE)
+
+## Define ResultDir
 ResultDir <- tempdir()
 finput <- "GXwasR_example"
 x <- PlinkSummary(DataDir, ResultDir, finput)
@@ -164,7 +170,7 @@ Copying the plink files from ResultDir to DataDir.
 
 ```{r copy_plink}
 ftemp <- list.files(ResultDir, pattern = "PostimputeEX_QC1", full.names = TRUE)
-file.copy(ftemp, DataDir)
+file.copy(ftemp, DataDir, overwrite = TRUE)
 ```
 
 ## Step 3: Flag PAR, XTR and Ampliconic Regions
@@ -214,7 +220,7 @@ Copying the plink files from ResultDir to DataDir.
 
 ```{r copy_plink_2, eval = FALSE}
 ftemp <- list.files(ResultDir, pattern = "PostimputeEX_QC2", full.names = TRUE)
-file.copy(ftemp, DataDir)
+file.copy(ftemp, DataDir, overwrite = TRUE)
 ```
 
 ## Step 5: Preparing autosomal and X-chromosomal plink binary files
@@ -232,8 +238,8 @@ y <- FilterRegion(DataDir = DataDir, ResultDir = ResultDir, finput = finput, fou
 
 ```{r copy_plink_3}
 # Now, copying these files to DataDir.
-ftemp <- list.files(ResultDir, pattern = "PostimputeEX_QC3", full.names = FALSE)
-file.copy(ftemp, DataDir)
+ftemp <- list.files(ResultDir, pattern = "PostimputeEX_QC3", full.names = TRUE)
+file.copy(ftemp, DataDir, overwrite = TRUE)
 ```
 
 **Note: We will not perform step 6, since we do not have any PAR regions in this example dataset. The steps are provided for the users in the case if they have PAR regions in their dataset.**
@@ -243,13 +249,13 @@ file.copy(ftemp, DataDir)
 We will now merge the autosomal files with PAR regions using `MergeRegion()`.
 
 ```{r merge_par_regions, eval = FALSE}
-finput1 <- "PostimputeEX_QC3"
-finput2 <- "PostimputeEX_QC3_snps_extracted"
-foutput <- "PostimputeEX_QC3_autopar"
-y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput, use_common_snps = FALSE)
-## Copying the files to DataDir
-ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_QC3_autopar")
-invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir))
+# finput1 <- "PostimputeEX_QC3"
+# finput2 <- "PostimputeEX_QC3_snps_extracted"
+# foutput <- "PostimputeEX_QC3_autopar"
+# y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput, use_common_snps = FALSE)
+# ## Copying the files to DataDir
+# ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_QC3_autopar")
+# invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir, overwrite = TRUE))
 ```
 
 With “PostimputeEX_QC3”, we will flag the SNPs in the controls with a sex difference in MAF, since the differences may be due to technical confounding or sampling biases for the study cohorts.
@@ -290,7 +296,7 @@ file.remove(ftemp)
 
 ## Copying new plink files to DataDir
 ftemp <- list.files(ResultDir, pattern = "PostimputeEX_QC4", full.names = TRUE)
-file.copy(ftemp, DataDir)
+file.copy(ftemp, DataDir, overwrite = TRUE)
 ```
 
 ## Step 9: Remove SNPs with MAF < 0.05 from each sex from the sex-specific autosomal plink files
@@ -351,7 +357,7 @@ ftemp <- list.files(DataDir, pattern = "PostimputeEX_QC5", full.names = TRUE)
 file.remove(ftemp)
 
 ftemp <- list.files(ResultDir, pattern = "PostimputeEX_Auto", full.names = TRUE)
-file.copy(ftemp, DataDir)
+file.copy(ftemp, DataDir, overwrite = TRUE)
 
 ftemp <- list.files(ResultDir, pattern = "PostimputeEX_QC5", full.names = TRUE)
 file.remove(ftemp)
@@ -378,7 +384,7 @@ sex <- "males"
 x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, sex = sex, xplink = FALSE, autoplink = FALSE)
 ## Copying sex-specific plink files
 ftemp <- list.files(ResultDir, pattern = "PostimputeEX_QC3_X", full.names = TRUE)
-file.copy(ftemp, DataDir)
+file.copy(ftemp, DataDir, overwrite = TRUE)
 ```
 
 ## Step 12: QC of sex-specific X-chromosomal SNPs
@@ -419,7 +425,7 @@ file.remove(ftemp)
 
 ## Copying sex-specific plink files
 ftemp <- list.files(ResultDir, pattern = "PostimputeEX_QC4_X", full.names = TRUE)
-file.copy(ftemp, DataDir)
+file.copy(ftemp, DataDir, overwrite = TRUE)
 ftemp <- list.files(ResultDir, pattern = "PostimputeEX_QC4", full.names = TRUE)
 file.remove(ftemp)
 ```
@@ -436,7 +442,7 @@ y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput, use_common_snps 
 ```{r copy_plink_4}
 ## Copying merged plink files to DataDir
 ftemp <- list.files(ResultDir, pattern = "PostimputeEX_QC5_Xchr", full.names = TRUE)
-file.copy(ftemp, DataDir)
+file.copy(ftemp, DataDir, overwrite = TRUE)
 file.remove(ftemp)
 ## Removing other QC-ed files from DataDir
 ftemp <- list.files(DataDir, pattern = "PostimputeEX_QC4", full.names = TRUE)
@@ -466,7 +472,7 @@ file.remove(ftemp)
 
 ## Copying new QC-ed plink files to DataDir
 ftemp <- list.files(ResultDir, pattern = "PostimputeEX_Xchr", full.names = TRUE)
-file.copy(ftemp, DataDir)
+file.copy(ftemp, DataDir, overwrite = TRUE)
 ```
 
 ## Step 15: Checking for X-chromosomal SNPs having MAF difference in sexes in controls
@@ -496,7 +502,7 @@ ftemp <- list.files(DataDir, pattern = "PostimputeEX", full.names = TRUE)
 file.remove(ftemp)
 
 ftemp <- list.files(ResultDir, pattern = "PostimputeQC", full.names = TRUE)
-file.copy(ftemp, DataDir)
+file.copy(ftemp, DataDir, overwrite = TRUE)
 file.remove(ftemp)
 ```
 
@@ -519,11 +525,11 @@ x <- GetMFPlink(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutp
 ```{r copy_plink_5}
 ## Copying sex-specific plink files to DataDir
 ftemp <- list.files(ResultDir, pattern = "Postimpute_Female", full.names = TRUE)
-file.copy(ftemp, DataDir)
+file.copy(ftemp, DataDir, overwrite = TRUE)
 file.remove(ftemp)
 
 ftemp <- list.files(ResultDir, pattern = "Postimpute_Male", full.names = TRUE)
-file.copy(ftemp, DataDir)
+file.copy(ftemp, DataDir, overwrite = TRUE)
 file.remove(ftemp)
 ```
 
@@ -559,7 +565,7 @@ x <- QCsample(DataDir = DataDir, ResultDir = ResultDir, small_sample_mod = small
 ```{r copy_plink_6}
 ## Copying filtered plink files to DataDir
 ftemp <- list.files(ResultDir, pattern = "Postimpute_", full.names = TRUE)
-file.copy(ftemp, DataDir)
+file.copy(ftemp, DataDir, overwrite = TRUE)
 file.remove(ftemp)
 ```
 
@@ -589,7 +595,7 @@ x <- PlinkSummary(ResultDir, ResultDir, finput)
 ```{r copy_plink_7}
 ## Copying filtered plink files to DataDir
 ftemp <- list.files(ResultDir, pattern = "PostimputeFinal", full.names = TRUE)
-file.copy(ftemp, DataDir)
+file.copy(ftemp, DataDir, overwrite = TRUE)
 file.remove(ftemp)
 ```
 
@@ -598,8 +604,6 @@ file.remove(ftemp)
 ## <a id = "Running GXwas"> </a> Running sex combined GXwas with FMcombx02 model
 ```{r gwas_models-gxwas}
 ## Running
-DataDir <- system.file("extdata", package = "GXwasR")
-ResultDir <- tempdir()
 finput <- "PostimputeFinal"
 standard_beta <- TRUE
 xsex <- FALSE
@@ -638,8 +642,6 @@ knitr::kable(ResultGXwas[1:5, ], caption = "FMcombx02 GWAS result.")
 ## <a id = "Running GXwas"> </a> Running sex stratified GXwas
 ```{r gwas_models-gxwas_sex_stratified}
 ## Running
-DataDir <- system.file("extdata", package = "GXwasR")
-ResultDir <- tempdir()
 finput <- "PostimputeFinal"
 standard_beta <- TRUE
 xsex <- FALSE
