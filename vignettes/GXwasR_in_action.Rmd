@@ -1,5 +1,5 @@
 ---
-title: "Sex-aware Post-impute Quality Control (QC) to GWAS Pipeline Using GXwasR"
+title: "GXwasR in Action"
 author: 
   - name: "Banabithi Bose"
     affiliation:
@@ -16,7 +16,7 @@ output:
 date: "`r BiocStyle::doc_date()`"
 package: "`r BiocStyle::pkg_ver('GXwasR')`"
 vignette: >
-  %\VignetteIndexEntry{postimputationQC}
+  %\VignetteIndexEntry{1. GXwasR in Action}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}  
 ---
