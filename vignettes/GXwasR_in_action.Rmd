@@ -254,8 +254,8 @@ We will now merge the autosomal files with PAR regions using `MergeRegion()`.
 # foutput <- "PostimputeEX_QC3_autopar"
 # y <- MergeRegion(DataDir, ResultDir, finput1, finput2, foutput, use_common_snps = FALSE)
 # ## Copying the files to DataDir
-# ftemp <- list.files(paste0(ResultDir, "/"), pattern = "PostimputeEX_QC3_autopar")
-# invisible(file.copy(paste0(ResultDir, "/", ftemp), DataDir, overwrite = TRUE))
+# ftemp <- list.files(ResultDir, pattern = "PostimputeEX_QC3_autopar")
+# file.copy(file.path(ResultDir, ftemp), DataDir, overwrite = TRUE))
 ```
 
 With “PostimputeEX_QC3”, we will flag the SNPs in the controls with a sex difference in MAF, since the differences may be due to technical confounding or sampling biases for the study cohorts.
