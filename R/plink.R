@@ -516,14 +516,12 @@ applySNPmissCCFilter <- function(ResultDir, SNPmissCC, diffmissFilter, foutput) 
 #'     finput = finput, foutput = foutput, keep_remove_sample_file = keep_remove_sample_file,
 #'     keep = keep
 #' )
-FilterPlinkSample <- function(
-      DataDir, ResultDir,
-      finput,
-      foutput = NULL,
-      filter_sample = "cases",
-      keep_remove_sample_file = NULL,
-      keep = TRUE
-) {
+FilterPlinkSample <- function(DataDir, ResultDir,
+    finput,
+    foutput = NULL,
+    filter_sample = "cases",
+    keep_remove_sample_file = NULL,
+    keep = TRUE) {
     # Validate inputs
     if (!validateInputForFilterPlinkSample(DataDir, ResultDir, finput, foutput, filter_sample, keep_remove_sample_file, keep)) {
         return(NULL)
@@ -651,15 +649,13 @@ FilterPlinkSample <- function(
 #'     finput = finput, foutput = foutput, sex = sex,
 #'     xplink = FALSE, autoplink = FALSE
 #' )
-GetMFPlink <- function(
-      DataDir,
-      ResultDir = tempdir(),
-      finput,
-      foutput,
-      sex,
-      xplink = FALSE,
-      autoplink = FALSE
-) {
+GetMFPlink <- function(DataDir,
+    ResultDir = tempdir(),
+    finput,
+    foutput,
+    sex,
+    xplink = FALSE,
+    autoplink = FALSE) {
     if (!checkFiles(DataDir, finput)) {
         stop("Missing required Plink files in the specified DataDir.")
     }
@@ -965,10 +961,8 @@ executePlinkMAF <- function(DataDir, ResultDir, finput) {
 #' Famfile <- NULL
 #' PVbyCHR <- FALSE
 #' plinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)
-plinkVCF <- function(
-      DataDir, ResultDir = tempdir(), finput, foutput,
-      VtoP = FALSE, PtoV = TRUE, Famfile = NULL, PVbyCHR = TRUE
-) {
+plinkVCF <- function(DataDir, ResultDir = tempdir(), finput, foutput,
+    VtoP = FALSE, PtoV = TRUE, Famfile = NULL, PVbyCHR = TRUE) {
     # Validate Inputs
     if (!validateInputForPlinkVCF(DataDir, ResultDir, finput, foutput, VtoP, PtoV, Famfile, PVbyCHR)) {
         return(NULL)

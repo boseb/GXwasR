@@ -208,10 +208,10 @@ knitr::kable(Ampliconic_SNPs, caption = "SNPs in Ampliconic region.")
 ## Step 4: Filter only PAR Regions from X-chromosome
 
 ```{r filter_par, eval = FALSE}
-#finput <- "PostimputeEX_QC1"
-#x <- PlinkSummary(DataDir, ResultDir, finput)
-#foutput <- "PostimputeEX_QC2"
-#x <- FilterRegion(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, CHRX = TRUE, CHRY = FALSE, filterPAR = TRUE, filterXTR = FALSE, filterAmpliconic = FALSE, regionfile = FALSE, filterCHR = NULL, Hg = "38", exclude = TRUE)
+# finput <- "PostimputeEX_QC1"
+# x <- PlinkSummary(DataDir, ResultDir, finput)
+# foutput <- "PostimputeEX_QC2"
+# x <- FilterRegion(DataDir = DataDir, ResultDir = ResultDir, finput = finput, foutput = foutput, CHRX = TRUE, CHRY = FALSE, filterPAR = TRUE, filterXTR = FALSE, filterAmpliconic = FALSE, regionfile = FALSE, filterCHR = NULL, Hg = "38", exclude = TRUE)
 ```
 
 Now, users need to move the QC-ed files (i.e., "PostimputeEX_QC2" and “PostimputeEX_QC2_snps_extracted”) to DataDir to be used as input datasets for the next step of the pipeline.
