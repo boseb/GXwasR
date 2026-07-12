@@ -1,471 +1,0 @@
----
-title: "Genetic Correlation using GWAS Summary Statistics"
-author: 
-  - name: "Banabithi Bose"
-    affiliation:
-    - University of Colorado Anschutz Medical; 
-    - Northwestern University
-    email: banabithi.bose@gmail.com
-output: 
-  BiocStyle::html_document:
-    self_contained: false
-    toc: true
-    toc_float: true
-    toc_depth: 2
-    code_folding: show
-date: "16 October 2025"
-package: "GXwasR 0.99.0"
-vignette: >
-  %\VignetteIndexEntry{genetic_correlation_sumstat}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}  
----
-
-
-
-
-
-
-# GXwasR function SumstatGenCorr()
-
-**SumstatGenCorr: Genetic Correlation Calculation from GWAS Summary Statistics**
-
-This function calculates the genetic correlation between two summary statistics
-using a specified reference LD matrix from the UK Biobank or Hapmap2 following Ning Z, Pawitan Y, Shen X (2020). High-definition likelihood inference of genetic correlations 
-across human complex traits, Nature Genetics.
-
-The function utilizes the precomputed eigenvalues and eigenvectors of LD correlation matrices for European ancestry population. 
-
-These are the LD matrices and their eigen-decomposition from three different sets:
-
-**1) UKB_imputed_hapmap2_SVD_eigen99_extraction:** 769,306 QCed UK Biobank imputed HapMap2 SNPs:
-If one of your GWAS includes most of the HapMap 2 SNPs, but many SNPs (more than 1%) in the above HapMap 3 reference panel are absent, then this HapMap2 panel is more proper to be used for computing genetic correlation. The size is about 18 GB after unzipping
-
-**2) UKB_imputed_SVD_eigen99_extraction:** 1,029,876 QCed UK Biobank imputed SNPs. The size is about 31 GB after unzipping. Although it takes more time, using the imputed panel provides more accurate estimates of genetic correlations. The reference panels with imputed SNPs are based on genotypes in UK Biobank, which were imputed to HRC and UK10K + 1000 Genomes.
-Therefore if the GWAS includes most of the HapMap3 SNPs, then it is recommend using the imputed reference panel.
-
-**3) UKB_array_SVD_eigen90_extraction:** 307,519 QCed UK Biobank Axiom Array SNPs. The size is about 7.5 GB after unzipping.
-
-
-``` r
-library(GXwasR)
-help(SumstatGenCorr)
-```
-
-# Example: UKB Imputed HapMap2 Data (Neale Lab)
-
-Birth weight and type 2 diabetes based on the summary statistics with around 20,000 individuals.
-
-
-``` r
-library(readr)
-ResultDir <- tempdir()
-sumstat1 <- read_rds("https://zenodo.org/records/17177917/files/gwas1.imputed.example.rds?download=1")
-sumstat2 <- read_rds("https://zenodo.org/records/17177917/files/gwas2.imputed.example.rds?download=1")
-referenceLD = "UKB_imputed_hapmap2_SVD_eigen99_extraction"
-res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=sumstat1, sumstat2=sumstat2, parallel = TRUE, numCores = 2)
-#> Analysis starts on Thu Oct 16 09:08:06 2025
-#> ℹ 769306 out of 769306 (100%) SNPs in reference panel are available in GWAS 1.
-#> ℹ 769306 out of 769306 (100%) SNPs in reference panel are available in GWAS 2.
-#>   |                                                                                                                                                                                                                            |                                                                                                                                                                                                                    |   0%
-#> Warning in seq.default(along = cl): partial argument match of 'along' to 'along.with'
-#>   |                                                                                                                                                                                                                            |===                                                                                                                                                                                                                 |   2%  |                                                                                                                                                                                                                            |=======                                                                                                                                                                                                             |   3%  |                                                                                                                                                                                                                            |==========                                                                                                                                                                                                          |   5%  |                                                                                                                                                                                                                            |==============                                                                                                                                                                                                      |   6%  |                                                                                                                                                                                                                            |=================                                                                                                                                                                                                   |   8%  |                                                                                                                                                                                                                            |=====================                                                                                                                                                                                               |  10%  |                                                                                                                                                                                                                            |========================                                                                                                                                                                                            |  11%  |                                                                                                                                                                                                                            |===========================                                                                                                                                                                                         |  13%  |                                                                                                                                                                                                                            |===============================                                                                                                                                                                                     |  15%  |                                                                                                                                                                                                                            |==================================                                                                                                                                                                                  |  16%  |                                                                                                                                                                                                                            |======================================                                                                                                                                                                              |  18%  |                                                                                                                                                                                                                            |=========================================                                                                                                                                                                           |  19%  |                                                                                                                                                                                                                            |============================================                                                                                                                                                                        |  21%  |                                                                                                                                                                                                                            |================================================                                                                                                                                                                    |  23%  |                                                                                                                                                                                                                            |===================================================                                                                                                                                                                 |  24%  |                                                                                                                                                                                                                            |=======================================================                                                                                                                                                             |  26%  |                                                                                                                                                                                                                            |==========================================================                                                                                                                                                          |  27%  |                                                                                                                                                                                                                            |==============================================================                                                                                                                                                      |  29%  |                                                                                                                                                                                                                            |=================================================================                                                                                                                                                   |  31%  |                                                                                                                                                                                                                            |====================================================================                                                                                                                                                |  32%  |                                                                                                                                                                                                                            |========================================================================                                                                                                                                            |  34%  |                                                                                                                                                                                                                            |===========================================================================                                                                                                                                         |  35%  |                                                                                                                                                                                                                            |===============================================================================                                                                                                                                     |  37%  |                                                                                                                                                                                                                            |==================================================================================                                                                                                                                  |  39%  |                                                                                                                                                                                                                            |=====================================================================================                                                                                                                               |  40%  |                                                                                                                                                                                                                            |=========================================================================================                                                                                                                           |  42%  |                                                                                                                                                                                                                            |============================================================================================                                                                                                                        |  44%  |                                                                                                                                                                                                                            |================================================================================================                                                                                                                    |  45%  |                                                                                                                                                                                                                            |===================================================================================================                                                                                                                 |  47%  |                                                                                                                                                                                                                            |=======================================================================================================                                                                                                             |  48%  |                                                                                                                                                                                                                            |==========================================================================================================                                                                                                          |  50%  |                                                                                                                                                                                                                            |=============================================================================================================                                                                                                       |  52%  |                                                                                                                                                                                                                            |=================================================================================================================                                                                                                   |  53%  |                                                                                                                                                                                                                            |====================================================================================================================                                                                                                |  55%  |                                                                                                                                                                                                                            |========================================================================================================================                                                                                            |  56%  |                                                                                                                                                                                                                            |===========================================================================================================================                                                                                         |  58%  |                                                                                                                                                                                                                            |===============================================================================================================================                                                                                     |  60%  |                                                                                                                                                                                                                            |==================================================================================================================================                                                                                  |  61%  |                                                                                                                                                                                                                            |=====================================================================================================================================                                                                               |  63%  |                                                                                                                                                                                                                            |=========================================================================================================================================                                                                           |  65%  |                                                                                                                                                                                                                            |============================================================================================================================================                                                                        |  66%  |                                                                                                                                                                                                                            |================================================================================================================================================                                                                    |  68%  |                                                                                                                                                                                                                            |===================================================================================================================================================                                                                 |  69%  |                                                                                                                                                                                                                            |======================================================================================================================================================                                                              |  71%  |                                                                                                                                                                                                                            |==========================================================================================================================================================                                                          |  73%  |                                                                                                                                                                                                                            |=============================================================================================================================================================                                                       |  74%  |                                                                                                                                                                                                                            |=================================================================================================================================================================                                                   |  76%  |                                                                                                                                                                                                                            |====================================================================================================================================================================                                                |  77%  |                                                                                                                                                                                                                            |========================================================================================================================================================================                                            |  79%  |                                                                                                                                                                                                                            |===========================================================================================================================================================================                                         |  81%  |                                                                                                                                                                                                                            |==============================================================================================================================================================================                                      |  82%  |                                                                                                                                                                                                                            |==================================================================================================================================================================================                                  |  84%  |                                                                                                                                                                                                                            |=====================================================================================================================================================================================                               |  85%  |                                                                                                                                                                                                                            |=========================================================================================================================================================================================                           |  87%  |                                                                                                                                                                                                                            |============================================================================================================================================================================================                        |  89%  |                                                                                                                                                                                                                            |===============================================================================================================================================================================================                     |  90%  |                                                                                                                                                                                                                            |===================================================================================================================================================================================================                 |  92%  |                                                                                                                                                                                                                            |======================================================================================================================================================================================================              |  94%  |                                                                                                                                                                                                                            |==========================================================================================================================================================================================================          |  95%  |                                                                                                                                                                                                                            |=============================================================================================================================================================================================================       |  97%  |                                                                                                                                                                                                                            |=================================================================================================================================================================================================================   |  98%  |                                                                                                                                                                                                                            |====================================================================================================================================================================================================================| 100%
-#> 
-#> 
-#> 
-#> 
-#> Integrating piecewise resultsPoint estimates:• Heritability of phenotype 1:  0.1008
-#> • Heritability of phenotype 2:  0.0066
-#> • Genetic Covariance:  -0.006
-#> • Genetic Correlation:  -0.2318ℹ Continuing computing standard error with jackknife
-#>   |                                                                                                                                                                                                                            |                                                                                                                                                                                                                    |   0%
-#> Warning in seq_len(seq_len(length(lam.v))): first element used of 'length.out' argument
-#> Warning in seq_len(seq_len(length(lam.v))): first element used of 'length.out' argument
-#> Warning in seq.default(along = cl): partial argument match of 'along' to 'along.with'
-#>   |                                                                                                                                                                                                                            |===                                                                                                                                                                                                                 |   2%
-#> 
-#> 
-#> • Heritability of phenotype 1: 0.1008 ( 0.00e+00 )
-#> • Heritability of phenotype 2: 0.0066 ( 0.00e+00 )
-#> • Genetic Covariance: -0.006 ( 0.00e+00 )
-#> • Genetic Correlation: -0.2318 ( 0.00e+00 )
-#> • P: 0.00e+00
-#> 
-#> Analysis finished at Thu Oct 16 09:08:36 2025
-```
-
-
-# Example: HDL Sample Data (20K SNPs, UKB Array SVD Eigen90)
-
-
-``` r
-gwas1.example <- read_rds('https://zenodo.org/records/17177917/files/gwas1.array.example.rds?download=1')
-gwas2.example <- read_rds('https://zenodo.org/records/17177917/files/gwas2.array.example.rds?download=1')
-referenceLD = "UKB_array_SVD_eigen90_extraction"
-res <- SumstatGenCorr(ResultDir=ResultDir, referenceLD =referenceLD, sumstat1=gwas1.example, sumstat2=gwas2.example, parallel = TRUE, numCores = 2)
-#> Analysis starts on Thu Oct 16 09:09:15 2025
-#> Error in estimating Genetic Correlation: attempt to set an attribute on NULL
-```
-**Small number of SNPs anyways not good.**
-
-**Note:** Singularities or ill-conditioned matrices can occur due to **collinear SNPs**, insufficient variation, or extremely small values, causing numerical instability and non-convergence.
-
-## HDL decoded
-
-Checking the provided likelihood functions (**llfun and llfun.gcov.part.2**), it's possible that very similar summary statistics (e.g., identical Z-scores) for two traits can lead to convergence issues in this algorithm due to several reasons:
-
-**1. Collinearity and Identical Data:**
-
-If the summary statistics are identical between two traits:
-
-**Collinearity:** The covariance matrix may become singular or nearly singular, which can make the optimization unstable.
-
-**Identical Statistics:** The functions rely on variability between the traits, and identical statistics can lead to a flat or undefined likelihood surface, causing numerical instability.
-
-**2. Flat Likelihood Surface:**
-
-If the data is identical, the likelihood surface might be flat, meaning that the algorithm has difficulty finding a unique solution due to lack of gradients.
-In llfun.gcov.part.2, the covariance (h12) may end up zero or undefined if there's no variance in the data.
-
-**3. Optimization Method Sensitivity:**
-
-The numerical optimization ('optim') used for finding the best fit is sensitive to data quality.
-Identical data can result in values that don't fit the assumptions or cause overflows in likelihood calculations. This may results in **Algorithm failed to converge after trying different initial values.** 
-
-**4. Variance Estimates:**
-
-The variance estimates (lamh2, lam22.1) are sensitive to the differences in summary statistics.
-Identical data may result in variance estimates being too small or large, leading to numerical instability in the log-likelihood calculations.
-
-## Why UKB Imputed (Eigen99) Fails to Converge While UKB Array (Eigen90) Succeeds
-
-**Expected Genetic Correlation:**
-When using identical summary statistics, the genetic correlation is theoretically expected to be very close to 1, as the traits are the same.
-
-However, this can vary in practice due to the quality of the data and the specific nuances of the LD reference panel.
-
-**Sensitivity to LD Reference Panels:**
-Different LD panels can have distinct effects on the computation, especially in cases of identical summary statistics:
-
-**LD Structure:** Panels with better-defined LD structures (like the Axiom array) may produce more stable covariance matrices, leading to better convergence.
-
-**Imputation Accuracy:** LD panels with more imputed SNPs (like the HRC, 1000 Genomes, HapMap3 panel) may introduce noise, making convergence more challenging.
-
-**Effect of Imputation and Rare Variants:**
-Imputed panels often have a larger number of SNPs, including rare variants, which can introduce noise and increase the complexity of the covariance structure.
-
-The additional noise and potential artifacts from imputation could make it difficult for the algorithm to converge, especially when working with identical summary statistics.
-
-**Impact of Multicollinearity:**
-Identical summary statistics can lead to high multicollinearity, which may be mitigated differently depending on the LD reference panel.
-
-High multicollinearity can destabilize the covariance matrix calculations, resulting in non-convergence for one panel but not the other.
-
-In summary, the differences in convergence for the two LD panels when computing genetic correlation with identical summary statistics highlight the importance of:
-
-- LD structure quality
-- Imputation noise
-- The inherent properties of the SNPs in the panels
-- The Axiom array may offer a cleaner, more stable set of SNPs with well-defined LD, which is critical for achieving convergence in the genetic correlation computation
-
-## Conclusion
-
-**The genetic correlation analysis is sensitive to the number of SNPs in the summary statistics and the quality of the LD reference panel.**
-
-In Panscan datasets, the result is:
-
-Heritability of phenotype 1:  0.00e+00 (0.00e+00) 
-
-Heritability of phenotype 2:  0.00e+00 (0.00e+00) 
-
-Genetic Covariance:  -0.1536 (0.1436) 
-
-Genetic Correlation:  -Inf (NA) 
-
-**About Warning: Heritability of one trait was estimated to be 0, which may due to:**
-
-          1) The true heritability is very small;
-          
-          2) The sample size is too small;
-          
-          3) Many SNPs in the chosen reference panel misses in the GWAS.
-          
-          4) There is a severe mismatch between the GWAS population and the population for computing reference panel
-
-# Citing `GXwasR`
-
-We hope that *[GXwasR](https://bioconductor.org/packages/3.21/GXwasR)* will be useful for your research. Please use the following information to cite the package and the overall approach. Thank you!
-
-
-``` r
-## Citation info
-citation("GXwasR")
-#> To cite package 'GXwasR' in publications use:
-#> 
-#>   Bose B, Blostein F, Kim J, Winters J, Actkins KV, Mayer D, Congivaram H, Niarchou M, Edwards DV, Davis LK, Stranger BE (2025). "GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic
-#>   Effects on Complex Traits." _medRxiv 2025.06.10.25329327_. doi:10.1101/2025.06.10.25329327 <https://doi.org/10.1101/2025.06.10.25329327>.
-#> 
-#> A BibTeX entry for LaTeX users is
-#> 
-#>   @Article{,
-#>     title = {GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic Effects on Complex Traits},
-#>     author = {Banabithi Bose and Freida Blostein and Jeewoo Kim and Jessica Winters and Ky’Era V. Actkins and David Mayer and Harrsha Congivaram and Maria Niarchou and Digna Velez Edwards and Lea K. Davis and Barbara E. Stranger},
-#>     journal = {medRxiv 2025.06.10.25329327},
-#>     year = {2025},
-#>     doi = {10.1101/2025.06.10.25329327},
-#>   }
-```
-
-# Reproducibility
-
-The *[GXwasR](https://bioconductor.org/packages/3.21/GXwasR)* package (Bose, Blostein, Kim et al., 2025) was made possible thanks to:
-
-* R (R Core Team, 2025)
-* *[BiocStyle](https://bioconductor.org/packages/3.21/BiocStyle)* (Oleś, 2025)
-* *[knitr](https://CRAN.R-project.org/package=knitr)* (Xie, 2025)
-* *[RefManageR](https://CRAN.R-project.org/package=RefManageR)* (McLean, 2017)
-* *[rmarkdown](https://CRAN.R-project.org/package=rmarkdown)* (Allaire, Xie, Dervieux et al., 2025)
-* *[sessioninfo](https://CRAN.R-project.org/package=sessioninfo)* (Wickham, Chang, Flight et al., 2025)
-* *[testthat](https://CRAN.R-project.org/package=testthat)* (Wickham, 2011)
-
-This package was developed using *[biocthis](https://bioconductor.org/packages/3.21/biocthis)*.
-
-`R` session information.
-
-
-```
-#> ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
-#>  setting  value
-#>  version  R version 4.5.1 (2025-06-13)
-#>  os       macOS Sequoia 15.7.1
-#>  system   aarch64, darwin24.4.0
-#>  ui       unknown
-#>  language (EN)
-#>  collate  en_US.UTF-8
-#>  ctype    en_US.UTF-8
-#>  tz       America/New_York
-#>  date     2025-10-16
-#>  pandoc   3.6.3 @ /Applications/Positron.app/Contents/Resources/app/quarto/bin/tools/aarch64/ (via rmarkdown)
-#>  quarto   1.8.25 @ /usr/local/bin/quarto
-#> 
-#> ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
-#>  ! package              * version    date (UTC) lib source
-#>    abind                  1.4-8      2024-09-12 [2] CRAN (R 4.5.0)
-#>    backports              1.5.0      2024-05-23 [2] CRAN (R 4.5.1)
-#>    bibtex                 0.5.1      2023-01-26 [2] CRAN (R 4.5.0)
-#>    bigassertr             0.1.7      2025-06-27 [2] CRAN (R 4.5.1)
-#>    bigparallelr           0.3.2      2021-10-02 [2] CRAN (R 4.5.0)
-#>    bigsnpr                1.12.21    2025-08-21 [2] CRAN (R 4.5.1)
-#>    bigsparser             0.7.3      2024-09-06 [2] CRAN (R 4.5.1)
-#>    bigstatsr              1.6.2      2025-07-29 [2] CRAN (R 4.5.1)
-#>    Biobase                2.68.0     2025-04-15 [2] Bioconduc~
-#>    BiocGenerics           0.54.0     2025-04-15 [2] Bioconduc~
-#>    BiocIO                 1.18.0     2025-04-15 [2] Bioconduc~
-#>    BiocManager            1.30.26    2025-06-05 [2] CRAN (R 4.5.0)
-#>    BiocParallel           1.42.2     2025-09-14 [2] Bioconductor 3.21 (R 4.5.1)
-#>    BiocStyle              2.36.0     2025-04-15 [2] Bioconduc~
-#>    Biostrings             2.76.0     2025-04-15 [2] Bioconduc~
-#>    bit                    4.6.0      2025-03-06 [2] CRAN (R 4.5.1)
-#>    bit64                  4.6.0-1    2025-01-16 [2] CRAN (R 4.5.1)
-#>    bitops                 1.0-9      2024-10-03 [2] CRAN (R 4.5.0)
-#>    brio                   1.1.5      2024-04-24 [2] CRAN (R 4.5.1)
-#>    broom                  1.0.10     2025-09-13 [2] CRAN (R 4.5.1)
-#>    BSgenome               1.76.0     2025-04-15 [2] Bioconduc~
-#>    cachem                 1.1.0      2024-05-16 [2] CRAN (R 4.5.0)
-#>    calibrate              1.7.7      2020-06-19 [2] CRAN (R 4.5.0)
-#>    callr                  3.7.6      2024-03-25 [2] CRAN (R 4.5.1)
-#>    car                    3.1-3      2024-09-27 [2] CRAN (R 4.5.0)
-#>    carData                3.0-5      2022-01-06 [2] CRAN (R 4.5.0)
-#>    cli                    3.6.5      2025-04-23 [2] CRAN (R 4.5.0)
-#>    codetools              0.2-20     2024-03-31 [4] CRAN (R 4.5.1)
-#>    cowplot                1.2.0      2025-07-07 [2] CRAN (R 4.5.1)
-#>    crayon                 1.5.3      2024-06-20 [2] CRAN (R 4.5.0)
-#>    curl                   7.0.0      2025-08-19 [2] CRAN (R 4.5.1)
-#>    data.table             1.17.8     2025-07-10 [2] CRAN (R 4.5.1)
-#>    DelayedArray           0.34.1     2025-04-17 [2] Bioconduc~
-#>    devtools             * 2.4.6      2025-10-03 [3] CRAN (R 4.5.1)
-#>    digest                 0.6.37     2024-08-19 [2] CRAN (R 4.5.0)
-#>    doParallel             1.0.17     2022-02-07 [2] CRAN (R 4.5.0)
-#>    doRNG                  1.8.6.2    2025-04-02 [2] CRAN (R 4.5.0)
-#>    doSNOW                 1.0.20     2022-02-04 [2] CRAN (R 4.5.0)
-#>    dplyr                  1.1.4      2023-11-17 [2] CRAN (R 4.5.0)
-#>    ellipsis               0.3.2      2021-04-29 [3] CRAN (R 4.5.0)
-#>    evaluate               1.0.5      2025-08-27 [2] CRAN (R 4.5.1)
-#>    farver                 2.1.2      2024-05-13 [2] CRAN (R 4.5.0)
-#>    fastmap                1.2.0      2024-05-15 [2] CRAN (R 4.5.0)
-#>    flock                  0.7        2016-11-12 [2] CRAN (R 4.5.1)
-#>    foreach                1.5.2      2022-02-02 [2] CRAN (R 4.5.0)
-#>    Formula                1.2-5      2023-02-24 [2] CRAN (R 4.5.0)
-#>    fs                     1.6.6      2025-04-12 [2] CRAN (R 4.5.0)
-#>    gdsfmt                 1.44.1     2025-07-09 [2] Bioconduc~
-#>    generics               0.1.4      2025-05-09 [2] CRAN (R 4.5.0)
-#>    GenomeInfoDb           1.44.3     2025-09-21 [2] Bioconductor 3.21 (R 4.5.1)
-#>    GenomeInfoDbData       1.2.14     2025-04-21 [2] Bioconductor
-#>    GenomicAlignments      1.44.0     2025-04-15 [2] Bioconduc~
-#>    GenomicRanges          1.60.0     2025-04-15 [2] Bioconduc~
-#>    ggplot2                4.0.0      2025-09-11 [2] CRAN (R 4.5.1)
-#>    ggpubr                 0.6.1      2025-06-27 [2] CRAN (R 4.5.1)
-#>    ggrepel                0.9.6      2024-09-07 [2] CRAN (R 4.5.1)
-#>    ggsignif               0.6.4      2022-10-13 [2] CRAN (R 4.5.0)
-#>    glue                   1.8.0      2024-09-30 [2] CRAN (R 4.5.0)
-#>    gridExtra              2.3        2017-09-09 [2] CRAN (R 4.5.0)
-#>    gtable                 0.3.6      2024-10-25 [2] CRAN (R 4.5.0)
-#>  P GXwasR               * 0.99.0     2025-10-16 [?] Bioconductor
-#>    hms                    1.1.3      2023-03-21 [2] CRAN (R 4.5.0)
-#>    htmltools              0.5.8.1    2024-04-04 [2] CRAN (R 4.5.0)
-#>    httr                   1.4.7      2023-08-15 [2] CRAN (R 4.5.0)
-#>    IRanges                2.42.0     2025-04-15 [2] Bioconduc~
-#>    iterators              1.0.14     2022-02-05 [2] CRAN (R 4.5.0)
-#>    jsonlite               2.0.0      2025-03-27 [2] CRAN (R 4.5.0)
-#>    knitr                  1.50       2025-03-16 [2] CRAN (R 4.5.0)
-#>    lattice                0.22-7     2025-04-02 [4] CRAN (R 4.5.1)
-#>    lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.5.0)
-#>    lubridate              1.9.4      2024-12-08 [2] CRAN (R 4.5.1)
-#>    magrittr               2.0.4      2025-09-12 [2] CRAN (R 4.5.1)
-#>    MASS                   7.3-65     2025-02-28 [4] CRAN (R 4.5.1)
-#>    mathjaxr               1.8-0      2025-04-30 [2] CRAN (R 4.5.1)
-#>    Matrix                 1.7-4      2025-08-28 [4] CRAN (R 4.5.1)
-#>    MatrixGenerics         1.20.0     2025-04-15 [2] Bioconduc~
-#>    matrixStats            1.5.0      2025-01-07 [2] CRAN (R 4.5.0)
-#>    memoise                2.0.1      2021-11-26 [2] CRAN (R 4.5.0)
-#>    pillar                 1.11.1     2025-09-17 [2] CRAN (R 4.5.1)
-#>    pkgbuild               1.4.8      2025-05-26 [2] CRAN (R 4.5.0)
-#>    pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.5.0)
-#>    pkgdev                 0.1.0.9060 2025-08-04 [2] Github (dieghernan/pkgdev@e56f2a8)
-#>    pkgload                1.4.1      2025-09-23 [2] CRAN (R 4.5.1)
-#>    plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.5.1)
-#>    plyranges              1.28.0     2025-04-15 [2] Bioconduc~
-#>    poolr                  1.2-0      2025-05-07 [2] CRAN (R 4.5.0)
-#>    prettyunits            1.2.0      2023-09-24 [2] CRAN (R 4.5.0)
-#>    processx               3.8.6      2025-02-21 [2] CRAN (R 4.5.1)
-#>    progress               1.2.3      2023-12-06 [2] CRAN (R 4.5.0)
-#>    ps                     1.9.1      2025-04-12 [2] CRAN (R 4.5.1)
-#>    purrr                  1.1.0      2025-07-10 [2] CRAN (R 4.5.1)
-#>    qqman                  0.1.9      2023-08-23 [2] CRAN (R 4.5.0)
-#>    R.methodsS3            1.8.2      2022-06-13 [2] CRAN (R 4.5.0)
-#>    R.oo                   1.27.1     2025-05-02 [2] CRAN (R 4.5.0)
-#>    R.utils                2.13.0     2025-02-24 [2] CRAN (R 4.5.0)
-#>    R6                     2.6.1      2025-02-15 [2] CRAN (R 4.5.0)
-#>    rbibutils              2.3        2024-10-04 [2] CRAN (R 4.5.1)
-#>    RColorBrewer           1.1-3      2022-04-03 [2] CRAN (R 4.5.0)
-#>    Rcpp                   1.1.0      2025-07-02 [2] CRAN (R 4.5.1)
-#>    RCurl                  1.98-1.17  2025-03-22 [2] CRAN (R 4.5.0)
-#>    Rdpack                 2.6.4      2025-04-09 [2] CRAN (R 4.5.0)
-#>    readr                * 2.1.5      2024-01-10 [2] CRAN (R 4.5.1)
-#>    RefManageR           * 1.4.0      2022-09-30 [2] CRAN (R 4.5.1)
-#>    regioneR               1.40.1     2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
-#>    remotes                2.5.0      2024-03-17 [2] CRAN (R 4.5.0)
-#>    restfulr               0.0.16     2025-06-27 [2] CRAN (R 4.5.1)
-#>    rjson                  0.2.23     2024-09-16 [2] CRAN (R 4.5.0)
-#>    rlang                  1.1.6      2025-04-11 [2] CRAN (R 4.5.0)
-#>    rmarkdown              2.30       2025-09-28 [2] CRAN (R 4.5.1)
-#>    rmio                   0.4.0      2022-02-17 [2] CRAN (R 4.5.0)
-#>    rngtools               1.5.2      2021-09-20 [2] CRAN (R 4.5.0)
-#>    rprojroot              2.1.1      2025-08-26 [2] CRAN (R 4.5.1)
-#>    Rsamtools              2.24.1     2025-09-07 [2] Bioconductor 3.21 (R 4.5.1)
-#>    rstatix                0.7.2      2023-02-01 [2] CRAN (R 4.5.0)
-#>    rtracklayer            1.68.0     2025-04-15 [2] Bioconduc~
-#>    S4Arrays               1.8.1      2025-06-01 [2] Bioconductor 3.21 (R 4.5.0)
-#>    S4Vectors              0.46.0     2025-04-15 [2] Bioconduc~
-#>    S7                     0.2.0      2024-11-07 [2] CRAN (R 4.5.1)
-#>    scales                 1.4.0      2025-04-24 [2] CRAN (R 4.5.0)
-#>    sessioninfo          * 1.2.3      2025-02-05 [2] CRAN (R 4.5.1)
-#>    snow                   0.4-4      2021-10-27 [2] CRAN (R 4.5.0)
-#>    SNPRelate              1.42.0     2025-04-15 [2] Bioconduc~
-#>    SparseArray            1.8.1      2025-07-23 [2] Bioconduc~
-#>    stringi                1.8.7      2025-03-27 [2] CRAN (R 4.5.0)
-#>    stringr                1.5.2      2025-09-08 [2] CRAN (R 4.5.1)
-#>    sumFREGAT              1.2.5      2022-06-07 [2] CRAN (R 4.5.1)
-#>    SummarizedExperiment   1.38.1     2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)
-#>    sys                    3.4.3      2024-10-04 [2] CRAN (R 4.5.0)
-#>    testthat             * 3.2.3      2025-01-13 [2] CRAN (R 4.5.1)
-#>    tibble                 3.3.0      2025-06-08 [2] CRAN (R 4.5.0)
-#>    tidyr                  1.3.1      2024-01-24 [2] CRAN (R 4.5.1)
-#>    tidyselect             1.2.1      2024-03-11 [2] CRAN (R 4.5.0)
-#>    timechange             0.3.0      2024-01-18 [2] CRAN (R 4.5.1)
-#>    tzdb                   0.5.0      2025-03-15 [2] CRAN (R 4.5.1)
-#>    UCSC.utils             1.4.0      2025-04-15 [2] Bioconduc~
-#>    usethis              * 3.2.1      2025-09-06 [2] CRAN (R 4.5.1)
-#>    vctrs                  0.6.5      2023-12-01 [2] CRAN (R 4.5.0)
-#>    vroom                  1.6.6      2025-09-19 [2] CRAN (R 4.5.1)
-#>    withr                  3.0.2      2024-10-28 [2] CRAN (R 4.5.0)
-#>    xfun                   0.53       2025-08-19 [2] CRAN (R 4.5.1)
-#>    XML                    3.99-0.19  2025-08-22 [2] CRAN (R 4.5.1)
-#>    xml2                   1.4.0      2025-08-20 [2] CRAN (R 4.5.1)
-#>    XVector                0.48.0     2025-04-15 [2] Bioconduc~
-#>    yaml                   2.3.10     2024-07-26 [2] CRAN (R 4.5.0)
-#> 
-#>  [1] /private/var/folders/d6/gtwl3_017sj4pp14fbfcbqjh0000gp/T/RtmpaZZsp5/temp_libpathadcb1c069a8b
-#>  [2] /Users/mayerdav/Library/R/arm64/4.5/library
-#>  [3] /opt/homebrew/lib/R/4.5/site-library
-#>  [4] /opt/homebrew/Cellar/r/4.5.1/lib/R/library
-#> 
-#>  * ── Packages attached to the search path.
-#>  P ── Loaded and on-disk path mismatch.
-#> 
-#> ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-```
-
-
-
-# Bibliography
-
-This vignette was generated using *[BiocStyle](https://bioconductor.org/packages/3.21/BiocStyle)* (Oleś, 2025)
-with *[knitr](https://CRAN.R-project.org/package=knitr)* (Xie, 2025) and *[rmarkdown](https://CRAN.R-project.org/package=rmarkdown)* (Allaire, Xie, Dervieux et al., 2025) running behind the scenes.
-
-Citations made with *[RefManageR](https://CRAN.R-project.org/package=RefManageR)* (McLean, 2017).
-
-<p><a id='bib-allaire2025rmarkdown'></a><a href="#cite-allaire2025rmarkdown">[1]</a><cite>
-J. Allaire, Y. Xie, C. Dervieux, et al.
-<em>rmarkdown: Dynamic Documents for R</em>.
-R package version 2.30.
-2025.
-URL: <a href="https://github.com/rstudio/rmarkdown">https://github.com/rstudio/rmarkdown</a>.</cite></p>
-
-<p><a id='bib-bose2025gxwasr'></a><a href="#cite-bose2025gxwasr">[2]</a><cite>
-B. Bose, F. Blostein, J. Kim, et al.
-&ldquo;GXwasR: A Toolkit for Investigating Sex-Differentiated Genetic Effects on Complex Traits&rdquo;.
-In: <em>medRxiv 2025.06.10.25329327</em> (2025).
-DOI: <a href="https://doi.org/10.1101/2025.06.10.25329327">10.1101/2025.06.10.25329327</a>.</cite></p>
-
-<p><a id='bib-mclean2017refmanager'></a><a href="#cite-mclean2017refmanager">[3]</a><cite>
-M. W. McLean.
-&ldquo;RefManageR: Import and Manage BibTeX and BibLaTeX References in R&rdquo;.
-In: <em>The Journal of Open Source Software</em> (2017).
-DOI: <a href="https://doi.org/10.21105/joss.00338">10.21105/joss.00338</a>.</cite></p>
-
-<p><a id='bib-ole2025biocstyle'></a><a href="#cite-ole2025biocstyle">[4]</a><cite>
-A. Oleś.
-<em>BiocStyle: Standard styles for vignettes and other Bioconductor documents</em>.
-R package version 2.36.0.
-2025.
-DOI: <a href="https://doi.org/10.18129/B9.bioc.BiocStyle">10.18129/B9.bioc.BiocStyle</a>.
-URL: <a href="https://bioconductor.org/packages/BiocStyle">https://bioconductor.org/packages/BiocStyle</a>.</cite></p>
-
-<p><a id='bib-2025language'></a><a href="#cite-2025language">[5]</a><cite>
-R Core Team.
-<em>R: A Language and Environment for Statistical Computing</em>.
-R Foundation for Statistical Computing.
-Vienna, Austria, 2025.
-URL: <a href="https://www.R-project.org/">https://www.R-project.org/</a>.</cite></p>
-
-<p><a id='bib-wickham2011testthat'></a><a href="#cite-wickham2011testthat">[6]</a><cite>
-H. Wickham.
-&ldquo;testthat: Get Started with Testing&rdquo;.
-In: <em>The R Journal</em> 3 (2011), pp. 5&ndash;10.
-URL: <a href="https://journal.r-project.org/archive/2011-1/RJournal_2011-1_Wickham.pdf">https://journal.r-project.org/archive/2011-1/RJournal_2011-1_Wickham.pdf</a>.</cite></p>
-
-<p><a id='bib-wickham2025sessioninfo'></a><a href="#cite-wickham2025sessioninfo">[7]</a><cite>
-H. Wickham, W. Chang, R. Flight, et al.
-<em>sessioninfo: R Session Information</em>.
-R package version 1.2.3.
-2025.
-DOI: <a href="https://doi.org/10.32614/CRAN.package.sessioninfo">10.32614/CRAN.package.sessioninfo</a>.
-URL: <a href="https://CRAN.R-project.org/package=sessioninfo">https://CRAN.R-project.org/package=sessioninfo</a>.</cite></p>
-
-<p><a id='bib-xie2025knitr'></a><a href="#cite-xie2025knitr">[8]</a><cite>
-Y. Xie.
-<em>knitr: A General-Purpose Package for Dynamic Report Generation in R</em>.
-R package version 1.50.
-2025.
-URL: <a href="https://yihui.org/knitr/">https://yihui.org/knitr/</a>.</cite></p>
