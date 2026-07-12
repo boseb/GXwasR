@@ -106,7 +106,7 @@ library(rmarkdown)
 
 **Before beginning the pre-imputation QC, it is recommended that users familiarize themselves with all the functions in the GXwasR package. This knowledge will help them understand the required input arguments, how to execute the functions, and what outputs to expect.**
 
-To explore all available functions, users should first check this link: [https://boseb.github.io/GXwasR/articles/GXwasR_overview.html](https://boseb.github.io/GXwasR/articles/GXwasR_overview.html)
+To explore all available functions, users should first check this link: [https://boseb.github.io/GXwasR/reference/index.html.html](https://boseb.github.io/GXwasR/reference/index.html)
 
 ```{r prep, eval = FALSE}
 library(GXwasR)
