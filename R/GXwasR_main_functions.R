@@ -112,28 +112,26 @@
 #'     caldiffmiss = caldiffmiss
 #' )
 QCsnp <-
-    function(
-      DataDir,
-      ResultDir = tempdir(),
-      finput,
-      foutput = "FALSE",
-      casecontrol = TRUE,
-      hweCase = NULL,
-      hweControl = NULL,
-      hwe = NULL,
-      maf = 0.05,
-      geno = 0.1,
-      monomorphicSNPs = FALSE,
-      caldiffmiss = FALSE,
-      diffmissFilter = FALSE,
-      dmissX = FALSE,
-      dmissAutoY = FALSE,
-      highLD_regions = NULL,
-      ld_prunning = FALSE,
-      window_size = 50,
-      step_size = 5,
-      r2_threshold = 0.02
-    ) {
+    function(DataDir,
+    ResultDir = tempdir(),
+    finput,
+    foutput = "FALSE",
+    casecontrol = TRUE,
+    hweCase = NULL,
+    hweControl = NULL,
+    hwe = NULL,
+    maf = 0.05,
+    geno = 0.1,
+    monomorphicSNPs = FALSE,
+    caldiffmiss = FALSE,
+    diffmissFilter = FALSE,
+    dmissX = FALSE,
+    dmissAutoY = FALSE,
+    highLD_regions = NULL,
+    ld_prunning = FALSE,
+    window_size = 50,
+    step_size = 5,
+    r2_threshold = 0.02) {
         if (!validateInputForQCsnp(DataDir, ResultDir, finput, foutput, casecontrol, hweCase, hweControl, hwe, maf, geno, monomorphicSNPs, caldiffmiss, diffmissFilter, dmissX, dmissAutoY, highLD_regions, ld_prunning, window_size, step_size, r2_threshold)) {
             return(NULL)
         }
@@ -326,9 +324,11 @@ QCsnp <-
 #'     DataDir = DataDir, ResultDir = ResultDir,
 #'     finput = finput, highLD_regions = highLD_hg19, countPC = 20
 #' )
-ComputeGeneticPC <- function(DataDir, ResultDir = tempdir(), finput, countPC = 10, plotPC = TRUE,
-    highLD_regions = NULL, ld_prunning = TRUE,
-    window_size = 50, step_size = 5, r2_threshold = 0.02) {
+ComputeGeneticPC <- function(
+      DataDir, ResultDir = tempdir(), finput, countPC = 10, plotPC = TRUE,
+      highLD_regions = NULL, ld_prunning = TRUE,
+      window_size = 50, step_size = 5, r2_threshold = 0.02
+) {
     # Validate inputs
     if (!validateInputForComputeGeneticPC(DataDir, ResultDir, finput, countPC, plotPC, highLD_regions, ld_prunning, window_size, step_size, r2_threshold)) {
         stop("Please verify all inputs.")
@@ -893,14 +893,12 @@ GXWASmiami <- function(ResultDir = tempdir(), FemaleWAS, MaleWAS, snp_pval = 1e-
 #'     snp_pval = snp_pval, plot.jpeg = TRUE, suggestiveline = 5, genomewideline = 7.3,
 #'     MF.mc.cores = 1, ncores = ncores
 #' )
-GXwas <- function(
-      DataDir, ResultDir, finput, trait = c("binary", "quantitative"), standard_beta = TRUE,
-      xmodel = c("FMcombx01", "FMcombx02", "FMstratified", "GWAScxci"), sex = FALSE, xsex = FALSE,
-      covarfile = NULL, interaction = FALSE, covartest = c("ALL"), Inphenocov = c("ALL"), combtest = c("fisher.method", "fisher.method.perm", "stouffer.method"),
-      MF.zero.sub = 0.00001, B = 10000, MF.mc.cores = 1, MF.na.rm = FALSE,
-      MF.p.corr = "none", plot.jpeg = FALSE, plotname = "GXwas.plot", snp_pval = 1e-08,
-      annotateTopSnp = FALSE, suggestiveline = 5, genomewideline = 7.3, ncores = 0
-) {
+GXwas <- function(DataDir, ResultDir, finput, trait = c("binary", "quantitative"), standard_beta = TRUE,
+    xmodel = c("FMcombx01", "FMcombx02", "FMstratified", "GWAScxci"), sex = FALSE, xsex = FALSE,
+    covarfile = NULL, interaction = FALSE, covartest = c("ALL"), Inphenocov = c("ALL"), combtest = c("fisher.method", "fisher.method.perm", "stouffer.method"),
+    MF.zero.sub = 0.00001, B = 10000, MF.mc.cores = 1, MF.na.rm = FALSE,
+    MF.p.corr = "none", plot.jpeg = FALSE, plotname = "GXwas.plot", snp_pval = 1e-08,
+    annotateTopSnp = FALSE, suggestiveline = 5, genomewideline = 7.3, ncores = 0) {
     # Initialize progress bar
 
     pb <- progress::progress_bar$new(
@@ -1093,11 +1091,9 @@ GXwas <- function(
 #'     DataDir, finput, SNPdata, ResultDir, clump_p1,
 #'     clump_p2, clump_r2, clump_kb, byCHR
 #' )
-ClumpLD <- function(
-      DataDir, finput, SNPdata, ResultDir = tempdir(),
-      clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE,
-      clump_best = TRUE, clump_index_first = TRUE
-) {
+ClumpLD <- function(DataDir, finput, SNPdata, ResultDir = tempdir(),
+    clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE,
+    clump_best = TRUE, clump_index_first = TRUE) {
     # Check for an unsupported combination:
     if (clump_best == TRUE && clump_index_first == FALSE) {
         warning("The combination clump_best = TRUE and clump_index_first = FALSE is not recommended. Enforcing clump_index_first = TRUE.")
@@ -1560,23 +1556,21 @@ FilterAllele <- function(DataDir, ResultDir, finput, foutput) {
 #'     suggestiveline = 3, genomewideline = 5.69897, ncores = 1
 #' )
 #'
-PvalComb <- function(
-      SumstatMale, SumstatFemale,
-      combtest,
-      MF.p.corr = "none",
-      MF.zero.sub = 0.00001,
-      MF.na.rm = TRUE,
-      MF.mc.cores = 1,
-      B = 1000,
-      plot.jpeg = TRUE,
-      plotname = "GXwas.plot",
-      PlotDir = tempdir(),
-      snp_pval,
-      annotateTopSnp = FALSE,
-      suggestiveline = 5,
-      genomewideline = 7.3,
-      ncores = 0
-) {
+PvalComb <- function(SumstatMale, SumstatFemale,
+    combtest,
+    MF.p.corr = "none",
+    MF.zero.sub = 0.00001,
+    MF.na.rm = TRUE,
+    MF.mc.cores = 1,
+    B = 1000,
+    plot.jpeg = TRUE,
+    plotname = "GXwas.plot",
+    PlotDir = tempdir(),
+    snp_pval,
+    annotateTopSnp = FALSE,
+    suggestiveline = 5,
+    genomewideline = 7.3,
+    ncores = 0) {
     # Validate inputs
     validation_result <- validatePvalCombInputs(SumstatMale, SumstatFemale, combtest, MF.p.corr, MF.zero.sub, MF.na.rm, MF.mc.cores, B, plot.jpeg, plotname, snp_pval, annotateTopSnp, suggestiveline, genomewideline, ncores)
     if (!is.null(validation_result)) {
@@ -2098,16 +2092,18 @@ LDPrune <- function(DataDir, finput, ResultDir = tempdir(), window_size = 50, st
 #'         parallel = TRUE
 #'     )
 #' }
-SumstatGenCorr <- function(ResultDir = tempdir(),
-    referenceLD,
-    sumstat1,
-    sumstat2,
-    Nref = 335265,
-    N0 = min(sumstat1$N),
-    eigen.cut = "automatic",
-    lim = exp(-18),
-    parallel = FALSE,
-    numCores = 2) {
+SumstatGenCorr <- function(
+      ResultDir = tempdir(),
+      referenceLD,
+      sumstat1,
+      sumstat2,
+      Nref = 335265,
+      N0 = min(sumstat1$N),
+      eigen.cut = "automatic",
+      lim = exp(-18),
+      parallel = FALSE,
+      numCores = 2
+) {
     reference_paths <- list(
         UKB_imputed_hapmap2_SVD_eigen99_extraction = Sys.getenv("UKB_IMPUTED_HAPMAP2_PATH", unset = NA),
         UKB_imputed_SVD_eigen99_extraction = Sys.getenv("UKB_IMPUTED_PATH", unset = NA),
