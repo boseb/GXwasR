@@ -99,7 +99,7 @@ x <- QCsample(
     foutput = foutput, imiss = imiss, het = het, IBD = IBD,
     ambi_out = ambi_out
 )
-cleanupDataDir <- list.files(DataDir, pattern = 'PreimputeEX_QC', full.names = TRUE)
+cleanupDataDir <- list.files(DataDir, pattern = "PreimputeEX_QC", full.names = TRUE)
 unlink(cleanupDataDir)
 }
 \author{
