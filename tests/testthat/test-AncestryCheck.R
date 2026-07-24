@@ -1,6 +1,8 @@
-test_that("AncestryCheck returns expected output", {
-    skip_on_ci()
-    skip_on_bioc()
+test_that("AncestryCheck runs with toy reference", {
+    ## Setup Test Env
+    refdir <- system.file("extdata", "reference", package = "GXwasR")
+    withr::local_envvar(HAPMAPIII_NCBI36_DIR = refdir)
+    ## Test
     data("highLD_hg19", package = "GXwasR")
     data("example_data_study_sample_ancestry", package = "GXwasR")
     DataDir <- system.file("extdata", package = "GXwasR")
