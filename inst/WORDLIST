@@ -352,6 +352,7 @@ sumchi
 tempdir
 testthat
 thousandgenome
+tibble
 tidyverse
 toolset
 transferability
