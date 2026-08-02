@@ -22,7 +22,6 @@
 #' @importFrom Matrix sparseMatrix
 #' @importFrom grid unit
 #' @importFrom ggrepel geom_text_repel
-#' @importFrom BiocStyle html_document
 #' @importFrom dplyr filter mutate distinct arrange select case_when summarise
 #' @importFrom rlang inform format_error_bullets
 #' @importFrom cli cli_progress_bar pb_bar pb_percent pb_current pb_total cli_progress_update cli_progress_done

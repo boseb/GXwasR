@@ -18,6 +18,7 @@ VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 Suggests: 
     biomaRt,
+    BiocStyle,
     doSNOW,
     geneAttribution,
     GenomicFeatures,
@@ -40,7 +41,6 @@ Suggests:
     tools,
     withr
 Imports:
-    BiocStyle,
     bigparallelr,
     bigsnpr,
     cli,
