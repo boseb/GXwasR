@@ -378,11 +378,11 @@ handleCaseControlFiltering <- function(ResultDir, casecontrol, dmissX, dmissAuto
 
         if (caldiffmiss) {
             executePlinkAd(ResultDir, args = c(
-                "--bfile", paste0(ResultDir, "/filtered_temp4_processed"),
+                "--bfile", file.path(ResultDir, "filtered_temp4_processed"),
                 chrfilter, chrv,
                 "--test-missing", "--adjust",
                 "--make-bed", "--allow-no-sex",
-                "--out", paste0(ResultDir, "/filtered_temp_casecontrol")
+                "--out", file.path(ResultDir, "filtered_temp_casecontrol")
             ))
 
             # Process the differential missingness results
@@ -394,9 +394,9 @@ handleCaseControlFiltering <- function(ResultDir, casecontrol, dmissX, dmissAuto
         rlang::inform("No filter based on differential missingness will be applied.")
 
         executePlinkAd(ResultDir, args = c(
-            "--bfile", paste0(ResultDir, "/filtered_temp4_processed"),
+            "--bfile", file.path(ResultDir, "filtered_temp4_processed"),
             "--make-bed", "--allow-no-sex",
-            "--out", paste0(ResultDir, "/", foutput),
+            "--out", file.path(ResultDir, foutput),
             "--silent"
         ))
     }
