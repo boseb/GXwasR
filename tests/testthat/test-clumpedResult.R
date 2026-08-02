@@ -1,6 +1,4 @@
 test_that("ClumpLD returns expected results", {
-    skip_on_ci()
-    skip_on_bioc()
     data("Summary_Stat_Ex1", package = "GXwasR")
     data("Summary_Stat_Ex2", package = "GXwasR")
     DataDir <- system.file("extdata", package = "GXwasR")

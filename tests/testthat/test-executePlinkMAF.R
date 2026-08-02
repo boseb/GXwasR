@@ -1,5 +1,4 @@
 test_that("executePlinkMAF returns expected output", {
-    skip_on_bioc()
     DataDir <- system.file("extdata", package = "GXwasR")
     ResultDir <- tempdir()
     finput <- "GXwasR_example"

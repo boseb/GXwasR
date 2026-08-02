@@ -1,5 +1,4 @@
 test_that("QCsnp returns a list of length 2", {
-    skip_on_bioc()
     DataDir <- system.file("extdata", package = "GXwasR")
     ResultDir <- tempdir()
     finput <- "GXwasR_example"

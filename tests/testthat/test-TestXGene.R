@@ -1,6 +1,4 @@
 test_that("TestXGene returns expected output", {
-    skip_on_bioc()
-    skip_on_ci()
     data("XWAS_Summary_Example", package = "GXwasR")
     DataDir <- system.file("extdata", package = "GXwasR")
     ResultDir <- tempdir()

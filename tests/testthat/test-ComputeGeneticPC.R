@@ -1,5 +1,4 @@
 test_that("ComputeGeneticPC returns expected output", {
-    skip_on_bioc()
     data("highLD_hg19", package = "GXwasR")
     DataDir <- system.file("extdata", package = "GXwasR")
     ResultDir <- tempdir()
