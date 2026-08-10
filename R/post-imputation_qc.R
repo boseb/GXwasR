@@ -276,13 +276,11 @@ validateInputForMAFdiffSexControl <- function(DataDir, ResultDir = tempdir(), fi
 #' finput <- "GXwasR_example"
 #' foutput <- "Test_output"
 #' x <- MAFdiffSexControl(DataDir, ResultDir, finput, filterSNP = TRUE, foutput = foutput)
-MAFdiffSexControl <- function(
-      DataDir,
-      ResultDir = tempdir(),
-      finput,
-      filterSNP = FALSE,
-      foutput = NULL
-) {
+MAFdiffSexControl <- function(DataDir,
+    ResultDir = tempdir(),
+    finput,
+    filterSNP = FALSE,
+    foutput = NULL) {
     if (!validateInputForMAFdiffSexControl(DataDir, ResultDir, finput, filterSNP, foutput)) {
         return(invisible(NULL))
     }
@@ -502,21 +500,19 @@ MAFdiffSexControl <- function(
 #'     regionfile = FALSE, filterCHR = NULL, Hg = "38", exclude = TRUE
 #' )
 FilterRegion <-
-    function(
-      DataDir,
-      ResultDir,
-      finput,
-      foutput,
-      CHRX = TRUE,
-      CHRY = FALSE,
-      filterPAR = TRUE,
-      filterXTR = TRUE,
-      filterAmpliconic = TRUE,
-      regionfile = FALSE,
-      filterCHR = NULL,
-      Hg = "19",
-      exclude = TRUE
-    ) {
+    function(DataDir,
+    ResultDir,
+    finput,
+    foutput,
+    CHRX = TRUE,
+    CHRY = FALSE,
+    filterPAR = TRUE,
+    filterXTR = TRUE,
+    filterAmpliconic = TRUE,
+    regionfile = FALSE,
+    filterCHR = NULL,
+    Hg = "19",
+    exclude = TRUE) {
         # Validate parameters
         validateFilterRegionParams(DataDir, ResultDir, finput, foutput, CHRX, CHRY, filterPAR, filterXTR, filterAmpliconic, regionfile, filterCHR, Hg, exclude)
 
