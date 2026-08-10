@@ -4512,100 +4512,550 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
 
 ## Function 99
 ## Added in 3.0
-validateGXwasInputs <- function(DataDir, ResultDir, finput, trait, standard_beta, xmodel, sex, xsex, covarfile, interaction, covartest, Inphenocov, combtest, MF.zero.sub, B, MF.mc.cores, MF.na.rm, MF.p.corr, plot.jpeg, plotname, snp_pval, annotateTopSnp, suggestiveline, genomewideline, ncores) {
-    # Validate existence of required Plink files
-    if (!checkFiles(DataDir, finput)) {
-        return("Missing required Plink files in the specified DataDir.")
+validateGXwasInputs <- function(
+    DataDir,
+    ResultDir,
+    finput,
+    trait,
+    standard_beta,
+    xmodel,
+    sex,
+    xsex,
+    covarfile,
+    interaction,
+    covartest,
+    Inphenocov,
+    combtest,
+    MF.zero.sub,
+    B,
+    MF.mc.cores,
+    MF.na.rm,
+    MF.p.corr,
+    plot.jpeg,
+    plotname,
+    snp_pval,
+    annotateTopSnp,
+    suggestiveline,
+    genomewideline,
+    ncores
+) {
+  
+  ## ------------------------------------------------------------
+  ## Validate required PLINK files
+  ## ------------------------------------------------------------
+  
+  if (!checkFiles(DataDir, finput)) {
+    return("Missing required PLINK files in the specified DataDir.")
+  }
+  
+  ## ------------------------------------------------------------
+  ## Validate logical and categorical arguments
+  ## ------------------------------------------------------------
+  
+  if (
+    length(trait) != 1L ||
+    !trait %in% c("binary", "quantitative")
+  ) {
+    return("Invalid trait. Choose 'binary' or 'quantitative'.")
+  }
+  
+  if (
+    length(standard_beta) != 1L ||
+    !is.logical(standard_beta) ||
+    is.na(standard_beta)
+  ) {
+    return("standard_beta must be TRUE or FALSE.")
+  }
+  
+  if (
+    length(sex) != 1L ||
+    !is.logical(sex) ||
+    is.na(sex)
+  ) {
+    return("sex must be TRUE or FALSE.")
+  }
+  
+  if (
+    length(xsex) != 1L ||
+    !is.logical(xsex) ||
+    is.na(xsex)
+  ) {
+    return("xsex must be TRUE or FALSE.")
+  }
+  
+  if (
+    length(interaction) != 1L ||
+    !is.logical(interaction) ||
+    is.na(interaction)
+  ) {
+    return("interaction must be TRUE or FALSE.")
+  }
+  
+  if (
+    length(plot.jpeg) != 1L ||
+    !is.logical(plot.jpeg) ||
+    is.na(plot.jpeg)
+  ) {
+    return("plot.jpeg must be TRUE or FALSE.")
+  }
+  
+  if (
+    length(annotateTopSnp) != 1L ||
+    !is.logical(annotateTopSnp) ||
+    is.na(annotateTopSnp)
+  ) {
+    return("annotateTopSnp must be TRUE or FALSE.")
+  }
+  
+  if (
+    length(MF.na.rm) != 1L ||
+    !is.logical(MF.na.rm) ||
+    is.na(MF.na.rm)
+  ) {
+    return("MF.na.rm must be TRUE or FALSE.")
+  }
+  
+  ## ------------------------------------------------------------
+  ## Validate model
+  ## ------------------------------------------------------------
+  
+  if (
+    length(xmodel) != 1L ||
+    !xmodel %in% c(
+      "FMcombx01",
+      "FMcombx02",
+      "FMstratified",
+      "GWAScxci"
+    )
+  ) {
+    return("Invalid xmodel value.")
+  }
+  
+  ## ------------------------------------------------------------
+  ## Validate covariate file
+  ##
+  ## covarfile is expected to be located inside DataDir.
+  ## ------------------------------------------------------------
+  
+  if (!is.null(covarfile)) {
+    
+    if (
+      !is.character(covarfile) ||
+      length(covarfile) != 1L ||
+      is.na(covarfile) ||
+      !nzchar(covarfile)
+    ) {
+      return("covarfile must be NULL or a single valid filename.")
     }
-
-    # Validate trait, standard_beta, sex, xsex, interaction, plot.jpeg, annotateTopSnp
-    if (!trait %in% c("binary", "quantitative")) {
-        return("Invalid trait. Choose 'binary' or 'quantitative'.")
+    
+    covarPath <- file.path(DataDir, covarfile)
+    
+    if (!file.exists(covarPath)) {
+      return(
+        paste0(
+          "Specified covarfile does not exist: ",
+          covarPath
+        )
+      )
     }
-    if (!is.logical(standard_beta)) {
-        return("standard_beta must be TRUE or FALSE.")
+  } else {
+    covarPath <- NULL
+  }
+  
+  ## ------------------------------------------------------------
+  ## Helper: determine whether the argument is exactly "ALL"
+  ##
+  ## This prevents the previous error:
+  ##
+  ## param == "ALL" || is.null(param)
+  ##
+  ## When param is a vector, param == "ALL" returns multiple
+  ## logical values. The helper below guarantees one TRUE/FALSE.
+  ## ------------------------------------------------------------
+  
+  isAllParameter <- function(param) {
+    is.character(param) &&
+      length(param) == 1L &&
+      !is.na(param) &&
+      identical(param, "ALL")
+  }
+  
+  ## ------------------------------------------------------------
+  ## Helper: read covariate file safely
+  ##
+  ## check.names = FALSE preserves names such as AGE_-50.
+  ## ------------------------------------------------------------
+  
+  readCovariateData <- function(covarPath) {
+    
+    if (is.null(covarPath)) {
+      return(NULL)
     }
-    if (!is.logical(sex) || !is.logical(xsex)) {
-        return("Sex and xsex must be TRUE or FALSE.")
+    
+    tryCatch(
+      read.table(
+        covarPath,
+        header = TRUE,
+        check.names = FALSE,
+        stringsAsFactors = FALSE
+      ),
+      error = function(e) NULL
+    )
+  }
+  
+  ## ------------------------------------------------------------
+  ## Validate covartest
+  ##
+  ## covartest refers to covariate positions, excluding FID and IID.
+  ##
+  ## For:
+  ##
+  ## FID IID PC1 PC2 PC3 ... SEX ...
+  ##
+  ## covartest = 1 refers to PC1.
+  ## ------------------------------------------------------------
+  
+  validateCovartest <- function(param, covarPath) {
+    
+    if (is.null(param) || isAllParameter(param)) {
+      return(NULL)
     }
-    if (!is.logical(interaction)) {
-        return("interaction must be TRUE or FALSE.")
+    
+    if (!is.numeric(param) || length(param) == 0L) {
+      return(
+        "covartest must be 'ALL', NULL, or a numeric vector."
+      )
     }
-    if (!is.logical(plot.jpeg)) {
-        return("plot.jpeg must be TRUE or FALSE.")
+    
+    if (anyNA(param) || any(!is.finite(param))) {
+      return("covartest cannot contain missing or non-finite values.")
     }
-    if (!is.logical(annotateTopSnp)) {
-        return("annotateTopSnp must be TRUE or FALSE.")
+    
+    if (any(param != floor(param))) {
+      return("covartest must contain integer values.")
     }
-
-    # Validate xmodel
-    if (!xmodel %in% c("FMcombx01", "FMcombx02", "FMstratified", "GWAScxci")) {
-        return("Invalid xmodel value.")
+    
+    if (is.null(covarPath)) {
+      return(
+        "A covarfile is required when covartest is numeric."
+      )
     }
-
-    # Validate covarfile
-    if (!is.null(covarfile) && !file.exists(file.path(DataDir, covarfile))) {
-        return("Specified covarfile does not exist.")
+    
+    covarData <- readCovariateData(covarPath)
+    
+    if (is.null(covarData)) {
+      return("Failed to read covarfile.")
     }
-
-    # Validate covartest and Inphenocov against covarfile
-    validateCovarParams <- function(param, covarfile) {
-        if (param == "ALL" || is.null(param)) {
-            return(TRUE)
-        }
-        if (is.numeric(param)) {
-            if (is.null(covarfile)) {
-                return("covarfile needed for numeric covartest or Inphenocov.")
-            }
-            covarData <- tryCatch(read.table(file.path(DataDir, covarfile), header = TRUE), error = function(e) NULL)
-            if (is.null(covarData)) {
-                return("Failed to read covarfile.")
-            }
-            maxIndex <- ncol(covarData) - 2
-            if (any(param < 1) || any(param > maxIndex)) {
-                return("Indices out of bounds in covartest or Inphenocov.")
-            }
-            return(TRUE)
-        }
-        return(FALSE)
+    
+    if (ncol(covarData) < 3L) {
+      return(
+        paste0(
+          "The covarfile must contain FID, IID, ",
+          "and at least one covariate."
+        )
+      )
     }
-    if (!validateCovarParams(covartest, covarfile)) {
-        return("Invalid covartest.")
+    
+    numberOfCovariates <- ncol(covarData) - 2L
+    
+    if (
+      any(param < 1L) ||
+      any(param > numberOfCovariates)
+    ) {
+      return(
+        paste0(
+          "covartest indices must range from 1 to ",
+          numberOfCovariates,
+          ", excluding FID and IID."
+        )
+      )
     }
-    if (!validateCovarParams(Inphenocov, covarfile)) {
-        return("Invalid Inphenocov.")
-    }
-
-    # Validate combtest
-    if (!all(combtest %in% c("fisher.method", "fisher.method.perm", "stouffer.method"))) {
-        return("Invalid combtest methods.")
-    }
-
-    # Validate numeric parameters
-    if (!is.numeric(MF.zero.sub) || MF.zero.sub < 0) {
-        return("Invalid value for MF.zero.sub.")
-    }
-    if (!is.numeric(B) || B <= 0) {
-        return("Invalid value for B.")
-    }
-    if (!is.null(MF.mc.cores) && (!is.numeric(MF.mc.cores) || MF.mc.cores < 1 || floor(MF.mc.cores) != MF.mc.cores)) {
-        return("Invalid value for MF.mc.cores.; must be >= 1")
-    }
-    if (!is.numeric(snp_pval) || snp_pval <= 0 || snp_pval > 1) {
-        return("Invalid value for snp_pval.")
-    }
-    if (!is.numeric(suggestiveline) || suggestiveline <= 0) {
-        return("Invalid value for suggestiveline.")
-    }
-    if (!is.numeric(genomewideline) || genomewideline <= 0) {
-        return("Invalid value for genomewideline.")
-    }
-    if (!is.null(ncores) && (!is.numeric(ncores) || ncores < 0 || floor(ncores) != ncores)) {
-        return("Invalid value for MF.mc.cores.")
-    }
-
-    # Return NULL if all validations pass
+    
     return(NULL)
+  }
+  
+  ## ------------------------------------------------------------
+  ## Validate Inphenocov
+  ##
+  ## Inphenocov does NOT refer only to covariate positions.
+  ## It refers to PLINK regression parameter numbers.
+  ##
+  ## When sex = FALSE and k covariates are present, the parameter
+  ## order for a PLINK interaction model is:
+  ##
+  ## 1             = ADD
+  ## 2:(k + 1)     = covariate main effects
+  ## (k + 2):(2k+1)= ADD × covariate interactions
+  ##
+  ## Example with 11 covariates:
+  ##
+  ## 1      = ADD
+  ## 2:12   = covariate main effects
+  ## 13:23  = ADD × covariate interactions
+  ##
+  ## Therefore, c(1:12, 19) is valid.
+  ##
+  ## When sex = TRUE, PLINK additionally includes the sex main
+  ## effect and ADD × SEX interaction after the non-sex covariate
+  ## terms.
+  ## ------------------------------------------------------------
+  
+  validateInphenocov <- function(
+    param,
+    covarPath,
+    interaction,
+    sex
+  ) {
+    
+    if (!interaction) {
+      return(NULL)
+    }
+    
+    if (is.null(param) || isAllParameter(param)) {
+      return(NULL)
+    }
+    
+    if (!is.numeric(param) || length(param) == 0L) {
+      return(
+        "Inphenocov must be 'ALL', NULL, or a numeric vector."
+      )
+    }
+    
+    if (anyNA(param) || any(!is.finite(param))) {
+      return(
+        "Inphenocov cannot contain missing or non-finite values."
+      )
+    }
+    
+    if (any(param != floor(param))) {
+      return("Inphenocov must contain integer values.")
+    }
+    
+    if (any(param < 1L)) {
+      return("Inphenocov values must be at least 1.")
+    }
+    
+    ## Determine the number of non-sex covariates supplied
+    ## through the covariate file.
+    
+    if (is.null(covarPath)) {
+      
+      numberOfCovariates <- 0L
+      
+    } else {
+      
+      covarData <- readCovariateData(covarPath)
+      
+      if (is.null(covarData)) {
+        return("Failed to read covarfile.")
+      }
+      
+      if (ncol(covarData) < 3L) {
+        return(
+          paste0(
+            "The covarfile must contain FID, IID, ",
+            "and at least one covariate."
+          )
+        )
+      }
+      
+      numberOfCovariates <- ncol(covarData) - 2L
+    }
+    
+    ## Maximum possible PLINK parameter number.
+    ##
+    ## sex = FALSE:
+    ##   ADD + k main effects + k interactions
+    ##   max = 1 + k + k = 2k + 1
+    ##
+    ## sex = TRUE:
+    ##   ADD + k main effects + k interactions +
+    ##   SEX + ADD×SEX
+    ##   max = 2k + 3
+    
+    if (sex) {
+      maxParameter <- 2L * numberOfCovariates + 3L
+    } else {
+      maxParameter <- 2L * numberOfCovariates + 1L
+    }
+    
+    if (any(param > maxParameter)) {
+      return(
+        paste0(
+          "Inphenocov values are outside the valid PLINK ",
+          "parameter range. The maximum valid parameter ",
+          "for this model is ",
+          maxParameter,
+          "."
+        )
+      )
+    }
+    
+    return(NULL)
+  }
+  
+  ## ------------------------------------------------------------
+  ## Run covartest and Inphenocov validation
+  ## ------------------------------------------------------------
+  
+  covartestError <- validateCovartest(
+    param = covartest,
+    covarPath = covarPath
+  )
+  
+  if (!is.null(covartestError)) {
+    return(covartestError)
+  }
+  
+  InphenocovError <- validateInphenocov(
+    param = Inphenocov,
+    covarPath = covarPath,
+    interaction = interaction,
+    sex = sex
+  )
+  
+  if (!is.null(InphenocovError)) {
+    return(InphenocovError)
+  }
+  
+  ## ------------------------------------------------------------
+  ## Validate combtest
+  ## ------------------------------------------------------------
+  
+  if (
+    !is.character(combtest) ||
+    length(combtest) == 0L ||
+    anyNA(combtest) ||
+    !all(
+      combtest %in% c(
+        "fisher.method",
+        "fisher.method.perm",
+        "stouffer.method"
+      )
+    )
+  ) {
+    return("Invalid combtest methods.")
+  }
+  
+  ## ------------------------------------------------------------
+  ## Validate numeric arguments
+  ## ------------------------------------------------------------
+  
+  if (
+    length(MF.zero.sub) != 1L ||
+    !is.numeric(MF.zero.sub) ||
+    is.na(MF.zero.sub) ||
+    !is.finite(MF.zero.sub) ||
+    MF.zero.sub < 0
+  ) {
+    return("Invalid value for MF.zero.sub.")
+  }
+  
+  if (
+    length(B) != 1L ||
+    !is.numeric(B) ||
+    is.na(B) ||
+    !is.finite(B) ||
+    B <= 0 ||
+    B != floor(B)
+  ) {
+    return("B must be a positive integer.")
+  }
+  
+  if (
+    !is.null(MF.mc.cores) &&
+    (
+      length(MF.mc.cores) != 1L ||
+      !is.numeric(MF.mc.cores) ||
+      is.na(MF.mc.cores) ||
+      !is.finite(MF.mc.cores) ||
+      MF.mc.cores < 1 ||
+      MF.mc.cores != floor(MF.mc.cores)
+    )
+  ) {
+    return("MF.mc.cores must be an integer greater than or equal to 1.")
+  }
+  
+  if (
+    length(snp_pval) != 1L ||
+    !is.numeric(snp_pval) ||
+    is.na(snp_pval) ||
+    !is.finite(snp_pval) ||
+    snp_pval <= 0 ||
+    snp_pval > 1
+  ) {
+    return("snp_pval must be greater than 0 and no greater than 1.")
+  }
+  
+  if (
+    length(suggestiveline) != 1L ||
+    !is.numeric(suggestiveline) ||
+    is.na(suggestiveline) ||
+    !is.finite(suggestiveline) ||
+    suggestiveline <= 0
+  ) {
+    return("suggestiveline must be a positive numeric value.")
+  }
+  
+  if (
+    length(genomewideline) != 1L ||
+    !is.numeric(genomewideline) ||
+    is.na(genomewideline) ||
+    !is.finite(genomewideline) ||
+    genomewideline <= 0
+  ) {
+    return("genomewideline must be a positive numeric value.")
+  }
+  
+  if (
+    !is.null(ncores) &&
+    (
+      length(ncores) != 1L ||
+      !is.numeric(ncores) ||
+      is.na(ncores) ||
+      !is.finite(ncores) ||
+      ncores < 0 ||
+      ncores != floor(ncores)
+    )
+  ) {
+    return("ncores must be a non-negative integer.")
+  }
+  
+  ## ------------------------------------------------------------
+  ## Validate remaining arguments
+  ## ------------------------------------------------------------
+  
+  if (
+    length(MF.p.corr) != 1L ||
+    !is.character(MF.p.corr) ||
+    is.na(MF.p.corr)
+  ) {
+    return("MF.p.corr must be a single character value.")
+  }
+  
+  if (
+    length(plotname) != 1L ||
+    !is.character(plotname) ||
+    is.na(plotname) ||
+    !nzchar(plotname)
+  ) {
+    return("plotname must be a single non-empty character value.")
+  }
+  
+  if (
+    length(ResultDir) != 1L ||
+    !is.character(ResultDir) ||
+    is.na(ResultDir) ||
+    !nzchar(ResultDir)
+  ) {
+    return("ResultDir must be a single valid directory path.")
+  }
+  
+  ## ------------------------------------------------------------
+  ## 13. Return NULL when all validation checks pass
+  ## ------------------------------------------------------------
+  
+  return(NULL)
 }
 
 ## Function 100
