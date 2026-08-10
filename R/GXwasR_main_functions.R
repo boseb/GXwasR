@@ -1798,7 +1798,7 @@ FilterSNP <- function(DataDir, ResultDir, finput, foutput, SNPvec, extract = FAL
 #'     validate_reference_data("HapMapIII_NCBI36")
 #' }
 #'
-#' if (nzchar(Sys.getenv("HAPMAPIII_NCBI36_DIR"))) {
+#' if (nzchar(Sys.getenv("THOUSANDGENOME_DIR"))) {
 #'     validate_reference_data("ThousandGenome")
 #' }
 validate_reference_data <- function(refdata) {
