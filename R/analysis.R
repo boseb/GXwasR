@@ -1628,7 +1628,22 @@ validateInputForEstimateHerit <- function(
 #' maximum likelihood-based method following GCTA \insertCite{Yang2011}{GXwasR} and (ii)LDSC: LD score regression-based method
 #' following \insertCite{Bulik-Sullivan2014,Prive2020}{GXwasR}. For the details, please follow the associated paper.
 #'
-#' Prior to using this function, it is recommended to apply QCsnp and QCsample to ensure data quality control.
+#' Prior to using this function, it is recommended to apply \code{QCsnp()} and
+#' \code{QCsample()} to ensure data quality. For LDSC analyses, an environment
+#' variable pointing to the appropriate human genome annotation file must also
+#' be set using \code{Sys.setenv()}. For example:
+#'
+#' \code{Sys.setenv(GENEINFO_HG19 = "/path/to/HumanGenome19info.txt")}
+#'
+#' or:
+#'
+#' \code{Sys.setenv(GENEINFO_HG38 = "/path/to/HumanGenome38info.txt")}
+#'
+#' The required reference files can be downloaded from:
+#' \itemize{
+#' \item hg19: \url{https://figshare.com/ndownloader/files/42118098}
+#' \item hg38: \url{https://figshare.com/ndownloader/files/42118242}
+#' }
 #'
 #' @param DataDir
 #' A character string for the file path of the all the input files. The default is `NULL`.
