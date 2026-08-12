@@ -378,11 +378,11 @@ handleCaseControlFiltering <- function(ResultDir, casecontrol, dmissX, dmissAuto
 
         if (caldiffmiss) {
             executePlinkAd(ResultDir, args = c(
-                "--bfile", paste0(ResultDir, "/filtered_temp4_processed"),
+                "--bfile", file.path(ResultDir, "filtered_temp4_processed"),
                 chrfilter, chrv,
                 "--test-missing", "--adjust",
                 "--make-bed", "--allow-no-sex",
-                "--out", paste0(ResultDir, "/filtered_temp_casecontrol")
+                "--out", file.path(ResultDir, "filtered_temp_casecontrol")
             ))
 
             # Process the differential missingness results
@@ -394,9 +394,9 @@ handleCaseControlFiltering <- function(ResultDir, casecontrol, dmissX, dmissAuto
         rlang::inform("No filter based on differential missingness will be applied.")
 
         executePlinkAd(ResultDir, args = c(
-            "--bfile", paste0(ResultDir, "/filtered_temp4_processed"),
+            "--bfile", file.path(ResultDir, "filtered_temp4_processed"),
             "--make-bed", "--allow-no-sex",
-            "--out", paste0(ResultDir, "/", foutput),
+            "--out", file.path(ResultDir, foutput),
             "--silent"
         ))
     }
@@ -470,12 +470,14 @@ processDifferentialMissingnessResults <- function(ResultDir) {
 
 ## Function 36
 #' @importFrom ggplot2 element_rect expansion
-gmirror <- function(top, bottom, tline, bline, chroms = c(seq_len(22), "X", "Y"), log10 = TRUE,
-    yaxis, opacity = 1, annotate_snp, annotate_p, toptitle = NULL,
-    bottomtitle = NULL, highlight_snp, highlight_p, highlighter = "red",
-    chrcolor1 = "#AAAAAA", chrcolor2 = "#4D4D4D", freey = FALSE,
-    background = "variegated", chrblocks = FALSE, file = "gmirror",
-    type = "png", hgt = 7, hgtratio = 0.5, wi = 12, res = 300) {
+gmirror <- function(
+      top, bottom, tline, bline, chroms = c(seq_len(22), "X", "Y"), log10 = TRUE,
+      yaxis, opacity = 1, annotate_snp, annotate_p, toptitle = NULL,
+      bottomtitle = NULL, highlight_snp, highlight_p, highlighter = "red",
+      chrcolor1 = "#AAAAAA", chrcolor2 = "#4D4D4D", freey = FALSE,
+      background = "variegated", chrblocks = FALSE, file = "gmirror",
+      type = "png", hgt = 7, hgtratio = 0.5, wi = 12, res = 300
+) {
     # Sort data
     topn <- names(top)
     bottomn <- names(bottom)
@@ -983,11 +985,9 @@ FMsub <- function(ResultDir, plot.jpeg, plotname, snp_pval, annotateTopSnp, sugg
 
 ## Function 46
 ## Added in 3.0
-paraGwas <- function(
-      chunks, chunk, ResultDir, DataDir, finput, trait, modelv, regress, standard_b, noxsexv, sexv,
-      interactionv, parameterv, Inphenocovv, covar, covarv,
-      snpfile
-) {
+paraGwas <- function(chunks, chunk, ResultDir, DataDir, finput, trait, modelv, regress, standard_b, noxsexv, sexv,
+    interactionv, parameterv, Inphenocovv, covar, covarv,
+    snpfile) {
     ## Chunkfile create
     rlang::inform(rlang::format_error_bullets(paste0("Chunk index processing: ", chunks)))
     if (nrow(snpfile) >= (chunks + chunk)) {
@@ -1047,8 +1047,10 @@ paraGwas <- function(
 
 ## Function 47
 ## Updated in 3.0
-FMmain <- function(DataDir, ResultDir, finput, trait, standard_beta, xmodel,
-    sex, xsex, covarfile, interaction, covartest, Inphenocov, plot.jpeg, plotname, snp_pval, annotateTopSnp, suggestiveline, genomewideline, ncores) {
+FMmain <- function(
+      DataDir, ResultDir, finput, trait, standard_beta, xmodel,
+      sex, xsex, covarfile, interaction, covartest, Inphenocov, plot.jpeg, plotname, snp_pval, annotateTopSnp, suggestiveline, genomewideline, ncores
+) {
     if (xmodel[1] == "FMcombx01" | xmodel[1] == "FMstratified") {
         modelv <- 1
     } else if (xmodel[1] == "FMcombx02") {
@@ -1216,15 +1218,17 @@ fisher.sum <- function(p, zero.sub = 0.00001, na.rm = FALSE) {
 ## Function 49
 # Copied from ex-CRAN package MADAM and exported. The man pages are copied from the original package.
 fisher.method <-
-    function(pvals,
-    method = c("fisher"),
-    p.corr = c(
-        "bonferroni", "BH",
-        "none"
-    ),
-    zero.sub = 0.00001,
-    na.rm = FALSE,
-    mc.cores = NULL) {
+    function(
+      pvals,
+      method = c("fisher"),
+      p.corr = c(
+          "bonferroni", "BH",
+          "none"
+      ),
+      zero.sub = 0.00001,
+      na.rm = FALSE,
+      mc.cores = NULL
+    ) {
         stopifnot(method %in% c("fisher"))
         stopifnot(p.corr %in% c("none", "bonferroni", "BH"))
         stopifnot(all(pvals >= 0, na.rm = TRUE) &
@@ -1268,14 +1272,12 @@ fisher.method <-
 ## Function 50
 # Copied from ex-CRAN package MADAM and exported. The man pages are copied from the original package.
 fisher.method.perm <-
-    function(
-      pvals,
-      p.corr = c("bonferroni", "BH", "none"),
-      zero.sub = 0.00001,
-      B = 10000,
-      mc.cores = NULL,
-      blinker = 1000
-    ) {
+    function(pvals,
+    p.corr = c("bonferroni", "BH", "none"),
+    zero.sub = 0.00001,
+    B = 10000,
+    mc.cores = NULL,
+    blinker = 1000) {
         stopifnot(is.na(blinker) || blinker > 0)
         stopifnot(p.corr %in% c("none", "bonferroni", "BH"))
         stopifnot(all(pvals >= 0, na.rm = TRUE) &
@@ -1344,15 +1346,17 @@ fisher.method.perm <-
 
 ## Function 51
 stouffer.method <-
-    function(pvals,
-    method = c("stouffer"),
-    p.corr = c(
-        "bonferroni", "BH",
-        "none"
-    ),
-    zero.sub = 0.00001,
-    na.rm = FALSE,
-    mc.cores = NULL) {
+    function(
+      pvals,
+      method = c("stouffer"),
+      p.corr = c(
+          "bonferroni", "BH",
+          "none"
+      ),
+      zero.sub = 0.00001,
+      na.rm = FALSE,
+      mc.cores = NULL
+    ) {
         stopifnot(method %in% c("stouffer"))
         stopifnot(p.corr %in% c("none", "bonferroni", "BH"))
         stopifnot(all(pvals >= 0, na.rm = TRUE) &
@@ -1401,15 +1405,17 @@ paraStouffer <- function(chunks, chunk, pvals, MF.p.corr, MF.zero.sub, MF.na.rm)
         pval_chunk <- pvals[chunks:nrow(pvals), ]
     }
     stouffer.method <-
-        function(pvals,
-    method = c("stouffer"),
-    p.corr = c(
-        "bonferroni", "BH",
-        "none"
-    ),
-    zero.sub = 0.00001,
-    na.rm = FALSE,
-    mc.cores = NULL) {
+        function(
+      pvals,
+      method = c("stouffer"),
+      p.corr = c(
+          "bonferroni", "BH",
+          "none"
+      ),
+      zero.sub = 0.00001,
+      na.rm = FALSE,
+      mc.cores = NULL
+        ) {
             stopifnot(method %in% c("stouffer"))
             stopifnot(p.corr %in% c("none", "bonferroni", "BH"))
             stopifnot(all(pvals >= 0, na.rm = TRUE) &
@@ -1755,18 +1761,20 @@ createPlots <- function(ResultDir, plotname, FemaleWAS, MaleWAS, gwas.t2, gwas.b
 
 ## Function 56
 ###### Updated in 3.0
-FMcomb_sub <- function(ResultDir, combtest, MF.p.corr,
-    MF.zero.sub,
-    MF.na.rm,
-    MF.mc.cores,
-    B,
-    plot.jpeg,
-    plotname,
-    snp_pval,
-    annotateTopSnp,
-    suggestiveline,
-    genomewideline,
-    ncores) {
+FMcomb_sub <- function(
+      ResultDir, combtest, MF.p.corr,
+      MF.zero.sub,
+      MF.na.rm,
+      MF.mc.cores,
+      B,
+      plot.jpeg,
+      plotname,
+      snp_pval,
+      annotateTopSnp,
+      suggestiveline,
+      genomewideline,
+      ncores
+) {
     load(normalizePath(file.path(ResultDir, "MaleWAS.Rda"), mustWork = FALSE))
     MaleWAS <- data.table::as.data.table(MaleWAS)
     gc(reset = TRUE)
@@ -1902,28 +1910,30 @@ FMcomb_sub <- function(ResultDir, combtest, MF.p.corr,
 
 ## Function 57
 ## Updated in 3.0
-FMcomb <- function(DataDir,
-    ResultDir,
-    trait,
-    standard_beta,
-    xmodel,
-    covarfile,
-    covartest,
-    interaction,
-    Inphenocov,
-    combtest,
-    B,
-    MF.p.corr,
-    MF.zero.sub,
-    MF.na.rm,
-    MF.mc.cores,
-    plot.jpeg,
-    plotname,
-    snp_pval,
-    annotateTopSnp,
-    suggestiveline,
-    genomewideline,
-    ncores) {
+FMcomb <- function(
+      DataDir,
+      ResultDir,
+      trait,
+      standard_beta,
+      xmodel,
+      covarfile,
+      covartest,
+      interaction,
+      Inphenocov,
+      combtest,
+      B,
+      MF.p.corr,
+      MF.zero.sub,
+      MF.na.rm,
+      MF.mc.cores,
+      plot.jpeg,
+      plotname,
+      snp_pval,
+      annotateTopSnp,
+      suggestiveline,
+      genomewideline,
+      ncores
+) {
     gc(reset = TRUE)
     # Here DataDir becomes ResultDir, need to put the covarfile always in ResultDir by copying
     if (!is.null(covarfile)) {
@@ -1979,8 +1989,10 @@ FMcomb <- function(DataDir,
 
 ## Function 58
 ## Added in 3.0
-paraGwasAuto <- function(chunks, chunk, ResultDir, finput, regress, sexv, noxsexv, interactionv, standard_b, parameterv, Inphenocovv, covar, covarv,
-    snpfile) {
+paraGwasAuto <- function(
+      chunks, chunk, ResultDir, finput, regress, sexv, noxsexv, interactionv, standard_b, parameterv, Inphenocovv, covar, covarv,
+      snpfile
+) {
     ## Chunkfile create
     if (nrow(snpfile) >= (chunks + chunk)) {
         snp_names <- snpfile$V2[chunks:(chunks + chunk)]
@@ -2493,10 +2505,12 @@ removePatternFiles <- function(ResultDir, patterns) {
 
 ## Function 68
 ## Updated in 3.0
-XCMAFun <- function(DataDir, ResultDir, finput, standard_beta,
-    covarfile, sex, covartest, interaction, Inphenocov, plot.jpeg, plotname, snp_pval,
-    annotateTopSnp, suggestiveline = suggestiveline, genomewideline = genomewideline,
-    ncores = ncores) {
+XCMAFun <- function(
+      DataDir, ResultDir, finput, standard_beta,
+      covarfile, sex, covartest, interaction, Inphenocov, plot.jpeg, plotname, snp_pval,
+      annotateTopSnp, suggestiveline = suggestiveline, genomewideline = genomewideline,
+      ncores = ncores
+) {
     # Prepare data and get necessary files
     file_path <- normalizePath(file.path(ResultDir, "sink_file.txt"), mustWork = FALSE)
 
@@ -2731,11 +2745,9 @@ ComputeLDSC <- function(summarystat, precomputedLD, LDSC_blocks, chi2_thr1, chi2
 }
 
 ## Function 73
-ComputeGRMauto <- function(
-      DataDir, ResultDir, finput, partGRM, nGRM, cripticut,
-      minMAF = NULL, maxMAF = NULL,
-      ByCHR = FALSE, CHRnum = NULL, ncores = ncores
-) {
+ComputeGRMauto <- function(DataDir, ResultDir, finput, partGRM, nGRM, cripticut,
+    minMAF = NULL, maxMAF = NULL,
+    ByCHR = FALSE, CHRnum = NULL, ncores = ncores) {
     autosome <- if (!ByCHR) "--autosome" else NULL
     chr <- if (ByCHR) "--chr" else NULL
 
@@ -2922,8 +2934,10 @@ ComputeGRMX <- function(DataDir, ResultDir, finput, partGRM, nGRM, minMAF = NULL
 
 
 ## Function 75
-ComputeREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile = NULL, cat_covarfile = NULL, quant_covarfile = NULL,
-    prevalence = 0.01, chr, grmfile, ncores) {
+ComputeREMLone <- function(
+      DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile = NULL, cat_covarfile = NULL, quant_covarfile = NULL,
+      prevalence = 0.01, chr, grmfile, ncores
+) {
     if (is.null(phenofile)) {
         pheno <- NULL
         phenofile <- NULL
@@ -3020,8 +3034,10 @@ ComputeREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100
 }
 
 ## Function 76
-ComputeREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile = NULL, GE = FALSE, cat_covarfile = NULL, quant_covarfile = NULL,
-    prevalence = 0.01, grmfile = "multi_GRMs.txt", computeGRM = FALSE, grmfile_name = NULL, ncores = 2) {
+ComputeREMLmulti <- function(
+      DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile = NULL, GE = FALSE, cat_covarfile = NULL, quant_covarfile = NULL,
+      prevalence = 0.01, grmfile = "multi_GRMs.txt", computeGRM = FALSE, grmfile_name = NULL, ncores = 2
+) {
     rlang::inform(rlang::format_error_bullets(c("i" = paste("computeGRM is set to:", computeGRM))))
 
     if (is.null(phenofile)) {
@@ -3179,8 +3195,10 @@ GettingGene <- function(gene_file, gene_range, SNP_bimfile, finput) {
 }
 
 ## Function 79
-ChrwiseLDprun <- function(DataDir, ResultDir, finput, chromosome, highLD_regions, IndepSNP_window_size,
-    IndepSNP_step_size, IndepSNP_r2_threshold) {
+ChrwiseLDprun <- function(
+      DataDir, ResultDir, finput, chromosome, highLD_regions, IndepSNP_window_size,
+      IndepSNP_step_size, IndepSNP_r2_threshold
+) {
     if (is.null(highLD_regions)) {
         highLD_regions <- NULL
         excludev <- NULL
@@ -3975,9 +3993,11 @@ metaFun <- function(DataDir, ResultDir, SummData, CHR, chromosome, nomap, UseA1v
 
 ## Function 94
 # Added in 3.0
-generatePlots <- function(MRfiltered, Sbeta, ResultDir, plotname,
-    useSNPposition, pval_threshold_manplot,
-    chosen_snps_file) {
+generatePlots <- function(
+      MRfiltered, Sbeta, ResultDir, plotname,
+      useSNPposition, pval_threshold_manplot,
+      chosen_snps_file
+) {
     # Determine the number of SNPs to plot
     numSNPs <- min(length(unique(MRfiltered$SNP)), 10)
     if (length(unique(MRfiltered$SNP)) > 10) {
@@ -4005,10 +4025,8 @@ generatePlots <- function(MRfiltered, Sbeta, ResultDir, plotname,
 }
 
 ## Function 95
-ComputeBivarREMLone <- function(
-      DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile, cat_covarfile = NULL,
-      quant_covarfile = NULL, grmfile = "GXwasR", excludeResidual = c("FALSE", "TRUE"), chr, ncores = 2
-) {
+ComputeBivarREMLone <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile, cat_covarfile = NULL,
+    quant_covarfile = NULL, grmfile = "GXwasR", excludeResidual = c("FALSE", "TRUE"), chr, ncores = 2) {
     if (excludeResidual == "FALSE") {
         ExResi <- NULL
     } else {
@@ -4101,8 +4119,10 @@ ComputeBivarREMLone <- function(
 }
 
 ## Function 96
-ComputeBivarREMLmulti <- function(DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile, cat_covarfile = NULL,
-    quant_covarfile = NULL, grmfile = "multi_GRMs.txt", excludeResidual = c("FALSE", "TRUE"), computeGRM = FALSE, grmfile_name = NULL, ncores = 2) {
+ComputeBivarREMLmulti <- function(
+      DataDir, ResultDir, REMLalgo = c(0, 1, 2), nitr = 100, phenofile, cat_covarfile = NULL,
+      quant_covarfile = NULL, grmfile = "multi_GRMs.txt", excludeResidual = c("FALSE", "TRUE"), computeGRM = FALSE, grmfile_name = NULL, ncores = 2
+) {
     rlang::inform(rlang::format_error_bullets(c("i" = paste("computeGRM is set to:", computeGRM))))
 
     if (excludeResidual == "FALSE") {
@@ -4512,99 +4532,541 @@ geneTestScoreFile <- function(ResultDir, data, reference = "ref1KG.MAC5.EUR_AF.R
 
 ## Function 99
 ## Added in 3.0
-validateGXwasInputs <- function(DataDir, ResultDir, finput, trait, standard_beta, xmodel, sex, xsex, covarfile, interaction, covartest, Inphenocov, combtest, MF.zero.sub, B, MF.mc.cores, MF.na.rm, MF.p.corr, plot.jpeg, plotname, snp_pval, annotateTopSnp, suggestiveline, genomewideline, ncores) {
-    # Validate existence of required Plink files
+validateGXwasInputs <- function(
+      DataDir,
+      ResultDir,
+      finput,
+      trait,
+      standard_beta,
+      xmodel,
+      sex,
+      xsex,
+      covarfile,
+      interaction,
+      covartest,
+      Inphenocov,
+      combtest,
+      MF.zero.sub,
+      B,
+      MF.mc.cores,
+      MF.na.rm,
+      MF.p.corr,
+      plot.jpeg,
+      plotname,
+      snp_pval,
+      annotateTopSnp,
+      suggestiveline,
+      genomewideline,
+      ncores
+) {
+    ## ------------------------------------------------------------
+    ## Validate required PLINK files
+    ## ------------------------------------------------------------
+
     if (!checkFiles(DataDir, finput)) {
-        return("Missing required Plink files in the specified DataDir.")
+        return("Missing required PLINK files in the specified DataDir.")
     }
 
-    # Validate trait, standard_beta, sex, xsex, interaction, plot.jpeg, annotateTopSnp
-    if (!trait %in% c("binary", "quantitative")) {
+    ## ------------------------------------------------------------
+    ## Validate logical and categorical arguments
+    ## ------------------------------------------------------------
+
+    if (
+        length(trait) != 1L ||
+            !trait %in% c("binary", "quantitative")
+    ) {
         return("Invalid trait. Choose 'binary' or 'quantitative'.")
     }
-    if (!is.logical(standard_beta)) {
+
+    if (
+        length(standard_beta) != 1L ||
+            !is.logical(standard_beta) ||
+            is.na(standard_beta)
+    ) {
         return("standard_beta must be TRUE or FALSE.")
     }
-    if (!is.logical(sex) || !is.logical(xsex)) {
-        return("Sex and xsex must be TRUE or FALSE.")
+
+    if (
+        length(sex) != 1L ||
+            !is.logical(sex) ||
+            is.na(sex)
+    ) {
+        return("sex must be TRUE or FALSE.")
     }
-    if (!is.logical(interaction)) {
+
+    if (
+        length(xsex) != 1L ||
+            !is.logical(xsex) ||
+            is.na(xsex)
+    ) {
+        return("xsex must be TRUE or FALSE.")
+    }
+
+    if (
+        length(interaction) != 1L ||
+            !is.logical(interaction) ||
+            is.na(interaction)
+    ) {
         return("interaction must be TRUE or FALSE.")
     }
-    if (!is.logical(plot.jpeg)) {
+
+    if (
+        length(plot.jpeg) != 1L ||
+            !is.logical(plot.jpeg) ||
+            is.na(plot.jpeg)
+    ) {
         return("plot.jpeg must be TRUE or FALSE.")
     }
-    if (!is.logical(annotateTopSnp)) {
+
+    if (
+        length(annotateTopSnp) != 1L ||
+            !is.logical(annotateTopSnp) ||
+            is.na(annotateTopSnp)
+    ) {
         return("annotateTopSnp must be TRUE or FALSE.")
     }
 
-    # Validate xmodel
-    if (!xmodel %in% c("FMcombx01", "FMcombx02", "FMstratified", "GWAScxci")) {
+    if (
+        length(MF.na.rm) != 1L ||
+            !is.logical(MF.na.rm) ||
+            is.na(MF.na.rm)
+    ) {
+        return("MF.na.rm must be TRUE or FALSE.")
+    }
+
+    ## ------------------------------------------------------------
+    ## Validate model
+    ## ------------------------------------------------------------
+
+    if (
+        length(xmodel) != 1L ||
+            !xmodel %in% c(
+                "FMcombx01",
+                "FMcombx02",
+                "FMstratified",
+                "GWAScxci"
+            )
+    ) {
         return("Invalid xmodel value.")
     }
 
-    # Validate covarfile
-    if (!is.null(covarfile) && !file.exists(file.path(DataDir, covarfile))) {
-        return("Specified covarfile does not exist.")
+    ## ------------------------------------------------------------
+    ## Validate covariate file
+    ##
+    ## covarfile is expected to be located inside DataDir.
+    ## ------------------------------------------------------------
+
+    if (!is.null(covarfile)) {
+        if (
+            !is.character(covarfile) ||
+                length(covarfile) != 1L ||
+                is.na(covarfile) ||
+                !nzchar(covarfile)
+        ) {
+            return("covarfile must be NULL or a single valid filename.")
+        }
+
+        covarPath <- file.path(DataDir, covarfile)
+
+        if (!file.exists(covarPath)) {
+            return(
+                paste0(
+                    "Specified covarfile does not exist: ",
+                    covarPath
+                )
+            )
+        }
+    } else {
+        covarPath <- NULL
     }
 
-    # Validate covartest and Inphenocov against covarfile
-    validateCovarParams <- function(param, covarfile) {
-        if (param == "ALL" || is.null(param)) {
-            return(TRUE)
+    ## ------------------------------------------------------------
+    ## Helper: determine whether the argument is exactly "ALL"
+    ##
+    ## This prevents the previous error:
+    ##
+    ## param == "ALL" || is.null(param)
+    ##
+    ## When param is a vector, param == "ALL" returns multiple
+    ## logical values. The helper below guarantees one TRUE/FALSE.
+    ## ------------------------------------------------------------
+
+    isAllParameter <- function(param) {
+        is.character(param) &&
+            length(param) == 1L &&
+            !is.na(param) &&
+            identical(param, "ALL")
+    }
+
+    ## ------------------------------------------------------------
+    ## Helper: read covariate file safely
+    ##
+    ## check.names = FALSE preserves names such as AGE_-50.
+    ## ------------------------------------------------------------
+
+    readCovariateData <- function(covarPath) {
+        if (is.null(covarPath)) {
+            return(NULL)
         }
-        if (is.numeric(param)) {
-            if (is.null(covarfile)) {
-                return("covarfile needed for numeric covartest or Inphenocov.")
-            }
-            covarData <- tryCatch(read.table(file.path(DataDir, covarfile), header = TRUE), error = function(e) NULL)
+
+        tryCatch(
+            read.table(
+                covarPath,
+                header = TRUE,
+                check.names = FALSE,
+                stringsAsFactors = FALSE
+            ),
+            error = function(e) NULL
+        )
+    }
+
+    ## ------------------------------------------------------------
+    ## Validate covartest
+    ##
+    ## covartest refers to covariate positions, excluding FID and IID.
+    ##
+    ## For:
+    ##
+    ## FID IID PC1 PC2 PC3 ... SEX ...
+    ##
+    ## covartest = 1 refers to PC1.
+    ## ------------------------------------------------------------
+
+    validateCovartest <- function(param, covarPath) {
+        if (is.null(param) || isAllParameter(param)) {
+            return(NULL)
+        }
+
+        if (!is.numeric(param) || length(param) == 0L) {
+            return(
+                "covartest must be 'ALL', NULL, or a numeric vector."
+            )
+        }
+
+        if (anyNA(param) || any(!is.finite(param))) {
+            return("covartest cannot contain missing or non-finite values.")
+        }
+
+        if (any(param != floor(param))) {
+            return("covartest must contain integer values.")
+        }
+
+        if (is.null(covarPath)) {
+            return(
+                "A covarfile is required when covartest is numeric."
+            )
+        }
+
+        covarData <- readCovariateData(covarPath)
+
+        if (is.null(covarData)) {
+            return("Failed to read covarfile.")
+        }
+
+        if (ncol(covarData) < 3L) {
+            return(
+                paste0(
+                    "The covarfile must contain FID, IID, ",
+                    "and at least one covariate."
+                )
+            )
+        }
+
+        numberOfCovariates <- ncol(covarData) - 2L
+
+        if (
+            any(param < 1L) ||
+                any(param > numberOfCovariates)
+        ) {
+            return(
+                paste0(
+                    "covartest indices must range from 1 to ",
+                    numberOfCovariates,
+                    ", excluding FID and IID."
+                )
+            )
+        }
+
+        return(NULL)
+    }
+
+    ## ------------------------------------------------------------
+    ## Validate Inphenocov
+    ##
+    ## Inphenocov does NOT refer only to covariate positions.
+    ## It refers to PLINK regression parameter numbers.
+    ##
+    ## When sex = FALSE and k covariates are present, the parameter
+    ## order for a PLINK interaction model is:
+    ##
+    ## 1             = ADD
+    ## 2:(k + 1)     = covariate main effects
+    ## (k + 2):(2k+1)= ADD × covariate interactions
+    ##
+    ## Example with 11 covariates:
+    ##
+    ## 1      = ADD
+    ## 2:12   = covariate main effects
+    ## 13:23  = ADD × covariate interactions
+    ##
+    ## Therefore, c(1:12, 19) is valid.
+    ##
+    ## When sex = TRUE, PLINK additionally includes the sex main
+    ## effect and ADD × SEX interaction after the non-sex covariate
+    ## terms.
+    ## ------------------------------------------------------------
+
+    validateInphenocov <- function(
+      param,
+      covarPath,
+      interaction,
+      sex
+    ) {
+        if (!interaction) {
+            return(NULL)
+        }
+
+        if (is.null(param) || isAllParameter(param)) {
+            return(NULL)
+        }
+
+        if (!is.numeric(param) || length(param) == 0L) {
+            return(
+                "Inphenocov must be 'ALL', NULL, or a numeric vector."
+            )
+        }
+
+        if (anyNA(param) || any(!is.finite(param))) {
+            return(
+                "Inphenocov cannot contain missing or non-finite values."
+            )
+        }
+
+        if (any(param != floor(param))) {
+            return("Inphenocov must contain integer values.")
+        }
+
+        if (any(param < 1L)) {
+            return("Inphenocov values must be at least 1.")
+        }
+
+        ## Determine the number of non-sex covariates supplied
+        ## through the covariate file.
+
+        if (is.null(covarPath)) {
+            numberOfCovariates <- 0L
+        } else {
+            covarData <- readCovariateData(covarPath)
+
             if (is.null(covarData)) {
                 return("Failed to read covarfile.")
             }
-            maxIndex <- ncol(covarData) - 2
-            if (any(param < 1) || any(param > maxIndex)) {
-                return("Indices out of bounds in covartest or Inphenocov.")
+
+            if (ncol(covarData) < 3L) {
+                return(
+                    paste0(
+                        "The covarfile must contain FID, IID, ",
+                        "and at least one covariate."
+                    )
+                )
             }
-            return(TRUE)
+
+            numberOfCovariates <- ncol(covarData) - 2L
         }
-        return(FALSE)
-    }
-    if (!validateCovarParams(covartest, covarfile)) {
-        return("Invalid covartest.")
-    }
-    if (!validateCovarParams(Inphenocov, covarfile)) {
-        return("Invalid Inphenocov.")
+
+        ## Maximum possible PLINK parameter number.
+        ##
+        ## sex = FALSE:
+        ##   ADD + k main effects + k interactions
+        ##   max = 1 + k + k = 2k + 1
+        ##
+        ## sex = TRUE:
+        ##   ADD + k main effects + k interactions +
+        ##   SEX + ADD×SEX
+        ##   max = 2k + 3
+
+        if (sex) {
+            maxParameter <- 2L * numberOfCovariates + 3L
+        } else {
+            maxParameter <- 2L * numberOfCovariates + 1L
+        }
+
+        if (any(param > maxParameter)) {
+            return(
+                paste0(
+                    "Inphenocov values are outside the valid PLINK ",
+                    "parameter range. The maximum valid parameter ",
+                    "for this model is ",
+                    maxParameter,
+                    "."
+                )
+            )
+        }
+
+        return(NULL)
     }
 
-    # Validate combtest
-    if (!all(combtest %in% c("fisher.method", "fisher.method.perm", "stouffer.method"))) {
+    ## ------------------------------------------------------------
+    ## Run covartest and Inphenocov validation
+    ## ------------------------------------------------------------
+
+    covartestError <- validateCovartest(
+        param = covartest,
+        covarPath = covarPath
+    )
+
+    if (!is.null(covartestError)) {
+        return(covartestError)
+    }
+
+    InphenocovError <- validateInphenocov(
+        param = Inphenocov,
+        covarPath = covarPath,
+        interaction = interaction,
+        sex = sex
+    )
+
+    if (!is.null(InphenocovError)) {
+        return(InphenocovError)
+    }
+
+    ## ------------------------------------------------------------
+    ## Validate combtest
+    ## ------------------------------------------------------------
+
+    if (
+        !is.character(combtest) ||
+            length(combtest) == 0L ||
+            anyNA(combtest) ||
+            !all(
+                combtest %in% c(
+                    "fisher.method",
+                    "fisher.method.perm",
+                    "stouffer.method"
+                )
+            )
+    ) {
         return("Invalid combtest methods.")
     }
 
-    # Validate numeric parameters
-    if (!is.numeric(MF.zero.sub) || MF.zero.sub < 0) {
+    ## ------------------------------------------------------------
+    ## Validate numeric arguments
+    ## ------------------------------------------------------------
+
+    if (
+        length(MF.zero.sub) != 1L ||
+            !is.numeric(MF.zero.sub) ||
+            is.na(MF.zero.sub) ||
+            !is.finite(MF.zero.sub) ||
+            MF.zero.sub < 0
+    ) {
         return("Invalid value for MF.zero.sub.")
     }
-    if (!is.numeric(B) || B <= 0) {
-        return("Invalid value for B.")
-    }
-    if (!is.null(MF.mc.cores) && (!is.numeric(MF.mc.cores) || MF.mc.cores < 1 || floor(MF.mc.cores) != MF.mc.cores)) {
-        return("Invalid value for MF.mc.cores.; must be >= 1")
-    }
-    if (!is.numeric(snp_pval) || snp_pval <= 0 || snp_pval > 1) {
-        return("Invalid value for snp_pval.")
-    }
-    if (!is.numeric(suggestiveline) || suggestiveline <= 0) {
-        return("Invalid value for suggestiveline.")
-    }
-    if (!is.numeric(genomewideline) || genomewideline <= 0) {
-        return("Invalid value for genomewideline.")
-    }
-    if (!is.null(ncores) && (!is.numeric(ncores) || ncores < 0 || floor(ncores) != ncores)) {
-        return("Invalid value for MF.mc.cores.")
+
+    if (
+        length(B) != 1L ||
+            !is.numeric(B) ||
+            is.na(B) ||
+            !is.finite(B) ||
+            B <= 0 ||
+            B != floor(B)
+    ) {
+        return("B must be a positive integer.")
     }
 
-    # Return NULL if all validations pass
+    if (
+        !is.null(MF.mc.cores) &&
+            (
+                length(MF.mc.cores) != 1L ||
+                    !is.numeric(MF.mc.cores) ||
+                    is.na(MF.mc.cores) ||
+                    !is.finite(MF.mc.cores) ||
+                    MF.mc.cores < 1 ||
+                    MF.mc.cores != floor(MF.mc.cores)
+            )
+    ) {
+        return("MF.mc.cores must be an integer greater than or equal to 1.")
+    }
+
+    if (
+        length(snp_pval) != 1L ||
+            !is.numeric(snp_pval) ||
+            is.na(snp_pval) ||
+            !is.finite(snp_pval) ||
+            snp_pval <= 0 ||
+            snp_pval > 1
+    ) {
+        return("snp_pval must be greater than 0 and no greater than 1.")
+    }
+
+    if (
+        length(suggestiveline) != 1L ||
+            !is.numeric(suggestiveline) ||
+            is.na(suggestiveline) ||
+            !is.finite(suggestiveline) ||
+            suggestiveline <= 0
+    ) {
+        return("suggestiveline must be a positive numeric value.")
+    }
+
+    if (
+        length(genomewideline) != 1L ||
+            !is.numeric(genomewideline) ||
+            is.na(genomewideline) ||
+            !is.finite(genomewideline) ||
+            genomewideline <= 0
+    ) {
+        return("genomewideline must be a positive numeric value.")
+    }
+
+    if (
+        !is.null(ncores) &&
+            (
+                length(ncores) != 1L ||
+                    !is.numeric(ncores) ||
+                    is.na(ncores) ||
+                    !is.finite(ncores) ||
+                    ncores < 0 ||
+                    ncores != floor(ncores)
+            )
+    ) {
+        return("ncores must be a non-negative integer.")
+    }
+
+    ## ------------------------------------------------------------
+    ## Validate remaining arguments
+    ## ------------------------------------------------------------
+
+    if (
+        length(MF.p.corr) != 1L ||
+            !is.character(MF.p.corr) ||
+            is.na(MF.p.corr)
+    ) {
+        return("MF.p.corr must be a single character value.")
+    }
+
+    if (
+        length(plotname) != 1L ||
+            !is.character(plotname) ||
+            is.na(plotname) ||
+            !nzchar(plotname)
+    ) {
+        return("plotname must be a single non-empty character value.")
+    }
+
+    if (
+        length(ResultDir) != 1L ||
+            !is.character(ResultDir) ||
+            is.na(ResultDir) ||
+            !nzchar(ResultDir)
+    ) {
+        return("ResultDir must be a single valid directory path.")
+    }
+
+    ## ------------------------------------------------------------
+    ## 13. Return NULL when all validation checks pass
+    ## ------------------------------------------------------------
+
     return(NULL)
 }
 
@@ -4797,9 +5259,11 @@ processLDreferenceData <- function(ResultDir, highLD_regions, referLD, referLD_w
 }
 
 ## Function 103
-filterATGCSNPs <- function(study_bim_path, study_bed_path, study_fam_path,
-    ref_bim_path, ref_bed_path, ref_fam_path,
-    ResultDir) {
+filterATGCSNPs <- function(
+      study_bim_path, study_bed_path, study_fam_path,
+      ref_bim_path, ref_bed_path, ref_fam_path,
+      ResultDir
+) {
     # Helper to identify ambiguous SNPs (A-T / G-C)
     getAmbiguousSNPs <- function(bim_file) {
         bimData <- vroom::vroom(
@@ -6563,8 +7027,10 @@ read_plink_clumped_clean <- function(resultDir, filename) {
 ## Helper function from HDL R package ##
 #' @importFrom dplyr n
 HDL.rg <-
-    function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min(gwas1.df$N, gwas2.df$N), output.file = "", eigen.cut = "automatic",
-    jackknife.df = FALSE, intercept.output = FALSE, fill.missing.N = NULL, lim = exp(-18)) {
+    function(
+      gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min(gwas1.df$N, gwas2.df$N), output.file = "", eigen.cut = "automatic",
+      jackknife.df = FALSE, intercept.output = FALSE, fill.missing.N = NULL, lim = exp(-18)
+    ) {
         ## Initialize vars used later
         snps.list.imputed.vector <- NULL
         nsnps.list.imputed <- NULL
@@ -7317,8 +7783,10 @@ HDL.rg <-
 
 #' @importFrom foreach %dopar%
 #' @importFrom dplyr row_number
-HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min(gwas1.df$N, gwas2.df$N), output.file = "", numCores = 2,
-    eigen.cut = "automatic", jackknife.df = FALSE, intercept.output = FALSE, fill.missing.N = NULL, lim = exp(-18)) {
+HDL.rg.parallel <- function(
+      gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min(gwas1.df$N, gwas2.df$N), output.file = "", numCores = 2,
+      eigen.cut = "automatic", jackknife.df = FALSE, intercept.output = FALSE, fill.missing.N = NULL, lim = exp(-18)
+) {
     ## Initialize vars used later
     snps.list.imputed.vector <- NULL
     nsnps.list.imputed <- NULL
@@ -8086,8 +8554,10 @@ HDL.rg.parallel <- function(gwas1.df, gwas2.df, LD.path, Nref = 335265, N0 = min
     return(list(rg = rg, rg.se = rg.se, P = P, estimates.df = estimates.df, eigen.use = eigen.use))
 }
 
-llfun.gcov.part.2 <- function(param, h11, h22, rho12, M, N1, N2, N0, Nref,
-    lam0, lam1, lam2, bstar1, bstar2, lim = exp(-10)) {
+llfun.gcov.part.2 <- function(
+      param, h11, h22, rho12, M, N1, N2, N0, Nref,
+      lam0, lam1, lam2, bstar1, bstar2, lim = exp(-10)
+) {
     h12 <- param[1]
     int <- param[2]
     ## sample fractions

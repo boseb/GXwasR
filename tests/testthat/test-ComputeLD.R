@@ -1,5 +1,4 @@
 test_that("ComputeLD function returns expected output", {
-    skip_on_bioc()
     ResultDir <- tempdir()
     snpld <- ComputeLD(
         DataDir = system.file("extdata", package = "GXwasR"), ResultDir = ResultDir,

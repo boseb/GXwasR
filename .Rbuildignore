@@ -36,3 +36,4 @@
 ^vignettes/genetic_correlation_sumstat\.Rmd\.orig$
 ^\.positai$
 ^\.claude$
+^data-raw$

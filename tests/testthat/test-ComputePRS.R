@@ -1,5 +1,4 @@
 test_that("ComputePGS returns expected results", {
-    skip_on_bioc()
     data("Summary_Stat_Ex1", package = "GXwasR")
     data("Example_phenofile", package = "GXwasR")
     data("Example_covarfile", package = "GXwasR")

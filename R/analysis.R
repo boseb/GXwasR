@@ -225,48 +225,46 @@
 #'         omit_linear_variant
 #'     )
 #' }
-TestXGene <- function(
-      DataDir,
-      ResultDir = tempdir(),
-      finput,
-      sumstat,
-      gene_file,
-      gene_range = 500000,
-      score_file,
-      ref_data = NULL,
-      max_gene = NULL,
-      sample_size = NULL,
-      genebasedTest = c(
-          "SKAT",
-          "SKATO",
-          "sumchi",
-          "ACAT",
-          "BT",
-          "PCA",
-          "FLM",
-          "simpleM",
-          "minp"
-      ),
-      gene_approximation = TRUE,
-      beta_par,
-      weights_function,
-      geno_variance_weights,
-      kernel_p_method = "kuonen",
-      acc_devies = 1e-8,
-      lim_devies = 1e+6,
-      rho = TRUE,
-      skato_p_threshold = 0.8,
-      anno_type = "",
-      mac_threshold,
-      reference_matrix_used,
-      regularize_fun,
-      pca_var_fraction = 0.85,
-      flm_basis_function = "fourier",
-      flm_num_basis = 25,
-      flm_poly_order = 4,
-      flip_genotypes = FALSE,
-      omit_linear_variant = FALSE
-) {
+TestXGene <- function(DataDir,
+    ResultDir = tempdir(),
+    finput,
+    sumstat,
+    gene_file,
+    gene_range = 500000,
+    score_file,
+    ref_data = NULL,
+    max_gene = NULL,
+    sample_size = NULL,
+    genebasedTest = c(
+        "SKAT",
+        "SKATO",
+        "sumchi",
+        "ACAT",
+        "BT",
+        "PCA",
+        "FLM",
+        "simpleM",
+        "minp"
+    ),
+    gene_approximation = TRUE,
+    beta_par,
+    weights_function,
+    geno_variance_weights,
+    kernel_p_method = "kuonen",
+    acc_devies = 1e-8,
+    lim_devies = 1e+6,
+    rho = TRUE,
+    skato_p_threshold = 0.8,
+    anno_type = "",
+    mac_threshold,
+    reference_matrix_used,
+    regularize_fun,
+    pca_var_fraction = 0.85,
+    flm_basis_function = "fourier",
+    flm_num_basis = 25,
+    flm_poly_order = 4,
+    flip_genotypes = FALSE,
+    omit_linear_variant = FALSE) {
     tryCatch(
         withCallingHandlers(
             {
@@ -609,12 +607,14 @@ TestXGene <- function(
 #'     plotname = "Meta_Analysis.plot", pval_filter, top_snp_pval, max_top_snps,
 #'     chosen_snps_file = NULL, byCHR, pval_threshold_manplot
 #' )
-MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile = NULL,
-    useSNPposition = TRUE,
-    UseA1 = FALSE, GCse = TRUE,
-    plotname = "Meta_Analysis.plot", pval_filter = "R",
-    top_snp_pval = 1e-08, max_top_snps = 6, chosen_snps_file = NULL,
-    byCHR = FALSE, pval_threshold_manplot = 1e-05) {
+MetaGWAS <- function(
+      DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile = NULL,
+      useSNPposition = TRUE,
+      UseA1 = FALSE, GCse = TRUE,
+      plotname = "Meta_Analysis.plot", pval_filter = "R",
+      top_snp_pval = 1e-08, max_top_snps = 6, chosen_snps_file = NULL,
+      byCHR = FALSE, pval_threshold_manplot = 1e-05
+) {
     # Validate input parameters
     validateInputForMetaGWAS(DataDir, ResultDir, SummData, SNPfile, useSNPposition, UseA1, GCse, plotname, pval_filter, top_snp_pval, max_top_snps, chosen_snps_file, byCHR, pval_threshold_manplot)
 
@@ -981,12 +981,10 @@ MetaGWAS <- function(DataDir, SummData = c(""), ResultDir = tempdir(), SNPfile =
 #' ## The best threshold
 #' BestPvalue <- PGSresult$BestP$Threshold
 #' BestPvalue
-ComputePGS <- function(
-      DataDir, ResultDir = tempdir(), finput, summarystat, phenofile, covarfile = NULL,
-      effectsize = c("BETA", "OR"), ldclump = FALSE, LDreference, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE,
-      pthreshold = c(0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5), highLD_regions, ld_prunning = FALSE,
-      window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary", prevalence = NULL, liability_R2 = FALSE
-) {
+ComputePGS <- function(DataDir, ResultDir = tempdir(), finput, summarystat, phenofile, covarfile = NULL,
+    effectsize = c("BETA", "OR"), ldclump = FALSE, LDreference, clump_p1, clump_p2, clump_r2, clump_kb, byCHR = TRUE,
+    pthreshold = c(0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5), highLD_regions, ld_prunning = FALSE,
+    window_size = 50, step_size = 5, r2_threshold = 0.02, nPC = 6, pheno_type = "binary", prevalence = NULL, liability_R2 = FALSE) {
     # Validate inputs
     if (!validateInputForComputePGS(DataDir, ResultDir, finput, summarystat, prevalence, phenofile, covarfile, effectsize, ldclump, LDreference, clump_p1, clump_p2, clump_r2, clump_kb, byCHR, pthreshold, highLD_regions, ld_prunning, window_size, step_size, r2_threshold, nPC, pheno_type, liability_R2)) {
         stop("Please validate all inputs")
@@ -1336,14 +1334,12 @@ validateInputForGeneticCorrBT <- function(DataDir, ResultDir, finput, byCHR, REM
 #'     partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
 #'     cripticut = 0.025, minMAF = NULL, maxMAF = NULL, excludeResidual = TRUE, ncores = ncores
 #' )
-GeneticCorrBT <- function(
-      DataDir, ResultDir, finput, byCHR = FALSE,
-      REMLalgo = c(0, 1, 2), nitr = 100, phenofile, cat_covarfile = NULL, quant_covarfile = NULL,
-      computeGRM = TRUE, grmfile_name = NULL,
-      partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
-      cripticut = 0.025, minMAF = NULL, maxMAF = NULL,
-      excludeResidual = FALSE, ncores = 2
-) {
+GeneticCorrBT <- function(DataDir, ResultDir, finput, byCHR = FALSE,
+    REMLalgo = c(0, 1, 2), nitr = 100, phenofile, cat_covarfile = NULL, quant_covarfile = NULL,
+    computeGRM = TRUE, grmfile_name = NULL,
+    partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
+    cripticut = 0.025, minMAF = NULL, maxMAF = NULL,
+    excludeResidual = FALSE, ncores = 2) {
     # Validate input parameters
     validateInputForGeneticCorrBT(
         DataDir, ResultDir, finput, byCHR, REMLalgo, nitr, phenofile,
@@ -1519,17 +1515,19 @@ GeneticCorrBT <- function(
 
 ## Function 129
 ## Added in 3.0
-validateInputForEstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL,
-    summarystat = NULL, ncores = parallel::detectCores(),
-    model = c("LDSC", "GREML"), byCHR = FALSE, r2_LD = 0,
-    LDSC_blocks = 20, REMLalgo = c(0, 1, 2), nitr = 100,
-    cat_covarfile = NULL, quant_covarfile = NULL,
-    prevalence = 0.01, partGRM = FALSE, autosome = TRUE,
-    Xsome = TRUE, nGRM = 3, cripticut = 0.025,
-    minMAF = NULL, maxMAF = NULL, hg = c("hg19", "hg38"),
-    PlotIndepSNP = c(TRUE, FALSE), IndepSNP_window_size = 50,
-    IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02,
-    highLD_regions = NULL) {
+validateInputForEstimateHerit <- function(
+      DataDir = NULL, ResultDir = tempdir(), finput = NULL,
+      summarystat = NULL, ncores = parallel::detectCores(),
+      model = c("LDSC", "GREML"), byCHR = FALSE, r2_LD = 0,
+      LDSC_blocks = 20, REMLalgo = c(0, 1, 2), nitr = 100,
+      cat_covarfile = NULL, quant_covarfile = NULL,
+      prevalence = 0.01, partGRM = FALSE, autosome = TRUE,
+      Xsome = TRUE, nGRM = 3, cripticut = 0.025,
+      minMAF = NULL, maxMAF = NULL, hg = c("hg19", "hg38"),
+      PlotIndepSNP = c(TRUE, FALSE), IndepSNP_window_size = 50,
+      IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02,
+      highLD_regions = NULL
+) {
     # Validate directories
     if (!is.null(DataDir) && !dir.exists(DataDir)) {
         stop("Error in DataDir: Directory does not exist.")
@@ -1630,7 +1628,22 @@ validateInputForEstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(),
 #' maximum likelihood-based method following GCTA \insertCite{Yang2011}{GXwasR} and (ii)LDSC: LD score regression-based method
 #' following \insertCite{Bulik-Sullivan2014,Prive2020}{GXwasR}. For the details, please follow the associated paper.
 #'
-#' Prior to using this function, it is recommended to apply QCsnp and QCsample to ensure data quality control.
+#' Prior to using this function, it is recommended to apply \code{QCsnp()} and
+#' \code{QCsample()} to ensure data quality. For LDSC analyses, an environment
+#' variable pointing to the appropriate human genome annotation file must also
+#' be set using \code{Sys.setenv()}. For example:
+#'
+#' \code{Sys.setenv(GENEINFO_HG19 = "/path/to/HumanGenome19info.txt")}
+#'
+#' or:
+#'
+#' \code{Sys.setenv(GENEINFO_HG38 = "/path/to/HumanGenome38info.txt")}
+#'
+#' The required reference files can be downloaded from:
+#' \itemize{
+#' \item hg19: \url{https://figshare.com/ndownloader/files/42118098}
+#' \item hg38: \url{https://figshare.com/ndownloader/files/42118242}
+#' }
 #'
 #' @param DataDir
 #' A character string for the file path of the all the input files. The default is `NULL`.
@@ -1794,57 +1807,50 @@ validateInputForEstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(),
 #' @export
 #'
 #' @examples
+#' withr::local_envvar(
+#'     GENEINFO_HG19 = system.file(
+#'         "extdata",
+#'         "GXwasR_geneinfo_hg19_test.txt",
+#'         package = "GXwasR"
+#'     )
+#' )
 #' data("Summary_Stat_Ex1", package = "GXwasR")
 #' data("highLD_hg19", package = "GXwasR")
-#' DataDir <- system.file("extdata", package = "GXwasR")
-#' ResultDir <- tempdir()
-#' precomputedLD <- NULL
-#' finput <- "GXwasR_example"
-#' test.sumstats <- na.omit(Summary_Stat_Ex1[Summary_Stat_Ex1$TEST == "ADD", c(seq_len(4), 6:8)])
-#' colnames(test.sumstats) <- c("chr", "rsid", "pos", "a1", "n_eff", "beta", "beta_se")
-#' summarystat <- test.sumstats
-#' ncores <- 3
-#' model <- "GREML"
-#' byCHR <- FALSE
-#' r2_LD <- 0
-#' LDSC_blocks <- 20
-#' REMLalgo <- 0
-#' nitr <- 3
-#' cat_covarfile <- NULL
-#' quant_covarfile <- NULL
-#' prevalence <- 0.01
-#' partGRM <- FALSE
-#' autosome <- TRUE
-#' Xsome <- TRUE
-#' nGRM <- 3
-#' cripticut <- 0.025
-#' minMAF <- NULL
-#' maxMAF <- NULL
-#' hg <- "hg19"
-#' PlotIndepSNP <- TRUE
-#' IndepSNP_window_size <- 50
-#' IndepSNP_step_size <- 5
-#' IndepSNP_r2_threshold <- 0.02
-#' highLD_regions <- highLD_hg19
-#' H2 <- EstimateHerit(
-#'     DataDir = DataDir, ResultDir = ResultDir, finput = finput,
-#'     summarystat = NULL, ncores, model = "GREML", byCHR = TRUE, r2_LD = 0,
-#'     LDSC_blocks = 20, REMLalgo = 0, nitr = 100, cat_covarfile = NULL, quant_covarfile = NULL,
-#'     prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
-#'     cripticut = 0.025, minMAF = NULL, maxMAF = NULL, hg = "hg19", PlotIndepSNP = TRUE,
-#'     IndepSNP_window_size = 50, IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02,
-#'     highLD_regions = highLD_hg19
+#' data("PrecomputedLD_Ex1", package = "GXwasR")
+#'
+#' test.sumstats <- na.omit(
+#'     Summary_Stat_Ex1[
+#'         Summary_Stat_Ex1$TEST == "ADD",
+#'         c(seq_len(4), 6:8)
+#'     ]
 #' )
-EstimateHerit <- function(DataDir = NULL, ResultDir = tempdir(), finput = NULL, precomputedLD = NULL,
-    indepSNPs = NULL, summarystat = NULL, ncores = 2, model = c("LDSC", "GREML"),
-    computeGRM = TRUE, grmfile_name = NULL, byCHR = FALSE,
-    r2_LD = 0, LDSC_blocks = 20, intercept = NULL, chi2_thr1 = 30,
-    chi2_thr2 = Inf, REMLalgo = c(0, 1, 2), nitr = 100, cat_covarfile = NULL,
-    quant_covarfile = NULL, prevalence = NULL, partGRM = FALSE, autosome = TRUE,
-    Xsome = TRUE, nGRM = 3, cripticut = 0.025, minMAF = NULL, maxMAF = NULL,
-    hg = c("hg19", "hg38"), PlotIndepSNP = TRUE, IndepSNP_window_size = 50,
-    IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02, highLD_regions = NULL,
-    plotjpeg = TRUE, plotname = "Heritability_Plots") {
+#'
+#' colnames(test.sumstats) <- c(
+#'     "chr", "rsid", "pos", "a1",
+#'     "n_eff", "beta", "beta_se"
+#' )
+#'
+#' H2ldsc <- EstimateHerit(
+#'     summarystat = test.sumstats,
+#'     precomputedLD = PrecomputedLD_Ex1,
+#'     ncores = 1,
+#'     model = "LDSC",
+#'     byCHR = TRUE,
+#'     hg = "hg19",
+#'     plotjpeg = FALSE
+#' )
+EstimateHerit <- function(
+      DataDir = NULL, ResultDir = tempdir(), finput = NULL, precomputedLD = NULL,
+      indepSNPs = NULL, summarystat = NULL, ncores = 2, model = c("LDSC", "GREML"),
+      computeGRM = TRUE, grmfile_name = NULL, byCHR = FALSE,
+      r2_LD = 0, LDSC_blocks = 20, intercept = NULL, chi2_thr1 = 30,
+      chi2_thr2 = Inf, REMLalgo = c(0, 1, 2), nitr = 100, cat_covarfile = NULL,
+      quant_covarfile = NULL, prevalence = NULL, partGRM = FALSE, autosome = TRUE,
+      Xsome = TRUE, nGRM = 3, cripticut = 0.025, minMAF = NULL, maxMAF = NULL,
+      hg = c("hg19", "hg38"), PlotIndepSNP = TRUE, IndepSNP_window_size = 50,
+      IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02, highLD_regions = NULL,
+      plotjpeg = TRUE, plotname = "Heritability_Plots"
+) {
     # Validate inputs
     if (!validateInputForEstimateHerit(DataDir, ResultDir, finput, summarystat, ncores, model, byCHR, r2_LD, LDSC_blocks, REMLalgo, nitr, cat_covarfile, quant_covarfile, prevalence, partGRM, autosome, Xsome, nGRM, cripticut, minMAF, maxMAF, hg, PlotIndepSNP, IndepSNP_window_size, IndepSNP_step_size, IndepSNP_r2_threshold, highLD_regions)) {
         return(NULL)

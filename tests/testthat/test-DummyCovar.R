@@ -1,5 +1,4 @@
 test_that("DummyCovar() generates correct output", {
-    skip_on_bioc()
     DataDir <- system.file("extdata", package = "GXwasR")
     ResultDir <- tempdir()
     bfile <- "GXwasR_example"

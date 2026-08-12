@@ -1,0 +1,6 @@
+hgnc_symbol Chrom gene_biotype
+GXWASR1     1     protein_coding
+GXWASR2     1     protein_coding
+GXWASR3     1     lncRNA
+GXWASR4     2     protein_coding
+GXWASR5     2     lncRNA

@@ -219,3 +219,28 @@ NULL
 #' @author Banabithi Bose
 #' @keywords data
 NULL
+
+#' Example Precomputed LD Scores for LDSC
+#'
+#' A small subset of precomputed linkage disequilibrium (LD) scores from the
+#' European-ancestry hg19 reference panel. The dataset contains LD scores for
+#' SNPs represented in the example summary statistics used by \code{EstimateHerit()}.
+#' It is intended for examples and package testing and is not a replacement for
+#' a genome-wide LD-score reference panel.
+#'
+#' @name PrecomputedLD_Ex1
+#' @docType data
+#' @format A data frame with three columns:
+#' \describe{
+#'   \item{CHR}{Chromosome number; integer}
+#'   \item{SNP}{SNP identifier; character string}
+#'   \item{ld_score}{Precomputed LD score for the SNP; numeric}
+#' }
+#'
+#' @source Derived from the precomputed hg19 European-ancestry LD scores used
+#' by the LDSC analysis. The dataset was restricted to SNPs present in the
+#' \code{Summary_Stat_Ex1} example dataset.
+#'
+#' @author Banabithi Bose
+#' @keywords dataa
+NULL

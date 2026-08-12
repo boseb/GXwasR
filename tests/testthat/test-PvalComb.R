@@ -1,6 +1,4 @@
 test_that("PvalComb returns expected results", {
-    skip_on_ci()
-    skip_on_bioc()
     data("Mfile", package = "GXwasR")
     data("Ffile", package = "GXwasR")
     PlotDir <- tempdir()

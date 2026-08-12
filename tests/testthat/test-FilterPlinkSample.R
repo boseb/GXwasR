@@ -1,5 +1,4 @@
 test_that("FilterPlinkSample generates correct output files", {
-    skip_on_bioc()
     DataDir <- system.file("extdata", package = "GXwasR")
     ResultDir <- tempdir()
     finput <- "GXwasR_example"

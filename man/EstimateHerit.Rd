@@ -168,49 +168,55 @@ This functions performs two types of heritability estimation, (i)GREML:Genomic r
 maximum likelihood-based method following GCTA \insertCite{Yang2011}{GXwasR} and (ii)LDSC: LD score regression-based method
 following \insertCite{Bulik-Sullivan2014,Prive2020}{GXwasR}. For the details, please follow the associated paper.
 
-Prior to using this function, it is recommended to apply QCsnp and QCsample to ensure data quality control.
+Prior to using this function, it is recommended to apply \code{QCsnp()} and
+\code{QCsample()} to ensure data quality. For LDSC analyses, an environment
+variable pointing to the appropriate human genome annotation file must also
+be set using \code{Sys.setenv()}. For example:
+
+\code{Sys.setenv(GENEINFO_HG19 = "/path/to/HumanGenome19info.txt")}
+
+or:
+
+\code{Sys.setenv(GENEINFO_HG38 = "/path/to/HumanGenome38info.txt")}
+
+The required reference files can be downloaded from:
+\itemize{
+\item hg19: \url{https://figshare.com/ndownloader/files/42118098}
+\item hg38: \url{https://figshare.com/ndownloader/files/42118242}
+}
 }
 \examples{
+withr::local_envvar(
+    GENEINFO_HG19 = system.file(
+        "extdata",
+        "GXwasR_geneinfo_hg19_test.txt",
+        package = "GXwasR"
+    )
+)
 data("Summary_Stat_Ex1", package = "GXwasR")
 data("highLD_hg19", package = "GXwasR")
-DataDir <- system.file("extdata", package = "GXwasR")
-ResultDir <- tempdir()
-precomputedLD <- NULL
-finput <- "GXwasR_example"
-test.sumstats <- na.omit(Summary_Stat_Ex1[Summary_Stat_Ex1$TEST == "ADD", c(seq_len(4), 6:8)])
-colnames(test.sumstats) <- c("chr", "rsid", "pos", "a1", "n_eff", "beta", "beta_se")
-summarystat <- test.sumstats
-ncores <- 3
-model <- "GREML"
-byCHR <- FALSE
-r2_LD <- 0
-LDSC_blocks <- 20
-REMLalgo <- 0
-nitr <- 3
-cat_covarfile <- NULL
-quant_covarfile <- NULL
-prevalence <- 0.01
-partGRM <- FALSE
-autosome <- TRUE
-Xsome <- TRUE
-nGRM <- 3
-cripticut <- 0.025
-minMAF <- NULL
-maxMAF <- NULL
-hg <- "hg19"
-PlotIndepSNP <- TRUE
-IndepSNP_window_size <- 50
-IndepSNP_step_size <- 5
-IndepSNP_r2_threshold <- 0.02
-highLD_regions <- highLD_hg19
-H2 <- EstimateHerit(
-    DataDir = DataDir, ResultDir = ResultDir, finput = finput,
-    summarystat = NULL, ncores, model = "GREML", byCHR = TRUE, r2_LD = 0,
-    LDSC_blocks = 20, REMLalgo = 0, nitr = 100, cat_covarfile = NULL, quant_covarfile = NULL,
-    prevalence = 0.01, partGRM = FALSE, autosome = TRUE, Xsome = TRUE, nGRM = 3,
-    cripticut = 0.025, minMAF = NULL, maxMAF = NULL, hg = "hg19", PlotIndepSNP = TRUE,
-    IndepSNP_window_size = 50, IndepSNP_step_size = 5, IndepSNP_r2_threshold = 0.02,
-    highLD_regions = highLD_hg19
+data("PrecomputedLD_Ex1", package = "GXwasR")
+
+test.sumstats <- na.omit(
+    Summary_Stat_Ex1[
+        Summary_Stat_Ex1$TEST == "ADD",
+        c(seq_len(4), 6:8)
+    ]
+)
+
+colnames(test.sumstats) <- c(
+    "chr", "rsid", "pos", "a1",
+    "n_eff", "beta", "beta_se"
+)
+
+H2ldsc <- EstimateHerit(
+    summarystat = test.sumstats,
+    precomputedLD = PrecomputedLD_Ex1,
+    ncores = 1,
+    model = "LDSC",
+    byCHR = TRUE,
+    hg = "hg19",
+    plotjpeg = FALSE
 )
 }
 \references{

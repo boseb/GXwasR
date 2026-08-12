@@ -95,6 +95,9 @@ in CGRCh37. Both study and reference datasets should be of the same genome build
 datasets to the same build.
 }
 \examples{
+## Setup Example Env
+refdir <- system.file("extdata", "reference", package = "GXwasR")
+withr::local_envvar(HAPMAPIII_NCBI36_DIR = refdir)
 data("highLD_hg19", package = "GXwasR")
 data("example_data_study_sample_ancestry", package = "GXwasR")
 DataDir <- system.file("extdata", package = "GXwasR")

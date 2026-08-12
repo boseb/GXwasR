@@ -1,5 +1,4 @@
 test_that("QCsample returns expected output", {
-    skip_on_bioc()
     DataDir <- system.file("extdata", package = "GXwasR")
     ResultDir <- tempdir()
     finput <- "GXwasR_example"
@@ -27,7 +26,6 @@ test_that("QCsample returns expected output", {
 })
 
 test_that("QCsample returns foutput when het = NULL", {
-    skip_on_bioc()
     ## Use example from preimputationQC vignette to ensure
     ## all necessary intermediate files are present.
     DataDir <- system.file("extdata", package = "GXwasR")
