@@ -37,7 +37,7 @@ common variants with unrelated individuals.
 **(D)Sex-differential test:** `SexDiff()`; `SexDiffZscore()`;
 `DiffZeroOne()`
 
-**(E)High level analysis:** `TestXGene()`; `MetaGWAS()`; `ComputePGS()`;
+**(E)High level analysis:** `MetaGWAS()`; `ComputePGS()`;
 `GeneticCorrBT()`; `EstimateHerit()`
 
 **(F)Utility Functions:** `FilterPlinkSample()`; `ComputeGeneticPC()`;
