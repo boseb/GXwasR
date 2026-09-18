@@ -189,6 +189,10 @@ You can still run the app by following these steps:
 For more details, see Apple’s official guide:
 <https://support.apple.com/en-us/102445>
 
+## GXWAS Tutorials
+Use this link to access the tutorials about using this package in different analyses:
+https://github.com/boseb/GXwasR_Tutorials
+
 ## Example Analysis
 
 Run a genome-wide association study (GWAS) and X-chromosome-wide
