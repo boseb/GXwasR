@@ -67,7 +67,6 @@ Imports:
     rlang,
     SNPRelate,
     stringr,
-    sumFREGAT,
     sys,
     utils,
     vroom,

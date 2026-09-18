@@ -509,6 +509,7 @@ QCsample <- function(DataDir,
 #'
 #' @importFrom data.table as.data.table .SD
 #' @importFrom ggplot2 ggplot aes geom_hline geom_vline guides geom_point guide_legend scale_shape_manual
+#' @importFrom magrittr %>%
 #' @importFrom vroom vroom
 #'
 #' @return A list containing three data frames: one with the IDs of outlier samples (Outlier_samples), another with samples
