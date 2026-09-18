@@ -13,3 +13,4 @@ pkgdown
 _pkgdown.yml
 .positai
 *.Rproj
+.Rhistory
