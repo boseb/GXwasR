@@ -778,6 +778,7 @@ pgsFun <- function(pthreshold, ResultDir, DataDir, finput, clumpExtract, clumpSN
     } else {
         model <- lm(Pheno1 ~ ., data = pheno.pgs[, !colnames(pheno.pgs) %in% c("FID", "IID")])
         pgs.r2 <- summary(model)$r.squared - summary(null_model)$r.squared
+        pgs.liability.r2 <- NA_real_
     }
 
     pgs.coef <- summary(model)$coefficients["SCORE", ]
